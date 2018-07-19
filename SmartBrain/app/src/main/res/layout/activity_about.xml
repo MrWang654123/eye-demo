@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cheersmind.smartbrain.module.mine.AboutActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:orientation="vertical">
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                fresco:viewAspectRatio="1.78"
+                fresco:placeholderImage="@mipmap/banner2"
+                fresco:roundTopLeft="true"
+                fresco:roundTopRight="true"
+                fresco:roundBottomLeft="false"
+                fresco:roundBottomRight="false"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="8dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.5"
+                android:textSize="15sp"
+                android:text="奇思，我们致力于应用认知科学及脑科学的最新研究成果，帮助孩子提升认知能力发展，以更好地适应日益复杂的学习任务。\n我们提供专业的认知测评平台，父母及孩子可以更好认识自己的认知能力长处及不足。\n我们提供科学的训练平台，针对认知的各项能力进行训练，通过丰富有趣的训练，加强孩子的认知长处，补充认知不足。\n我们深入分析及挖掘数据的价值，实现自适应科学训练，自动调整训练的难度以适应孩子的技能及持续性成长。\n我们拥有多年互联网从业经历的产品设计师及视觉设计师，我们与知名研究机构进行深度合作，保证学术的准确及训练的科学。\n奇思的使命：让每一个孩子的学习变得更高效。\n奇思的愿景：成为最有价值的认知学习数据服务提供商。\n奇思的梦想：让每一个孩子成就最好的自己（Dream In Cheersmind）。 \n奇思的价值观：客户第一、团队协作、追求卓越、保持专注、拥抱变化、保持激情。"/>
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rt_report"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_margin="10dp"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@mipmap/qs_report_bg_top">
+                <TextView
+                    android:id="@+id/tv_evaluate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="智能评价"
+                    android:textSize="18sp"
+                    android:textColor="@color/color_666666"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:text="VS"
+                        android:textSize="20sp"
+                        android:textColor="@color/color_666666"/>
+
+                    <ImageView
+                        android:id="@+id/iv_country"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/iv_class"
+                        android:layout_marginRight="10dp"
+                        android:background="@mipmap/qs_report_country_select"/>
+                    <ImageView
+                        android:id="@+id/iv_class"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@+id/iv_grade"
+                        android:layout_marginRight="10dp"
+                        android:background="@mipmap/qs_report_class_nor"/>
+                    <ImageView
+                        android:id="@+id/iv_grade"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:background="@mipmap/qs_report_grade_nor"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#f7f7f7"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:background="@mipmap/qs_report_bg_bottom">
+
+                <RelativeLayout
+                    android:id="@+id/rt_char"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_marginTop="-20dp">
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rt_none_report"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/color_text_white"
+                    android:visibility="gone">
+
+                    <RelativeLayout
+                        android:layout_width="300dp"
+                        android:layout_height="240dp"
+                        android:layout_centerInParent="true">
+                        <LinearLayout
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="20dp"
+                            android:background="@mipmap/qqs_report_bg_hint"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="暂无汇总数据图"
+                                android:textColor="@color/color_00b8e9"
+                                android:textSize="20sp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="点击以下主题，查看详细数据分布报告。"
+                                android:textColor="@color/color_666666"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="20dp"
+                            android:layout_marginRight="20dp"
+                            android:background="@mipmap/qs_hint_default_icon" />
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <com.cheersmind.smartbrain.main.view.CustomReportViewPager
+            android:id="@+id/vp_dimension"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+        </com.cheersmind.smartbrain.main.view.CustomReportViewPager>
+
+        <RelativeLayout
+            android:id="@+id/rt_no_report"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:background="@mipmap/qs_report_bg_top"
+                android:paddingLeft="20dp"
+                android:text="智能评价"
+                android:textSize="18sp"
+                android:textColor="@color/color_666666"/>
+
+            <TextView
+                android:id="@+id/tv_line"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#f7f7f7"
+                android:layout_below="@+id/tv_hint"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tv_line"
+                android:background="@mipmap/qs_report_bg_bottom">
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="300dp"
+                android:layout_height="240dp"
+                android:layout_centerInParent="true">
+                <LinearLayout
+                    android:layout_width="160dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@mipmap/qqs_report_bg_hint"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="暂无汇总数据图"
+                        android:textColor="@color/color_00b8e9"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="需要完成所有主题测评，才能查看报告"
+                        android:textColor="@color/color_666666"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@mipmap/qs_hint_default_icon" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</ScrollView>

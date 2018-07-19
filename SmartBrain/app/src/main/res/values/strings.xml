@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">天天智学</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- 启动页 -->
+    <string name="start_tip">帮助每个孩子获得成功</string>
+    <string name="start_tip1">Easy Learning Easy Winning</string>
+    
+    <!-- 注册登入 -->
+    <string name="how_to_invite_content">天天智学采用邀请码注册机制，仅限有邀请码的用户，验证通过后才能注册使用。</string>
+    
+    <!-- 推荐 -->
+    <string name="recommend_first_select">已关注%s个话题 (下一步)</string>
+
+    <!-- 测评 -->
+    <string name="evaluate_pop_tag">标签：%s</string>
+    <string name="evaluate_pop_count">%s人次</string>
+
+
+    <!-- 我的 -->
+    <string name="mine_info_name">家长姓名：%s</string>
+    <string name="mine_info_area">地区：%s</string>
+    <string name="mine_info_tip">孩子资料</string>
+    <string name="mine_info_child_name">小孩姓名：%s</string>
+    <string name="mine_info_child_select">测评对象</string>
+
+    <!-- 课程 -->
+    <string name="course_none_tip">课程即将上线，敬请期待！</string>
+
+    <string name="activity_about">cheersmind（“智慧奇思科技”简称），用科技，帮助每一个家庭的孩子成就最好的自己；是一家专注大数据与人工智能在家庭教育领域应用的公司。
+公司成立于 2017 年1月，基于认知科学，发展科学，脑科学及教育科学的前沿研究理论，提供以“脑科学与人工智能”为核心的家庭教育移动社区，为3-18岁儿童的家庭提供服务，包含：亲子多元测评、自适应学习内容、专家咨询及训练课程，孩子成长档案等；专家团队包括来自中国高校的教授、美国、英国、澳大利亚、香港、台湾等地的领域学者。\n1.我们是谁\nWe are brain builders.\nWe work for parents and kids.\n2.我们的使命\n用科技，帮助每一个家庭的孩子成就最好的自己（Cheers Mind，Better Life）\n3.我们的远景\n成为一家有伟大技术理想的人工智能公司.\nMake the world smarter.\n4.我们的价值观(cheers)\nC(Client-orientated)客户第一\nH(High-spirit)保持激情\nE(Excellent)追求卓越\nE(Efficient-teamwork)高效协作\nR(Resourceful)拥抱变化\nS(Studious)保持专注</string>
+
+
+    <string name="myflower_record_title">参与(%s)智评</string>
+    <string name="myflower_record_title2">解锁(%s)</string>
+    <string name="factor_details_tip">第%s阶段</string>
+    <string name="factor_details_tip_complete">第%s阶段完成</string>
+    <string formatted="false" name="factor_info_complete">%s/%s</string>
+    <string name="factor_info_rank">第%s名</string>
+    <string name="factor_info_exceed">%s</string>
+    <string name="dimension_hot_lock">%s朵鲜花</string>
+    <string name="report_title">%s-智能评价</string>
+    <string formatted="false" name="factor_commit_success">阶段%s:%s测评结果提交成功</string>
+    <string formatted="false" name="factor_commit_fail">阶段%s:%s测评结果提交失败,请重试！</string>
+    <string formatted="false" name="factor_details_show_tip">参与【阶段%s:%s】测评的班级同学得分排名。\n小贴士：测评时间影响最终排名</string>
+    <string formatted="false" name="evaluate_question_commit">已完成【阶段%s:%s】的所有问题，是否提交结果？</string>
+    <string formatted="false" name="factor_datails_common"><Data><![CDATA[<font color="#f5a400"><b>%s</b></font>/%s]]></Data></string>
+
+    <string name="qs_factor_complete_hint">已完成(%s)的所有问题，是否提交结果？</string>
+    <string name="qs_ques_complete_hint">答题还没全部完成确定要退出吗？</string>
+    <string name="qs_factor_report_btn_next">继续下一阶段测评</string>
+    <string name="qs_factor_report_btn_report">已经全部完成·点击查看报告</string>
+    <string name="qs_factor_report_btn_result"><Data><![CDATA[你的总得分，比同个级别<font color="#00b8e9"><b>%s</b></font>的同学更优秀哦！]]></Data></string>
+    <string formatted="false" name="qs_factor_detail_ques_count">%s/%s个数量</string>
+    <string formatted="false" name="qs_factor_detail_flower_count">花池%s/%s朵</string>
+    <string name="qs_factor_detail_react_count">反应时间%s</string>
+    <string name="qs_dimension_report_hint">该项%s个阶段你已全部完成，以下是测评结果</string>
+    <string name="qs_dimension_report_reuslt">%s结果:</string>
+    <string name="qs_dimension_user_count">%s测评过</string>
+
+
+    <!-- Error View -->
+    <string name="error_view_click_to_refresh">点击屏幕,重新加载</string>
+    <string name="error_view_no_data">暂无内容</string>
+    <string name="error_view_loading">加载中…</string>
+    <string name="error_view_load_error_click_to_refresh">内容加载失败\n点击重新加载</string>
+    <string name="error_view_network_error_click_to_refresh">网络有误或服务器异常</string>
+    <string name="tip_network_error">没有可用的网络</string>
+
+</resources>

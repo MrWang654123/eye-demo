@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@+id/tv_topic_select">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/color_0073b7"
+            android:text="试试看关注您感兴趣的话题"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/color_777777"
+            android:text="我们给您最细致、最精准的服务信息"/>
+
+        <GridView
+            android:id="@+id/gv_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:listSelector="#00000000"
+            android:numColumns="3">
+
+        </GridView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_topic_select"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:background="@mipmap/qs_btn_login_null"
+        android:textColor="@color/color_text_white"
+        android:textSize="16sp"
+        android:text="@string/recommend_first_select"/>
+
+</RelativeLayout>

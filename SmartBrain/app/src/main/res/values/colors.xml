@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- <color name="colorPrimary">#3F51B5</color>
+     <color name="colorPrimaryDark">#303F9F</color>-->
+    <color name="transpera">#00000000</color>
+    <color name="btranspera">#b0000000</color>
+    <!--<color name="colorPrimary">#6b82e2</color>-->
+    <color name="colorPrimary">#12b2f4</color>
+    <color name="colorPrimaryDark">#12b2f4</color>
+    <!--<color name="colorPrimaryDark">#4185cc</color>-->
+    <color name="colorAccent">#FF4081</color>
+    <color name="color_7b7b7b">#7b7b7b</color>
+    <color name="color_b5b5b5">#b5b5b5</color>
+    <color name="color_626262">#626262</color>
+    <color name="color_636363">#636363</color>
+    <color name="color_0073b7">#0073b7</color>
+    <color name="color_b3b3b3">#b3b3b3</color>
+    <color name="color_777777">#777777</color>
+    <color name="color_717171">#717171</color>
+    <color name="color_e7e7e7">#e7e7e7</color>
+
+    <color name="color_e46c3e">#e46c3e</color>
+    <color name="color_898989">#898989</color>
+    <color name="color_f5f5f5">#f5f5f5</color>
+    <color name="color_12b2f4">#12b2f4</color>
+    <color name="color_80d0f1">#80d0f1</color>
+    <color name="color_6e6e6e">#6e6e6e</color>
+    <color name="color_eeeeee">#eeeeee</color>
+    <color name="color_a6a6a6">#a6a6a6</color>
+    <color name="color_2a7db2">#2a7db2</color>
+    <color name="color_5ccaf7">#a6a6a6</color>
+    <color name="color_66cdf8">#66cdf8</color>
+    <color name="color_efefef">#efefef</color>
+    <color name="color_f5a400">#f5a400</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_211813">#211813</color>
+    <color name="color_2e2e2e">#2e2e2e</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_5eccf1">#5eccf1</color>
+
+    <color name="color_00b8e9">#00b8e9</color>
+    <color name="color_fa3131">#fa3131</color>
+    <color name="color_ffa200">#ffa200</color>
+    <color name="color_00a604">#00a604</color>
+
+    <color name="color_88ffffff">#93e1f7</color>
+
+
+    <color name="color_text_white">#ffffff</color>
+    <color name="color_bar_blue">#00b5e9</color>
+    <color name="color_bar_gray">#9c9c9c</color>
+
+
+
+
+
+</resources>

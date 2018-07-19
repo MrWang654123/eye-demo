@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_6e6e6e"
+            android:textSize="15sp"
+            android:text="整体情绪状态"/>
+
+        <RelativeLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true">
+
+            <com.cheersmind.smartbrain.main.view.RoundProgressBar
+                android:id="@+id/roundProgressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_centerInParent="true"
+                android_custom:roundColor="@color/color_6e6e6e"
+                android_custom:max="100"
+                android_custom:roundProgressColor="@color/color_12b2f4"
+                android_custom:textColor="@color/color_6e6e6e"
+                android_custom:textIsDisplayable="true"
+                android_custom:roundWidth="3dp"
+                android_custom:textSize="10sp"/>
+            <TextView
+                android:id="@+id/tv_lock"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/qs_dimension_lock"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

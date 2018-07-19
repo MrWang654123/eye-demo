@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/iv_medal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/pb_medal"
+            android:background="@mipmap/qs_icon_medal_complete"/>
+        <TextView
+            android:id="@+id/tv_dimension_name"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="dddd"
+            android:textSize="14sp"
+            android:textColor="#696969"/>
+        <ProgressBar
+            android:id="@+id/pb_medal"
+            android:layout_width="200dp"
+            android:layout_height="10dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:progress="0"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar_report_bg"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+        <TextView
+            android:id="@+id/tv_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/pb_medal"
+            android:text="60%"
+            android:textSize="14sp"
+            android:textColor="#696969"/>
+    </RelativeLayout>
+
+</LinearLayout>

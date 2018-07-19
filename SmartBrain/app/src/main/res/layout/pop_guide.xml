@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rt_instruction"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#b0000000">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_marginTop="55dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="35dp"
+            android:textColor="@color/color_text_white"
+            android:textSize="13sp"
+            android:text="点此查看说明页"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/finger_1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="92dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_text_white"
+                android:textSize="13sp"
+                android:text="左右滑动查看更多选项"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/finger_2"
+                android:layout_marginTop="5dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_iknow"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="35dp"
+            android:textColor="@color/color_text_white"
+            android:textSize="13sp"
+            android:text="好的，我知道了"
+            android:background="@drawable/shape_corner_white_nobg"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

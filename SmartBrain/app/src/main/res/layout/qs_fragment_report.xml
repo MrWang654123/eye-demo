@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_text_white"
+            android:visibility="gone">
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <com.cheersmind.smartbrain.main.view.ViewPagerIndicate
+                android:id="@+id/view_indicate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+            </com.cheersmind.smartbrain.main.view.ViewPagerIndicate>
+        </LinearLayout>
+
+        <com.cheersmind.smartbrain.main.view.CustomViewPager
+            android:id="@+id/report_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/color_12b2f4">
+
+        </com.cheersmind.smartbrain.main.view.CustomViewPager>
+    </LinearLayout>
+
+    <com.cheersmind.smartbrain.main.view.EmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+    </com.cheersmind.smartbrain.main.view.EmptyLayout>
+
+</RelativeLayout>

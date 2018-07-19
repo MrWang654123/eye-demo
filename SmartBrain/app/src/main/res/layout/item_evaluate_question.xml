@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rt_select"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tv_answer_bg"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_12b2f4"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@mipmap/qs_answer_nor" />
+
+        <TextView
+            android:id="@+id/tv_answer_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@+id/iv_icon"
+            android:gravity="center|left"
+            android:paddingLeft="10dp"
+            android:visibility="visible"
+            android:text="这是选项"
+            android:textColor="@color/color_7b7b7b"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:id="@+id/ll_fill"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/iv_icon"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请输入："
+                android:textColor="@color/color_7b7b7b"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/et_option"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/shape_corner_white"
+                android:textColor="@color/color_7b7b7b"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>

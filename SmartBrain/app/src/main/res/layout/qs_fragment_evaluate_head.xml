@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_12b2f4"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_child_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rt_bg"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            android:text="最近测评"
+            android:textSize="14sp"
+            android:textColor="@color/color_6e6e6e"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/shape_corner_white">
+
+                <RelativeLayout
+                    android:id="@+id/rt_dimen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="100dp">
+
+                    <TextView
+                        android:id="@+id/tv_dimension_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="title"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_211813"/>
+
+                    <HorizontalScrollView
+                        android:id="@+id/sc_stage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@+id/tv_dimension_time"
+                        android:layout_below="@+id/tv_dimension_name"
+                        android:scrollbars="none">
+                        <LinearLayout
+                            android:id="@+id/ll_stage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:background="@mipmap/qs_number_bg_nor"
+                                android:text="1"
+                                android:textSize="12sp"
+                                android:textColor="@color/color_text_white"/>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+
+                    <TextView
+                        android:id="@+id/tv_dimension_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_below="@+id/tv_dimension_name"
+                        android:text="time"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_6e6e6e"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ll_zan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@+id/rt_dimen">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true">
+                        <TextView
+                            android:id="@+id/tv_user_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:drawablePadding="5dp"
+                            android:text="1024测评过"
+                            android:textSize="14sp"
+                            android:textColor="@color/color_6e6e6e"/>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_alignParentRight="true">
+                        <TextView
+                            android:id="@+id/tv_praise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:drawablePadding="5dp"
+                            android:drawableRight="@mipmap/qs_recommend_zan_select"
+                            android:text="1024"
+                            android:textSize="14sp"
+                            android:textColor="@color/color_6e6e6e"/>
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_late_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="继续完成测评"
+                    android:textSize="13sp"
+                    android:textColor="@color/color_text_white"
+                    android:background="@drawable/btn_login_selector"
+                    android:layout_below="@+id/ll_zan"/>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_dimension"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginLeft="10dp"
+                android:background="@mipmap/qs_bg_evaluate_topic"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rt_bg"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="测评话题"
+            android:textSize="14sp"
+            android:textColor="@color/color_6e6e6e"/>
+    </LinearLayout>
+
+
+</LinearLayout>

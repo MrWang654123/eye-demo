@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <WebView
+        android:id="@+id/wv_dimension"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"></WebView>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:gravity="center_vertical">
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_again"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:background="@mipmap/qs_btn_blue_nor"-->
+            <!--android:text="再来一次"-->
+            <!--android:visibility="gone"-->
+            <!--android:textColor="@color/color_text_white"-->
+            <!--android:textSize="16sp"/>-->
+
+        <Button
+            android:id="@+id/btn_more"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@mipmap/qs_btn_login_nor"
+            android:text="更多主题"
+            android:textColor="@color/color_text_white"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rt_medal_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#887b7b7b">
+
+        <LinearLayout
+            android:id="@+id/ll_medal_panel"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:background="@color/color_text_white"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#f4f4f4">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:paddingLeft="20dp"
+                    android:text="完成情况"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/color_12b2f4"
+                    android:textSize="16sp"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_flower"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/qs_mine_flower_count"/>
+
+                <TextView
+                    android:id="@+id/tv_flower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
+                    android:text="0"
+                    android:gravity="center_vertical"
+                    android:textColor="#fdc605"
+                    android:textSize="16sp"/>
+
+            </RelativeLayout>
+
+
+
+            <ListView
+                android:id="@+id/lv_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+            </ListView>
+
+        </LinearLayout>
+        
+    </RelativeLayout>
+
+</RelativeLayout>

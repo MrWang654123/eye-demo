@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rt_other_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#b0000000">
+
+        <RelativeLayout
+            android:id="@+id/rt_other_topic"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/shape_corner_white">
+
+            <TextView
+                android:id="@+id/tv_other_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/color_7b7b7b"
+                android:text="选择主题"/>
+
+            <TextView
+                android:id="@+id/tv_other_topic_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:background="@mipmap/topic_pop_close" />
+
+            <GridView
+                android:id="@+id/gv_pop_topic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_title"
+                android:numColumns="3"
+                android:layout_marginTop="60dp">
+            </GridView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rt_other_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="60dp"
+            android:visibility="gone"
+            android:background="@drawable/shape_corner_white">
+
+            <TextView
+                android:id="@+id/tv_other_dimension_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@mipmap/qs_blue_back"/>
+
+            <TextView
+                android:id="@+id/tv_pop_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/color_7b7b7b"
+                android:text="选择主题"/>
+
+            <TextView
+                android:id="@+id/tv_pop_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:background="@mipmap/topic_pop_close" />
+
+            <ListView
+                android:id="@+id/lv_other"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="#b3b3b3"
+                android:dividerHeight="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scrollbars="none"
+                android:layout_below="@+id/tv_pop_title"></ListView>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_below="@+id/rt_other_panel"
+        android:layout_toRightOf="@+id/rt_other_panel"
+        android:layout_toEndOf="@+id/rt_other_panel">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/color_12b2f4">
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:src="@mipmap/qs_white_back"/>
+            <TextView
+                android:id="@+id/tv_topic"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/color_text_white"
+                android:text="我的家庭"/>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:id="@+id/tv_dimension_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="父母对你的控制度"
+                android:textSize="18sp"
+                android:textColor="@color/color_12b2f4"/>
+            <TextView
+                android:id="@+id/tv_tips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="@mipmap/qs_icon_ques"/>
+        </RelativeLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/qs_flower_red"/>
+
+            <TextView
+                android:id="@+id/tv_my_flower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/color_e46c3e"
+                android:textSize="14sp"
+                android:text="0"/>
+
+            <TextView
+                android:id="@+id/tv_all_flower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_898989"
+                android:textSize="14sp"
+                android:text="/240"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/dimension_icon_default"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:textSize="15sp"
+                android:textColor="@color/color_7b7b7b"
+                android:text="阶段"/>
+
+            <HorizontalScrollView
+                android:id="@+id/sc_stage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="60dp"
+                android:scrollbars="none"
+                android:layout_centerVertical="true">
+                <LinearLayout
+                    android:id="@+id/ll_stage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:background="@mipmap/qs_number_bg_nor"
+                        android:text="1"
+                        android:textSize="12sp"
+                        android:textColor="@color/color_text_white"/>
+
+                </LinearLayout>
+            </HorizontalScrollView >
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@color/color_636363"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/btn_start"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@mipmap/qs_btn_login_nor"
+                android:textColor="@color/color_text_white"
+                android:text="开始"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

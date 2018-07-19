@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_corner_white">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/iv_close"
+            android:scaleType="centerInside"
+            android:src="@mipmap/qs_factor_complete_icon"/>
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@+id/iv_icon"
+            android:gravity="center"
+            android:text="@string/qs_factor_complete_hint"
+            android:textSize="16sp"
+            android:textColor="@color/color_666666"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:layout_below="@+id/tv_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@mipmap/qs_btn_login_nor">
+                <TextView
+                    android:id="@+id/tv_modify"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="返回修改"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_white" />
+
+                <TextView
+                    android:id="@+id/tv_sure"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:text="确定提交"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_white" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:background="@color/color_text_white"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

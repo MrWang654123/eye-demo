@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minHeight="120dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+        <TextView
+            android:id="@+id/tv_topic_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="@color/color_12b2f4"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/tv_go_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="查看报告>"
+            android:textColor="@color/color_12b2f4"
+            android:textSize="13sp"/>
+
+    </RelativeLayout>
+
+    <com.cheersmind.smartbrain.main.view.horizon.HorizontalListView
+        android:id="@+id/hsv"
+        android:layout_width="wrap_content"
+        android:layout_height="120dp"
+        android:scrollbars="none">
+
+    </com.cheersmind.smartbrain.main.view.horizon.HorizontalListView>
+
+</LinearLayout>

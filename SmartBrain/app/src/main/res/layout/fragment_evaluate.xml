@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e7e7e7"
+    android:orientation="vertical">
+
+
+    <com.cheersmind.smartbrain.main.view.HeaderGridView
+        android:id="@+id/head_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="3"
+        android:background="@color/color_text_white">
+
+    </com.cheersmind.smartbrain.main.view.HeaderGridView>
+
+</LinearLayout>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="@drawable/shape_corner_white"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_stage"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@mipmap/qs_factor_stage_bg_select"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="14sp"
+            android:textColor="@color/color_text_white"/>
+
+        <TextView
+            android:id="@+id/tv_dimension_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/qs_dimension_report_reuslt"
+            android:textSize="14sp"
+            android:textColor="@color/color_f5a400"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_report"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:id="@+id/tv_result_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="right"
+                android:text="情绪\n状态"
+                android:textSize="16sp"
+                android:textColor="@color/color_f5a400"/>
+            <TextView
+                android:id="@+id/tv_result_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:text="不良"
+                android:textSize="30sp"
+                android:textColor="@color/color_text_white"
+                android:background="@mipmap/qs_dimension_result_bg_red"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_result_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:lines="4"
+            android:ellipsize="end"
+            android:text="对比其他同龄人，我父母的心里控制处于中等水平，即父母一定程度上会通过操纵情绪、干涉自主活动或限制体验来对我进行控制"
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_margin="10dp"
+            android:background="@color/color_666666"/>
+
+        <TextView
+            android:id="@+id/tv_lock_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center"
+            android:text="+查看详细数据分布"
+            android:textColor="@color/color_7b7b7b"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_text_white"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="暂无数据"
+        android:textColor="@color/color_00b8e9"/>
+
+</LinearLayout>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:textSize="20sp"
+            android:textColor="@color/color_12b2f4"
+            android:text="鲜花总数"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true">
+
+            <LinearLayout
+                android:id="@+id/ll_flower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true">
+                <TextView
+                    android:id="@+id/tv_folwer_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="50sp"
+                    android:textColor="#ffba00"
+                    android:text="1234"/>
+
+                <TextView
+                    android:id="@+id/tv_duo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/tv_folwer_count"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="20sp"
+                    android:textColor="#ffba00"
+                    android:text="朵"/>
+            </LinearLayout>
+
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@+id/ll_flower"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="20dp"
+                android:src="@mipmap/qs_mine_flowers"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#efefef"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:textSize="16sp"
+        android:textColor="@color/color_12b2f4"
+        android:text="鲜花记录"/>
+
+</LinearLayout>

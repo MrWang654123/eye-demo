@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <TextView
+            android:id="@+id/tv_flower_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/tv_flower_num"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:textColor="@color/color_7b7b7b"
+            android:textSize="14sp"
+            android:text="参与智学测评"/>
+
+        <TextView
+            android:id="@+id/tv_flower_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_7b7b7b"
+            android:layout_alignParentRight="true"
+            android:textSize="14sp"
+            android:text=""/>
+
+    </RelativeLayout>
+
+</LinearLayout>

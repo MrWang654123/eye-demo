@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_question"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rt_top"
+        android:layout_above="@+id/ll_bottom">
+
+    </android.support.v4.view.ViewPager>
+
+    <RelativeLayout
+        android:id="@+id/rt_time_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#b0000000">
+
+        <LinearLayout
+            android:id="@+id/ll_time_stop"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="center_horizontal"
+            android:layout_margin="30dp"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:background="@drawable/shape_corner">
+
+            <TextView
+                android:id="@+id/tv_continue"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@mipmap/qs_icon_continue"
+                android:text="继续"
+                android:textSize="18sp"
+                android:textColor="@color/color_12b2f4"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/color_b3b3b3"/>
+
+            <TextView
+                android:id="@+id/tv_quit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@mipmap/qs_icon_quit"
+                android:text="退出"
+                android:textSize="16sp"
+                android:textColor="@color/color_6e6e6e"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/color_b3b3b3"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="声音"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_6e6e6e"/>
+                <Switch
+                    android:id="@+id/st_music"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:text="开"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_6e6e6e"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_time_out"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:layout_margin="30dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:background="@drawable/shape_corner"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@mipmap/qs_icon_time_out"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="时间到！"
+                android:textSize="18sp"
+                android:textColor="@color/color_6e6e6e"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rt_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/color_12b2f4"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <ImageView
+            android:id="@+id/iv_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@mipmap/qs_icon_stop"/>
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@mipmap/qs_icon_clock"
+            android:text=""
+            android:textSize="16sp"
+            android:textColor="@color/color_text_white"/>
+        <TextView
+            android:id="@+id/tv_flower"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:drawablePadding="5dp"
+            android:drawableLeft="@mipmap/qs_flower_red"
+            android:text="0"
+            android:textSize="16sp"
+            android:textColor="@color/color_text_white"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/rt_time_panel"
+        android:layout_toEndOf="@+id/rt_time_panel">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@color/color_eeeeee">
+
+            <TextView
+                android:id="@+id/tv_pb_start"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@mipmap/qs_dian_select"/>
+            <ProgressBar
+                android:id="@+id/pb_question"
+                android:layout_width="300dp"
+                android:layout_height="4dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_bar_color_bg"
+                style="@android:style/Widget.ProgressBar.Horizontal"/>
+
+            <TextView
+                android:id="@+id/tv_pb_end"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@mipmap/qs_dian_nor"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_previous"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="上一题"
+                android:textSize="16sp"
+                android:textColor="@color/color_text_white"
+                android:background="@color/color_80d0f1"/>
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="50dp"
+                android:background="@color/color_text_white"/>
+
+            <TextView
+                android:id="@+id/tv_next"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="确定"
+                android:textSize="16sp"
+                android:textColor="@color/color_text_white"
+                android:background="@color/color_80d0f1"/>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

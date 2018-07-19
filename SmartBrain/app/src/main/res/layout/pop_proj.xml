@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="430dp"
+        android:id="@+id/rt_root"
+        android:background="@drawable/shape_corner_10px"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"
+            android:textColor="@color/color_7b7b7b"
+            android:text="选择主题"/>
+
+        <TextView
+            android:id="@+id/tv_pop_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:background="@mipmap/qs_circle_bg"
+            android:text="x"/>
+
+        <GridView
+            android:id="@+id/gv_pop_topic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_title"
+            android:numColumns="3"
+            android:layout_marginTop="20dp">
+
+        </GridView>
+
+    </RelativeLayout>
+
+</RelativeLayout>

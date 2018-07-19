@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 禁用时 -->
+    <item android:drawable="@drawable/shape_corner_b0b0b0" android:state_enabled="false"/>
+    <!-- 按压时 -->
+    <item android:drawable="@drawable/shape_corner_b0b0b0" android:state_pressed="true"/>
+
+    <!-- 被选中时
+    <item android:drawable="@drawable/shape_corner_7187ff" android:state_selected="true" />-->
+    <!-- 被激活时
+    <item android:drawable="@drawable/shape_corner_7187ff"  android:state_activated="true" />-->
+
+    <!-- 不禁用时 -->
+    <item android:drawable="@drawable/shape_corner_7187ff" android:state_enabled="true"/>
+    <!-- 默认时 -->
+    <item android:drawable="@drawable/shape_corner_b0b0b0"/>
+</selector>

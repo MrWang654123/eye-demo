@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.cheersmind.smartbrain">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name="com.cheersmind.smartbrain.main.QSApplication"
+        android:allowBackup="false"
+        tools:replace="android:allowBackup"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.cheersmind.smartbrain.main.activity.StartActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.cheersmind.smartbrain.main.activity.BaseActivity" />
+        <activity android:name="com.cheersmind.smartbrain.main.activity.NewFeatureActivity" />
+        <activity android:name="com.cheersmind.smartbrain.module.login.LoginActivity" />
+        <activity android:name="com.cheersmind.smartbrain.main.activity.MainActivity" />
+        <activity android:name="com.cheersmind.smartbrain.module.mine.AboutActivity" />
+        <activity android:name="com.cheersmind.smartbrain.module.recommend.RecommendFirstActivity" />
+        <activity android:name="com.cheersmind.smartbrain.module.login.InvitationCodeActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.login.UserLicenseActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.login.PerfectUserInfoActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.mine.MineInfoActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.mine.SettingActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.evaluate.TopicStartActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.evaluate.EvaluateQuestionActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.evaluate.CountDownActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.mine.MyFlowerActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.evaluate.TopicReportActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.mine.CommentAppActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.evaluate.OtherReportActivity"></activity>
+        <activity android:name="com.cheersmind.smartbrain.module.login.UserRegisterActivity"></activity>
+        <activity android:name=".module.login.ClassGroupActivity"></activity>
+
+        <activity android:name=".main.activity.QsEvaluateQuestionActivity"></activity>
+        <activity android:name=".main.activity.QsDimensionDetailsActivity"></activity>
+
+
+        <activity
+            android:name="com.cheersmind.smartbrain.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+
+        <meta-data android:value="5a2bbbec8f4a9d7ac10001da" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="YingYongBao" android:name="UMENG_CHANNEL"/>
+    </application>
+
+</manifest>
