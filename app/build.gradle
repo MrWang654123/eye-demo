@@ -17,6 +17,11 @@ android {
         versionCode 67
         versionName APP_VERSION_NAME
     }
+
+    lintOptions {
+      abortOnError false
+    }
+
     signingConfigs {
         release {
             storeFile file("../appkey/qs.jks");
