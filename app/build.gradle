@@ -20,13 +20,13 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("..\\appkey\\qs.jks");
+            storeFile file("../appkey/qs.jks");
             keyAlias "qs"
             keyPassword "fj.*QS&2017"
             storePassword "fj.*QS&2017"
         }
         debug {
-            storeFile file("..\\appkey\\qs.jks");
+            storeFile file("../appkey/qs.jks");
             keyAlias "qs"
             keyPassword "fj.*QS&2017"
             storePassword "fj.*QS&2017"
