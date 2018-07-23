@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin:'base'
 
 android {
     compileSdkVersion 23
