@@ -10,6 +10,7 @@ android {
         targetSdkVersion 23
         versionCode 67
         versionName APP_VERSION_NAME
+        flavorDimensions "versionCode"
     }
 
     lintOptions {
@@ -31,13 +32,17 @@ android {
         }
     }
 
-    flavorDimensions("channel")
     productFlavors {
-        normal { dimension "channel" }
-        qihu360 { dimension "channel" }
-    }
-    productFlavors.all {
-        flavor -> flavor.manifestPlaceholders = [CHANNEL_VALUE: name]
+        normal {
+            manifestPlaceholders = [ CHANNEL_NAME:"NORMAL"]
+        }
+        umeng {
+            manifestPlaceholders = [ CHANNEL_NAME:"UMENG" ]
+        }
+        qihu360 {
+            manifestPlaceholders = [ CHANNEL_NAME:"QIHU360" ]
+        }
+
     }
 
     buildTypes {
@@ -58,7 +63,6 @@ android {
            def timeNow            
            def outDirectory
             if ("true".equals(project.IS_JENKINS)) {
-               outDirectory = BUILD_PATH
                newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
            } else {             
                outDirectory = output.outputFile.getParent()                

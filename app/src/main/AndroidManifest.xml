@@ -66,10 +66,7 @@
 
 
         <meta-data android:value="5a2bbbec8f4a9d7ac10001da" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="qihu360" android:name="UMENG_CHANNEL"/>
-
-        <meta-data android:value="qihu360" android:name="CHANNEL"/>
-        <meta-data android:value="normal" android:name="CHANNEL"/>
+        <meta-data android:value="${CHANNEL_NAME}" android:name="UMENG_CHANNEL"/>
     </application>
 
 </manifest>
