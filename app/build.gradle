@@ -1,9 +1,3 @@
-APP_VERSION_NAME='2.0'
-PRODUCT_FLAVORS='360'
-BUILD_TYPE='debug'
-
-IS_JENKINS=false
-
 apply plugin: 'com.android.application'
 
 android {
@@ -37,6 +31,15 @@ android {
         }
     }
 
+    flavorDimensions("channel")
+    productFlavors {
+        normal { dimension "channel" }
+        qihu360 { dimension "channel" }
+    }
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [CHANNEL_VALUE: name]
+    }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
@@ -54,15 +57,15 @@ android {
            def newName            
            def timeNow            
            def outDirectory
-            if ("true".equals(IS_JENKINS)) {
+            if ("true".equals(project.IS_JENKINS)) {
                outDirectory = BUILD_PATH
-               newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'            
+               newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
            } else {             
                outDirectory = output.outputFile.getParent()                
                if ('debug'.equals(variant.buildType.name)) {                    
                    newName = "FireEyes-v${APP_VERSION_NAME}-debug.apk"                
                } else {
-                   newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'                
+                   newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
                }            
            }
 	   def outFile = output.outputFile
