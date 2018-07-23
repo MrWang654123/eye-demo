@@ -61,8 +61,11 @@ android {
                    //AutoBuildTest-v1.0.1-xiaomi-release.apk                    
                    newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'                
                }            
-           }            
-           output.outputFile = new File(outDirectory, newName)        
+           }
+	   def outFile = output.outputFile
+	   if (outFile != null && outFile.name.endsWith('.apk')) {
+		outputFileName = newName
+	   }
        }    
     }
 
