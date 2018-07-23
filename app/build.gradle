@@ -3,10 +3,6 @@ APP_VERSION_NAME='2.0'
 PRODUCT_FLAVORS='360'
 BUILD_TYPE='debug'
 
-KEY_PASSWORD='fj.*QS&2017'
-KEY_ALIAS='qs'
-STORE_PASSWORD='fj.*QS&2017'
-
 IS_JENKINS=true
 
 apply plugin: 'com.android.application'
@@ -25,15 +21,15 @@ android {
     signingConfigs {
         release {
             storeFile file("..\\appkey\\qs.jks");
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-            storePassword STORE_PASSWORD
+            keyAlias "qs"
+            keyPassword "fj.*QS&2017"
+            storePassword "fj.*QS&2017"
         }
         debug {
             storeFile file("..\\appkey\\qs.jks");
-            keyAlias KEY_ALIAS
-            keyPassword KEY_PASSWORD
-            storePassword STORE_PASSWORD
+            keyAlias "qs"
+            keyPassword "fj.*QS&2017"
+            storePassword "fj.*QS&2017"
         }
     }
 
