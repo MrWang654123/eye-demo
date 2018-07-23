@@ -1,3 +1,9 @@
+APP_VERSION_CODE=67
+APP_VERSION_NAME=2.0
+PRODUCT_FLAVORS=360
+BUILD_TYPE=debug
+IS_JENKINS=true
+
 apply plugin: 'com.android.application'
 
 android {
@@ -8,17 +14,60 @@ android {
         applicationId "com.cheersmind.smartbrain"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 67
-        versionName "1.3.5"
+        versionCode APP_VERSION_CODE
+        versionName APP_VERSION_NAME
     }
-    lintOptions {//���ñ����lint���أ�������buid��ʱ�򣬻�ִ��lint��飬���κεĴ�����߾�����ʾ��������ֹ����
-        abortOnError false
+    signingConfigs {        
+        signingConfig {            
+            //由于本地打包使用的是本机上的KeyStore            
+            //而Jenkins打包用的是服务器上的KeyStore            
+            //两个路径不一样           
+            if("true".equals(IS_JENKINS)){                
+                storeFile file("服务器上KeyStore的路径")            
+            }else {                
+                storeFile file(STORE_FILE_PATH)            
+            }            
+            keyAlias KEY_ALIAS            
+            keyPassword KEY_PASSWORD            
+            storePassword STORE_FILE_PASSWORD        
+        }    
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }  
+    //修改生成的apk名字及输出文件夹    
+    applicationVariants.all { variant ->        
+        variant.outputs.each { output ->            
+            //新名字            
+           def newName            
+           //时间戳            
+           def timeNow            
+           //输出文件夹            
+           def outDirectory            
+           //是否为Jenkins打包，输出路径不同           
+            if ("true".equals(IS_JENKINS)) {                
+               //Jenkins打包输出到服务器路径                
+               timeNow = BUILD_TIME                
+               //BUILD_PATH为服务器输出路径                
+               outDirectory = BUILD_PATH                
+               //AutoBuildTest-v1.0.1-xiaomi-release.apk                
+               newName = 'AutoBuildTest-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'            
+           } else {                
+               //本机打包输出在本机路径                
+               timeNow = getDate()                
+               outDirectory = output.outputFile.getParent()                
+               if ('debug'.equals(variant.buildType.name)) {                    
+                   newName = "AutoBuildTest-v${APP_VERSION_NAME}-debug.apk"                
+               } else {                    
+                   //AutoBuildTest-v1.0.1-xiaomi-release.apk                    
+                   newName = 'AutoBuildTest-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'                
+               }            
+           }            
+           output.outputFile = new File(outDirectory+'/'+timeNow, newName)        
+       }    
     }
 
     packagingOptions {
