@@ -2,7 +2,7 @@ APP_VERSION_NAME='2.0'
 PRODUCT_FLAVORS='360'
 BUILD_TYPE='debug'
 
-IS_JENKINS=true
+IS_JENKINS=false
 
 apply plugin: 'com.android.application'
 
@@ -60,9 +60,8 @@ android {
            } else {             
                outDirectory = output.outputFile.getParent()                
                if ('debug'.equals(variant.buildType.name)) {                    
-                   newName = "AutoBuildTest-v${APP_VERSION_NAME}-debug.apk"                
-               } else {                    
-                   //AutoBuildTest-v1.0.1-xiaomi-release.apk                    
+                   newName = "FireEyes-v${APP_VERSION_NAME}-debug.apk"                
+               } else {
                    newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'                
                }            
            }
