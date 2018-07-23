@@ -1,5 +1,6 @@
 package com.cheersmind.smartbrain.main.service;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
@@ -45,7 +46,11 @@ public class BaseService {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                final String respStr = response.body().string();
+                String resp = response.body().string();
+                if(TextUtils.isEmpty(resp)){
+                    resp = "{}";//特殊处理返回串为空的情况
+                }
+                final String respStr = resp;
                 Log.i(TAG,"GET -- "+respStr);
                 if (callback != null) {
                     QSApplication.getHandler().post(new Runnable() {

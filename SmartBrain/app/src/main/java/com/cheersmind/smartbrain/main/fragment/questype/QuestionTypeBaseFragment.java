@@ -125,9 +125,9 @@ public class QuestionTypeBaseFragment extends Fragment {
                             evAct.updateProgress();
                             if(pageIndex == evAct.getFragments().size()-1){
                                 if(evAct.getTimeCount()>0){
-                                    evAct.showQuestionCompleteDialog();
+//                                    evAct.showQuestionCompleteDialog();
                                 }else{
-                                    evAct.commitChildFactor(evAct.getConstTimeCount(),false);
+//                                    evAct.commitChildFactor(evAct.getConstTimeCount(),false);
                                 }
                             }else{
 //                                if(questionInfoEntity.getType()==2){

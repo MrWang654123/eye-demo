@@ -17,6 +17,9 @@ public class ReportRootEntity implements Serializable {
     @InjectMap(name = "compare_name")
     private String compareName;
 
+    @InjectMap(name = "report_results")
+    private List<ReportResultEntity> reportResults;
+
     public List<ReportItemEntity> getChartDatas() {
         return chartDatas;
     }
@@ -31,5 +34,13 @@ public class ReportRootEntity implements Serializable {
 
     public void setCompareName(String compareName) {
         this.compareName = compareName;
+    }
+
+    public List<ReportResultEntity> getReportResults() {
+        return reportResults;
+    }
+
+    public void setReportResults(List<ReportResultEntity> reportResults) {
+        this.reportResults = reportResults;
     }
 }

@@ -21,11 +21,11 @@
  */
 package org.xclcharts.renderer.line;
 
-import org.xclcharts.renderer.XEnum;
-
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+
+import org.xclcharts.renderer.XEnum;
 
 /**
  * @ClassName PlotLines
@@ -53,7 +53,7 @@ public class PlotLine {
 			mPaintLine = new Paint();
 			mPaintLine.setColor(Color.BLUE);
 			mPaintLine.setAntiAlias(true);
-			mPaintLine.setStrokeWidth(5);
+			mPaintLine.setStrokeWidth(3);
 		}
 	}
 	
@@ -101,7 +101,7 @@ public class PlotLine {
 			mPaintDot = new Paint();
 			mPaintDot.setColor(Color.BLUE);
 			mPaintDot.setAntiAlias(true);
-			mPaintDot.setStrokeWidth(5);
+			mPaintDot.setStrokeWidth(3);
 		}
 		return mPaintDot;// mPlotDot.getDotPaint();
 	}

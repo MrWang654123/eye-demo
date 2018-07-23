@@ -22,6 +22,12 @@ public class ReportResultEntity implements Serializable {
     @InjectMap(name = "title")
     private String title;
 
+    @InjectMap(name = "relation_id")
+    private String relationId;
+
+    @InjectMap(name = "result")
+    private String result;
+
     public String getContent() {
         return content;
     }
@@ -52,5 +58,21 @@ public class ReportResultEntity implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getRelationId() {
+        return relationId;
+    }
+
+    public void setRelationId(String relationId) {
+        this.relationId = relationId;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
     }
 }

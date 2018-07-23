@@ -19,7 +19,6 @@ import org.xclcharts.common.IFormatterDoubleCallBack;
 import org.xclcharts.event.click.BarPosition;
 import org.xclcharts.renderer.XEnum;
 
-import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,13 +36,14 @@ public class QsBarHChartView extends DemoView {
     private List<String> chartLabels = new LinkedList<String>();
     private List<BarData> chartData = new LinkedList<BarData>();
 
-    ReportItemEntity reportData;
+    private ReportItemEntity reportData;
     private boolean isTopic;
 
-    public QsBarHChartView(Context context,ReportItemEntity reportData) {
+    public QsBarHChartView(Context context,ReportItemEntity reportData,int curSelectLabel) {
         super(context);
         this.reportData = reportData;
         this.context = context;
+        setCurSelectLabel(curSelectLabel);
         initView();
     }
 
@@ -104,20 +104,30 @@ public class QsBarHChartView extends DemoView {
             chart.getDataAxis().setAxisMin(reportData.getMinScore());
             chart.getDataAxis().setAxisSteps(reportData.getMaxScore()/2);
 
+            chart.getDataAxis().setDetailModeSteps(1);
+
             chart.getDataAxis().enabledAxisStd();
-            chart.getDataAxis().setAxisStd(230);
+            chart.getDataAxis().setAxisStd(0);
             chart.getCategoryAxis().setAxisBuildStd(true);
 
             chart.getDataAxis().hideTickMarks();
 
+            //轴颜色
+            chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#999999"));
+            chart.getCategoryAxis().getAxisPaint().setColor(Color.parseColor("#999999"));
 
+//            chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#f7f7f7"));
             //设置Y轴标签颜色
             chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickMarksPaint().setTextSize(com.cheersmind.smartbrain.main.util.DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
+            chart.getDataAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
 
             //设置横向标签颜色
             chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(com.cheersmind.smartbrain.main.util.DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
+            chart.getCategoryAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
 //            chart.getDataAxis().setLabelFormatter(new IFormatterTextCallBack(){
 //
 //                @Override
@@ -129,32 +139,36 @@ public class QsBarHChartView extends DemoView {
 //
 //            });
 
-            chart.getBar().getItemLabelPaint().setColor(Color.parseColor("#6cdaf3"));
-            chart.getBar().getItemLabelPaint().setTypeface(Typeface.DEFAULT_BOLD);
-            chart.getBar().getItemLabelPaint().setTextSize(com.cheersmind.smartbrain.main.util.DensityUtil.dip2px(context,12));
-
-            chart.getBorder().setBorderLineColor(Color.parseColor("#f7f7f7"));
-            chart.getPlotGrid().getHorizontalLinePaint().setColor(Color.parseColor("#f7f7f7"));
-
             //网格
             chart.getPlotGrid().showHorizontalLines();
             chart.getPlotGrid().hideVerticalLines();
             chart.getPlotGrid().hideEvenRowBgColor();
 
-            //标签轴文字旋转-45度
-            chart.getCategoryAxis().setTickLabelRotateAngle(-45f);
+            //设置横向标签旋转角度
+            if(isTopic){
+                chart.getCategoryAxis().setTickLabelRotateAngle(0);
+            }else{
+                chart.getCategoryAxis().setTickLabelRotateAngle(-20);
+            }
+
             //横向显示柱形
             chart.setChartDirection(XEnum.Direction.HORIZONTAL);
             //在柱形顶部显示值
             chart.getBar().setItemLabelVisible(true);
-            chart.getBar().getItemLabelPaint().setTextSize(22);
+            chart.getBar().getItemLabelPaint().setColor(Color.parseColor("#ffa400"));
+            chart.getBar().getItemLabelPaint().setTypeface(Typeface.DEFAULT_BOLD);
+            chart.getBar().getItemLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+
+            chart.getBorder().setBorderLineColor(Color.parseColor("#f7f7f7"));
+            chart.getPlotGrid().getHorizontalLinePaint().setColor(Color.parseColor("#f7f7f7"));
 
             chart.setItemLabelFormatter(new IFormatterDoubleCallBack() {
                 @Override
                 public String doubleFormatter(Double value) {
                     // TODO Auto-generated method stub
-                    DecimalFormat df=new DecimalFormat("[#0]");
-                    String label = df.format(value).toString();
+//                    DecimalFormat df=new DecimalFormat("[#0]");
+//                    String label = df.format(value).toString();
+                    String label = "[" + value + "]";
                     return label;
                 }});
 
@@ -222,11 +236,6 @@ public class QsBarHChartView extends DemoView {
     }
 
 
-    float x1 = 0;
-    float x2 = 0;
-    float y1 = 0;
-    float y2 = 0;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -234,20 +243,10 @@ public class QsBarHChartView extends DemoView {
 
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                y1 = event.getY();
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                x2 = event.getX();
-                y2 = event.getY();
 
-                float xMove = x2 - x1;
-                float yMove = y2 - y1;
-                if(getMoveChartCallBack()!=null){
-                    getMoveChartCallBack().onMove(xMove,yMove);
-                    x1 = x2;
-                    y1 = y2;
-                }
                 break;
             case MotionEvent.ACTION_UP:
 
@@ -290,6 +289,8 @@ public class QsBarHChartView extends DemoView {
             return;
         }
 
+        resetMax(reportData);
+
         isTopic = reportData.getTopic();
 
         chartLabels.clear();
@@ -304,7 +305,11 @@ public class QsBarHChartView extends DemoView {
         {
             ReportFactorEntity rfe = entities.get(i);
             if(isTopic){
-                chartLabels.add("");//主题报告隐藏标签，外面添加自定义布局标签
+                if(getCurSelectLabel() == i){
+                    chartLabels.add(String.valueOf(i+1)+"qs_sel");
+                }else{
+                    chartLabels.add(String.valueOf(i+1)+"qs_nor");
+                }
             }else{
                 chartLabels.add(rfe.getItemName());
             }
@@ -323,5 +328,8 @@ public class QsBarHChartView extends DemoView {
     @Override
     public void updateChart(int curSelect) {
         super.updateChart(curSelect);
+        setCurSelectLabel(curSelect);
+        setChartData(reportData.getItems());
+        this.invalidate();
     }
 }

@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ReportFactorEntity implements Serializable {
 
     @InjectMap(name = "child_score")
-    private String childScore;
+    private double childScore;
 
     @InjectMap(name = "item_name")
     private String itemName;
@@ -20,13 +20,13 @@ public class ReportFactorEntity implements Serializable {
     private String itemId;
 
     @InjectMap(name = "compare_score")
-    private int compareScore;
+    private float compareScore;
 
-    public String getChildScore() {
+    public double getChildScore() {
         return childScore;
     }
 
-    public void setChildScore(String childScore) {
+    public void setChildScore(double childScore) {
         this.childScore = childScore;
     }
 
@@ -46,11 +46,11 @@ public class ReportFactorEntity implements Serializable {
         this.itemId = itemId;
     }
 
-    public int getCompareScore() {
+    public float getCompareScore() {
         return compareScore;
     }
 
-    public void setCompareScore(int compareScore) {
+    public void setCompareScore(float compareScore) {
         this.compareScore = compareScore;
     }
 }

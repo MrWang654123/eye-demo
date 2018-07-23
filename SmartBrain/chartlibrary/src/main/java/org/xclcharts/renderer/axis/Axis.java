@@ -63,7 +63,7 @@ public class Axis {
 		if(null == mPaintAxis)
 		{
 			mPaintAxis = new Paint();
-			mPaintAxis.setColor(Color.BLACK);		
+			mPaintAxis.setColor(Color.parseColor("#666666"));
 			//mPaintAxis.setStrokeWidth(mAxisLineWidth); //设置轴线条粗细
 			mPaintAxis.setAntiAlias(true);	
 			mPaintAxis.setStrokeWidth(5);

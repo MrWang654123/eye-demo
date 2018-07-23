@@ -42,11 +42,14 @@ public class DimensionReportDialog extends Dialog {
     private TextView tvStatusReuslt;
     private TextView tvResult;
     private TextView tvDesc;
+    private LinearLayout llResult;
 
     private LinearLayout llChart;
 
     private List<ReportItemEntity> dimensionReports;
+//    private List<ReportResultEntity> reportResultEntities;
     private List<ReportFactorEntity> factorEntities = new ArrayList<>();
+//    private ReportRootEntity reportRootEntity;
 
     private DimensionReportCallback callback;
 
@@ -93,10 +96,12 @@ public class DimensionReportDialog extends Dialog {
         tvDesc = (TextView)findViewById(R.id.tv_desc);
 
         llChart = (LinearLayout) findViewById(R.id.ll_chart);
+        llResult = (LinearLayout)findViewById(R.id.ll_result);
 
     }
 
     private void initData(){
+
         if(dimensionReports!=null && dimensionReports.size()>0){
             for(int i=0;i<dimensionReports.size();i++){
                 factorEntities.addAll(dimensionReports.get(i).getItems());
@@ -106,18 +111,32 @@ public class DimensionReportDialog extends Dialog {
                     String.valueOf(factorEntities.size())));
             if(!TextUtils.isEmpty(dimensionReports.get(0).getChartDescription())){
                 tvDesc.setText(Html.fromHtml(dimensionReports.get(0).getChartDescription()));
+            }else{
+                tvDesc.setVisibility(View.GONE);
             }
             ReportResultEntity reportResultEntity =  dimensionReports.get(0).getReportResult();
             if(reportResultEntity!=null){
+                llResult.setVisibility(View.VISIBLE);
                 if(!TextUtils.isEmpty(reportResultEntity.getTitle())){
                     tvStatus.setText(reportResultEntity.getTitle());
+                }else{
+                    tvStatus.setVisibility(View.GONE);
+                }
+                if(!TextUtils.isEmpty(reportResultEntity.getResult())){
+                    tvStatusReuslt.setText(reportResultEntity.getResult());
+                }else{
+                    tvStatusReuslt.setVisibility(View.GONE);
                 }
                 if(!TextUtils.isEmpty(reportResultEntity.getColor())){
                     tvStatus.setTextColor(Color.parseColor(reportResultEntity.getColor()));
                 }
                 if(!TextUtils.isEmpty(reportResultEntity.getContent())){
                     tvResult.setText(Html.fromHtml(reportResultEntity.getContent()));
+                }else{
+                    tvResult.setVisibility(View.GONE);
                 }
+            }else{
+                llResult.setVisibility(View.GONE);
             }
             updateStageLayout(llStage);
 //            ReportItemEntity reportItemEntity = dimensionReports.get(0);

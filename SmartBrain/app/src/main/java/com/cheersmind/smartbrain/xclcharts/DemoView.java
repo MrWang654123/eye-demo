@@ -24,8 +24,13 @@ package com.cheersmind.smartbrain.xclcharts;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.cheersmind.smartbrain.main.entity.ReportFactorEntity;
+import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
+
 import org.xclcharts.common.DensityUtil;
 import org.xclcharts.view.ChartView;
+
+import java.util.List;
 
 /**
  * @ClassName DemoView
@@ -77,6 +82,53 @@ public class DemoView extends ChartView {
 
 	public void updateChart(int curSelect){
 
+	}
+
+	public ReportItemEntity resetMax(ReportItemEntity reportData){
+		if(reportData!=null){
+			List<ReportFactorEntity> reportFactorEntities = reportData.getItems();
+			double max = 0;
+			if(reportFactorEntities!=null){
+				for(ReportFactorEntity reportFactorEntity:reportFactorEntities){
+					double childScore = Math.abs(reportFactorEntity.getChildScore());
+					if(childScore > max){
+						max = childScore;
+					}
+				}
+
+				if(max <=3){
+					max = 3;
+				}else if(max <=5){
+					max = 5;
+				}else if(max <=10){
+					max  = 10;
+				}else if(max <=20){
+					max  = 20;
+				}else if(max <=30){
+					max  = 30;
+				}else if(max <=40){
+					max  = 40;
+				}else if(max <=50){
+					max  = 50;
+				}else if(max <=60){
+					max  = 60;
+				}else if(max <=70){
+					max  = 70;
+				}else if(max <=80){
+					max  = 80;
+				}else if(max <=90){
+					max  = 90;
+				}else{
+					max = 100;
+				}
+			}
+
+			reportData.setMaxScore((int)max);
+			if(reportData.getMinScore()<0){
+				reportData.setMinScore(-(int)max);
+			}
+		}
+		return reportData;
 	}
 		
 	@Override  

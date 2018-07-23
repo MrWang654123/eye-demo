@@ -58,7 +58,7 @@
     <string name="qs_factor_detail_react_count">反应时间%s</string>
     <string name="qs_dimension_report_hint">该项%s个阶段你已全部完成，以下是测评结果</string>
     <string name="qs_dimension_report_reuslt">%s结果:</string>
-    <string name="qs_dimension_user_count">%s测评过</string>
+    <string name="qs_dimension_user_count">%s人测评过</string>
 
 
     <!-- Error View -->

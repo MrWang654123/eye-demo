@@ -96,14 +96,14 @@ public class NormalityView extends View {
                     float labelWidth = mPaint.measureText(showText);
                     int textOffset ;
                     if(showText.length() == 2){
-                        textOffset = dp2px(10);
+                        textOffset = dp2px(15);
                     }else if(showText.length() == 4){
-                        textOffset = dp2px(6);
+                        textOffset = dp2px(11);
                     }else{
-                        textOffset = dp2px(8);
+                        textOffset = dp2px(13);
                     }
 
-                    canvas.drawText(showText, startX - labelWidth - textOffset, curY - dp2px(15), mPaintText);
+                    canvas.drawText(showText, startX - labelWidth - textOffset, curY - dp2px(17), mPaintText);
                 }
             }
 

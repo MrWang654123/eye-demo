@@ -14,6 +14,7 @@ import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
+import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
@@ -24,7 +25,6 @@ import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
-import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.CustomReportViewPager;
 import com.cheersmind.smartbrain.xclcharts.DemoView;
 
@@ -60,6 +60,7 @@ public class TopicReportFragment extends Fragment {
     private ReportRootEntity reportData;
     List<ReportItemEntity> topicReports = new ArrayList<>();
     List<List<ReportItemEntity>> dimensionReports = new ArrayList<>();//每个量表可能不只一个图表
+    List<ReportResultEntity> reportResultEntities = new ArrayList<>();
 
 //    List<TextView> listTv = new ArrayList<>();
     private int curDimensionIndex;
@@ -243,7 +244,7 @@ public class TopicReportFragment extends Fragment {
         this.reportData = reportData;
         topicReports.clear();
         dimensionReports.clear();
-        List<ReportItemEntity> reportItemEntities = reportData.getChartDatas();
+        List<ReportItemEntity> reportItemEntities = setReportResult(reportData.getChartDatas(),reportData.getReportResults());
         if(reportItemEntities!=null){
             for(ReportItemEntity entity:reportItemEntities){
                 if(entity.getTopic()){
@@ -253,8 +254,25 @@ public class TopicReportFragment extends Fragment {
                 }
             }
         }
+
         initReportVisiable();
         initDimensionVp();
+    }
+
+    //设置对应result
+    private List<ReportItemEntity>  setReportResult(List<ReportItemEntity> reportItemEntities,List<ReportResultEntity> reportResultEntities){
+        for(int i=0;i<reportItemEntities.size();i++){
+            ReportItemEntity reportItemEntity = reportItemEntities.get(i);
+            for(int j=0;j<reportResultEntities.size();j++){
+                ReportResultEntity reportResultEntity = reportResultEntities.get(j);
+                if(reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())){
+                    if(reportItemEntity.getReportResult() == null){
+                        reportItemEntity.setReportResult(reportResultEntity);
+                    }
+                }
+            }
+        }
+        return reportItemEntities;
     }
 
     private void addDimensionReport(ReportItemEntity entity){
@@ -274,12 +292,14 @@ public class TopicReportFragment extends Fragment {
 
     private void loadReportData(TopicInfoEntity entity){
 
-        DataRequestService.getInstance().getTopicReport(ChildInfoDao.getDefaultChildId(),
-                entity.getChildTopic().getExamId(), entity.getTopicId(),
+        DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
+                entity.getChildTopic().getExamId(),
+                entity.getTopicId(),
+                ChartViewHelper.REPORT_RELATION_TOPIC,
                 "0", new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
-                        ToastUtil.showShort(getActivity(),"获取报告失败");
+//                        ToastUtil.showShort(getActivity(),"获取报告失败");
                     }
 
                     @Override

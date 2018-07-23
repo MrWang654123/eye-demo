@@ -272,11 +272,6 @@ public class QsSplineChartView extends DemoView {
         }
     }
 
-    float x1 = 0;
-    float x2 = 0;
-    float y1 = 0;
-    float y2 = 0;
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -284,20 +279,10 @@ public class QsSplineChartView extends DemoView {
 
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
-                x1 = event.getX();
-                y1 = event.getY();
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                x2 = event.getX();
-                y2 = event.getY();
 
-                float xMove = x2 - x1;
-                float yMove = y2 - y1;
-                if(getMoveChartCallBack()!=null){
-                    getMoveChartCallBack().onMove(xMove,yMove);
-                    x1 = x2;
-                    y1 = y2;
-                }
                 break;
             case MotionEvent.ACTION_UP:
 
@@ -411,9 +396,10 @@ public class QsSplineChartView extends DemoView {
         }else{
             dataSeries.setDotStyle(XEnum.DotStyle.DOT);
         }
-        dataSeries.setDotRadius(DensityUtil.dip2px(context,6));
+        //设置点和线的大小
+        dataSeries.setDotRadius(DensityUtil.dip2px(context,4));
         dataSeries.getDotPaint().setColor(Color.parseColor("#6cdaf3"));
-        dataSeries.getLinePaint().setStrokeWidth(DensityUtil.dip2px(context,4));
+        dataSeries.getLinePaint().setStrokeWidth(DensityUtil.dip2px(context,2));
         chartData.add(dataSeries);
     }
 

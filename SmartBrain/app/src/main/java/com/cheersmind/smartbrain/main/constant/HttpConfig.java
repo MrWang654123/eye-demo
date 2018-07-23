@@ -140,6 +140,8 @@ public class HttpConfig {
 
     //主题下报告（包括量表报告）
     public static String URL_TOPIC_REPORT = API_HOST + "/v1/api/exams/{exam_id}/children/{child_id}/reports?topic_id={topic_id}&sample_id={sample_id}";
+
+    public static String URL_TOPIC_REPORT_V2 = API_HOST + "/v2/api/exams/{exam_id}/children/{child_id}/reports?relation_id={relation_id}&relation_type={relation_type}&sample_id={sample_id}";
     //获取量表
     public static String URL_DIMENSION_REPORT = API_HOST + "/v1/api/exams/{exam_id}/dimensions/{dimension_id}/children/{child_id}/reports?sample_id={sample_id}";
 

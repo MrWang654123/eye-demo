@@ -100,65 +100,73 @@
 
 
                 </LinearLayout>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="你在该项测评的结果是:"
-                    android:textSize="16sp"
-                    android:textColor="@color/color_666666"/>
 
                 <LinearLayout
+                    android:id="@+id/ll_result"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp">
+                    android:orientation="vertical">
                     <TextView
-                        android:id="@+id/tv_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="right"
-                        android:text="情绪\n状态"
-                        android:textSize="20sp"
-                        android:textColor="@color/color_f5a400"/>
-                    <TextView
-                        android:id="@+id/tv_status_result"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:text="不良"
-                        android:textSize="30sp"
-                        android:textColor="@color/color_text_white"
-                        android:background="@mipmap/qs_dimension_result_bg_red"/>
-                </LinearLayout>
+                        android:layout_marginTop="10dp"
+                        android:text="你在该项测评的结果是:"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_666666"/>
 
-
-                <TextView
-                    android:id="@+id/tv_result"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/qs_dimension_report_hint"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_666666"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/shape_corner_e0e0e0">
-                    <TextView
-                        android:id="@+id/tv_desc"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="10dp"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/tv_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:gravity="right"
+                            android:text="情绪\n状态"
+                            android:textSize="20sp"
+                            android:textColor="@color/color_f5a400"/>
+                        <TextView
+                            android:id="@+id/tv_status_result"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:gravity="center"
+                            android:visibility="visible"
+                            android:text="不良"
+                            android:textSize="30sp"
+                            android:textColor="@color/color_f5a400" />
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="@string/qs_dimension_report_hint"
                         android:textSize="14sp"
                         android:textColor="@color/color_666666"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/shape_corner_e0e0e0">
+                        <TextView
+                            android:id="@+id/tv_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/qs_dimension_report_hint"
+                            android:textSize="14sp"
+                            android:textColor="@color/color_666666"/>
+                    </LinearLayout>
                 </LinearLayout>
+
 
             </LinearLayout>
 

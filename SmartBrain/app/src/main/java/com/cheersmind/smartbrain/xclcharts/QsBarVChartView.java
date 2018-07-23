@@ -116,11 +116,15 @@ public class QsBarVChartView extends DemoView{
 
             //设置Y轴标签颜色
             chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickMarksPaint().setTextSize(org.xclcharts.common.DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
+            chart.getDataAxis().getTickLabelPaint().setTextSize(org.xclcharts.common.DensityUtil.dip2px(context,12));
 
             //设置横向标签颜色
             chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickLabelPaint().setTextSize(org.xclcharts.common.DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
+            chart.getCategoryAxis().getTickMarksPaint().setTextSize(org.xclcharts.common.DensityUtil.dip2px(context,12));
 
             //设置横向标签旋转角度
             if(isTopic){
@@ -160,7 +164,7 @@ public class QsBarVChartView extends DemoView{
 
             //标签旋转45度
             //	chart.getCategoryAxis().setTickLabelRotateAngle(45f);
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(15);
+//            chart.getCategoryAxis().getTickLabelPaint().setTextSize(15);
 
             //设置横轴颜色
             chart.getCategoryAxis().getAxisPaint().setColor(Color.parseColor("#f7f7f7"));
@@ -177,8 +181,9 @@ public class QsBarVChartView extends DemoView{
                 @Override
                 public String doubleFormatter(Double value) {
                     // TODO Auto-generated method stub
-                    DecimalFormat df=new DecimalFormat("#0");
-                    String label = df.format(value).toString();
+//                    DecimalFormat df=new DecimalFormat("#0");
+//                    String label = df.format(value).toString();
+                    String label = "[" + value + "]";
                     return label;
                 }});
 
@@ -335,6 +340,8 @@ public class QsBarVChartView extends DemoView{
         if(entities==null || entities.size()==0){
             return;
         }
+
+        resetMax(reportData);
 
         isTopic = reportData.getTopic();
 

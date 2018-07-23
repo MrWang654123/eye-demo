@@ -127,7 +127,7 @@ public class QsReportFragment extends Fragment {
         if(isLoading){
             LoadingView.getInstance().show(getActivity());
         }
-        DataRequestService.getInstance().loadChildTopicListReport(ChildInfoDao.getDefaultChildId(), 0, 100, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().loadChildTopicList(ChildInfoDao.getDefaultChildId(), 0, 100, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 if(isLoading){
@@ -160,6 +160,10 @@ public class QsReportFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void loadChildReport(){
+//        DataRequestService.getInstance().getTopicReportVTow();
     }
 
     public void onRefreshRoport(){

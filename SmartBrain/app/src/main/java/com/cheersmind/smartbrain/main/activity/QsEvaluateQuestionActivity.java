@@ -27,6 +27,8 @@ import com.cheersmind.smartbrain.main.entity.FactorInfoEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionRootEntity;
+import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
+import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.event.ContinueFactorEvent;
 import com.cheersmind.smartbrain.main.fragment.questype.EvaluateQuestionFragment;
@@ -35,6 +37,7 @@ import com.cheersmind.smartbrain.main.fragment.questype.QsBalanceSelectFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsDefaultQuestionFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsFrequencySelectFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsTickedCorrectFragment;
+import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
@@ -679,8 +682,11 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                         public void onNextFactor() {
                             if(isLastFactor){
 
-                                DataRequestService.getInstance().getDimensionReport(ChildInfoDao.getDefaultChildId(),
-                                        dimensionInfoEntity.getChildDimension().getExamId(), dimensionInfoEntity.getDimensionId(),"0", new BaseService.ServiceCallback() {
+                                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
+                                        dimensionInfoEntity.getChildDimension().getExamId(),
+                                        dimensionInfoEntity.getDimensionId(),
+                                        ChartViewHelper.REPORT_RELATION_DIMENSION,
+                                        "0", new BaseService.ServiceCallback() {
                                             @Override
                                             public void onFailure(QSCustomException e) {
                                                 ToastUtil.showShort(QsEvaluateQuestionActivity.this, "获取量表报告失败");
@@ -693,7 +699,18 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                                                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                                                     ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
                                                     if(data!=null && data.getChartDatas()!=null && data.getChartDatas().size()>0){
-                                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(QsEvaluateQuestionActivity.this,data.getChartDatas(), dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
+                                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
+                                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
+                                                        if(dimensionReports!=null && dimensionReports.size()>0) {
+                                                            for (int i = 0; i < dimensionReports.size(); i++) {
+                                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
+                                                                    if (dimensionReports.get(i).getReportResult() == null) {
+                                                                        dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(QsEvaluateQuestionActivity.this,dimensionReports, dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
                                                             @Override
                                                             public void onClose() {
                                                                 //最后一个因子点击关闭，关闭量表详情页面

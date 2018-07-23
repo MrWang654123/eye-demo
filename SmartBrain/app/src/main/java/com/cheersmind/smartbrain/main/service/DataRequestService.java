@@ -543,6 +543,36 @@ public class DataRequestService {
         });
     }
 
+    /**
+     * 获取主题报告或者量表报告V2
+     * @param childId
+     * @param examId
+     * @param relationId 维度ID（必填）topicid,或者dimensionid
+     * @param relationType 维度类型（dimension - 主题，topic - 话题 ，必填 ）
+     * @param sampleId
+     * @param callback
+     */
+    public void getTopicReportByRelation(String childId,String examId,String relationId,String relationType,String sampleId,final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_TOPIC_REPORT_V2
+                .replace("{exam_id}",examId)
+                .replace("{child_id}", childId)
+                .replace("{relation_id}", relationId)
+                .replace("{relation_type}", relationType)
+                .replace("{sample_id}", sampleId);
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
     public void getDimensionReport(String childId,String examId,String dimensionId,String sampleId,final BaseService.ServiceCallback callback){
         String url = HttpConfig.URL_DIMENSION_REPORT
                 .replace("{exam_id}",examId)

@@ -26,6 +26,9 @@ import java.util.List;
 
 public class ChartViewHelper {
 
+    public static final String REPORT_RELATION_TOPIC = "topic";
+    public static final String REPORT_RELATION_DIMENSION = "dimension";
+
     public enum ChartType{
         RADARCHARTVIEW(1),
         SPLINECHARTVIEW(2),
@@ -59,7 +62,7 @@ public class ChartViewHelper {
         }else if(chartType == ChartType.BARVCHARTVIEW.getType()){
             demoView = new QsBarVChartView(context,reportItemEntity,curSelect);
         }else if(chartType == ChartType.BARHCHARTVIEW.getType()){
-            demoView = new QsBarHChartView(context,reportItemEntity);
+            demoView = new QsBarHChartView(context,reportItemEntity,curSelect);
         }else{
             demoView = new QsSplineChartView(context,reportItemEntity,curSelect);
         }
@@ -90,7 +93,7 @@ public class ChartViewHelper {
             }else if(chartType == ChartType.BARVCHARTVIEW.getType()){
                 demoView = new QsBarVChartView(context,reportItemEntity,0);
             }else if(chartType == ChartType.BARHCHARTVIEW.getType()){
-                demoView = new QsBarHChartView(context,reportItemEntity);
+                demoView = new QsBarHChartView(context,reportItemEntity,0);
             }else{
                 demoView = new QsSplineChartView(context,reportItemEntity,0);
             }

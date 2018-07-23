@@ -22,9 +22,12 @@ import com.cheersmind.smartbrain.main.activity.QsDimensionDetailsActivity;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
+import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
+import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
+import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
 import com.cheersmind.smartbrain.main.util.DateTimeUtils;
@@ -55,6 +58,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     private View headView;
     private EmptyLayout emptyLayout;
 
+    private LinearLayout llRoot;
     private Button btnLateStart;
     private TextView tvDimensionName;
     private LinearLayout llStage;
@@ -113,6 +117,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
         });
 
         headView = View.inflate(getActivity(),R.layout.qs_fragment_evaluate_head,null);
+        llRoot = (LinearLayout)headView.findViewById(R.id.ll_root);
         tvDimensionName = (TextView)headView.findViewById(R.id.tv_dimension_name);
         tvDimensionTime = (TextView)headView.findViewById(R.id.tv_dimension_time);
         tvUserCount = (TextView)headView.findViewById(R.id.tv_user_count);
@@ -241,25 +246,28 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
 
     //获取孩子关注主题列表
     public void loadChildTopicList(){
-
-        getLatestDimension();
+        LoadingView.getInstance().show(getActivity());
         DataRequestService.getInstance().loadChildTopicList(ChildInfoDao.getDefaultChildId(), 0, 100, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
+                LoadingView.getInstance().dismiss();
                 emptyLayout.setErrorType(EmptyLayout.NETWORK_ERROR);
             }
 
             @Override
             public void onResponse(Object obj) {
+                LoadingView.getInstance().dismiss();
                 emptyLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
                 if(obj!=null){
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
                     if(topicData != null && topicData.getItems()!=null && topicData.getItems().size()>0){
                         topicList = topicData.getItems();
+                        evaluateAdapter.notifyDataSetChanged();
                     }else{
                         emptyLayout.setErrorType(EmptyLayout.NODATA);
                     }
+                    getLatestDimension();
                 }else{
                     emptyLayout.setErrorType(EmptyLayout.NODATA);
                 }
@@ -268,33 +276,36 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     }
 
     private void getLatestDimension(){
+        LoadingView.getInstance().show(getActivity());
         DataRequestService.getInstance().getLatestDimension(ChildInfoDao.getDefaultChildId(),new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 e.printStackTrace();
+                LoadingView.getInstance().dismiss();
                 if(headView!=null){
-                    headView.setVisibility(View.GONE);
+                    llRoot.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onResponse(Object obj) {
+                LoadingView.getInstance().dismiss();
                 if(obj!=null){
                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                     headDimension = InjectionWrapperUtil.injectMap(dataMap,DimensionInfoEntity.class);
                     if(headDimension!=null && !TextUtils.isEmpty(headDimension.getDimensionId())){
                         if(headView!=null){
-                            headView.setVisibility(View.VISIBLE);
+                            llRoot.setVisibility(View.VISIBLE);
                         }
                         updateHeadData();
                     }else{
                         if(headView!=null){
-                            headView.setVisibility(View.GONE);
+                            llRoot.setVisibility(View.GONE);
                         }
                     }
                 }else{
                     if(headView!=null){
-                        headView.setVisibility(View.GONE);
+                        llRoot.setVisibility(View.GONE);
                     }
                 }
             }
@@ -302,14 +313,14 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     }
 
     private void startCurrrentDimension(final DimensionInfoEntity dimensionInfoEntity,final TopicInfoEntity topicInfoEntity) {
-        if(dimensionInfoEntity.getIsLocked() == 1){
+        if( dimensionInfoEntity==null ||dimensionInfoEntity.getIsLocked() == 1){
             return;
         }
         DimensionInfoChildEntity entity = dimensionInfoEntity.getChildDimension();
         if (entity == null) {
             //开始这个量表
             LoadingView.getInstance().show(getActivity());
-            DataRequestService.getInstance().startChidlDimension(ChildInfoDao.getDefaultChildId(), dimensionInfoEntity.getTopicId(),topicInfoEntity.getExamId(), dimensionInfoEntity.getDimensionId(), new BaseService.ServiceCallback() {
+            DataRequestService.getInstance().startChidlDimension(ChildInfoDao.getDefaultChildId(), dimensionInfoEntity.getTopicId(),dimensionInfoEntity.getDimensionId(),topicInfoEntity.getExamId(),new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
                     LoadingView.getInstance().dismiss();
@@ -336,8 +347,11 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
             }else{
                 //量表报告
                 LoadingView.getInstance().show(getActivity());
-                DataRequestService.getInstance().getDimensionReport(ChildInfoDao.getDefaultChildId(),
-                        topicInfoEntity.getExamId(), dimensionInfoEntity.getDimensionId(),"0", new BaseService.ServiceCallback() {
+                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
+                        dimensionInfoEntity.getChildDimension().getExamId(),
+                        dimensionInfoEntity.getDimensionId(),
+                        ChartViewHelper.REPORT_RELATION_DIMENSION,
+                        "0", new BaseService.ServiceCallback() {
                             @Override
                             public void onFailure(QSCustomException e) {
                                 LoadingView.getInstance().dismiss();
@@ -351,7 +365,22 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
                                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                                     ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
                                     if(data!=null && data.getChartDatas()!=null){
-                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(getActivity(), data.getChartDatas(),dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
+
+                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
+                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
+                                        if(dimensionReports!=null && dimensionReports.size()>0) {
+                                            for (int i = 0; i < dimensionReports.size(); i++) {
+                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
+                                                    if (dimensionReports.get(i).getReportResult() == null) {
+                                                        if(dimensionReports.get(i).getReportResult()==null){
+                                                            dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(getActivity(), dimensionReports,dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
                                             @Override
                                             public void onClose() {
 
