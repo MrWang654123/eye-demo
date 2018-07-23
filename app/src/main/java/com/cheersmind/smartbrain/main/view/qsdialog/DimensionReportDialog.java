@@ -123,7 +123,7 @@ public class DimensionReportDialog extends Dialog {
                     tvStatus.setVisibility(View.GONE);
                 }
                 if(!TextUtils.isEmpty(reportResultEntity.getResult())){
-                    tvStatusReuslt.setText(reportResultEntity.getResult());
+                    tvStatusReuslt.setText(Html.fromHtml(reportResultEntity.getResult()));
                 }else{
                     tvStatusReuslt.setVisibility(View.GONE);
                 }

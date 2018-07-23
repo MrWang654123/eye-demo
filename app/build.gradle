@@ -63,13 +63,13 @@ android {
            def timeNow            
            def outDirectory
             if ("true".equals(project.IS_JENKINS)) {
-               newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
+               newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
            } else {             
                outDirectory = output.outputFile.getParent()                
                if ('debug'.equals(variant.buildType.name)) {                    
-                   newName = "FireEyes-v${APP_VERSION_NAME}-debug.apk"                
+                   newName = APK_NAME + "${APP_VERSION_NAME}-debug.apk"
                } else {
-                   newName = 'FireEyes-v' + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
+                   newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
                }            
            }
 	   def outFile = output.outputFile
