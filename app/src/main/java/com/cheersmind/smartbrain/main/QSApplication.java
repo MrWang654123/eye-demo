@@ -92,27 +92,21 @@ public class QSApplication extends LitePalApplication {
     public static void setHostType(){
         String hostType = BuildConfig.HOST_TYPE;
         if("product".equals(hostType)){
-            EnvHostManager.getInstance().setUcHost("http://psytest-server.cheersmind.com");
-            EnvHostManager.getInstance().setApiHost("http://psytest-server.cheersmind.com");
-            EnvHostManager.getInstance().setWebHost("http://psytest-web.cheersmind.com");
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_PRODUCT);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_PRODUCT);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_PRODUCT);
         }else if("test".equals(hostType)){
-            EnvHostManager.getInstance().setUcHost("http://psytest-server.test.cheersmind.qst");
-            EnvHostManager.getInstance().setApiHost("http://psytest-server.test.cheersmind.qst");
-            EnvHostManager.getInstance().setWebHost("http://psytest-web.test.cheersmind.qst");
-//            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-//            HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
-//            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_TEST);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_TEST);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_TEST);
         }else if("develop".equals(hostType)){
-            EnvHostManager.getInstance().setUcHost("http://127.0.0.1:8080");
-            EnvHostManager.getInstance().setApiHost("http://127.0.0.1:8080");
-            EnvHostManager.getInstance().setWebHost("http://psytest-web.test.cheersmind.qst");
-//            HttpConfig.UC_HOST  = "http://127.0.0.1:8080";
-//            HttpConfig.API_HOST = "http://127.0.0.1:8080";
-//            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_DEVELOP);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_DEVELOP);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_DEVELOP);
         }else {
-            EnvHostManager.getInstance().setUcHost("http://127.0.0.1:8080");
-            EnvHostManager.getInstance().setApiHost("http://127.0.0.1:8080");
-            EnvHostManager.getInstance().setWebHost("http://psytest-web.test.cheersmind.qst");
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_TEST);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_TEST);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_TEST);
         }
         LogUtils.w("host_type:",HttpConfig.API_HOST);
     }
