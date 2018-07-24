@@ -54,17 +54,15 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            buildConfigField("String","HOST_TYPE","\"product\"")
-            //buildConfigField "String","host_type",HOST_TYPE
+            
+            buildConfigField "String","HOST_TYPE",HOST_TYPE
         }
         debug {
             signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField("String","HOST_TYPE","\"develop\"")
-            //buildConfigField "String","HOST_TYPE",HOST_TYPE
+            buildConfigField "String","HOST_TYPE",HOST_TYPE
         }
     }
     applicationVariants.all { variant ->        
