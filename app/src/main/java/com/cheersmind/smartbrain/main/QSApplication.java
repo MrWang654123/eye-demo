@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.cheersmind.smartbrain.R;
+import com.cheersmind.smartbrain.BuildConfig;
 import com.cheersmind.smartbrain.main.constant.Constant;
 import com.cheersmind.smartbrain.main.constant.HttpConfig;
 import com.cheersmind.smartbrain.main.util.CrashHandler;
@@ -52,7 +52,7 @@ public class QSApplication extends LitePalApplication {
         FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Constant.UAPP_KEY);
 
-        setHostType();
+//        setHostType();
     }
 
     @Override
@@ -88,8 +88,8 @@ public class QSApplication extends LitePalApplication {
     }
 
 
-    public void setHostType(){
-        String hostType = context.getResources().getString(R.string.host_type);
+    public static void setHostType(){
+        String hostType = BuildConfig.HOST_TYPE;
         if("develop".equals(hostType)){
             HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
             HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
