@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.view.WindowManager;
 
 import com.cheersmind.smartbrain.R;
-import com.cheersmind.smartbrain.main.QSApplication;
 import com.cheersmind.smartbrain.main.constant.Constant;
 import com.cheersmind.smartbrain.module.login.LoginActivity;
 
@@ -21,7 +20,6 @@ public class StartActivity extends BaseActivity {
         setContentView(R.layout.activity_start);
         getSupportActionBar().hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        QSApplication.setHostType();
         // 闪屏的核心代码
         new Handler().postDelayed(new Runnable() {
             @Override
