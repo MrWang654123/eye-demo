@@ -1,5 +1,7 @@
 package com.cheersmind.smartbrain.main.constant;
 
+import com.cheersmind.smartbrain.module.login.EnvHostManager;
+
 /**
  * Created by goodm on 2017/4/15.
  */
@@ -11,9 +13,9 @@ public class HttpConfig {
 //    public static final String UC_HOST  = "http://psytest-server.cheersmind.com";
 
     //开发环境
-    public static String UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-    public static String API_HOST = "http://psytest-server.test.cheersmind.qst";
-    public static String WEB_HOST = "http://psytest-web.test.cheersmind.qst";
+    public static String UC_HOST  = EnvHostManager.getInstance().getUcHost();
+    public static String API_HOST = EnvHostManager.getInstance().getApiHost();
+    public static String WEB_HOST = EnvHostManager.getInstance().getWebHost();
 
 //    public static String UC_HOST  = BuildConfig.UC_HOST;
 //    public static String API_HOST = BuildConfig.API_HOST;
