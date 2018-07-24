@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.support.multidex.MultiDex;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.cheersmind.smartbrain.BuildConfig;
+import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.constant.Constant;
 import com.cheersmind.smartbrain.main.constant.HttpConfig;
 import com.cheersmind.smartbrain.main.util.CrashHandler;
@@ -52,7 +52,7 @@ public class QSApplication extends LitePalApplication {
         FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Constant.UAPP_KEY);
 
-//        setHostType();
+        setHostType();
     }
 
     @Override
@@ -87,23 +87,25 @@ public class QSApplication extends LitePalApplication {
         }
     }
 
+
     public void setHostType(){
-        if("develop".equals(BuildConfig.HOST_TYPE)){
+        String hostType = context.getResources().getString(R.string.host_type);
+        if("develop".equals(hostType)){
             HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
             HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
-            HttpConfig.WEB_HOST = "http://psytest-web.test.101qisi.com";
-        }else if("product".equals(BuildConfig.HOST_TYPE)){
+            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
+        }else if("product".equals(hostType)){
             HttpConfig.UC_HOST  = "http://psytest-server.cheersmind.com";
             HttpConfig.API_HOST = "http://psytest-server.cheersmind.com";
             HttpConfig.WEB_HOST = "http://psytest-web.cheersmind.com";
-        }else if("test".equals(BuildConfig.HOST_TYPE)){
-            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
+        }else if("test".equals(hostType)){
+            HttpConfig.UC_HOST  = "http://127.0.0.1:8080";
             HttpConfig.API_HOST = "http://127.0.0.1:8080";
-            HttpConfig.WEB_HOST = "http://psytest-web.test.101qisi.com";
+            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
         }else{
             HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
             HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
-            HttpConfig.WEB_HOST = "http://psytest-web.test.101qisi.com";
+            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
         }
         LogUtils.w("host_type:",HttpConfig.API_HOST);
     }

@@ -55,24 +55,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
-            if("develop".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }else if("product".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://psytest-server.cheersmind.com\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.cheersmind.com\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.cheersmind.com\""
-            }else if("test".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://127.0.0.1:8080\""
-                buildConfigField "String","API_HOST","\"http://127.0.0.1:8080\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }else{
-                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }
+            buildConfigField "String","host_type","${HOST_TYPE}"
+            resValue("string","host_type","${HOST_TYPE}")
         }
         debug {
             signingConfig signingConfigs.debug
@@ -80,33 +64,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
-            if("develop".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }else if("product".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://psytest-server.cheersmind.com\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.cheersmind.com\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.cheersmind.com\""
-            }else if("test".equals(HOST_TYPE)){
-                buildConfigField "String","UC_HOST","\"http://127.0.0.1:8080\""
-                buildConfigField "String","API_HOST","\"http://127.0.0.1:8080\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }else{
-                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
-                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
-            }
+            resValue("string","host_type","${HOST_TYPE}")
         }
     }
-
     applicationVariants.all { variant ->        
         variant.outputs.all { output ->            
            def newName            
            def timeNow            
            def outDirectory
             if ("true".equals(project.IS_JENKINS)) {
-               newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '_'+HOST_TYPE + '.apk'
+               newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '_' + '.apk'
            } else {             
                outDirectory = output.outputFile.getParent()                
                if ('debug'.equals(variant.buildType.name)) {                    
