@@ -71,7 +71,7 @@ android {
            def timeNow            
            def outDirectory
             if ("true".equals(project.IS_JENKINS)) {
-               newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '.apk'
+               newName = APK_NAME + APP_VERSION_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '_'+HOST_TYPE + '.apk'
            } else {             
                outDirectory = output.outputFile.getParent()                
                if ('debug'.equals(variant.buildType.name)) {                    
