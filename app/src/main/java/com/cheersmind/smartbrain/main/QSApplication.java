@@ -103,9 +103,9 @@ public class QSApplication extends LitePalApplication {
             HttpConfig.API_HOST = "http://127.0.0.1:8080";
             HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
         }else {
-            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-            HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
-            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
+            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind3.qst";
+            HttpConfig.API_HOST = "http://psytest-server.test.cheersmind3.qst";
+            HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind3.qst";
         }
         LogUtils.w("host_type:",HttpConfig.API_HOST);
     }
