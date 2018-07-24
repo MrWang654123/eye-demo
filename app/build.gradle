@@ -56,26 +56,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
-            buildConfigField "String","UC_HOST","${UC_HOST}"
-            buildConfigField "String","API_HOST","${API_HOST}"
-            buildConfigField "String","WEB_HOST","${WEB_HOST}"
-
             if("develop".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_DEVELOP;
-                API_HOST = API_HOST_DEVELOP;
-                WEB_HOST = API_HOST_DEVELOP;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }else if("product".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_PRODUCT;
-                API_HOST = API_HOST_PRODUCT;
-                WEB_HOST = API_HOST_PRODUCT;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.cheersmind.com\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.cheersmind.com\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.cheersmind.com\""
             }else if("test".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_TEST;
-                API_HOST = API_HOST_TEST;
-                WEB_HOST = API_HOST_TEST;
+                buildConfigField "String","UC_HOST","\"http://127.0.0.1:8080\""
+                buildConfigField "String","API_HOST","\"http://127.0.0.1:8080\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }else{
-                UC_HOST  = UC_HOST_DEVELOP;
-                API_HOST = API_HOST_DEVELOP;
-                WEB_HOST = API_HOST_DEVELOP;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }
         }
         debug {
@@ -84,29 +80,26 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
-            buildConfigField "String","UC_HOST","${UC_HOST}"
-            buildConfigField "String","API_HOST","${API_HOST}"
-            buildConfigField "String","WEB_HOST","${WEB_HOST}"
-
             if("develop".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_DEVELOP;
-                API_HOST = API_HOST_DEVELOP;
-                WEB_HOST = API_HOST_DEVELOP;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }else if("product".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_PRODUCT;
-                API_HOST = API_HOST_PRODUCT;
-                WEB_HOST = API_HOST_PRODUCT;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.cheersmind.com\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.cheersmind.com\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.cheersmind.com\""
             }else if("test".equals(HOST_TYPE)){
-                UC_HOST  = UC_HOST_TEST;
-                API_HOST = API_HOST_TEST;
-                WEB_HOST = API_HOST_TEST;
+                buildConfigField "String","UC_HOST","\"http://127.0.0.1:8080\""
+                buildConfigField "String","API_HOST","\"http://127.0.0.1:8080\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }else{
-                UC_HOST  = UC_HOST_DEVELOP;
-                API_HOST = API_HOST_DEVELOP;
-                WEB_HOST = API_HOST_DEVELOP;
+                buildConfigField "String","UC_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","API_HOST","\"http://psytest-server.test.cheersmind.qst\""
+                buildConfigField "String","WEB_HOST","\"http://psytest-web.test.cheersmind.qst\""
             }
         }
-    }  
+    }
+
     applicationVariants.all { variant ->        
         variant.outputs.all { output ->            
            def newName            
