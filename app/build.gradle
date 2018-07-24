@@ -55,7 +55,28 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String","host_type","${HOST_TYPE}"
+            buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
+            buildConfigField "String","UC_HOST","${UC_HOST}"
+            buildConfigField "String","API_HOST","${API_HOST}"
+            buildConfigField "String","WEB_HOST","${WEB_HOST}"
+
+            if("develop".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_DEVELOP;
+                API_HOST = API_HOST_DEVELOP;
+                WEB_HOST = API_HOST_DEVELOP;
+            }else if("product".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_PRODUCT;
+                API_HOST = API_HOST_PRODUCT;
+                WEB_HOST = API_HOST_PRODUCT;
+            }else if("test".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_TEST;
+                API_HOST = API_HOST_TEST;
+                WEB_HOST = API_HOST_TEST;
+            }else{
+                UC_HOST  = UC_HOST_DEVELOP;
+                API_HOST = API_HOST_DEVELOP;
+                WEB_HOST = API_HOST_DEVELOP;
+            }
         }
         debug {
             signingConfig signingConfigs.debug
@@ -63,6 +84,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
+            buildConfigField "String","UC_HOST","${UC_HOST}"
+            buildConfigField "String","API_HOST","${API_HOST}"
+            buildConfigField "String","WEB_HOST","${WEB_HOST}"
+
+            if("develop".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_DEVELOP;
+                API_HOST = API_HOST_DEVELOP;
+                WEB_HOST = API_HOST_DEVELOP;
+            }else if("product".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_PRODUCT;
+                API_HOST = API_HOST_PRODUCT;
+                WEB_HOST = API_HOST_PRODUCT;
+            }else if("test".equals(HOST_TYPE)){
+                UC_HOST  = UC_HOST_TEST;
+                API_HOST = API_HOST_TEST;
+                WEB_HOST = API_HOST_TEST;
+            }else{
+                UC_HOST  = UC_HOST_DEVELOP;
+                API_HOST = API_HOST_DEVELOP;
+                WEB_HOST = API_HOST_DEVELOP;
+            }
         }
     }  
     applicationVariants.all { variant ->        

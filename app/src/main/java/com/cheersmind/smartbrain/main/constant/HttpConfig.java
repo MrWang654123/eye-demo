@@ -1,5 +1,7 @@
 package com.cheersmind.smartbrain.main.constant;
 
+import com.cheersmind.smartbrain.BuildConfig;
+
 /**
  * Created by goodm on 2017/4/15.
  */
@@ -11,9 +13,13 @@ public class HttpConfig {
 //    public static final String UC_HOST  = "http://psytest-server.cheersmind.com";
 
     //开发环境
-    public static String UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-    public static String API_HOST = "http://psytest-server.test.cheersmind.qst";
-    public static String WEB_HOST = "http://psytest-web.test.101qisi.com";
+//    public static String UC_HOST  = "http://psytest-server.test.cheersmind.qst";
+//    public static String API_HOST = "http://psytest-server.test.cheersmind.qst";
+//    public static String WEB_HOST = "http://psytest-web.test.101qisi.com";
+
+    public static String UC_HOST  = BuildConfig.UC_HOST;
+    public static String API_HOST = BuildConfig.API_HOST;
+    public static String WEB_HOST = BuildConfig.WEB_HOST;
 
 
     /**-----------------------------------------------------------------------

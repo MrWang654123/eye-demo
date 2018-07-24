@@ -52,7 +52,7 @@ public class QSApplication extends LitePalApplication {
         FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Constant.UAPP_KEY);
 
-        setHostType();
+//        setHostType();
     }
 
     @Override
