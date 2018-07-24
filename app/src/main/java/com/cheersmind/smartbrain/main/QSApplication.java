@@ -91,16 +91,16 @@ public class QSApplication extends LitePalApplication {
     public static void setHostType(){
         String hostType = BuildConfig.HOST_TYPE;
         if("develop".equals(hostType)){
-            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-            HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
+            HttpConfig.UC_HOST  = "http://127.0.0.1:8080";
+            HttpConfig.API_HOST = "http://127.0.0.1:8080";
             HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
         }else if("product".equals(hostType)){
             HttpConfig.UC_HOST  = "http://psytest-server.cheersmind.com";
             HttpConfig.API_HOST = "http://psytest-server.cheersmind.com";
             HttpConfig.WEB_HOST = "http://psytest-web.cheersmind.com";
         }else if("test".equals(hostType)){
-            HttpConfig.UC_HOST  = "http://127.0.0.1:8080";
-            HttpConfig.API_HOST = "http://127.0.0.1:8080";
+            HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
+            HttpConfig.API_HOST = "http://psytest-server.test.cheersmind.qst";
             HttpConfig.WEB_HOST = "http://psytest-web.test.cheersmind.qst";
         }else{
             HttpConfig.UC_HOST  = "http://psytest-server.test.cheersmind.qst";
