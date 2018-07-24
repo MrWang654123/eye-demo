@@ -96,12 +96,14 @@ public class DemoView extends ChartView {
 					}
 				}
 
+				int offset = 10;
+
 				if(max <=3){
-					max = 3;
-				}else if(max <=5){
 					max = 5;
+				}else if(max <=5){
+					max = 10;
 				}else if(max <=10){
-					max  = 10;
+					max  = 16;
 				}else if(max <=20){
 					max  = 20;
 				}else if(max <=30){
@@ -121,6 +123,10 @@ public class DemoView extends ChartView {
 				}else{
 					max = 100;
 				}
+			}
+
+			if(max>=20){
+				max = max + 10;
 			}
 
 			reportData.setMaxScore((int)max);

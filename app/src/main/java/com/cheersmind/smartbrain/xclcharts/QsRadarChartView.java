@@ -313,6 +313,7 @@ public class QsRadarChartView extends DemoView{
         RadarData lineData2 = new RadarData("", dataSeriesA,
                 Color.parseColor("#6cdaf3"), XEnum.DataAreaStyle.STROKE);
         lineData2.setDotStyle(XEnum.DotStyle.DOT);
+        lineData2.getPlotLine().getPlotDot().setDotRadius(DensityUtil.dip2px(context,6));
 //        lineData2.getPlotLine().getDotPaint().setTextSize(DensityUtil.dip2px(context,3));
         lineData2.getPlotLine().getDotPaint().setColor(Color.parseColor("#6cdaf3"));
 

@@ -10,17 +10,10 @@ public class HttpConfig {
 //    public static final String WEB_HOST = "http://psytest-web.cheersmind.com";
 //    public static final String UC_HOST  = "http://psytest-server.cheersmind.com";
 
-//    public static final String UC_HOST  = "http://rdp-uc.cheersmind.com";
-
     //开发环境
-//    public static final String API_HOST  = "http://192.168.0.135:8080";//国权
-//    public static final String UC_HOST  = "http://103.236.253.132:8083";
-
-//    public static final String API_HOST = "http://psytest-server.test.101qisi.com";
-    //    public static final String UC_HOST  = "http://psytest-server.test.101qisi.com";
-    public static final String UC_HOST  = "http://psytest-server.test.cheersmind.qst";
-    public static final String API_HOST = "http://psytest-server.test.cheersmind.qst";
-    public static final String WEB_HOST = "http://psytest-web.test.101qisi.com";
+    public static String UC_HOST  = "http://psytest-server.test.cheersmind.qst";
+    public static String API_HOST = "http://psytest-server.test.cheersmind.qst";
+    public static String WEB_HOST = "http://psytest-web.test.101qisi.com";
 
 
     /**-----------------------------------------------------------------------

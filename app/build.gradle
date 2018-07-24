@@ -5,7 +5,11 @@ android {
     buildToolsVersion '26.0.2'
 
     defaultConfig {
-        applicationId "com.cheersmind.smartbrain"
+        if("debug".equals(BUILD_TYPE)){
+            applicationId "com.cheersmind.smartbrain.debug"
+        }else{
+            applicationId "com.cheersmind.smartbrain"
+        }
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 67
@@ -50,11 +54,15 @@ android {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String","host_type","${HOST_TYPE}"
         }
         debug {
             signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String","HOST_TYPE","${HOST_TYPE}"
         }
     }  
     applicationVariants.all { variant ->        
