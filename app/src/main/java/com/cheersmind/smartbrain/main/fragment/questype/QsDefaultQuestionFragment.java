@@ -20,7 +20,7 @@ import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.entity.OptionsEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionInfoEntity;
-import com.cheersmind.smartbrain.main.util.RepetitionClickUtil;
+import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.SoundPlayUtils;
 
 import java.util.List;
@@ -43,7 +43,6 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
     String childFactorId = "";
 
     QuestionInfoChildEntity childQuestion;
-    private boolean hasCommit = false;//是否点击选项触发提交，防止重复提交
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,30 +150,23 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
 
             }
 
-            viewHolder.rtSelect.setOnClickListener(new View.OnClickListener() {
+            viewHolder.rtSelect.setOnClickListener(new OnMultiClickListener() {
                 @Override
-                public void onClick(View v) {
-                    if(hasCommit){ //如果当前题目有出发提交等待提交结果，防止重复提交
-                        return;
-                    }
-                    if(!RepetitionClickUtil.isFastClick()){
-                        if(entity.getType()==2){
-                            String str = viewHolder.etOption.getText().toString();
-                            if(TextUtils.isEmpty(str)){
-                                Toast.makeText(getActivity(),"请填写当前选项说明",Toast.LENGTH_SHORT).show();
-                            }else{
-                                curSelect = position;
-                                notifyDataSetChanged();
-                                showAnimBg(viewHolder.tvAnswerbg,entity);
-                            }
+                public void onMultiClick(View view) {
+                    if(entity.getType()==2){
+                        String str = viewHolder.etOption.getText().toString();
+                        if(TextUtils.isEmpty(str)){
+                            Toast.makeText(getActivity(),"请填写当前选项说明",Toast.LENGTH_SHORT).show();
                         }else{
                             curSelect = position;
                             notifyDataSetChanged();
                             showAnimBg(viewHolder.tvAnswerbg,entity);
                         }
-
+                    }else{
+                        curSelect = position;
+                        notifyDataSetChanged();
+                        showAnimBg(viewHolder.tvAnswerbg,entity);
                     }
-
                 }
             });
 
@@ -199,14 +191,6 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
             tvOption = (TextView)view.findViewById(R.id.tv_option);
             etOption = (EditText)view.findViewById(R.id.et_option);
         }
-    }
-
-    public boolean isHasCommit() {
-        return hasCommit;
-    }
-
-    public void setHasCommit(boolean hasCommit) {
-        this.hasCommit = hasCommit;
     }
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){

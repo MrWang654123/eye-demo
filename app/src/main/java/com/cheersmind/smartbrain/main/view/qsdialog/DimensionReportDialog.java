@@ -38,6 +38,7 @@ public class DimensionReportDialog extends Dialog {
     private TextView tvTitle;
     private TextView tvContent;
     private LinearLayout llStage;
+    private TextView tvResultHead;
     private TextView tvStatus;
     private TextView tvStatusReuslt;
     private TextView tvResult;
@@ -92,6 +93,7 @@ public class DimensionReportDialog extends Dialog {
         llStage = (LinearLayout)findViewById(R.id.ll_stage);
         tvResult = (TextView)findViewById(R.id.tv_result);
         tvStatus = (TextView)findViewById(R.id.tv_status);
+        tvResultHead = (TextView)findViewById(R.id.tv_result_head);
         tvStatusReuslt = (TextView)findViewById(R.id.tv_status_result);
         tvDesc = (TextView)findViewById(R.id.tv_desc);
 
@@ -117,8 +119,11 @@ public class DimensionReportDialog extends Dialog {
             ReportResultEntity reportResultEntity =  dimensionReports.get(0).getReportResult();
             if(reportResultEntity!=null){
                 llResult.setVisibility(View.VISIBLE);
+                if(!TextUtils.isEmpty(reportResultEntity.getHeader())){
+                    tvResultHead.setText(reportResultEntity.getHeader());
+                }
                 if(!TextUtils.isEmpty(reportResultEntity.getTitle())){
-                    tvStatus.setText(reportResultEntity.getTitle());
+                    tvStatus.setText(Html.fromHtml(reportResultEntity.getTitle()));
                 }else{
                     tvStatus.setVisibility(View.GONE);
                 }

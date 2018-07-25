@@ -28,6 +28,9 @@ public class ReportResultEntity implements Serializable {
     @InjectMap(name = "result")
     private String result;
 
+    @InjectMap(name = "header")
+    private String header;
+
     public String getContent() {
         return content;
     }
@@ -74,5 +77,13 @@ public class ReportResultEntity implements Serializable {
 
     public void setResult(String result) {
         this.result = result;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
     }
 }
