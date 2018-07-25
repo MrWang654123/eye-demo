@@ -11,14 +11,14 @@ public class EnvHostManager {
     public static final String WEB_HOST_PRODUCT = "http://psytest-web.cheersmind.com";
 
     //测试环境
-    public static final String UC_HOST_TEST = "http://psytest-server.test.cheersmind.qst";
-    public static final String API_HOST_TEST = "http://psytest-server.test.cheersmind.qst";
-    public static final String WEB_HOST_TEST = "http://psytest-web.test.cheersmind.qst";
+    public static final String UC_HOST_DEVELOP = "http://psytest-server.test.cheersmind.qst";
+    public static final String API_HOST_DEVELOP = "http://psytest-server.test.cheersmind.qst";
+    public static final String WEB_HOST_DEVELOP = "http://psytest-web.test.cheersmind.qst";
 
     //开发环境
-    public static final String UC_HOST_DEVELOP = "http://127.0.0.1:8080";
-    public static final String API_HOST_DEVELOP = "http://127.0.0.1:8080";
-    public static final String WEB_HOST_DEVELOP = "http://psytest-web.test.cheersmind.qst";
+    public static final String UC_HOST_LOCAL = "http://127.0.0.1:8080";
+    public static final String API_HOST_LOCAL = "http://127.0.0.1:8080";
+    public static final String WEB_HOST_LOCAL = "http://psytest-web.test.cheersmind.qst";
 
     private String ucHost;
     private String apiHost;

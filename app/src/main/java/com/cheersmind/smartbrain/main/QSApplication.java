@@ -95,18 +95,18 @@ public class QSApplication extends LitePalApplication {
             EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_PRODUCT);
             EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_PRODUCT);
             EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_PRODUCT);
-        }else if("test".equals(hostType)){
-            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_TEST);
-            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_TEST);
-            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_TEST);
+        }else if("local".equals(hostType)){
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_LOCAL);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_LOCAL);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_LOCAL);
         }else if("develop".equals(hostType)){
             EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_DEVELOP);
             EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_DEVELOP);
             EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_DEVELOP);
         }else {
-            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_TEST);
-            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_TEST);
-            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_TEST);
+            EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_DEVELOP);
+            EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_DEVELOP);
+            EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_DEVELOP);
         }
         LogUtils.w("host_type:",HttpConfig.API_HOST);
     }
