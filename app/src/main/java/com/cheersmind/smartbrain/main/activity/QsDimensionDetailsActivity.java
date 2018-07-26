@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
+import com.cheersmind.smartbrain.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.FactorInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.FactorInfoEntity;
@@ -370,13 +371,17 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
     private void startCurrentFactor(final FactorInfoEntity factorInfoEntity){
         FactorInfoChildEntity entity = factorInfoEntity.getChildFactor();
 
-//        final boolean isLastFactor = isLastFactor();
+        String examId = "";
+        DimensionInfoChildEntity dimensionInfoChildEntity = dimensionInfoEntity.getChildDimension();
+        if(dimensionInfoChildEntity!=null){
+            examId = dimensionInfoChildEntity.getExamId();
+        }
         if(entity==null){
             DataRequestService.getInstance().startChildFactor(ChildInfoDao.getDefaultChildId(),
                     dimensionInfoEntity.getTopicId(),
                     dimensionInfoEntity.getDimensionId(),
                     factorInfoEntity.getFactorId(),
-                    topicInfoEntity.getExamId(),
+                    examId,
                     new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
