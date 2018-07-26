@@ -42,15 +42,15 @@ public class QsSplineChartView extends DemoView {
     private Paint mPaintTooltips = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     ReportItemEntity reportData;
-//    List<ReportFactorEntity> reportListData = new ArrayList<>();
-    private boolean isTopic ;
+    //    List<ReportFactorEntity> reportListData = new ArrayList<>();
+    private boolean isTopic;
 
     //setCategoryAxisCustomLines
     // splinechart支持横向和竖向定制线
     private List<CustomLineData> mXCustomLineDataset = new ArrayList<CustomLineData>();
     private List<CustomLineData> mYCustomLineDataset = new ArrayList<CustomLineData>();
 
-    public QsSplineChartView(Context context, ReportItemEntity reportData,int curSelectLabel) {
+    public QsSplineChartView(Context context, ReportItemEntity reportData, int curSelectLabel) {
         super(context);
         this.context = context;
         this.reportData = reportData;
@@ -69,15 +69,12 @@ public class QsSplineChartView extends DemoView {
     }
 
     private void initView() {
-//        chartLabels();
-//        chartCustomeLines();
-//        chartDataSet();
 
         setChartData(reportData.getItems());
         chartRender();
 
         //綁定手势滑动事件
-			this.bindTouch(this,chart);
+        this.bindTouch(this, chart);
     }
 
 
@@ -109,21 +106,21 @@ public class QsSplineChartView extends DemoView {
             chart.getDataAxis().setAxisMax(reportData.getMaxScore());
             //chart.getDataAxis().setAxisMin(0);
             //数据轴刻度间隔
-            chart.getDataAxis().setAxisSteps(reportData.getMaxScore()/5);
+            chart.getDataAxis().setAxisSteps(reportData.getMaxScore() / 5);
             chart.setCustomLines(mYCustomLineDataset); //y轴
 
             //设置Y轴标签颜色
             chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             //设置横向标签颜色
             chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             //设置横向标签旋转角度
-            if(isTopic){
+            if (isTopic) {
                 chart.getCategoryAxis().setTickLabelRotateAngle(0);
-            }else{
+            } else {
                 chart.getCategoryAxis().setTickLabelRotateAngle(-20);
             }
 
@@ -177,9 +174,9 @@ public class QsSplineChartView extends DemoView {
             chart.showClikedFocus();
 
             //显示平滑曲线
-            if(reportData.getItems().size()==2){
+            if (reportData.getItems().size() == 2) {
                 chart.setCrurveLineStyle(XEnum.CrurveLineStyle.BEELINE);
-            }else{
+            } else {
                 chart.setCrurveLineStyle(XEnum.CrurveLineStyle.BEZIERCURVE);
             }
 
@@ -193,75 +190,6 @@ public class QsSplineChartView extends DemoView {
             Log.e(TAG, e.toString());
         }
     }
-
-    private void chartDataSet() {
-        //线1的数据集
-        List<PointD> linePoint1 = new ArrayList<PointD>();
-        linePoint1.add(new PointD(0d, 3.5d));
-        linePoint1.add(new PointD(5d, 4d));
-
-
-        //第一个参数linekey 底部对应说明
-        SplineData dataSeries1 = new SplineData("", linePoint1,
-                Color.parseColor("#6cdaf3"));
-        //把线弄细点
-        dataSeries1.getLinePaint().setStrokeWidth(2);
-        dataSeries1.setLabelVisible(true);
-
-        //线2的数据集
-        List<PointD> linePoint2 = new ArrayList<PointD>();
-        linePoint2.add(new PointD(0d, 0.6d));
-        linePoint2.add(new PointD(5d, 2.4d));
-
-
-        SplineData dataSeries2 = new SplineData("", linePoint2,
-                Color.parseColor("#8cbbff"));
-
-
-        dataSeries2.setDotStyle(XEnum.DotStyle.RING);
-        //dataSeries2.getDotLabelPaint().setColor(Color.RED);
-
-
-        //线3的数据集
-        List<PointD> linePoint3 = new ArrayList<PointD>();
-        linePoint3.add(new PointD(0d, 2.6d));
-        linePoint3.add(new PointD(5d, 2.4d));
-
-        SplineData dataSeries3 = new SplineData("", linePoint3,
-                Color.parseColor("#f7c27b"));
-
-        dataSeries3.setDotStyle(XEnum.DotStyle.RING);
-        dataSeries3.getDotPaint().setColor(Color.rgb(75, 166, 51));
-        dataSeries3.getPlotLine().getPlotDot().setRingInnerColor(Color.rgb(123, 89, 168));
-
-        //设定数据源
-        chartData.add(dataSeries1);
-        chartData.add(dataSeries2);
-        chartData.add(dataSeries3);
-    }
-
-    private void chartLabels() {
-        labels.add("0");
-        labels.add("1");
-
-    }
-
-    /**
-     * 期望线/分界线
-     */
-    private void chartCustomeLines() {
-        CustomLineData cdx1 = new CustomLineData("稍好", 30d, Color.rgb(35, 172, 57), 5);
-        CustomLineData cdx2 = new CustomLineData("舒适", 40d, Color.rgb(69, 181, 248), 5);
-        cdx1.setLabelVerticalAlign(XEnum.VerticalAlign.MIDDLE);
-        mXCustomLineDataset.add(cdx1);
-        mXCustomLineDataset.add(cdx2);
-
-
-        CustomLineData cdy1 = new CustomLineData("定制线", 45d, Color.rgb(69, 181, 248), 5);
-        cdy1.setLabelHorizontalPostion(Paint.Align.CENTER);
-        mYCustomLineDataset.add(cdy1);
-    }
-
 
     @Override
     public void render(Canvas canvas) {
@@ -277,7 +205,7 @@ public class QsSplineChartView extends DemoView {
 
         super.onTouchEvent(event);
 
-        switch(event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
                 break;
@@ -298,7 +226,7 @@ public class QsSplineChartView extends DemoView {
         if (!chart.getListenItemClickStatus()) return;
 
         PointPosition record = chart.getPositionRecord(x, y);
-        if (null == record){
+        if (null == record) {
             return;
         }
 
@@ -326,9 +254,9 @@ public class QsSplineChartView extends DemoView {
                 }
                 //在点击处显示tooltip
                 mPaintTooltips.setColor(Color.parseColor("#ffffff"));
-                mPaintTooltips.setTextSize(DensityUtil.dip2px(context,14));
+                mPaintTooltips.setTextSize(DensityUtil.dip2px(context, 14));
                 chart.getToolTip().setCurrentXY(x, y);
-                chart.getToolTip().addToolTip(itemlabels.get(i+1), mPaintTooltips);
+                chart.getToolTip().addToolTip(itemlabels.get(i + 1), mPaintTooltips);
                 chart.getToolTip().addToolTip(Double.toString(yValue), mPaintTooltips);
                 chart.getToolTip().getBackgroundPaint().setColor(Color.parseColor("#6cdaf3"));
                 this.invalidate();
@@ -346,9 +274,11 @@ public class QsSplineChartView extends DemoView {
      * *******************************************************
      */
     public void setChartData(List<ReportFactorEntity> entities) {
-        if(entities==null || entities.size()==0){
+        if (entities == null || entities.size() == 0) {
             return;
         }
+
+        resetMax(reportData);
 
         isTopic = reportData.getTopic();
 
@@ -360,46 +290,57 @@ public class QsSplineChartView extends DemoView {
         int size = entities.size();
         for (int i = 0; i < size; i++) {
             ReportFactorEntity rfe = entities.get(i);
-            if(i==0){
+            if (i == 0) {
                 labels.add("");
                 itemlabels.add("");
             }
-            if(size>6){
-                labels.add("");//长度超过6，不显示横轴标签
-            }else{
-                if(isTopic){
-                    if(getCurSelectLabel() == i){
-                        labels.add(String.valueOf(i+1)+"qs_sel");//主题报告
-                    }else{
-                        labels.add(String.valueOf(i+1)+"qs_nor");//主题报告
-                    }
-                }else{
-                    labels.add(rfe.getItemName());
+//            if(size>6){
+//                labels.add("");//长度超过6，不显示横轴标签
+//            }else{
+//                if(isTopic){
+//                    if(getCurSelectLabel() == i){
+//                        labels.add(String.valueOf(i+1)+"qs_sel");//主题报告
+//                    }else{
+//                        labels.add(String.valueOf(i+1)+"qs_nor");//主题报告
+//                    }
+//                }else{
+//                    labels.add(rfe.getItemName());
+//                }
+//            }
+
+            if (isTopic) {
+                if (getCurSelectLabel() == i) {
+                    labels.add(String.valueOf(i + 1) + "qs_sel");//主题报告
+                } else {
+                    labels.add(String.valueOf(i + 1) + "qs_nor");//主题报告
                 }
+            } else {
+                labels.add(rfe.getItemName());
             }
+
             itemlabels.add(rfe.getItemName());
-            linePoint.add(new PointD(i+1, Double.valueOf(rfe.getChildScore())));
-            if(i==entities.size()-1){
+            linePoint.add(new PointD(i + 1, Double.valueOf(rfe.getChildScore())));
+            if (i == entities.size() - 1) {
                 labels.add("");
                 itemlabels.add("");
             }
 
         }
 
-        chart.setCategoryAxisMax(labels.size()-1);
+        chart.setCategoryAxisMax(labels.size() - 1);
 
         SplineData dataSeries = new SplineData("", linePoint,
                 Color.parseColor("#6cdaf3"));
-        if(entities.size()==2){
+        if (entities.size() == 2) {
 //            dataSeries.setDotStyle(XEnum.DotStyle.HIDE);
             dataSeries.setDotStyle(XEnum.DotStyle.DOT);
-        }else{
+        } else {
             dataSeries.setDotStyle(XEnum.DotStyle.DOT);
         }
         //设置点和线的大小
-        dataSeries.setDotRadius(DensityUtil.dip2px(context,4));
+        dataSeries.setDotRadius(DensityUtil.dip2px(context, 4));
         dataSeries.getDotPaint().setColor(Color.parseColor("#6cdaf3"));
-        dataSeries.getLinePaint().setStrokeWidth(DensityUtil.dip2px(context,2));
+        dataSeries.getLinePaint().setStrokeWidth(DensityUtil.dip2px(context, 2));
         chartData.add(dataSeries);
     }
 

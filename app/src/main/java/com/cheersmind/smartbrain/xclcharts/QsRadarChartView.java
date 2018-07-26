@@ -28,7 +28,7 @@ import java.util.List;
  * Created by Administrator on 2018/6/30.
  */
 
-public class QsRadarChartView extends DemoView{
+public class QsRadarChartView extends DemoView {
 
     private Context context;
     private String TAG = "RadarChart01View";
@@ -44,14 +44,14 @@ public class QsRadarChartView extends DemoView{
     private ReportItemEntity reportData;
     private boolean isTopic;
 
-    public QsRadarChartView(Context context,ReportItemEntity reportData) {
+    public QsRadarChartView(Context context, ReportItemEntity reportData) {
         super(context);
         this.context = context;
         this.reportData = reportData;
         initView();
     }
 
-    public QsRadarChartView(Context context, AttributeSet attrs){
+    public QsRadarChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
@@ -61,31 +61,28 @@ public class QsRadarChartView extends DemoView{
         initView();
     }
 
-    private void initView()
-    {
+    private void initView() {
 //        chartLabels();
 //        chartDataSet();
         setChartData(reportData.getItems());
         chartRender();
 
         //綁定手势滑动事件
-        this.bindTouch(this,chart);
+        this.bindTouch(this, chart);
     }
-
 
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         //图所占范围大小
-        chart.setChartRange(w,h);
+        chart.setChartRange(w, h);
     }
 
-    private void chartRender()
-    {
-        try{
+    private void chartRender() {
+        try {
             //设置绘图区默认缩进px值
-            int [] ltrb = getPieDefaultSpadding();
+            int[] ltrb = getPieDefaultSpadding();
             chart.setPadding(ltrb[0], ltrb[1], ltrb[2], ltrb[3]);
 
             chart.setTitle("");
@@ -104,43 +101,44 @@ public class QsRadarChartView extends DemoView{
             //数据轴最大值
             chart.getDataAxis().setAxisMax(reportData.getMaxScore());
             //数据轴刻度间隔
-            if(reportData.getMaxScore()<=5){
+            if (reportData.getMaxScore() <= 5) {
                 chart.getDataAxis().setAxisSteps(1);
-            }else{
-                chart.getDataAxis().setAxisSteps(reportData.getMaxScore()/5);
+            } else {
+                chart.getDataAxis().setAxisSteps(reportData.getMaxScore() / 5);
             }
 
             //主轴标签偏移50，以便留出空间用于显示点和标签
             chart.getDataAxis().setTickLabelMargin(50);
             chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getAxisPaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getDataAxis().getAxisPaint().setTextSize(DensityUtil.dip2px(context, 10));
 
             //设置Y轴标签颜色
             chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 10));
             chart.getDataAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getDataAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 10));
 
             //设置横向标签颜色
             chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 10));
             chart.getCategoryAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getCategoryAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 10));
 
             chart.getLinePaint().setColor(Color.parseColor("#b5b5b5"));
-            chart.getLinePaint().setTextSize(DensityUtil.dip2px(context,10));
+            chart.getLinePaint().setTextSize(DensityUtil.dip2px(context, 10));
 
             chart.getLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
+
 
             //定义数据轴标签显示格式
-            chart.getDataAxis().setLabelFormatter(new IFormatterTextCallBack(){
+            chart.getDataAxis().setLabelFormatter(new IFormatterTextCallBack() {
 
                 @Override
                 public String textFormatter(String value) {
                     // TODO Auto-generated method stub
                     Double tmp = Double.parseDouble(value);
-                    DecimalFormat df=new DecimalFormat("#0");
+                    DecimalFormat df = new DecimalFormat("#0");
                     String label = df.format(tmp).toString();
                     return (label);
                 }
@@ -152,10 +150,13 @@ public class QsRadarChartView extends DemoView{
                 @Override
                 public String doubleFormatter(Double value) {
                     // TODO Auto-generated method stub
-                    DecimalFormat df= new DecimalFormat("#0");
-                    String label = "["+df.format(value).toString()+"]";
+                    DecimalFormat df = new DecimalFormat("#0");
+                    String label = "[" + df.format(value).toString() + "]";
                     return label;
-                }});
+                }
+            });
+
+            chart.enablePanMode();
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -164,65 +165,11 @@ public class QsRadarChartView extends DemoView{
 
     }
 
-    private void chartDataSet()
-    {
-        LinkedList<Double> dataSeriesA= new LinkedList<Double>();
-        dataSeriesA.add(0d); //20d
-        dataSeriesA.add(10d);
-        dataSeriesA.add(30d);
-        dataSeriesA.add(25d);
-        dataSeriesA.add(20d);
-
-        RadarData lineData1 = new RadarData("现状",dataSeriesA,
-                Color.rgb(234, 83, 71), XEnum.DataAreaStyle.FILL);
-        lineData1.setLabelVisible(true);
-        lineData1.getPlotLine().getDotLabelPaint().setTextAlign(Paint.Align.LEFT);
-
-        LinkedList<Double> dataSeriesB= new LinkedList<Double>();
-        dataSeriesB.add((double)30);
-        dataSeriesB.add((double)20);
-        dataSeriesB.add((double)35);
-        dataSeriesB.add((double)30);
-        dataSeriesB.add((double)40);
-        RadarData lineData2 = new RadarData("短期目标",dataSeriesB,
-                Color.rgb(75, 166, 51),XEnum.DataAreaStyle.STROKE);
-        //lineData2.setDotStyle(XEnum.DotStyle.RING);
-        lineData2.getPlotLine().getDotPaint().setColor(Color.BLACK);
-
-
-        LinkedList<Double> dataSeriesC= new LinkedList<Double>();
-        dataSeriesC.add(40d);
-        dataSeriesC.add(30d);
-        dataSeriesC.add(40d);
-        dataSeriesC.add(35d);
-        dataSeriesC.add(45d);
-
-        RadarData lineData3 = new RadarData("长期目标",dataSeriesC,
-                Color.rgb(224, 53, 49),XEnum.DataAreaStyle.STROKE);
-        lineData3.setLineStyle(XEnum.LineStyle.DASH);
-        lineData3.getPlotLine().setDotStyle(XEnum.DotStyle.RING);
-
-
-        chartData.add(lineData1);
-        chartData.add(lineData2);
-        chartData.add(lineData3);
-
-    }
-
-    private void chartLabels()
-    {
-        labels.add("战略匹配");
-        labels.add("组织有效");
-        labels.add("流程可行");
-        labels.add("有效落地");
-        labels.add("高效决策");
-    }
-
     @Override
     public void render(Canvas canvas) {
-        try{
+        try {
             chart.render(canvas);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
     }
@@ -230,35 +177,43 @@ public class QsRadarChartView extends DemoView{
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(event.getAction() == MotionEvent.ACTION_UP)
-        {
-            triggerClick(event.getX(),event.getY());
+        super.onTouchEvent(event);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+            case MotionEvent.ACTION_MOVE:
+
+                break;
+            case MotionEvent.ACTION_UP:
+
+                triggerClick(event.getX(), event.getY());
+                break;
         }
         return true;
     }
 
     //触发监听
-    private void triggerClick(float x,float y)
-    {
-        PointPosition record = chart.getPositionRecord(x,y);
-        if( null == record) return;
+    private void triggerClick(float x, float y) {
+        PointPosition record = chart.getPositionRecord(x, y);
+        if (null == record) return;
 
-        if(record.getDataID() < chartData.size())
-        {
+        if (record.getDataID() < chartData.size()) {
             RadarData lData = chartData.get(record.getDataID());
             Double lValue = lData.getLinePoint().get(record.getDataChildID());
 
             String lTitle = labels.get(record.getDataChildID());
 
             float r = record.getRadius();
-            chart.showFocusPointF(record.getPosition(),r*0.6f);
+            chart.showFocusPointF(record.getPosition(), r * 0.6f);
             chart.getFocusPaint().setStyle(Paint.Style.STROKE);
             chart.getFocusPaint().setStrokeWidth(3);
             chart.getFocusPaint().setColor(Color.RED);
 
             //在点击处显示tooltip
             mPaintTooltips.setColor(Color.parseColor("#ffffff"));
-            mPaintTooltips.setTextSize(DensityUtil.dip2px(context,14));
+            mPaintTooltips.setTextSize(DensityUtil.dip2px(context, 14));
             chart.getToolTip().setCurrentXY(x, y);
             chart.getToolTip().addToolTip(lTitle, mPaintTooltips);
             chart.getToolTip().addToolTip(Double.toString(lValue), mPaintTooltips);
@@ -276,7 +231,7 @@ public class QsRadarChartView extends DemoView{
      */
     public void setChartData(List<ReportFactorEntity> entities) {
 
-        if(entities==null || entities.size()==0){
+        if (entities == null || entities.size() == 0) {
             return;
         }
 
@@ -288,20 +243,19 @@ public class QsRadarChartView extends DemoView{
         chartData.clear();
 
         //标签对应的柱形数据集
-        List<Double> dataSeriesA= new LinkedList<Double>();
+        List<Double> dataSeriesA = new LinkedList<Double>();
         //依数据值确定对应的柱形颜色.
-        List<Integer> dataColorA= new LinkedList<Integer>();
+        List<Integer> dataColorA = new LinkedList<Integer>();
 
-        for(int i=0;i<entities.size();i++)
-        {
+        for (int i = 0; i < entities.size(); i++) {
             ReportFactorEntity rfe = entities.get(i);
-            if(isTopic){
-                if(getCurSelectLabel() == i){
-                    labels.add(String.valueOf(i+1)+"qs_sel");
-                }else{
-                    labels.add(String.valueOf(i+1)+"qs_nor");
+            if (isTopic) {
+                if (getCurSelectLabel() == i) {
+                    labels.add(String.valueOf(i + 1) + "qs_sel");
+                } else {
+                    labels.add(String.valueOf(i + 1) + "qs_nor");
                 }
-            }else{
+            } else {
                 labels.add(rfe.getItemName());
             }
 
@@ -313,7 +267,7 @@ public class QsRadarChartView extends DemoView{
         RadarData lineData2 = new RadarData("", dataSeriesA,
                 Color.parseColor("#6cdaf3"), XEnum.DataAreaStyle.STROKE);
         lineData2.setDotStyle(XEnum.DotStyle.DOT);
-        lineData2.getPlotLine().getPlotDot().setDotRadius(DensityUtil.dip2px(context,6));
+        lineData2.getPlotLine().getPlotDot().setDotRadius(DensityUtil.dip2px(context, 6));
 //        lineData2.getPlotLine().getDotPaint().setTextSize(DensityUtil.dip2px(context,3));
         lineData2.getPlotLine().getDotPaint().setColor(Color.parseColor("#6cdaf3"));
 

@@ -86,6 +86,7 @@ public class DemoView extends ChartView {
 
 	public ReportItemEntity resetMax(ReportItemEntity reportData){
 		if(reportData!=null){
+			int maxScore = reportData.getMaxScore();
 			List<ReportFactorEntity> reportFactorEntities = reportData.getItems();
 			double max = 0;
 			if(reportFactorEntities!=null){
@@ -96,40 +97,13 @@ public class DemoView extends ChartView {
 					}
 				}
 
-				int offset = 10;
 
-				if(max <=3){
-					max = 5;
-				}else if(max <=5){
-					max = 10;
-				}else if(max <=10){
-					max  = 16;
-				}else if(max <=20){
-					max  = 20;
-				}else if(max <=30){
-					max  = 30;
-				}else if(max <=40){
-					max  = 40;
-				}else if(max <=50){
-					max  = 50;
-				}else if(max <=60){
-					max  = 60;
-				}else if(max <=70){
-					max  = 70;
-				}else if(max <=80){
-					max  = 80;
-				}else if(max <=90){
-					max  = 90;
-				}else{
-					max = 100;
-				}
 			}
 
-			if(max>=20){
-				max = max + 10;
+			if(max > maxScore){
+				reportData.setMaxScore((int)max);
 			}
 
-			reportData.setMaxScore((int)max);
 			if(reportData.getMinScore()<0){
 				reportData.setMinScore(-(int)max);
 			}

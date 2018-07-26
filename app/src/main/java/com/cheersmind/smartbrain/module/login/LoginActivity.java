@@ -322,6 +322,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         List<ChildInfoEntity> childList = childData.getItems();
                         if(childList.size()==0){
                             Toast.makeText(LoginActivity.this,"孩子列表为空",Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         for(int i=0;i<childList.size();i++){
                             ChildInfoEntity entity = childList.get(i);
