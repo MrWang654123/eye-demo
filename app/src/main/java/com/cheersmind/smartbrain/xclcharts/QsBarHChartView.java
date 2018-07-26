@@ -16,6 +16,7 @@ import org.xclcharts.chart.BarChart;
 import org.xclcharts.chart.BarData;
 import org.xclcharts.common.DensityUtil;
 import org.xclcharts.common.IFormatterDoubleCallBack;
+import org.xclcharts.common.IFormatterTextCallBack;
 import org.xclcharts.event.click.BarPosition;
 import org.xclcharts.renderer.XEnum;
 
@@ -35,11 +36,12 @@ public class QsBarHChartView extends DemoView {
     //标签轴
     private List<String> chartLabels = new LinkedList<String>();
     private List<BarData> chartData = new LinkedList<BarData>();
+    Paint mPaintToolTip = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private ReportItemEntity reportData;
     private boolean isTopic;
 
-    public QsBarHChartView(Context context,ReportItemEntity reportData,int curSelectLabel) {
+    public QsBarHChartView(Context context, ReportItemEntity reportData, int curSelectLabel) {
         super(context);
         this.reportData = reportData;
         this.context = context;
@@ -47,7 +49,7 @@ public class QsBarHChartView extends DemoView {
         initView();
     }
 
-    public QsBarHChartView(Context context, AttributeSet attrs){
+    public QsBarHChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
@@ -57,15 +59,13 @@ public class QsBarHChartView extends DemoView {
         initView();
     }
 
-    private void initView()
-    {
-//        chartLabels();
-//        chartDataSet();
+    private void initView() {
+
         setChartData(reportData.getItems());
         chartRender();
 
         //綁定手势滑动事件
-        this.bindTouch(this,chart);
+        this.bindTouch(this, chart);
     }
 
 
@@ -73,16 +73,17 @@ public class QsBarHChartView extends DemoView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         //图所占范围大小
-        if(null !=chart)chart.setChartRange(w,h);
+        if (null != chart) chart.setChartRange(w, h);
     }
 
 
-    private void chartRender()
-    {
+    private void chartRender() {
         try {
+
+            int scaleDp = DensityUtil.dip2px(getContext(), 50);
             //设置绘图区默认缩进px值,留置空间显示Axis,Axistitle....
-            int [] ltrb = getBarLnDefaultSpadding();
-            chart.setPadding(DensityUtil.dip2px(getContext(), 50),ltrb[1], ltrb[2],  ltrb[3]);
+            int[] ltrb = getBarLnDefaultSpadding();
+            chart.setPadding(scaleDp, ltrb[1], ltrb[2], ltrb[3]);
 
 
             chart.setTitle("");
@@ -102,7 +103,7 @@ public class QsBarHChartView extends DemoView {
             //数据轴
             chart.getDataAxis().setAxisMax(reportData.getMaxScore());
             chart.getDataAxis().setAxisMin(reportData.getMinScore());
-            chart.getDataAxis().setAxisSteps(reportData.getMaxScore()/2);
+            chart.getDataAxis().setAxisSteps(reportData.getMaxScore() / 2);
 
             chart.getDataAxis().setDetailModeSteps(1);
 
@@ -119,15 +120,19 @@ public class QsBarHChartView extends DemoView {
 //            chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#f7f7f7"));
             //设置Y轴标签颜色
             chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
-            chart.getDataAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getDataAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 12));
+            chart.getDataAxis().getTickLabelPaint().setColor(Color.parseColor("#12b2f4"));
+            chart.getDataAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             //设置横向标签颜色
-            chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#12b2f4"));
+            if(reportData.getItems().size()>4){
+                chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 10));
+            }else{
+                chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
+            }
             chart.getCategoryAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
-            chart.getCategoryAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getCategoryAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 12));
 //            chart.getDataAxis().setLabelFormatter(new IFormatterTextCallBack(){
 //
 //                @Override
@@ -145,9 +150,9 @@ public class QsBarHChartView extends DemoView {
             chart.getPlotGrid().hideEvenRowBgColor();
 
             //设置横向标签旋转角度
-            if(isTopic){
+            if (isTopic) {
                 chart.getCategoryAxis().setTickLabelRotateAngle(0);
-            }else{
+            } else {
                 chart.getCategoryAxis().setTickLabelRotateAngle(-20);
             }
 
@@ -157,10 +162,23 @@ public class QsBarHChartView extends DemoView {
             chart.getBar().setItemLabelVisible(true);
             chart.getBar().getItemLabelPaint().setColor(Color.parseColor("#ffa400"));
             chart.getBar().getItemLabelPaint().setTypeface(Typeface.DEFAULT_BOLD);
-            chart.getBar().getItemLabelPaint().setTextSize(DensityUtil.dip2px(context,12));
+            chart.getBar().getItemLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             chart.getBorder().setBorderLineColor(Color.parseColor("#f7f7f7"));
             chart.getPlotGrid().getHorizontalLinePaint().setColor(Color.parseColor("#f7f7f7"));
+
+            //定义数据轴标签显示格式（设置后横轴显示到了底部）
+            chart.getDataAxis().setLabelFormatter(new IFormatterTextCallBack(){
+
+                @Override
+                public String textFormatter(String value) {
+                    // TODO Auto-generated method stub
+                    Double tmp = Double.parseDouble(value);
+                    String label = String.valueOf(tmp);
+                    return (label);
+                }
+
+            });
 
             chart.setItemLabelFormatter(new IFormatterDoubleCallBack() {
                 @Override
@@ -170,20 +188,22 @@ public class QsBarHChartView extends DemoView {
 //                    String label = df.format(value).toString();
                     String label = "[" + value + "]";
                     return label;
-                }});
+                }
+            });
 
             //激活点击监听
             chart.ActiveListenItemClick();
             chart.showClikedFocus();
 
-            chart.disablePanMode();
-            //chart.getDataAxis().setVerticalTickPosition(XEnum.VerticalAlign.TOP);
-            chart.setDataAxisLocation(XEnum.AxisLocation.TOP);
+            //禁用平移模式
+//            chart.disablePanMode();
+            chart.getDataAxis().setVerticalTickPosition(XEnum.VerticalAlign.BOTTOM);
+//            chart.setDataAxisLocation(XEnum.AxisLocation.TOP);
 
             chart.getPlotLegend().hide();
             chart.getBar().setBarStyle(XEnum.BarStyle.FILL);
 
-			/*
+            /*
 			chart.setDataAxisPosition(XEnum.DataAxisPosition.BOTTOM);
 			chart.getDataAxis().setVerticalTickPosition(XEnum.VerticalAlign.BOTTOM);
 
@@ -198,39 +218,12 @@ public class QsBarHChartView extends DemoView {
 
 
     }
-    private void chartDataSet()
-    {
-        //标签对应的柱形数据集
-        List<Double> dataSeriesA= new LinkedList<Double>();
-        dataSeriesA.add((double)200);
-        dataSeriesA.add((double)250);
-        dataSeriesA.add((double)400);
-        BarData BarDataA = new BarData("小熊",dataSeriesA,Color.rgb(0, 0,255));
-
-
-        List<Double> dataSeriesB= new LinkedList<Double>();
-        dataSeriesB.add((double)300);
-        dataSeriesB.add((double)150);
-        dataSeriesB.add((double)450);
-        BarData BarDataB = new BarData("小周",dataSeriesB,Color.rgb(255, 0, 0));
-
-
-        chartData.add(BarDataA);
-        chartData.add(BarDataB);
-    }
-
-    private void chartLabels()
-    {
-        chartLabels.add("擂茶");
-        chartLabels.add("槟榔");
-        chartLabels.add("纯净水");
-    }
 
     @Override
     public void render(Canvas canvas) {
-        try{
+        try {
             chart.render(canvas);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
     }
@@ -241,7 +234,7 @@ public class QsBarHChartView extends DemoView {
 
         super.onTouchEvent(event);
 
-        switch(event.getAction()){
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
 
                 break;
@@ -258,25 +251,60 @@ public class QsBarHChartView extends DemoView {
 
 
     //触发监听
-    private void triggerClick(float x,float y)
-    {
-        BarPosition record = chart.getPositionRecord(x,y);
-        if( null == record) return;
+    private void triggerClick(float x, float y) {
 
-        BarData bData = chartData.get(record.getDataID());
-        Double bValue = bData.getDataSet().get(record.getDataChildID());
+        //交叉线
+        if (chart.getDyLineVisible()) chart.getDyLine().setCurrentXY(x, y);
 
-//        Toast.makeText(this.getContext(),
-//                "info:" + record.getRectInfo() +
-//                        " Key:" + bData.getKey() +
-//                        " Current Value:" + Double.toString(bValue),
-//                Toast.LENGTH_SHORT).show();
+        if (!chart.getListenItemClickStatus()) {
+            //交叉线
+            if (chart.getDyLineVisible() && chart.getDyLine().isInvalidate()) this.invalidate();
+        } else {
+            BarPosition record = chart.getPositionRecord(x, y);
+            if (null == record) {
+                if (chart.getDyLineVisible()) this.invalidate();
+                return;
+            }
 
-        chart.showFocusRectF(record.getRectF());
-        chart.getFocusPaint().setStyle(Paint.Style.STROKE);
-        chart.getFocusPaint().setStrokeWidth(3);
-        chart.getFocusPaint().setColor(Color.GREEN);
-        this.invalidate();
+            if (record.getDataID() >= chartData.size()) return;
+            BarData bData = chartData.get(record.getDataID());
+
+            if (record.getDataChildID() >= bData.getDataSet().size()) return;
+            Double bValue = bData.getDataSet().get(record.getDataChildID());
+            String lTitle = chartLabels.get(record.getDataChildID());
+
+            //显示选中框
+            chart.showFocusRectF(record.getRectF());
+            chart.getFocusPaint().setStyle(Paint.Style.STROKE);
+            chart.getFocusPaint().setStrokeWidth(3);
+            chart.getFocusPaint().setColor(Color.GREEN);
+
+
+            //在点击处显示tooltip
+            mPaintToolTip.setAntiAlias(true);
+            mPaintToolTip.setColor(Color.parseColor("#ffffff"));
+            mPaintToolTip.setTextSize(com.cheersmind.smartbrain.main.util.DensityUtil.dip2px(context, 14));
+
+
+//            mDotToolTip.setDotStyle(XEnum.DotStyle.RECT);
+//            mDotToolTip.setColor(Color.BLUE); //bData.getColor());
+
+            //位置显示方法一:
+            //用下列方法可以让tooltip显示在柱形顶部
+            //chart.getToolTip().setCurrentXY(record.getRectF().centerX(),record.getRectF().top);
+            //位置显示方法二:
+            //用下列方法可以让tooltip在所点击位置显示
+            chart.getToolTip().setCurrentXY(x, y);
+            chart.getToolTip().setStyle(XEnum.DyInfoStyle.ROUNDRECT);
+            chart.getToolTip().addToolTip(lTitle, mPaintToolTip);
+            chart.getToolTip().addToolTip(Double.toString(bValue), mPaintToolTip);
+            chart.getToolTip().getBackgroundPaint().setColor(Color.parseColor("#ffa400"));
+            chart.getToolTip().setAlign(Paint.Align.CENTER);
+
+            chart.getToolTip().setInfoStyle(XEnum.DyInfoStyle.RECT);
+            this.invalidate();
+        }
+
     }
 
     /**
@@ -285,7 +313,7 @@ public class QsBarHChartView extends DemoView {
      */
     public void setChartData(List<ReportFactorEntity> entities) {
 
-        if(entities==null || entities.size()==0){
+        if (entities == null || entities.size() == 0) {
             return;
         }
 
@@ -297,20 +325,19 @@ public class QsBarHChartView extends DemoView {
         chartData.clear();
 
         //标签对应的柱形数据集
-        List<Double> dataSeriesA= new LinkedList<Double>();
+        List<Double> dataSeriesA = new LinkedList<Double>();
         //依数据值确定对应的柱形颜色.
-        List<Integer> dataColorA= new LinkedList<Integer>();
+        List<Integer> dataColorA = new LinkedList<Integer>();
 
-        for(int i=0;i<entities.size();i++)
-        {
+        for (int i = 0; i < entities.size(); i++) {
             ReportFactorEntity rfe = entities.get(i);
-            if(isTopic){
-                if(getCurSelectLabel() == i){
-                    chartLabels.add(String.valueOf(i+1)+"qs_sel");
-                }else{
-                    chartLabels.add(String.valueOf(i+1)+"qs_nor");
+            if (isTopic) {
+                if (getCurSelectLabel() == i) {
+                    chartLabels.add(String.valueOf(i + 1) + "qs_sel");
+                } else {
+                    chartLabels.add(String.valueOf(i + 1) + "qs_nor");
                 }
-            }else{
+            } else {
                 chartLabels.add(rfe.getItemName());
             }
 
@@ -319,7 +346,7 @@ public class QsBarHChartView extends DemoView {
 
         }
         //此地的颜色为Key值颜色及柱形的默认颜色
-        BarData BarDataA = new BarData("",dataSeriesA,dataColorA,
+        BarData BarDataA = new BarData("", dataSeriesA, dataColorA,
                 Color.parseColor("#6cdaf3"));
 
         chartData.add(BarDataA);
