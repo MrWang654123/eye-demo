@@ -63,6 +63,9 @@ public class DimensionInfoEntity implements Serializable{
     @InjectMap(name = "is_locked")
     private int isLocked;
 
+    @InjectMap(name = "topic_dimension_id")
+    private String topicDimensionId;
+
     public String getDimensionId() {
         return dimensionId;
     }
@@ -181,5 +184,13 @@ public class DimensionInfoEntity implements Serializable{
 
     public void setIsLocked(int isLocked) {
         this.isLocked = isLocked;
+    }
+
+    public String getTopicDimensionId() {
+        return topicDimensionId;
+    }
+
+    public void setTopicDimensionId(String topicDimensionId) {
+        this.topicDimensionId = topicDimensionId;
     }
 }

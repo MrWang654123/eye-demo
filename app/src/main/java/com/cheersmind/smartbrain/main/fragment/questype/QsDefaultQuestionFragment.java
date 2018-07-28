@@ -1,5 +1,6 @@
 package com.cheersmind.smartbrain.main.fragment.questype;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -7,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -166,6 +168,7 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
                         curSelect = position;
                         notifyDataSetChanged();
                         showAnimBg(viewHolder.tvAnswerbg,entity);
+                        hiddenSoft();
                     }
                 }
             });
@@ -218,6 +221,11 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
             }
         });
 
+    }
+
+    private void hiddenSoft(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
 }

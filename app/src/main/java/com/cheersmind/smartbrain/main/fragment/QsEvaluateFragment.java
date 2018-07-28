@@ -349,7 +349,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
                 LoadingView.getInstance().show(getActivity());
                 DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
                         dimensionInfoEntity.getChildDimension().getExamId(),
-                        dimensionInfoEntity.getDimensionId(),
+                        dimensionInfoEntity.getTopicDimensionId(),
                         ChartViewHelper.REPORT_RELATION_DIMENSION,
                         "0", new BaseService.ServiceCallback() {
                             @Override

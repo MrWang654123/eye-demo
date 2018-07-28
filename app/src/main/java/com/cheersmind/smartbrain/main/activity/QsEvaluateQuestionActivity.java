@@ -684,7 +684,7 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
 
                                 DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
                                         dimensionInfoEntity.getChildDimension().getExamId(),
-                                        dimensionInfoEntity.getDimensionId(),
+                                        dimensionInfoEntity.getTopicDimensionId(),
                                         ChartViewHelper.REPORT_RELATION_DIMENSION,
                                         "0", new BaseService.ServiceCallback() {
                                             @Override
