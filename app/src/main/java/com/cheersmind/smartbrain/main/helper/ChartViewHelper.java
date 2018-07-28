@@ -28,6 +28,7 @@ public class ChartViewHelper {
 
     public static final String REPORT_RELATION_TOPIC = "topic";
     public static final String REPORT_RELATION_DIMENSION = "dimension";
+    public static final String REPORT_RELATION_TOPIC_DIMENSION = "topic_dimension";
 
     public enum ChartType{
         RADARCHARTVIEW(1),
