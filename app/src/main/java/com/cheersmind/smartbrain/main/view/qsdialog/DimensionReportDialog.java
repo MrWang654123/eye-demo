@@ -106,7 +106,9 @@ public class DimensionReportDialog extends Dialog {
 
         if(dimensionReports!=null && dimensionReports.size()>0){
             for(int i=0;i<dimensionReports.size();i++){
-                factorEntities.addAll(dimensionReports.get(i).getItems());
+                if(dimensionReports.get(i).getItems()!=null && dimensionReports.get(i).getItems().size()>0){
+                    factorEntities.addAll(dimensionReports.get(i).getItems());
+                }
             }
             tvTitle.setText(dimensionReports.get(0).getChartItemName());
             tvContent.setText(context.getResources().getString(R.string.qs_dimension_report_hint,
