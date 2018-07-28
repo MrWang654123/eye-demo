@@ -104,7 +104,7 @@ public class QsRadarChartView extends DemoView {
             if (reportData.getMaxScore() <= 5) {
                 chart.getDataAxis().setAxisSteps(1);
             } else {
-                chart.getDataAxis().setAxisSteps(reportData.getMaxScore() / 5);
+                chart.getDataAxis().setAxisSteps(reportData.getMaxScore() / 6);
             }
 
             //主轴标签偏移50，以便留出空间用于显示点和标签
