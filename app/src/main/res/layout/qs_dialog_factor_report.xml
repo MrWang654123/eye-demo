@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_margin="10dp"
-                android:text="@string/qs_factor_report_btn_result"
+                android:text=""
                 android:textSize="18sp"
                 android:textColor="@color/color_666666"/>
 

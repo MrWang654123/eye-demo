@@ -2,16 +2,17 @@ package com.cheersmind.smartbrain.main.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
+import com.cheersmind.smartbrain.main.adapter.ReportRootAdapter;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
 import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
@@ -50,6 +51,7 @@ public class TopicReportFragment extends Fragment {
     private RelativeLayout rtNoneTopicReport;
     private RelativeLayout rtChart;
 //    private LinearLayout stageLayout;
+    private LinearLayout llDimension;
     private ImageView ivCountry;
     private ImageView ivClass;
     private ImageView ivGrade;
@@ -91,7 +93,7 @@ public class TopicReportFragment extends Fragment {
         ivClass.setOnClickListener(onMultiClickListener);
         ivGrade.setOnClickListener(onMultiClickListener);
 
-        vpDimension = (CustomReportViewPager)contentView.findViewById(R.id.vp_dimension);
+        llDimension = (LinearLayout)contentView.findViewById(R.id.ll_dimension);
     }
 
     private void initData(){
@@ -102,7 +104,8 @@ public class TopicReportFragment extends Fragment {
 
         if(topicInfoEntity == null || topicInfoEntity.getChildTopic() == null){
             rtReport.setVisibility(View.GONE);
-            vpDimension.setVisibility(View.GONE);
+//            vpDimension.setVisibility(View.GONE);
+            llDimension.setVisibility(View.GONE);
             rtNoReport.setVisibility(View.VISIBLE);
             return;
         }
@@ -124,8 +127,7 @@ public class TopicReportFragment extends Fragment {
 
         if(dimensionReports!=null && dimensionReports.size()>0
                 && dimensionReports.get(0).get(0).getItems()!=null
-                && dimensionReports.get(0).get(0).getItems().size()>0
-                && dimensionReports.get(0).get(0).getReportResult()!=null){
+                && dimensionReports.get(0).get(0).getItems().size()>0){
             vpDimension.setVisibility(View.VISIBLE);
         }else{
             vpDimension.setVisibility(View.GONE);
@@ -150,64 +152,88 @@ public class TopicReportFragment extends Fragment {
     }
 
     private void initDimensionVp(){
-        if(dimensionReportFragments.size()==0){
-            vpDimension.removeAllViewsInLayout();
-            vpDimension.setOffscreenPageLimit(dimensionReports.size());
-            vpDimension.setPageMargin(DensityUtil.dip2px(getActivity(),20));
-            for(int i=0;i<dimensionReports.size();i++){
-                DimensionReportFragment dimensionReportFragment = new DimensionReportFragment();
-                Bundle bundleDim = new Bundle();
-                bundleDim.putSerializable(DimensionReportFragment.DIMENSION_REPORT_DATA_KEY, (Serializable) dimensionReports.get(i));
-                bundleDim.putString(DimensionReportFragment.DIMENSION_REPORT_STAGE_KEY,String.valueOf(i+1));
-                dimensionReportFragment.setArguments(bundleDim);
-                dimensionReportFragments.add(dimensionReportFragment);
-            }
-            vpDimension.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
-                @Override
-                public Fragment getItem(int position) {
-                    return dimensionReportFragments.get(position);
-                }
-
-                @Override
-                public int getCount() {
-                    return dimensionReportFragments.size();
-                }
-            });
-            vpDimension.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    curDimensionIndex = position;
-                    curChart.updateChart(curDimensionIndex);
-//                    for(int i=0;i<listTv.size();i++){
-//                        TextView tv = listTv.get(i);
-//                        if(i!=listTv.size()-1){
-//                            if(i == position){
-//                                tv.setBackgroundResource(R.mipmap.qs_circle_bg_selete);
-//                            }else{
-//                                tv.setBackgroundResource(R.mipmap.qs_circle_bg);
-//                            }
-//                        }
-//                    }
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-        }else{
-            for(int i=0;i<dimensionReportFragments.size();i++){
-                DimensionReportFragment dimensionReportFragment = (DimensionReportFragment)dimensionReportFragments.get(i);
-                if(dimensionReportFragment!=null){
-                    dimensionReportFragment.updateData(dimensionReports.get(i));
-                }
-            }
+        llDimension.removeAllViews();
+        View dvpView = View.inflate(getActivity(),R.layout.qs_fragment_dimension_viewpage,null);
+        vpDimension = (CustomReportViewPager)dvpView.findViewById(R.id.vp_dimension);
+        llDimension.addView(dvpView);
+        vpDimension.removeAllViewsInLayout();
+        vpDimension.setOffscreenPageLimit(dimensionReports.size()-1);
+        vpDimension.setPageMargin(DensityUtil.dip2px(getActivity(),20));
+        dimensionReportFragments.clear();
+        for(int i=0;i<dimensionReports.size();i++){
+            DimensionReportFragment dimensionReportFragment = new DimensionReportFragment();
+            Bundle bundleDim = new Bundle();
+            bundleDim.putSerializable(DimensionReportFragment.DIMENSION_REPORT_DATA_KEY, (Serializable) dimensionReports.get(i));
+            bundleDim.putString(DimensionReportFragment.DIMENSION_REPORT_STAGE_KEY,String.valueOf(i+1));
+            dimensionReportFragment.setArguments(bundleDim);
+            dimensionReportFragments.add(dimensionReportFragment);
         }
+        vpDimension.setAdapter(new ReportRootAdapter(getActivity(),getChildFragmentManager(), (ArrayList<Fragment>) dimensionReportFragments));
+        vpDimension.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                curDimensionIndex = position;
+                curChart.updateChart(curDimensionIndex);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+//        if(dimensionReportFragments.size()==0){
+//            vpDimension.removeAllViewsInLayout();
+//            vpDimension.setOffscreenPageLimit(dimensionReports.size());
+//            vpDimension.setPageMargin(DensityUtil.dip2px(getActivity(),20));
+//            for(int i=0;i<dimensionReports.size();i++){
+//                DimensionReportFragment dimensionReportFragment = new DimensionReportFragment();
+//                Bundle bundleDim = new Bundle();
+//                bundleDim.putSerializable(DimensionReportFragment.DIMENSION_REPORT_DATA_KEY, (Serializable) dimensionReports.get(i));
+//                bundleDim.putString(DimensionReportFragment.DIMENSION_REPORT_STAGE_KEY,String.valueOf(i+1));
+//                dimensionReportFragment.setArguments(bundleDim);
+//                dimensionReportFragments.add(dimensionReportFragment);
+//            }
+//            vpDimension.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+//                @Override
+//                public Fragment getItem(int position) {
+//                    return dimensionReportFragments.get(position);
+//                }
+//
+//                @Override
+//                public int getCount() {
+//                    return dimensionReportFragments.size();
+//                }
+//            });
+//            vpDimension.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//                @Override
+//                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//                }
+//
+//                @Override
+//                public void onPageSelected(int position) {
+//                    curDimensionIndex = position;
+//                    curChart.updateChart(curDimensionIndex);
+//                }
+//
+//                @Override
+//                public void onPageScrollStateChanged(int state) {
+//
+//                }
+//            });
+//        }else{
+//            for(int i=0;i<dimensionReportFragments.size();i++){
+//                DimensionReportFragment dimensionReportFragment = (DimensionReportFragment)dimensionReportFragments.get(i);
+//                if(dimensionReportFragment!=null){
+//                    dimensionReportFragment.updateData(dimensionReports.get(i));
+//                }
+//            }
+//        }
 
     }
 
@@ -255,8 +281,8 @@ public class TopicReportFragment extends Fragment {
             }
         }
 
-        initReportVisiable();
         initDimensionVp();
+        initReportVisiable();
     }
 
     //设置对应result

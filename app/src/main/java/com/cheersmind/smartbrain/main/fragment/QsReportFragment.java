@@ -2,13 +2,14 @@ package com.cheersmind.smartbrain.main.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
+import com.cheersmind.smartbrain.main.adapter.ReportRootAdapter;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
@@ -35,6 +36,7 @@ public class QsReportFragment extends Fragment {
 
     private View contentView;
     private EmptyLayout emptyLayout;
+    private LinearLayout llRoot;
 
     private CustomViewPager mViewPager;
     private ViewPagerIndicate mIndicate;
@@ -66,7 +68,8 @@ public class QsReportFragment extends Fragment {
                 loadChildTopicList(true);
             }
         });
-        mViewPager = (CustomViewPager) contentView.findViewById(R.id.report_pager);
+        llRoot = (LinearLayout)contentView.findViewById(R.id.ll_root);
+
     }
 
     private void initData(){
@@ -74,6 +77,10 @@ public class QsReportFragment extends Fragment {
     }
 
     private void initViewPager() {
+        llRoot.removeAllViews();
+        View pageView = View.inflate(getActivity(),R.layout.qs_fragment_report_viewpage,null);
+        llRoot.addView(pageView);
+        mViewPager = (CustomViewPager) pageView.findViewById(R.id.report_pager);
         topicReportFragments.clear();
         mViewPager.removeAllViewsInLayout();
         for (int i = 0; i < childTopicList.size(); i++) {
@@ -85,23 +92,13 @@ public class QsReportFragment extends Fragment {
         }
 
         mViewPager.setOffscreenPageLimit(childTopicList.size()-1);
-        mViewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return topicReportFragments.get(position);
-            }
+        mViewPager.setAdapter(new ReportRootAdapter(getActivity(),getChildFragmentManager(), (ArrayList<Fragment>) topicReportFragments));
 
-            @Override
-            public int getCount() {
-                return topicReportFragments.size();
-            }
-        });
-
-        initViewPagerIndicate();
+        initViewPagerIndicate(pageView);
     }
 
-    private void initViewPagerIndicate() {
-        mIndicate = (ViewPagerIndicate) contentView.findViewById(R.id.view_indicate);
+    private void initViewPagerIndicate(View view) {
+        mIndicate = (ViewPagerIndicate) view.findViewById(R.id.view_indicate);
         //设置标签样式、文本和颜色
         mIndicate.resetText(R.layout.qs_viewpage_indicate_view, getTitleData(), mTextColors);
         //设置下划线粗细和颜色
@@ -162,18 +159,15 @@ public class QsReportFragment extends Fragment {
         });
     }
 
-    private void loadChildReport(){
-//        DataRequestService.getInstance().getTopicReportVTow();
-    }
-
     public void onRefreshRoport(){
         LogUtils.w("QsReportFragment","刷新报告数据");
-        for(int i=0;i<topicReportFragments.size();i++){
-            TopicReportFragment topicReportFragment = (TopicReportFragment) topicReportFragments.get(i);
-            if(topicReportFragment!=null){
-                topicReportFragment.updateData();
-            }
-        }
+        loadChildTopicList(true);
+//        for(int i=0;i<topicReportFragments.size();i++){
+//            TopicReportFragment topicReportFragment = (TopicReportFragment) topicReportFragments.get(i);
+//            if(topicReportFragment!=null){
+//                topicReportFragment.updateData();
+//            }
+//        }
     }
 
 }

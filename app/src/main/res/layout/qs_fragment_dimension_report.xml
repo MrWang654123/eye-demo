@@ -72,7 +72,7 @@
             android:layout_marginTop="10dp"
             android:lines="4"
             android:ellipsize="end"
-            android:text="对比其他同龄人，我父母的心里控制处于中等水平，即父母一定程度上会通过操纵情绪、干涉自主活动或限制体验来对我进行控制"
+            android:text="对比其他同龄"
             android:textSize="14sp"
             android:textColor="@color/color_666666"/>
 

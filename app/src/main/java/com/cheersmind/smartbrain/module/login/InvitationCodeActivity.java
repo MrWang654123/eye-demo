@@ -113,7 +113,7 @@ public class InvitationCodeActivity extends BaseActivity implements View.OnClick
                         startActivity(intent);
                         finish();
                     }else{
-                        Toast.makeText(InvitationCodeActivity.this,"验证失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(InvitationCodeActivity.this,"邀请码有误，请重新输入！",Toast.LENGTH_SHORT).show();
                     }
                 }
             });

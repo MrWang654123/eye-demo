@@ -102,13 +102,13 @@ public class DimensionReportFragment extends Fragment {
             String dimensionName = reportItemEntity.getChartItemName();
             tvDimensionName.setText(getActivity().getResources().getString(R.string.qs_dimension_report_reuslt,dimensionName));
 
-            if(dimensionReports.get(0).getItems()==null
-                    || dimensionReports.get(0).getItems().size()==0
-                    || dimensionReports.get(0).getReportResult()==null){
-                tvNone.setVisibility(View.VISIBLE);
-                llReport.setVisibility(View.GONE);
-                return;
-            }
+//            if(dimensionReports.get(0).getItems()==null
+//                    || dimensionReports.get(0).getItems().size()==0
+//                    || dimensionReports.get(0).getReportResult()==null){
+//                tvNone.setVisibility(View.VISIBLE);
+//                llReport.setVisibility(View.GONE);
+//                return;
+//            }
 
             llReport.setVisibility(View.VISIBLE);
             tvNone.setVisibility(View.GONE);
@@ -125,6 +125,9 @@ public class DimensionReportFragment extends Fragment {
                 if(!TextUtils.isEmpty(reportResultEntity.getContent())){
                     tvResultContent.setText(Html.fromHtml(reportResultEntity.getContent()));
                 }
+            }else{
+                tvResultTitle.setText("");
+                tvResultContent.setText("");
             }
         }else{
             llReport.setVisibility(View.GONE);

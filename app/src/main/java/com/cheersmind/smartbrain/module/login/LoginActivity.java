@@ -106,6 +106,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         initView();
 
+        //邀请码验证注册返回
+        if(getIntent().getBooleanExtra("from_invate",false)){
+            login();
+            return;
+        }
+
         canAutoLogin();
 
     }
