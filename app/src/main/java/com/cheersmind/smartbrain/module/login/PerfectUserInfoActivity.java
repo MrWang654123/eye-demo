@@ -16,7 +16,11 @@ import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
 import com.cheersmind.smartbrain.main.activity.BaseActivity;
 import com.cheersmind.smartbrain.main.constant.HttpConfig;
+import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
 import com.cheersmind.smartbrain.main.service.BaseService;
+import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
+import com.cheersmind.smartbrain.main.util.JsonUtil;
+import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 
 import java.util.HashMap;
@@ -127,9 +131,32 @@ public class PerfectUserInfoActivity extends BaseActivity implements View.OnClic
                 BaseService.post(url,params,false,new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
-                        e.printStackTrace();
                         LoadingView.getInstance().dismiss();
-                        Toast.makeText(PerfectUserInfoActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
+                        if(!TextUtils.isEmpty(e.getMessage())){
+                            try{
+                                String bodyStr = e.getMessage();
+                                Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                                ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                                if(errorCodeEntity!=null){
+                                    String message = errorCodeEntity.getMessage();
+                                    if(TextUtils.isEmpty(message)){
+                                        ToastUtil.showShort(PerfectUserInfoActivity.this,getResources().getString(R.string.error_code_common_text));
+                                    }else{
+                                        ToastUtil.showShort(PerfectUserInfoActivity.this,message);
+                                    }
+                                }else{
+                                    ToastUtil.showShort(PerfectUserInfoActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }
+                            }catch ( Exception err){
+                                if(TextUtils.isEmpty(e.getMessage())){
+                                    ToastUtil.showShort(PerfectUserInfoActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }else{
+                                    ToastUtil.showShort(PerfectUserInfoActivity.this,e.getMessage());
+                                }
+                            }
+                        }else{
+                            ToastUtil.showShort(PerfectUserInfoActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }
                     }
 
                     @Override

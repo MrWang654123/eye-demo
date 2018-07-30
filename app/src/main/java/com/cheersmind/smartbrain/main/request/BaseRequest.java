@@ -95,7 +95,7 @@ public class BaseRequest {
                     if (e instanceof SocketTimeoutException) {
                         //判断超时异常
                     }else if (e instanceof ConnectException) {
-                        ////判断连接异常，
+                        //判断连接异常，
                     }
                 }
             }
@@ -103,11 +103,14 @@ public class BaseRequest {
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
                 LogUtils.w("onResponse_get",response.toString());
+
                 if (callback != null) {
                     if(response.code() == 200 || response.code() == 201) {
                         callback.onResponse(call, response);
                     }else{
-                        callback.onFailure(call,new IOException());
+                        String bodyStr = response.body().string();
+                        LogUtils.w("onResponse_get_body",bodyStr);
+                        callback.onFailure(call,new IOException(bodyStr));
                     }
 
                 }
@@ -164,8 +167,10 @@ public class BaseRequest {
                     callback.onFailure(call,e);
                     if (e instanceof SocketTimeoutException) {
                         //判断超时异常
+                        LogUtils.w("on_failure:","连接超时SocketTimeoutException");
                     }else if (e instanceof ConnectException) {
                         ////判断连接异常，
+                        LogUtils.w("on_failure:","连接异常SocketTimeoutException");
                     }
                 }
             }
@@ -177,7 +182,9 @@ public class BaseRequest {
                     if(response.code() == 200 || response.code() == 201) {
                         callback.onResponse(call, response);
                     }else{
-                        callback.onFailure(call,new IOException());
+                        String bodyStr = response.body().string();
+                        LogUtils.w("onResponse_get_body",bodyStr);
+                        callback.onFailure(call,new IOException(bodyStr));
                     }
                 }
             }

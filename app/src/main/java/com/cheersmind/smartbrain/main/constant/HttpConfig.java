@@ -8,19 +8,14 @@ import com.cheersmind.smartbrain.module.login.EnvHostManager;
 public class HttpConfig {
 
     //生产环境
+//    public static final String UC_HOST  = "http://psytest-server.cheersmind.com";
 //    public static final String API_HOST = "http://psytest-server.cheersmind.com";
 //    public static final String WEB_HOST = "http://psytest-web.cheersmind.com";
-//    public static final String UC_HOST  = "http://psytest-server.cheersmind.com";
 
     //开发环境
     public static String UC_HOST  = EnvHostManager.getInstance().getUcHost();
     public static String API_HOST = EnvHostManager.getInstance().getApiHost();
     public static String WEB_HOST = EnvHostManager.getInstance().getWebHost();
-
-//    public static String UC_HOST  = BuildConfig.UC_HOST;
-//    public static String API_HOST = BuildConfig.API_HOST;
-//    public static String WEB_HOST = BuildConfig.WEB_HOST;
-
 
     /**-----------------------------------------------------------------------
      *---------------------------用户信息相关-----------------------------------
@@ -43,6 +38,11 @@ public class HttpConfig {
 
     //获取用户详情
     public static final String URL_USER_DETAILS = API_HOST + "/v1/api/users";
+
+
+    /**-----------------------------------------------------------------------
+     *---------------------------业务相关-----------------------------------
+     ---------------------------------------------------------------------------*/
 
     //获取项目列表，带当前测评（exam_id）
     public static final String URL_PROJECTS_LIST = API_HOST + "/v1/api/children/{child_id}/projects";

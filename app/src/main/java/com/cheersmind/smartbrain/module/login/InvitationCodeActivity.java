@@ -16,9 +16,11 @@ import com.cheersmind.smartbrain.main.Exception.QSCustomException;
 import com.cheersmind.smartbrain.main.activity.BaseActivity;
 import com.cheersmind.smartbrain.main.constant.HttpConfig;
 import com.cheersmind.smartbrain.main.entity.CommonPostResult;
+import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
+import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.CommonDialog;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 
@@ -96,8 +98,31 @@ public class InvitationCodeActivity extends BaseActivity implements View.OnClick
                 @Override
                 public void onFailure(QSCustomException e) {
                     LoadingView.getInstance().dismiss();
-                    Toast.makeText(InvitationCodeActivity.this,"验证码错误",Toast.LENGTH_SHORT).show();
-
+                    if(!TextUtils.isEmpty(e.getMessage())){
+                        try{
+                            String bodyStr = e.getMessage();
+                            Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                            ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                            if(errorCodeEntity!=null){
+                                String message = errorCodeEntity.getMessage();
+                                if(TextUtils.isEmpty(message)){
+                                    ToastUtil.showShort(InvitationCodeActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }else{
+                                    ToastUtil.showShort(InvitationCodeActivity.this,message);
+                                }
+                            }else{
+                                ToastUtil.showShort(InvitationCodeActivity.this,getResources().getString(R.string.error_code_common_text));
+                            }
+                        }catch ( Exception err){
+                            if(TextUtils.isEmpty(e.getMessage())){
+                                ToastUtil.showShort(InvitationCodeActivity.this,getResources().getString(R.string.error_code_common_text));
+                            }else{
+                                ToastUtil.showShort(InvitationCodeActivity.this,e.getMessage());
+                            }
+                        }
+                    }else{
+                        ToastUtil.showShort(InvitationCodeActivity.this,getResources().getString(R.string.error_code_common_text));
+                    }
                 }
 
                 @Override

@@ -451,7 +451,11 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
             public void onFailure(QSCustomException e) {
                 emptyLayout.setErrorType(EmptyLayout.NETWORK_ERROR);
                 LoadingView.getInstance().dismiss();
-                ToastUtil.showShort(QsDimensionDetailsActivity.this,"获取因子列表失败");
+                String message = e.getMessage();
+                if(TextUtils.isEmpty(message)){
+                    message = "获取因子列表失败";
+                }
+                ToastUtil.showShort(QsDimensionDetailsActivity.this,message);
             }
 
             @Override

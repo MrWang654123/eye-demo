@@ -31,6 +31,7 @@ import com.cheersmind.smartbrain.main.constant.HttpConfig;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.ChildInfoEntity;
 import com.cheersmind.smartbrain.main.entity.ChildInfoRootEntity;
+import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
@@ -245,12 +246,31 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         UserService.logon(loginName, pwd, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-
                 LoadingView.getInstance().dismiss();
-                if(!TextUtils.isEmpty(e.getMessage()) && e.getMessage().contains("Failed to connect")){
-                    Toast.makeText(LoginActivity.this, "网络连接有误！", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(LoginActivity.this, "账号或密码输入有误！", Toast.LENGTH_SHORT).show();
+                if(!TextUtils.isEmpty(e.getMessage())){
+                    try{
+                        String bodyStr = e.getMessage();
+                        Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                        ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                        if(errorCodeEntity!=null){
+                            String message = errorCodeEntity.getMessage();
+                            if(TextUtils.isEmpty(message)){
+                                ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                            }else{
+                                ToastUtil.showShort(LoginActivity.this,message);
+                            }
+                        }else{
+                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }
+                    }catch (Exception err){
+                        if(TextUtils.isEmpty(e.getMessage())){
+                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }else{
+                            ToastUtil.showShort(LoginActivity.this,e.getMessage());
+                        }
+                    }
+                }else{
+                    ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
                 }
             }
 
@@ -489,14 +509,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     @Override
                     public void onFailure(QSCustomException e) {
                         LoadingView.getInstance().dismiss();
-                        LogUtils.w("WXTest", "获取业务端token失败");
-                        //没有在业务端注册
-                        Intent intent = new Intent(LoginActivity.this,UserRegisterActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("wx_token_data",entity);
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent,USER_REQUEST_CODE);
-                        LogUtils.w("WXTest", "还没有在业务端注册，去注册2~~");
+                        if(!TextUtils.isEmpty(e.getMessage())){
+                            try{
+                                String bodyStr = e.getMessage();
+                                Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                                ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                                if(errorCodeEntity!=null){
+                                    if("AC_THIRD_ACCOUNT_NOT_EXIST".equals(errorCodeEntity.getCode())){
+                                        //没有在业务端注册
+                                        Intent intent = new Intent(LoginActivity.this,UserRegisterActivity.class);
+                                        Bundle bundle = new Bundle();
+                                        bundle.putSerializable("wx_token_data",entity);
+                                        intent.putExtras(bundle);
+                                        startActivityForResult(intent,USER_REQUEST_CODE);
+                                    }else{
+                                        String message = errorCodeEntity.getMessage();
+                                        if(TextUtils.isEmpty(message)){
+                                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                                        }else{
+                                            ToastUtil.showShort(LoginActivity.this,message);
+                                        }
+                                    }
+                                }else{
+                                    ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }
+                            }catch ( Exception err){
+                                if(TextUtils.isEmpty(e.getMessage())){
+                                    ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }else{
+                                    ToastUtil.showShort(LoginActivity.this,e.getMessage());
+                                }
+                            }
+                        }else{
+                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }
                     }
 
                     @Override
