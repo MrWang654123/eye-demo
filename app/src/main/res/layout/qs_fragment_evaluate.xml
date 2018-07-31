@@ -31,5 +31,5 @@
         android:visibility="gone">
 
     </com.cheersmind.smartbrain.main.view.EmptyLayout>
-    
+
 </RelativeLayout>

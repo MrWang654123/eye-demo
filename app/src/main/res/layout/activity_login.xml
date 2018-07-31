@@ -272,4 +272,32 @@
             android:background="@mipmap/launcher_image_bg" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/rl_notification"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="visible"
+        android:background="#ffe3e8">
+
+        <com.cheersmind.smartbrain.main.view.MarqueeText
+            android:id="@+id/tv_notification"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_marginRight="30dp"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"/>
+
+        <ImageView
+            android:id="@+id/iv_notification"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="center"
+            android:src="@mipmap/qs_icon_close"/>
+    </RelativeLayout>
+
 </RelativeLayout>

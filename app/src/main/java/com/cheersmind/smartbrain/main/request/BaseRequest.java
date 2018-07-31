@@ -43,7 +43,13 @@ public class BaseRequest {
 //    }
 
     private static String getHeader(String url,String method) {
-        if (url.equals(HttpConfig.URL_LOGIN) || url.equals(HttpConfig.URL_CODE_INVATE) || url.equals(HttpConfig.URL_CODE_REGISTERS)|| url.contains("check_child_invite") || url.contains(HttpConfig.URL_UC_THIRD_LOGIN) || url.contains(HttpConfig.URL_UC_REGISTER)) {
+        if (url.equals(HttpConfig.URL_LOGIN)
+                || url.equals(HttpConfig.URL_CODE_INVATE)
+                || url.equals(HttpConfig.URL_CODE_REGISTERS)
+                || url.contains("check_child_invite")
+                || url.contains(HttpConfig.URL_UC_THIRD_LOGIN)
+                || url.contains(HttpConfig.URL_UC_REGISTER)
+                || url.equals(HttpConfig.URL_UPDATE_NOTIFICATION)) {
             return "";
         }
         String host = url.startsWith(HttpConfig.API_HOST)?HttpConfig.API_HOST:HttpConfig.UC_HOST;

@@ -35,6 +35,7 @@ import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
+import com.cheersmind.smartbrain.main.entity.UpdateNotificationEntity;
 import com.cheersmind.smartbrain.main.entity.UserDetailsEntity;
 import com.cheersmind.smartbrain.main.entity.WXTokenEntity;
 import com.cheersmind.smartbrain.main.entity.WXUserInfoEntity;
@@ -46,6 +47,7 @@ import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.LoadingView;
+import com.cheersmind.smartbrain.main.view.MarqueeText;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
@@ -87,6 +89,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     private LinearLayout llWx;
     private LinearLayout llUser;
+
+    private MarqueeText tvNotification;
+    private RelativeLayout rlNotification;
+    private ImageView ivNotification;
 
 //    public static WXTokenEntity tokenData ;
 
@@ -157,6 +163,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
         llWx = (LinearLayout)findViewById(R.id.ll_wx);
         llUser = (LinearLayout)findViewById(R.id.ll_user);
+
+        rlNotification = (RelativeLayout) findViewById(R.id.rl_notification);
+        tvNotification = (MarqueeText)findViewById(R.id.tv_notification);
+        ivNotification = (ImageView) findViewById(R.id.iv_notification);
+        ivNotification.setOnClickListener(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -176,6 +187,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
+        getUpdateNotification();
     }
 
     @Override
@@ -209,6 +221,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 //            testToken();
         }else if(v == ivUserLogin){
             updateLoginView(false);
+        }else if(v == ivNotification){
+            if(rlNotification.getVisibility() == View.VISIBLE){
+                rlNotification.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -629,6 +645,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 LogUtils.w("wxtest","重新请求token1");
                 rtAuto.setVisibility(View.GONE);
                 scvLogin.setVisibility(View.VISIBLE);
+
             }
         }else{
             //重新请求token
@@ -636,6 +653,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             LogUtils.w("wxtest","重新请求token2");
             rtAuto.setVisibility(View.GONE);
             scvLogin.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -671,6 +689,33 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 if (entity != null && !TextUtils.isEmpty(entity.getAccessToken())) {
                     LogUtils.w("WXTest", "token:" + entity.getAccessToken());
                     wxLoginBack(entity);
+                }
+            }
+        });
+    }
+
+    private void getUpdateNotification(){
+        DataRequestService.getInstance().getUpdateNotification(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                rlNotification.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if(obj!=null){
+                    Map map = JsonUtil.fromJson(obj.toString(),Map.class);
+                    UpdateNotificationEntity notificationEntity = InjectionWrapperUtil.injectMap(map,UpdateNotificationEntity.class);
+                    if(notificationEntity!=null){
+                        if(notificationEntity.isNotice() && !TextUtils.isEmpty(notificationEntity.getMessage())){
+                            tvNotification.setText(notificationEntity.getMessage());
+                            rlNotification.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        rlNotification.setVisibility(View.GONE);
+                    }
+                }else{
+                    rlNotification.setVisibility(View.GONE);
                 }
             }
         });

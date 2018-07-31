@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheersmind.smartbrain.R;
@@ -27,6 +28,7 @@ import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
+import com.cheersmind.smartbrain.main.entity.UpdateNotificationEntity;
 import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
@@ -38,6 +40,7 @@ import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.util.imagetool.ImageCacheTool;
 import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
+import com.cheersmind.smartbrain.main.view.MarqueeText;
 import com.cheersmind.smartbrain.main.view.horizon.MyListview;
 import com.cheersmind.smartbrain.main.view.qsdialog.DimensionReportDialog;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizonListviewAdapter;
@@ -57,6 +60,10 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     private View contentView;
     private View headView;
     private EmptyLayout emptyLayout;
+
+    private MarqueeText tvNotification;
+    private RelativeLayout rlNotification;
+    private ImageView ivNotification;
 
     private LinearLayout llRoot;
     private Button btnLateStart;
@@ -91,6 +98,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
         }
 
         initView();
+        getUpdateNotification();
         return contentView;
     }
 
@@ -98,6 +106,10 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         if(view == btnLateStart){
             startCurrrentDimension(headDimension,new TopicInfoEntity());
+        }else if(view == ivNotification){
+            if(rlNotification.getVisibility() == View.VISIBLE){
+                rlNotification.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -117,6 +129,12 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
         });
 
         headView = View.inflate(getActivity(),R.layout.qs_fragment_evaluate_head,null);
+
+        rlNotification = (RelativeLayout) headView.findViewById(R.id.rl_notification);
+        tvNotification = (MarqueeText)headView.findViewById(R.id.tv_notification);
+        ivNotification = (ImageView) headView.findViewById(R.id.iv_notification);
+        ivNotification.setOnClickListener(this);
+
         llRoot = (LinearLayout)headView.findViewById(R.id.ll_root);
         tvDimensionName = (TextView)headView.findViewById(R.id.tv_dimension_name);
         tvDimensionTime = (TextView)headView.findViewById(R.id.tv_dimension_time);
@@ -395,6 +413,29 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
 
             }
         }
+    }
+
+    private void getUpdateNotification(){
+        DataRequestService.getInstance().getUpdateNotification(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if(obj!=null){
+                    Map map = JsonUtil.fromJson(obj.toString(),Map.class);
+                    UpdateNotificationEntity notificationEntity = InjectionWrapperUtil.injectMap(map,UpdateNotificationEntity.class);
+                    if(notificationEntity!=null){
+                        if(notificationEntity.isNotice() && !TextUtils.isEmpty(notificationEntity.getMessage())){
+                            tvNotification.setText(notificationEntity.getMessage());
+                            rlNotification.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        });
     }
 
 }

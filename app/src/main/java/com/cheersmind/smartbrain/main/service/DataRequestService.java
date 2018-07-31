@@ -593,4 +593,19 @@ public class DataRequestService {
         });
     }
 
+    public void getUpdateNotification(final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_UPDATE_NOTIFICATION;
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
 }
