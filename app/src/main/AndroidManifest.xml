@@ -38,20 +38,13 @@
         <activity android:name="com.cheersmind.smartbrain.module.login.LoginActivity" />
         <activity android:name="com.cheersmind.smartbrain.main.activity.MainActivity" />
         <activity android:name="com.cheersmind.smartbrain.module.mine.AboutActivity" />
-        <activity android:name="com.cheersmind.smartbrain.module.recommend.RecommendFirstActivity" />
         <activity android:name="com.cheersmind.smartbrain.module.login.InvitationCodeActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.login.UserLicenseActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.login.PerfectUserInfoActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.mine.MineInfoActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.mine.SettingActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.evaluate.TopicStartActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.evaluate.EvaluateQuestionActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.evaluate.CountDownActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.mine.MyFlowerActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.evaluate.TopicReportActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.mine.CommentAppActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.evaluate.OtherReportActivity"></activity>
         <activity android:name="com.cheersmind.smartbrain.module.login.UserRegisterActivity"></activity>
         <activity android:name=".module.login.ClassGroupActivity"></activity>
 
