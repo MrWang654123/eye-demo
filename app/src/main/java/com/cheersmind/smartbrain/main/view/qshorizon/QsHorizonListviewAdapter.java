@@ -1,7 +1,7 @@
 package com.cheersmind.smartbrain.main.view.qshorizon;
 
 import android.content.Context;
-import android.text.TextUtils;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,10 +12,8 @@ import android.widget.TextView;
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
-import com.cheersmind.smartbrain.main.util.imagetool.ImageCacheTool;
+import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,22 +77,22 @@ public class QsHorizonListviewAdapter extends BaseAdapter {
         }
 
         holder.tvItemTitle.setText(entity.getDimensionName());
-        if (entity.getChildDimension() != null) {
+//        if (entity.getChildDimension() != null) {
+//
+//            String iconUrl = entity.getIcon();
+//            if (!TextUtils.isEmpty(iconUrl)) {
+//                try {
+//                    ImageCacheTool.getInstance().asyncLoadImage(new URL(iconUrl), holder.ivIcon,R.mipmap.dimension_icon_default);
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        } else {
+//            holder.ivIcon.setImageResource(R.mipmap.dimension_icon_default);
+//        }
 
-            String iconUrl = entity.getIcon();
-            ImageCacheTool imageCacheTool = ImageCacheTool.getInstance();
-            if (!TextUtils.isEmpty(iconUrl)) {
-                try {
-                    imageCacheTool.asyncLoadImage(new URL(iconUrl), holder.ivIcon);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                    holder.ivIcon.setImageResource(R.mipmap.dimension_icon_default);
-                }
-            }
-
-        } else {
-            holder.ivIcon.setImageResource(R.mipmap.dimension_icon_default);
-        }
+        holder.ivIcon.setImageURI(Uri.parse(entity.getIcon()));
 
         if(entity.getIsLocked() == 1){
             holder.ivLock.setVisibility(View.VISIBLE);
@@ -107,13 +105,13 @@ public class QsHorizonListviewAdapter extends BaseAdapter {
 
     class ViewHolder {
         RelativeLayout rtItem;
-        ImageView ivIcon;
+        SimpleDraweeView ivIcon;
         ImageView ivLock;
         TextView tvItemTitle;
 
         void initView(View view){
             rtItem = (RelativeLayout)view.findViewById(R.id.rt_item);
-            ivIcon = (ImageView) view.findViewById(R.id.iv_icon);
+            ivIcon = (SimpleDraweeView) view.findViewById(R.id.iv_icon);
             ivLock = (ImageView) view.findViewById(R.id.iv_lock);
             tvItemTitle = (TextView)view.findViewById(R.id.tv_item_title);
         }

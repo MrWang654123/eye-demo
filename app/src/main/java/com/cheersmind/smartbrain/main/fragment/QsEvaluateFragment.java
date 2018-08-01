@@ -159,7 +159,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
             }
             if(!TextUtils.isEmpty(headDimension.getIcon())){
                 try {
-                    ImageCacheTool.getInstance().asyncLoadImage(new URL(headDimension.getIcon()),ivDimension);
+                    ImageCacheTool.getInstance().asyncLoadImage(new URL(headDimension.getIcon()),ivDimension,R.mipmap.dimension_icon_default);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
