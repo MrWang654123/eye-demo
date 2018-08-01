@@ -48,7 +48,7 @@
     <string formatted="false" name="evaluate_question_commit">已完成【阶段%s:%s】的所有问题，是否提交结果？</string>
     <string formatted="false" name="factor_datails_common"><Data><![CDATA[<font color="#f5a400"><b>%s</b></font>/%s]]></Data></string>
 
-    <string name="qs_factor_complete_hint">已完成(%s)的所有问题，是否提交结果？</string>
+    <string formatted="false" name="qs_factor_complete_hint">已完成(阶段%s:%s)的所有问题，是否提交结果？</string>
     <string name="qs_ques_complete_hint">答题还没全部完成确定要退出吗？</string>
     <string name="qs_factor_report_btn_next">继续下一阶段测评</string>
     <string name="qs_factor_report_btn_report">已经全部完成·点击查看报告</string>
@@ -59,6 +59,8 @@
     <string name="qs_dimension_report_hint">该项%s个阶段你已全部完成，以下是测评结果</string>
     <string name="qs_dimension_report_reuslt">%s结果:</string>
     <string name="qs_dimension_user_count">%s人测评过</string>
+
+    <string name="qs_dimension_pre_complete">请先完成%s话题下相关测评</string>
 
 
     <!-- Error View -->

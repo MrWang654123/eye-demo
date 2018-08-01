@@ -251,7 +251,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
             if(TextUtils.isEmpty(factorInfoEntity.getInstruction())){
                 holder.tvFactorHint.setText("");
             }else{
-                String hint ="答题提醒：" + factorInfoEntity.getInstruction();
+                String hint ="答题提醒：<br/>" + factorInfoEntity.getInstruction();
                 holder.tvFactorHint.setText(Html.fromHtml(hint));
             }
 
@@ -469,6 +469,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
                         factorBaseList = entity.getItems();
                         setFactorBaseListStage();
                         factorBaseListSort.clear();
+                        //列表排序依次：当前作答量表、未作答从小到大、已完成从小到大
                         if(factorBaseList!=null && factorBaseList.size()>0){
                             FactorInfoEntity candoFactor = factorBaseList.get(0);
                             for(FactorInfoEntity factorInfoEntity:factorBaseList){
@@ -485,11 +486,20 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
                             }
                             curCanDoStage = candoFactor.getStage();
                             factorBaseListSort.add(candoFactor);
-                            for(int i=factorBaseList.size()-1; i>=0; i--){
+                            List<FactorInfoEntity> nodoList = new ArrayList<>();
+                            List<FactorInfoEntity> completeList = new ArrayList<>();
+                            for(int i=0; i<factorBaseList.size(); i++){
+                                FactorInfoEntity factorInfoEntity = factorBaseList.get(i);
                                 if(candoFactor.getStage() != factorBaseList.get(i).getStage()){
-                                    factorBaseListSort.add(factorBaseList.get(i));
+                                    if(factorInfoEntity.getChildFactor()!=null && factorInfoEntity.getChildFactor().getStatus()==2){
+                                        completeList.add(factorInfoEntity);
+                                    }else{
+                                        nodoList.add(factorInfoEntity);
+                                    }
                                 }
                             }
+                            factorBaseListSort.addAll(nodoList);
+                            factorBaseListSort.addAll(completeList);
                             adapter.notifyDataSetChanged();
                             updateStageLayout(llStage);
                         }else{

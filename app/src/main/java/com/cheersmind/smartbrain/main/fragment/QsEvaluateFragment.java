@@ -331,7 +331,32 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     }
 
     private void startCurrrentDimension(final DimensionInfoEntity dimensionInfoEntity,final TopicInfoEntity topicInfoEntity) {
-        if( dimensionInfoEntity==null ||dimensionInfoEntity.getIsLocked() == 1){
+        if( dimensionInfoEntity==null ){
+            return;
+        }
+
+        if(dimensionInfoEntity.getIsLocked() == 1){
+            if(!TextUtils.isEmpty(dimensionInfoEntity.getPreDimensions())){
+                String [] dimensionIds = dimensionInfoEntity.getPreDimensions().split(",");
+                List<DimensionInfoEntity> dimensions = topicInfoEntity.getDimensions();
+                if(dimensionIds.length>0 && dimensions.size()>0){
+                    StringBuffer stringBuffer = new StringBuffer("");
+                    for(int i=0;i<dimensions.size();i++){
+                        for(int j=0;j<dimensionIds.length;j++){
+                            if(dimensionIds[j].equals(dimensions.get(i).getDimensionId())){
+                                stringBuffer.append(dimensions.get(i).getDimensionName());
+                                if(j!=dimensionIds.length-1){
+                                    stringBuffer.append("、");
+                                }
+                            }
+                        }
+                    }
+                    if(!TextUtils.isEmpty(stringBuffer.toString())){
+                        String str = getActivity().getResources().getString(R.string.qs_dimension_pre_complete,stringBuffer.toString());
+                        ToastUtil.showLong(getActivity(),str);
+                    }
+                }
+            }
             return;
         }
         DimensionInfoChildEntity entity = dimensionInfoEntity.getChildDimension();

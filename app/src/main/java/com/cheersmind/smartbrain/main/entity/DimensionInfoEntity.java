@@ -66,6 +66,9 @@ public class DimensionInfoEntity implements Serializable{
     @InjectMap(name = "topic_dimension_id")
     private String topicDimensionId;
 
+    @InjectMap(name = "pre_dimensions")
+    private String preDimensions;
+
     public String getDimensionId() {
         return dimensionId;
     }
@@ -192,5 +195,13 @@ public class DimensionInfoEntity implements Serializable{
 
     public void setTopicDimensionId(String topicDimensionId) {
         this.topicDimensionId = topicDimensionId;
+    }
+
+    public String getPreDimensions() {
+        return preDimensions;
+    }
+
+    public void setPreDimensions(String preDimensions) {
+        this.preDimensions = preDimensions;
     }
 }

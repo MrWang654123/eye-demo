@@ -110,11 +110,11 @@ public class QsSplineChartView extends DemoView {
             chart.setCustomLines(mYCustomLineDataset); //y轴
 
             //设置Y轴标签颜色
-            chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#666666"));
+            chart.getDataAxis().getTickMarksPaint().setColor(Color.parseColor("#424242"));
             chart.getDataAxis().getTickMarksPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             //设置横向标签颜色
-            chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#666666"));
+            chart.getCategoryAxis().getTickLabelPaint().setColor(Color.parseColor("#424242"));
             chart.getCategoryAxis().getTickLabelPaint().setTextSize(DensityUtil.dip2px(context, 12));
 
             //设置横向标签旋转角度
@@ -137,18 +137,19 @@ public class QsSplineChartView extends DemoView {
             chart.getBorder().setBorderLineColor(Color.parseColor("#f7f7f7"));
 
             //调轴线与网络线风格
-            chart.getCategoryAxis().hideTickMarks();
-            chart.getDataAxis().hideAxisLine();
+//            chart.getCategoryAxis().hideTickMarks();
+//            chart.getDataAxis().hideAxisLine();
             chart.getDataAxis().hideTickMarks();
             chart.getPlotGrid().showHorizontalLines();
             //chart.hideTopAxis();
             //chart.hideRightAxis();
 
+            chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#1e88cc"));
+            chart.getDataAxis().getAxisPaint().setStrokeWidth(3);
+
             chart.getPlotGrid().getHorizontalLinePaint().setColor(Color.parseColor("#f7f7f7"));
-            chart.getCategoryAxis().getAxisPaint().setColor(
-                    chart.getPlotGrid().getHorizontalLinePaint().getColor());
-            chart.getCategoryAxis().getAxisPaint().setStrokeWidth(
-                    chart.getPlotGrid().getHorizontalLinePaint().getStrokeWidth());
+            chart.getCategoryAxis().getAxisPaint().setColor(Color.parseColor("#1e88cc"));
+            chart.getCategoryAxis().getAxisPaint().setStrokeWidth(3);
 
 
             //定义交叉点标签显示格式,特别备注,因曲线图的特殊性，所以返回格式为:  x值,y值

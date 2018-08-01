@@ -110,7 +110,17 @@ public class DimensionReportDialog extends Dialog {
                     factorEntities.addAll(dimensionReports.get(i).getItems());
                 }
             }
-            tvTitle.setText(dimensionReports.get(0).getChartItemName());
+            String chartName = dimensionReports.get(0).getChartItemName();
+            if(!TextUtils.isEmpty(chartName)){
+                tvTitle.setText(chartName);
+            }else{
+                if(entity!=null && !TextUtils.isEmpty(entity.getDimensionName())){
+                    tvTitle.setText(entity.getDimensionName());
+                }else{
+                    tvTitle.setText("");
+                }
+            }
+
             tvContent.setText(context.getResources().getString(R.string.qs_dimension_report_hint,
                     String.valueOf(factorEntities.size())));
             if(!TextUtils.isEmpty(dimensionReports.get(0).getChartDescription())){

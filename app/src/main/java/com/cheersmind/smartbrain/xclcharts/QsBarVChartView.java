@@ -167,7 +167,7 @@ public class QsBarVChartView extends DemoView {
             //设置y轴颜色
             chart.getDataAxis().getAxisPaint().setColor(Color.parseColor("#f7f7f7"));
             chart.getCategoryAxis().hideTickMarks();
-            chart.getDataAxis().hideAxisLine();
+//            chart.getDataAxis().hideAxisLine();
             chart.getDataAxis().hideTickMarks();
 
             //在柱形顶部显示值

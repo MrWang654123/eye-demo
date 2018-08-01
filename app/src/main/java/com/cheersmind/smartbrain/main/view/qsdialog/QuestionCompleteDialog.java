@@ -88,12 +88,12 @@ public class QuestionCompleteDialog extends Dialog implements View.OnClickListen
     }
 
     private void setTvContentText(){
-        String stage = String.valueOf(factorInfoEntity.getStage()) + factorInfoChildEntity.getFactorName();
-        String text = context.getResources().getString(R.string.qs_factor_complete_hint,stage);
+        String stage = String.valueOf(factorInfoEntity.getStage());
+        String text = context.getResources().getString(R.string.qs_factor_complete_hint,stage,factorInfoChildEntity.getFactorName());
         int length = String.valueOf(factorInfoEntity.getStage()).length();
         SpannableString spanString = new SpannableString(text);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#ffa200"));
-        spanString.setSpan(colorSpan, 4, 4+length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spanString.setSpan(colorSpan, 6, 6+length, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tvContent.setText(spanString);
     }
 

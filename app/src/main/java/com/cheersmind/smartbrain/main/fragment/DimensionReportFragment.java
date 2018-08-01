@@ -127,7 +127,7 @@ public class DimensionReportFragment extends Fragment {
                 }
             }else{
                 tvResultTitle.setText("");
-                tvResultContent.setText("");
+                tvResultContent.setText("暂无文字评价，请查看图表");
             }
         }else{
             llReport.setVisibility(View.GONE);
