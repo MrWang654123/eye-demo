@@ -250,8 +250,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void hiddenSoft(){
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        if(getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE){
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     private void login () {
@@ -710,6 +712,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         if(notificationEntity.isNotice() && !TextUtils.isEmpty(notificationEntity.getMessage())){
                             tvNotification.setText(notificationEntity.getMessage());
                             rlNotification.setVisibility(View.VISIBLE);
+                        }else{
+                            rlNotification.setVisibility(View.GONE);
                         }
                     }else{
                         rlNotification.setVisibility(View.GONE);

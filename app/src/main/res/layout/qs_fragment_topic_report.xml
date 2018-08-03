@@ -85,13 +85,13 @@
                 android:layout_marginTop="50dp"
                 android:background="@mipmap/qs_report_bg_bottom">
 
-                <RelativeLayout
-                    android:id="@+id/rt_char"
+                <LinearLayout
+                    android:id="@+id/ll_char"
                     android:layout_width="match_parent"
                     android:layout_height="260dp"
-                    android:layout_marginTop="-20dp">
+                    android:orientation="vertical">
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/rt_none_report"

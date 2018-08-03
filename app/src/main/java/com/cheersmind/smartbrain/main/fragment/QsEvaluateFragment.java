@@ -409,6 +409,10 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
                                     ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
                                     if(data!=null && data.getChartDatas()!=null){
 
+                                        if(data.getChartDatas().size()==0 && data.getReportResults().size()==0){
+                                            ToastUtil.showShort(getActivity(),"感谢您的信息搜集");
+                                            return;
+                                        }
                                         List<ReportResultEntity> reportResultEntities = data.getReportResults();
                                         List<ReportItemEntity>  dimensionReports = data.getChartDatas();
                                         if(dimensionReports!=null && dimensionReports.size()>0) {

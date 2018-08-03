@@ -19,6 +19,7 @@ import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
+import com.cheersmind.smartbrain.main.helper.MPChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
 import com.cheersmind.smartbrain.main.util.DensityUtil;
@@ -27,7 +28,6 @@ import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.view.CustomReportViewPager;
-import com.cheersmind.smartbrain.xclcharts.DemoView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class TopicReportFragment extends Fragment {
     private RelativeLayout rtReport;
     private RelativeLayout rtNoReport;
     private RelativeLayout rtNoneTopicReport;
-    private RelativeLayout rtChart;
+    private LinearLayout llChart;
 //    private LinearLayout stageLayout;
     private LinearLayout llDimension;
     private ImageView ivCountry;
@@ -66,7 +66,7 @@ public class TopicReportFragment extends Fragment {
 
 //    List<TextView> listTv = new ArrayList<>();
     private int curDimensionIndex;
-    private DemoView curChart;
+//    private DemoView curChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +85,7 @@ public class TopicReportFragment extends Fragment {
         rtNoReport = (RelativeLayout)contentView.findViewById(R.id.rt_no_report);
         rtNoneTopicReport = (RelativeLayout)contentView.findViewById(R.id.rt_none_report);
         rtReport = (RelativeLayout)contentView.findViewById(R.id.rt_report);
-        rtChart = (RelativeLayout)contentView.findViewById(R.id.rt_char);
+        llChart = (LinearLayout) contentView.findViewById(R.id.ll_char);
         ivCountry = (ImageView)contentView.findViewById(R.id.iv_country);
         ivClass = (ImageView)contentView.findViewById(R.id.iv_class);
         ivGrade = (ImageView)contentView.findViewById(R.id.iv_grade);
@@ -143,10 +143,10 @@ public class TopicReportFragment extends Fragment {
                 }
             }
             if(reportItemEntity.getItems()!=null && reportItemEntity.getItems().size()>0){
-                rtChart.removeAllViews();
-                curChart = ChartViewHelper.addChartView(getActivity(), rtChart, reportItemEntity,curDimensionIndex);
-//                ChartViewHelper.addStageForBottom(getActivity(),reportItemEntity,rtChart,listTv);
-//                stageLayout = (LinearLayout)rtChart.findViewById(R.id.ll_stage);
+                llChart.removeAllViews();
+                List<ReportItemEntity> reportItemEntities = new ArrayList<>();
+                reportItemEntities.add(reportItemEntity);
+                MPChartViewHelper.addMpChartView(getActivity(), llChart, reportItemEntities);
             }
         }
     }
@@ -178,7 +178,6 @@ public class TopicReportFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 curDimensionIndex = position;
-                curChart.updateChart(curDimensionIndex);
             }
 
             @Override

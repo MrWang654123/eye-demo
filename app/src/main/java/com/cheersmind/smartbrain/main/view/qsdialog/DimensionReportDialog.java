@@ -20,7 +20,7 @@ import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.ReportFactorEntity;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
 import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
-import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
+import com.cheersmind.smartbrain.main.helper.MPChartViewHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +158,8 @@ public class DimensionReportDialog extends Dialog {
             updateStageLayout(llStage);
 //            ReportItemEntity reportItemEntity = dimensionReports.get(0);
 //            reportItemEntity.setItems(factorEntities);
-            ChartViewHelper.addChartView(context,llChart,dimensionReports);
+//            ChartViewHelper.addChartView(context,llChart,dimensionReports);
+            MPChartViewHelper.addMpChartView(context,llChart,dimensionReports);
         }else{
             if(entity==null){
                 return;

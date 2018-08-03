@@ -133,4 +133,5 @@ dependencies {
     compile files('libs/umeng-common-1.4.0.jar')
 //    compile 'org.xclcharts:lib:2.4'
     implementation project(':chartlibrary')
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 }

@@ -31,7 +31,6 @@ import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
 import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
 import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.event.ContinueFactorEvent;
-import com.cheersmind.smartbrain.main.fragment.questype.EvaluateQuestionFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsAccordJudgeFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsBalanceSelectFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsDefaultQuestionFragment;
@@ -404,14 +403,14 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
 
                 if(needRefrash){
                     curPageIndex = position;
-                    if(curPageIndex>0){
-                        int index = curPageIndex -1;
-                        QuestionInfoEntity entity = questionList.get(index);
-                        if(entity.getType() == 2){
-                            EvaluateQuestionFragment fragment = (EvaluateQuestionFragment) fragments.get(index);
-                            fragment.commitQestion(entity.getOptions().get(0));
-                        }
-                    }
+//                    if(curPageIndex>0){
+//                        int index = curPageIndex -1;
+//                        QuestionInfoEntity entity = questionList.get(index);
+//                        if(entity.getType() == 2){
+//                            EvaluateQuestionFragment fragment = (EvaluateQuestionFragment) fragments.get(index);
+//                            fragment.commitQestion(entity.getOptions().get(0));
+//                        }
+//                    }
                 }
                 updateLastNextText();
 

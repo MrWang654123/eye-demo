@@ -369,6 +369,11 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     private void startCurrentFactor(final FactorInfoEntity factorInfoEntity){
+
+        if(factorInfoEntity.getStage() != curCanDoStage){
+            return;
+        }
+
         FactorInfoChildEntity entity = factorInfoEntity.getChildFactor();
 
         String examId = "";
@@ -514,7 +519,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
     }
 
     /**
-     * 处理继续下一阶段因子消息时间
+     * 处理继续下一阶段因子消息事件
      * @param continueFactorEvent
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -522,6 +527,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
         if(continueFactorEvent!=null){
             FactorInfoEntity factorInfoEntity = continueFactorEvent.getFactorInfoEntity();
             if(factorInfoEntity!=null){
+                curCanDoStage = factorInfoEntity.getStage();
                 startCurrentFactor(factorInfoEntity);
             }else{
                 EventBus.getDefault().post(new CommonEvent(CommonEvent.EVENT_REFRESH_REPORT));

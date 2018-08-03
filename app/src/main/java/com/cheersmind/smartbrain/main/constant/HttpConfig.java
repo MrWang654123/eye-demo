@@ -151,6 +151,6 @@ public class HttpConfig {
     //微信登入
     public static final String URL_WX_GET_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={appid}&secret={secret}&code={code}&grant_type=authorization_code";
 
-    //更新通知
-    public static final String URL_UPDATE_NOTIFICATION = "http://img.cheersmind.com/notice/fireeyes.txt";
+    //公告更新通知
+    public static final String URL_UPDATE_NOTIFICATION = "http://img.cheersmind.com/notice/fireeyes.json";
 }
