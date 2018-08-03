@@ -2,6 +2,7 @@ package com.cheersmind.smartbrain.main.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
-import com.cheersmind.smartbrain.main.view.CustomViewPager;
 import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 import com.cheersmind.smartbrain.main.view.ViewPagerIndicate;
@@ -38,7 +38,7 @@ public class QsReportFragment extends Fragment {
     private EmptyLayout emptyLayout;
     private LinearLayout llRoot;
 
-    private CustomViewPager mViewPager;
+    private ViewPager mViewPager;
     private ViewPagerIndicate mIndicate;
 
     private int[] mTextColors = {0xFF828282, 0xffffffff};
@@ -80,15 +80,20 @@ public class QsReportFragment extends Fragment {
         llRoot.removeAllViews();
         View pageView = View.inflate(getActivity(),R.layout.qs_fragment_report_viewpage,null);
         llRoot.addView(pageView);
-        mViewPager = (CustomViewPager) pageView.findViewById(R.id.report_pager);
+        mViewPager = (ViewPager) pageView.findViewById(R.id.report_pager);
         topicReportFragments.clear();
         mViewPager.removeAllViewsInLayout();
         for (int i = 0; i < childTopicList.size(); i++) {
-            TopicReportFragment topicReportFragment = new TopicReportFragment();
+//            TopicReportFragment topicReportFragment = new TopicReportFragment();
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable(TopicReportFragment.TOPIC_REPORT,childTopicList.get(i));
+//            topicReportFragment.setArguments(bundle);
+//            topicReportFragments.add(topicReportFragment);
+            TopicDimensionReportFragmet topicDimensionReportFragmet = new TopicDimensionReportFragmet();
             Bundle bundle = new Bundle();
-            bundle.putSerializable(TopicReportFragment.TOPIC_REPORT,childTopicList.get(i));
-            topicReportFragment.setArguments(bundle);
-            topicReportFragments.add(topicReportFragment);
+            bundle.putSerializable(TopicDimensionReportFragmet.TOPIC_DIM_REPORT, childTopicList.get(i));
+            topicDimensionReportFragmet.setArguments(bundle);
+            topicReportFragments.add(topicDimensionReportFragmet);
         }
 
         mViewPager.setOffscreenPageLimit(childTopicList.size()-1);
@@ -162,12 +167,6 @@ public class QsReportFragment extends Fragment {
     public void onRefreshRoport(){
         LogUtils.w("QsReportFragment","刷新报告数据");
         loadChildTopicList(true);
-//        for(int i=0;i<topicReportFragments.size();i++){
-//            TopicReportFragment topicReportFragment = (TopicReportFragment) topicReportFragments.get(i);
-//            if(topicReportFragment!=null){
-//                topicReportFragment.updateData();
-//            }
-//        }
     }
 
 }

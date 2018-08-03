@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rt_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@mipmap/qs_report_bg_top">
+            <TextView
+                android:id="@+id/tv_evaluate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:text="智能评价"
+                android:textSize="18sp"
+                android:textColor="@color/color_666666"/>
+
+            <LinearLayout
+                android:id="@+id/ll_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="VS"
+                    android:textSize="20sp"
+                    android:textColor="@color/color_666666"/>
+
+                <ImageView
+                    android:id="@+id/iv_country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_class"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/qs_report_country_select"/>
+                <ImageView
+                    android:id="@+id/iv_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_grade"
+                    android:layout_marginRight="10dp"
+                    android:background="@mipmap/qs_report_class_nor"/>
+                <ImageView
+                    android:id="@+id/iv_grade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@mipmap/qs_report_grade_nor"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="#f7f7f7"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rt_chart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@mipmap/qs_report_bg_bottom">
+
+            <LinearLayout
+                android:id="@+id/ll_chart"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_topic_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_chart"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_topic_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:textColor="#fd9901"/>
+
+                <TextView
+                    android:id="@+id/tv_topic_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:textColor="#fd9901"/>
+
+                <TextView
+                    android:id="@+id/tv_topic_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text=""
+                    android:textSize="14sp"
+                    android:textColor="@color/color_898989"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

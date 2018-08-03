@@ -62,11 +62,9 @@ public class TopicReportFragment extends Fragment {
     private ReportRootEntity reportData;
     List<ReportItemEntity> topicReports = new ArrayList<>();
     List<List<ReportItemEntity>> dimensionReports = new ArrayList<>();//每个量表可能不只一个图表
-    List<ReportResultEntity> reportResultEntities = new ArrayList<>();
+//    List<ReportResultEntity> reportResultEntities = new ArrayList<>();
 
-//    List<TextView> listTv = new ArrayList<>();
     private int curDimensionIndex;
-//    private DemoView curChart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

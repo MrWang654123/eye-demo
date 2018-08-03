@@ -20,12 +20,20 @@
         </com.cheersmind.smartbrain.main.view.ViewPagerIndicate>
     </LinearLayout>
 
-    <com.cheersmind.smartbrain.main.view.CustomViewPager
+    <android.support.v4.view.ViewPager
         android:id="@+id/report_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_12b2f4">
 
-    </com.cheersmind.smartbrain.main.view.CustomViewPager>
+    </android.support.v4.view.ViewPager>
+
+    <!--<com.cheersmind.smartbrain.main.view.CustomViewPager-->
+        <!--android:id="@+id/report_pager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/color_12b2f4">-->
+
+    <!--</com.cheersmind.smartbrain.main.view.CustomViewPager>-->
 
 </LinearLayout>
