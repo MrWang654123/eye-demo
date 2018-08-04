@@ -92,7 +92,7 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         yl.setTypeface(mTfLight);
         yl.setDrawAxisLine(true);
         yl.setDrawGridLines(true);
-        yl.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        yl.setAxisMinimum(reportData.getMinScore());
 //        yl.setInverted(true);
 
         YAxis yr = mChart.getAxisRight();
@@ -135,14 +135,17 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         for(int i=0;i<items.size();i++){
             ReportFactorEntity rfe = items.get(i);
             xLabels.add(rfe.getItemName());
-            yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
+//            if(rfe.getChildScore()<0){
+//                yValues.add(new BarEntry(i,new float[]{(float) rfe.getChildScore() , 0}));
+//            }else{
+//                yValues.add(new BarEntry(i,new float[]{0 , (float) rfe.getChildScore()}));
+//            }
+            yValues.add(new BarEntry(i,(float) rfe.getChildScore()));
         }
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
-        BarDataSet set1;
-
-        set1 = new BarDataSet(yValues, "我");
+        BarDataSet set1 = new BarDataSet(yValues, "我");
         set1.setDrawIcons(false);
         set1.setColors(Color.parseColor("#12b2f4"));
 

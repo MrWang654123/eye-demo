@@ -81,7 +81,7 @@ public class MPRadarChart extends MPBaseChart {
         yAxis.setTypeface(mTfLight);
         yAxis.setLabelCount(5, false);
         yAxis.setTextSize(9f);
-        yAxis.setAxisMinimum(0f);
+        yAxis.setAxisMinimum(reportData.getMinScore());
         yAxis.setAxisMaximum(reportData.getMaxScore());
         yAxis.setDrawLabels(false);
 
