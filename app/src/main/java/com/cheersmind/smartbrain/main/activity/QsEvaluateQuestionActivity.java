@@ -380,9 +380,6 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
         };
 
         vpQuestion.setAdapter(adapter);
-        curPageIndex = 0;
-        vpQuestion.setCurrentItem(curPageIndex);
-        updateLastNextText();
         vpQuestion.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -421,6 +418,10 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
 
             }
         });
+
+        //        curPageIndex = 0;
+        vpQuestion.setCurrentItem(curPageIndex);
+        updateLastNextText();
 
         startTimeTask();
     }
@@ -468,16 +469,10 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
         }
     }
 
-    private void initHasAnswer(){
-//        pbQuestion.setMax(questionList.size());
+    private void initHasAnswer(List<QuestionInfoEntity> questionfilterList){
         tvQuestionCount.setText(String.valueOf(questionList.size()));
-        tvQuestionCur.setText(String.valueOf(curPageIndex));
-        for(int i=0;i<questionList.size();i++){
-            if(questionList.get(i).getChildQuestion()!=null){
-                hasAnswer++;
-            }
-        }
-//        pbQuestion.setProgress(hasAnswer);
+        tvQuestionCur.setText(String.valueOf(curPageIndex+1));
+        hasAnswer = questionfilterList.size();
     }
 
     private void updateLastNextText(){
@@ -610,11 +605,19 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                         for(int i=0;i<questionList.size();i++){
                             QuestionInfoChildEntity childEntity = questionList.get(i).getChildQuestion();
                             if(childEntity!=null){
+                                questionList.get(i).setHasAnswer(true);
                                 questionfilterList.add(questionList.get(i));
                             }
                         }
-
-                        questionList.removeAll(questionfilterList);
+//                        questionList.removeAll(questionfilterList);
+                        if(questionfilterList.size()>0){
+                            if(questionfilterList.size() == questionList.size()){
+                                //全部题目都回答过，但是因子没有提交
+                                curPageIndex = questionfilterList.size()-1;
+                            }else{
+                                curPageIndex = questionfilterList.size();
+                            }
+                        }
 
                         if(questionList.size()==0){
                             showQuestionCompleteDialog();
@@ -624,8 +627,9 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                             }else{
                                 timeCount = 120;
                             }
+                            initHasAnswer(questionfilterList);
                             initQuestionFragment();
-                            initHasAnswer();
+
                         }
 
                     }

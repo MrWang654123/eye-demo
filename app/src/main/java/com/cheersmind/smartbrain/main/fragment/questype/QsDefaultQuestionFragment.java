@@ -142,14 +142,19 @@ public class QsDefaultQuestionFragment extends QuestionTypeBaseFragment {
                 etAnswer = null;
 
                 viewHolder.tvAnswerTitle.setText(entity.getContent());
+            }
 
-                if(curSelect == position){
-                    viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_select);
-                    viewHolder.tvAnswerbg.setVisibility(View.VISIBLE);
-                }else{
-                    viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
-                    viewHolder.tvAnswerbg.setVisibility(View.GONE);
-                }
+            if(curSelect == position){
+                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_select);
+                viewHolder.tvAnswerbg.setVisibility(View.VISIBLE);
+//                if(entity.getType() == 2 && !TextUtils.isEmpty(childQuestion.getOptionText())){
+//                    viewHolder.etOption.setText(childQuestion.getOptionText());
+//                }else{
+//                    viewHolder.etOption.setText("");
+//                }
+            }else{
+                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
+                viewHolder.tvAnswerbg.setVisibility(View.GONE);
 
             }
 

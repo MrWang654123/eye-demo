@@ -115,7 +115,7 @@ public class QsBalanceSelectFragment extends QuestionTypeBaseFragment {
 
                     if(curSelect != -1){
                         //如果这题已经回答过,更新进度
-                        updateProgress(curSelect);
+                        updateHasCompleteProgress(curSelect+1);
                     }
                 }
             }
@@ -188,6 +188,62 @@ public class QsBalanceSelectFragment extends QuestionTypeBaseFragment {
         }
     }
 
+    private void updateHasCompleteProgress(int tag){
+        float half = optionSize * 1.0f / 2;
+        float halfD = optionSize / 2;
+        float baseDegree = maxDegree * 1.0f / halfD;
+        float baseMove = maxMove * 1.0f / halfD;
+        float endDegree;
+        float endMove;
+
+        if(optionSize%2==0){
+            if(tag <= half){
+                endDegree = -((half-(tag-1)) * baseDegree);
+                endMove = -((half-(tag-1)) * baseMove);
+            }else{
+                endDegree = (tag-half) * baseDegree;
+                endMove = (tag-half) * baseMove;
+            }
+
+            if(lastDegree != endDegree){
+                rotateAnim(lastDegree, endDegree);
+                startTranslateAnimation(ivup, lastMove, endMove);
+            }
+        }else{
+
+            if(tag == half + 0.5){
+                endDegree = 0;
+                endMove = 0;
+            }else{
+                if(tag <= half){
+                    endDegree = -((halfD-(tag-1)) * baseDegree);
+                    endMove = -((halfD-(tag-1)) * baseMove);
+                }else{
+                    endDegree = (tag-1-halfD) * baseDegree;
+                    endMove = (tag-1-halfD) * baseMove;
+                }
+
+            }
+
+        }
+
+        if(lastDegree != endDegree){
+            rotateAnim(lastDegree, endDegree);
+            startTranslateAnimation(ivup, lastMove, endMove);
+        }
+
+        lastDegree = endDegree;
+        lastMove = endMove;
+
+        for(int i=0;i<tvList.size();i++){
+            if(tag == i+1){
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);;
+            }else{
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
+            }
+        }
+    }
+
     private void rotateAnim(float start,float end) {
         Animation anim =new RotateAnimation(start, end, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         anim.setFillAfter(true); // 设置保持动画最后的状态
@@ -200,9 +256,10 @@ public class QsBalanceSelectFragment extends QuestionTypeBaseFragment {
         TranslateAnimation anim = new TranslateAnimation(mIvImg.getWidth() * startTra, mIvImg.getWidth() * endTra, 0, 0);
         //设置动画持续时长
         anim.setDuration(300);
+        anim.setFillEnabled(true);
         //设置动画结束之后的状态是否是动画的最终状态，true，表示是保持动画结束时的最终状态
         anim.setFillAfter(true);
-        anim.setInterpolator(new AccelerateInterpolator()); // 设置插入器
+//        anim.setInterpolator(new AccelerateInterpolator()); // 设置插入器
         //设置动画结束之后的状态是否是动画开始时的状态，true，表示是保持动画开始时的状态
         anim.setFillBefore(true);
         mIvImg.startAnimation(anim);

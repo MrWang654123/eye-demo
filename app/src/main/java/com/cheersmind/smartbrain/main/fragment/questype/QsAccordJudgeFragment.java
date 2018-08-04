@@ -88,11 +88,11 @@ public class QsAccordJudgeFragment extends QuestionTypeBaseFragment {
 
                 if(optionsList!=null){
                     optionSize = optionsList.size();
-                    baseDegree = maxDegree/optionSize;
+                    baseDegree = maxDegree/(optionSize-1);
                     initOption(curSelect,optionsList,tvList,llOption,tvClick);
                     if(curSelect != -1){
                         //如果这题已经回答过,更新进度
-                        updateProgress(curSelect);
+                        updateHasCompleteProgress();
                     }
                 }
             }
@@ -231,6 +231,19 @@ public class QsAccordJudgeFragment extends QuestionTypeBaseFragment {
                     }
                 }
             },0,diff);
+        }
+    }
+
+    //之前已经回答过，重新进入后初始化
+    private void updateHasCompleteProgress(){
+        lastPro = baseDegree * curSelect;
+        rpBar.setProgress(lastPro);
+        for(int i=0;i<tvList.size();i++){
+            if(curSelect == i){
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);
+            }else{
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
+            }
         }
     }
 

@@ -99,7 +99,7 @@ public class QsTickedCorrectFragment extends QuestionTypeBaseFragment {
                     initOption(curSelect,optionsList,tvList,llOption,tvClick);
                     if(curSelect != -1){
                         //如果这题已经回答过,更新进度
-                        updateProgress(curSelect);
+                        updateHasCompleteProgress(curSelect);
                     }
                 }
             }
@@ -199,6 +199,23 @@ public class QsTickedCorrectFragment extends QuestionTypeBaseFragment {
             if(tag == i+1){
                 tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);;
                 commitQuestion(getActivity(),optionsList.get(i),childFactorId);
+            }else{
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
+            }
+        }
+    }
+
+    private void updateHasCompleteProgress(int tag){
+        int num = optionsList.get(tag).getShowValue();
+        if(num>16){
+            num = 16;
+        }
+        getRandom(num);
+        adapter.notifyDataSetChanged();
+
+        for(int i=0;i<tvList.size();i++){
+            if(tag == i){
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);;
             }else{
                 tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
             }

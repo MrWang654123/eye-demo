@@ -113,7 +113,7 @@ public class QsFrequencySelectFragment extends QuestionTypeBaseFragment {
                     updateShowValue();
                     if(curSelect != -1){
                         //如果这题已经回答过,更新进度
-                        updateProgress(curSelect);
+                        updateHasCompleteProgress(curSelect);
                     }
                 }
             }
@@ -203,6 +203,29 @@ public class QsFrequencySelectFragment extends QuestionTypeBaseFragment {
             if(tag == i+1){
                 tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);
                 commitQuestion(getActivity(),optionsList.get(i),childFactorId);
+            }else{
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
+            }
+        }
+    }
+
+    //之前已经回答过，重新进入后初始化
+    private void updateHasCompleteProgress(int tag){
+        float end = (tag) * baseRa;
+        if(lastRa ==0 && lastRa == end){
+            rotateAnimFirst();
+        }else{
+            rotateAnim(lastRa,end);
+        }
+
+        lastRa = (tag) * baseRa;
+        if(lastRa>355){
+            lastRa = 360;//满度数校准
+        }
+
+        for(int i=0;i<tvList.size();i++){
+            if(tag == i){
+                tvList.get(i).setBackgroundResource(R.mipmap.option_bg_select);
             }else{
                 tvList.get(i).setBackgroundResource(R.mipmap.option_bg_nor);
             }
