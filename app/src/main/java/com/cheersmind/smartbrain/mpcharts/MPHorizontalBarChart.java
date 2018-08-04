@@ -92,7 +92,7 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         yl.setTypeface(mTfLight);
         yl.setDrawAxisLine(true);
         yl.setDrawGridLines(true);
-        yl.setAxisMinimum(reportData.getMinScore());
+        yl.setAxisMinimum(getMaxAndMinValue().get(1));
 //        yl.setInverted(true);
 
         YAxis yr = mChart.getAxisRight();

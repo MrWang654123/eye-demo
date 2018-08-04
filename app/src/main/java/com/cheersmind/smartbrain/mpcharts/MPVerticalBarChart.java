@@ -96,7 +96,7 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
 //        leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(reportData.getMinScore());
+        leftAxis.setAxisMinimum(getMaxAndMinValue().get(1));
 
         YAxis rightAxis = mChart.getAxisRight();
         rightAxis.setTextColor(Color.parseColor("#f7f7f7"));

@@ -142,7 +142,9 @@ public class TopicDimensionReportFragmet extends Fragment {
             ReportResultEntity reportResultEntity = reportItemEntity.getReportResult();
             if(reportResultEntity!=null){
                 if(!TextUtils.isEmpty(reportResultEntity.getTitle())){
-                    holder.tvResultTitle.setText(reportResultEntity.getTitle());
+                    holder.tvResultTitle.setText(Html.fromHtml(reportResultEntity.getTitle()));
+                }else{
+                    holder.tvResultTitle.setText("");
                 }
                 if(!TextUtils.isEmpty(reportResultEntity.getColor())){
                     holder.tvResultTitle.setTextColor(Color.parseColor(reportResultEntity.getColor()));
@@ -150,6 +152,8 @@ public class TopicDimensionReportFragmet extends Fragment {
 
                 if(!TextUtils.isEmpty(reportResultEntity.getContent())){
                     holder.tvResultContent.setText(Html.fromHtml(reportResultEntity.getContent()));
+                }else{
+                    holder.tvResultContent.setText("");
                 }
             }else{
                 holder.tvResultTitle.setText("");
@@ -225,11 +229,11 @@ public class TopicDimensionReportFragmet extends Fragment {
                 }
 
                 if(!TextUtils.isEmpty(topicResult.getTitle())){
-                    tvTopicContent.setText(topicResult.getTitle());
+                    tvTopicContent.setText(Html.fromHtml(topicResult.getTitle()));
                 }
 
                 if(!TextUtils.isEmpty(topicResult.getContent())){
-                    tvTopicResult.setText(topicResult.getContent());
+                    tvTopicResult.setText(Html.fromHtml(topicResult.getContent()));
                 }
             }else{
                 llTopicResult.setVisibility(View.GONE);

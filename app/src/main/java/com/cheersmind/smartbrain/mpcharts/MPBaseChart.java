@@ -6,7 +6,11 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
+import com.cheersmind.smartbrain.main.entity.ReportFactorEntity;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/8/2.
@@ -60,6 +64,43 @@ public class MPBaseChart extends LinearLayout {
 
     protected void initChart(){
 
+    }
+
+    /**
+     * 设置图表最大值和最小值
+     * @return
+     */
+    public List<Float> getMaxAndMinValue(){
+        List<Float> values = new ArrayList<>();
+        float maxValue = reportData.getMaxScore();
+        float minValue = 0;
+        values.add(maxValue);
+        values.add(minValue);
+        if(reportData == null){
+            return values;
+        }
+
+        List<ReportFactorEntity> items = reportData.getItems();
+        if(items!=null && items.size()>0){
+            for(int i=0;i<items.size();i++){
+                float childScore = (float) items.get(i).getChildScore();
+                if(childScore>=0){
+                    if(childScore>maxValue){
+                        maxValue = childScore;
+                    }
+                }else{
+                    if(childScore<minValue){
+                        minValue = childScore;
+                    }
+                }
+            }
+        }
+
+        values.clear();
+        values.add(maxValue);
+        values.add(minValue);
+
+        return values;
     }
 
 }
