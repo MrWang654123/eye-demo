@@ -2,6 +2,7 @@ package com.cheersmind.smartbrain.main.fragment;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -37,7 +38,6 @@ import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
-import com.cheersmind.smartbrain.main.util.imagetool.ImageCacheTool;
 import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 import com.cheersmind.smartbrain.main.view.MarqueeText;
@@ -45,9 +45,8 @@ import com.cheersmind.smartbrain.main.view.horizon.MyListview;
 import com.cheersmind.smartbrain.main.view.qsdialog.DimensionReportDialog;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizonListviewAdapter;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizontalListView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +69,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     private TextView tvDimensionName;
     private LinearLayout llStage;
     private TextView tvDimensionTime;
-    private ImageView ivDimension;
+    private SimpleDraweeView ivDimension;
     private TextView tvUserCount;
     private TextView tvPraise;
 
@@ -141,7 +140,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
         tvUserCount = (TextView)headView.findViewById(R.id.tv_user_count);
         tvPraise = (TextView)headView.findViewById(R.id.tv_praise);
         llStage = (LinearLayout)headView.findViewById(R.id.ll_stage);
-        ivDimension = (ImageView)headView.findViewById(R.id.iv_dimension);
+        ivDimension = (SimpleDraweeView)headView.findViewById(R.id.iv_dimension);
         btnLateStart = (Button)headView.findViewById(R.id.btn_late_start);
         btnLateStart.setOnClickListener(this);
 
@@ -157,12 +156,17 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
             if(!TextUtils.isEmpty(headDimension.getDimensionName())){
                 tvDimensionName.setText(headDimension.getDimensionName());
             }
-            if(!TextUtils.isEmpty(headDimension.getIcon())){
-                try {
-                    ImageCacheTool.getInstance().asyncLoadImage(new URL(headDimension.getIcon()),ivDimension,R.mipmap.dimension_icon_default);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
+//            if(!TextUtils.isEmpty(headDimension.getIcon())){
+//                try {
+//                    ImageCacheTool.getInstance().asyncLoadImage(new URL(headDimension.getIcon()),ivDimension,R.mipmap.dimension_icon_default);
+//                } catch (MalformedURLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+            if(TextUtils.isEmpty(headDimension.getIcon())){
+                ivDimension.setImageResource(R.mipmap.dimension_icon_default);
+            }else {
+                ivDimension.setImageURI(Uri.parse(headDimension.getIcon()));
             }
 
 //            String content = getResources().getString(R.string.qs_factor_complete_hint,"8儿童焦虑");

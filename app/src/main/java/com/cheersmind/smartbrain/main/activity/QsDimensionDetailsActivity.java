@@ -2,6 +2,7 @@ package com.cheersmind.smartbrain.main.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -33,17 +33,15 @@ import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.RepetitionClickUtil;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
-import com.cheersmind.smartbrain.main.util.imagetool.ImageCacheTool;
 import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 import com.cheersmind.smartbrain.main.view.qsdialog.DimensionDetailsDialog;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +59,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
     private EmptyLayout emptyLayout;
     private TextView ivBack;
     private RelativeLayout rtDimension;
-    private ImageView ivDimension;
+    private SimpleDraweeView ivDimension;
     private TextView tvDimensionName;
     private TextView tvDimensionDesc;
     private LinearLayout llStage;
@@ -119,7 +117,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
         ivBack.setOnClickListener(this);
         rtDimension = (RelativeLayout)headView.findViewById(R.id.rt_dimension);
         rtDimension.setOnClickListener(this);
-        ivDimension = (ImageView)headView.findViewById(R.id.iv_dimension);
+        ivDimension = (SimpleDraweeView)headView.findViewById(R.id.iv_dimension);
         tvDimensionName = (TextView)headView.findViewById(R.id.tv_dimension_name);
         tvDimensionDesc = (TextView)headView.findViewById(R.id.tv_dimension_desc);
         llStage = (LinearLayout)headView.findViewById(R.id.ll_stage);
@@ -149,12 +147,13 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
         if(TextUtils.isEmpty(entity.getIcon())){
             ivDimension.setImageResource(R.mipmap.dimension_icon_default);
         }else{
-            ImageCacheTool imageCacheTool = ImageCacheTool.getInstance();
-            try {
-                imageCacheTool.asyncLoadImage(new URL(entity.getIcon()),ivDimension);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            ivDimension.setImageURI(Uri.parse(entity.getIcon()));
+//            ImageCacheTool imageCacheTool = ImageCacheTool.getInstance();
+//            try {
+//                imageCacheTool.asyncLoadImage(new URL(entity.getIcon()),ivDimension);
+//            } catch (MalformedURLException e) {
+//                e.printStackTrace();
+//            }
         }
         if(TextUtils.isEmpty(entity.getDimensionName())){
             tvDimensionName.setText("");
