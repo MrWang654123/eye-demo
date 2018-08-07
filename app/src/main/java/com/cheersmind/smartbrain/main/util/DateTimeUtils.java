@@ -100,4 +100,27 @@ public class DateTimeUtils {
         Date strtodate = formatter.parse(str, pos);
         return strtodate;
     }
+
+    /**
+     * 缓存的token是否有效
+     * @param oldTime
+     * @param newTime
+     * @return
+     */
+    public static boolean tokenTimeValid(String oldTime,String newTime) {
+
+        Date oldDate = strToDateLong(oldTime);
+        Date newDate = strToDateLong(newTime);
+
+        if (oldDate == null || newDate == null) {
+            return false;
+        }
+        long diff = newDate.getTime() - oldDate.getTime();
+        long r = 0;
+
+        if (diff / day < 7) {
+            return true;
+        }
+        return false;
+    }
 }

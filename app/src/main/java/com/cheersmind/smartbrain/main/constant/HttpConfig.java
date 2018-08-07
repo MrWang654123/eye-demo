@@ -39,6 +39,9 @@ public class HttpConfig {
     //获取用户详情
     public static final String URL_USER_DETAILS = API_HOST + "/v1/api/users";
 
+    //获取系统时间
+    public static final String URL_SERVER_TIME = API_HOST + "/v1/oauth2/server/time";
+
 
     /**-----------------------------------------------------------------------
      *---------------------------业务相关-----------------------------------

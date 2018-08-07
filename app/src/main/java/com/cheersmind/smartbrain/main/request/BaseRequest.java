@@ -49,7 +49,8 @@ public class BaseRequest {
                 || url.contains("check_child_invite")
                 || url.contains(HttpConfig.URL_UC_THIRD_LOGIN)
                 || url.contains(HttpConfig.URL_UC_REGISTER)
-                || url.equals(HttpConfig.URL_UPDATE_NOTIFICATION)) {
+                || url.equals(HttpConfig.URL_UPDATE_NOTIFICATION)
+                || url.equals(HttpConfig.URL_SERVER_TIME)) {
             return "";
         }
         String host = url.startsWith(HttpConfig.API_HOST)?HttpConfig.API_HOST:HttpConfig.UC_HOST;

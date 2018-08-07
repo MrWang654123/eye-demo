@@ -32,6 +32,7 @@ import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.ChildInfoEntity;
 import com.cheersmind.smartbrain.main.entity.ChildInfoRootEntity;
 import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
+import com.cheersmind.smartbrain.main.entity.SystemTimeEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
@@ -42,6 +43,7 @@ import com.cheersmind.smartbrain.main.entity.WXUserInfoEntity;
 import com.cheersmind.smartbrain.main.event.WXLoginEvent;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
+import com.cheersmind.smartbrain.main.util.DateTimeUtils;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
@@ -629,34 +631,49 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void canAutoLogin(){
-        WXUserInfoEntity wxUserInfoEntity  = DataSupport.findFirst(WXUserInfoEntity.class);
-        if(wxUserInfoEntity!=null){
 
-            long curTime = System.currentTimeMillis() - wxUserInfoEntity.getSysTimeMill();
-            long t = 1000 * 60 * 60 * 24 * 7;//6天
-            if(curTime < t){
-                //缓存token有效,自动登录
-                UCManager.getInstance().setAcccessToken(wxUserInfoEntity.getAccessToken());
-                UCManager.getInstance().setMacKey(wxUserInfoEntity.getMacKey());
-                UCManager.getInstance().setRefreshToken(wxUserInfoEntity.getRefreshToken());
-                UCManager.getInstance().setUserId(wxUserInfoEntity.getUserId());
-                getChildList();
-            }else{
-                //重新请求token
-                DataSupport.deleteAll(WXUserInfoEntity.class);
-                LogUtils.w("wxtest","重新请求token1");
-                rtAuto.setVisibility(View.GONE);
-                scvLogin.setVisibility(View.VISIBLE);
+        DataRequestService.getInstance().getServerTime(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
 
             }
-        }else{
-            //重新请求token
-            DataSupport.deleteAll(WXUserInfoEntity.class);
-            LogUtils.w("wxtest","重新请求token2");
-            rtAuto.setVisibility(View.GONE);
-            scvLogin.setVisibility(View.VISIBLE);
 
-        }
+            @Override
+            public void onResponse(Object obj) {
+                if(obj!=null){
+                    Map map = JsonUtil.fromJson(obj.toString(),Map.class);
+                    SystemTimeEntity systemTimeEntity = InjectionWrapperUtil.injectMap(map,SystemTimeEntity.class);
+                    if(systemTimeEntity != null){
+                        WXUserInfoEntity wxUserInfoEntity  = DataSupport.findFirst(WXUserInfoEntity.class);
+                        if(wxUserInfoEntity!=null){
+
+                            if(DateTimeUtils.tokenTimeValid(wxUserInfoEntity.getServerTime(),systemTimeEntity.getDatetime())){
+                                //缓存token有效,自动登录
+                                UCManager.getInstance().setAcccessToken(wxUserInfoEntity.getAccessToken());
+                                UCManager.getInstance().setMacKey(wxUserInfoEntity.getMacKey());
+                                UCManager.getInstance().setRefreshToken(wxUserInfoEntity.getRefreshToken());
+                                UCManager.getInstance().setUserId(wxUserInfoEntity.getUserId());
+                                getChildList();
+                            }else{
+                                //重新请求token
+                                DataSupport.deleteAll(WXUserInfoEntity.class);
+                                LogUtils.w("wxtest","重新请求token1");
+                                rtAuto.setVisibility(View.GONE);
+                                scvLogin.setVisibility(View.VISIBLE);
+                            }
+                        }else{
+                            //重新请求token
+                            DataSupport.deleteAll(WXUserInfoEntity.class);
+                            LogUtils.w("wxtest","重新请求token2");
+                            rtAuto.setVisibility(View.GONE);
+                            scvLogin.setVisibility(View.VISIBLE);
+
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     private void getwxToken(String code){
