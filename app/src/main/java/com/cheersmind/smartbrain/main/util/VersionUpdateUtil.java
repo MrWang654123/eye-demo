@@ -56,158 +56,77 @@ public class VersionUpdateUtil {
                 if(obj!=null){
                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                     final VersionEntity versionObj = InjectionWrapperUtil.injectMap(dataMap,VersionEntity.class);
+                    if(versionObj!=null){
+                        int forceUpdate = versionObj.getForceUpdate();
+                        String updateDesc = versionObj.getDescription();
+                        int versionCode = Integer.valueOf(versionObj.getVersionCode());
+                        boolean isDebug =false; //versionObj.getBoolean("is_debug");
+                        final String apkDownloadUrl = versionObj.getUpdateUrl();
 
-                    int forceUpdate = versionObj.getForceUpdate();
-                    String updateDesc = versionObj.getDescription();
-                    int versionCode = Integer.valueOf(versionObj.getVersionCode());
-                    boolean isDebug =false; //versionObj.getBoolean("is_debug");
-                    final String apkDownloadUrl = versionObj.getUpdateUrl();
-
-                    boolean isApkInDebug = VersionUpdateUtil.isApkInDebug(QSApplication.getContext());
-                    if (isDebug == isApkInDebug || isApkInDebug) {
-                        PackageManager manager = context.getPackageManager();
-                        try {
-                            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
-                            int currVersion = PackageUtils.getPackageVersion(context,info.packageName);
-                            System.out.println("versionUpdate online versionCode : "+versionCode+" , isDebug : "+(isDebug)+" , apkDownloadUrl : "+apkDownloadUrl +" | localVersionCode : "+currVersion);
-                            if (versionCode <= currVersion) {
-                                if (fromUser) {
-                                    Toast.makeText(context,"当前已经是最新版本",Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-
-                                AppHintUpdateDialog appHintUpdateDialog = new AppHintUpdateDialog(context, versionObj, new AppHintUpdateDialog.AppHintUpdateCallback() {
-                                    @Override
-                                    public void onCancel() {
-                                        //非强制更新，显示取消，点击取消后本次不再显示提示更新
-                                        isCurrVersionUpdateDialogShow = true;
+                        boolean isApkInDebug = VersionUpdateUtil.isApkInDebug(QSApplication.getContext());
+                        if (isDebug == isApkInDebug || isApkInDebug) {
+                            PackageManager manager = context.getPackageManager();
+                            try {
+                                PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+                                int currVersion = PackageUtils.getPackageVersion(context,info.packageName);
+                                System.out.println("versionUpdate online versionCode : "+versionCode+" , isDebug : "+(isDebug)+" , apkDownloadUrl : "+apkDownloadUrl +" | localVersionCode : "+currVersion);
+                                if (versionCode <= currVersion) {
+                                    if (fromUser) {
+                                        Toast.makeText(context,"当前已经是最新版本",Toast.LENGTH_SHORT).show();
                                     }
+                                } else {
 
-                                    @Override
-                                    public void onSure() {
+                                    AppHintUpdateDialog appHintUpdateDialog = new AppHintUpdateDialog(context, versionObj, new AppHintUpdateDialog.AppHintUpdateCallback() {
+                                        @Override
+                                        public void onCancel() {
+                                            //非强制更新，显示取消，点击取消后本次不再显示提示更新
+                                            isCurrVersionUpdateDialogShow = true;
+                                        }
 
-                                        isCurrVersionUpdateDialogShow = true;
-                                        final AppUpdateDialog appUpdateDialog = new AppUpdateDialog(context,versionObj.getForceUpdate());
-                                        appUpdateDialog.show();
-                                        final DownLoadApk downLoadApk = new DownLoadApk(apkDownloadUrl);
-                                        downLoadApk.downloadApk(new FileDownloaderUtils.DownloadCallBack() {
-                                            @Override
-                                            public void onStart() {
+                                        @Override
+                                        public void onSure() {
 
-                                            }
+                                            isCurrVersionUpdateDialogShow = true;
+                                            final AppUpdateDialog appUpdateDialog = new AppUpdateDialog(context,versionObj.getForceUpdate());
+                                            appUpdateDialog.show();
+                                            final DownLoadApk downLoadApk = new DownLoadApk(apkDownloadUrl);
+                                            downLoadApk.downloadApk(new FileDownloaderUtils.DownloadCallBack() {
+                                                @Override
+                                                public void onStart() {
 
-                                            @Override
-                                            public void onFinish() {
-                                                isCurrVersionUpdateDialogShow = false;
-                                                if(appUpdateDialog!=null){
-                                                    appUpdateDialog.dismiss();
                                                 }
-                                                downLoadApk.installApk();
-                                            }
 
-                                            @Override
-                                            public void onProgress(int done, int total) {
-                                                LogUtils.w("downloadApk : onProgress done :",FileUtil.formetFileSize(done) + "/" + FileUtil.formetFileSize(total));
-                                                appUpdateDialog.setProgress(done,total);
-                                            }
+                                                @Override
+                                                public void onFinish() {
+                                                    isCurrVersionUpdateDialogShow = false;
+                                                    if(appUpdateDialog!=null){
+                                                        appUpdateDialog.dismiss();
+                                                    }
+                                                    downLoadApk.installApk();
+                                                }
 
-                                            @Override
-                                            public void onFail(Throwable msg) {
-                                                isCurrVersionUpdateDialogShow = false;
-                                            }
-                                        },false);
-                                    }
-                                });
-                                appHintUpdateDialog.show();
+                                                @Override
+                                                public void onProgress(int done, int total) {
+                                                    LogUtils.w("downloadApk : onProgress done :",FileUtil.formetFileSize(done) + "/" + FileUtil.formetFileSize(total));
+                                                    appUpdateDialog.setProgress(done,total);
+                                                }
 
-//                                CustomDialog.Builder builder = new CustomDialog.Builder(context,true);
-//                                builder.setTitle("版本更新")
-//                                        .setMessage(updateDesc!=null?updateDesc:"有最新的版本,是否立即更新?");
-//
-//                                if (forceUpdate == 1) {
-//                                    //强制更新
-//                                    builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            dialogInterface.dismiss();
-//                                            isCurrVersionUpdateDialogShow = true;
-//                                            final DownLoadApk downLoadApk = new DownLoadApk(apkDownloadUrl);
-//
-//                                            downLoadApk.downloadApk(new FileDownloaderUtils.DownloadCallBack() {
-//                                                @Override
-//                                                public void onStart() {
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void onFinish() {
-//                                                    downLoadApk.installApk();
-//                                                }
-//
-//                                                @Override
-//                                                public void onProgress(int done, int total) {
-//                                                    System.out.println("downloadApk : onProgress done : "+done+" | total : "+total);
-//                                                }
-//
-//                                                @Override
-//                                                public void onFail(Throwable msg) {
-//
-//                                                }
-//                                            },false);
-//                                        }
-//                                    });
-//                                } else {
-//                                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            dialogInterface.dismiss();
-//                                            isCurrVersionUpdateDialogShow = false;
-//                                            final DownLoadApk downLoadApk = new DownLoadApk(apkDownloadUrl);
-//
-//                                            downLoadApk.downloadApk(new FileDownloaderUtils.DownloadCallBack() {
-//                                                @Override
-//                                                public void onStart() {
-//
-//                                                }
-//
-//                                                @Override
-//                                                public void onFinish() {
-//                                                    downLoadApk.installApk();
-//                                                }
-//
-//                                                @Override
-//                                                public void onProgress(int done, int total) {
-//                                                    System.out.println("downloadApk : onProgress done : "+done+" | total : "+total);
-//                                                }
-//
-//                                                @Override
-//                                                public void onFail(Throwable msg) {
-//
-//                                                }
-//                                            },false);
-//                                        }
-//                                    });
-//
-//                                    builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            dialogInterface.dismiss();
-//                                            isCurrVersionUpdateDialogShow = false;
-//                                        }
-//                                    });
-//                                }
-//
-//
-//                                CustomDialog dialog = builder.create();
-//                                dialog.setCanceledOnTouchOutside(false);
-//                                dialog.show();
-//                                isCurrVersionUpdateDialogShow = true;
+                                                @Override
+                                                public void onFail(Throwable msg) {
+                                                    isCurrVersionUpdateDialogShow = false;
+                                                }
+                                            },false);
+                                        }
+                                    });
+                                    appHintUpdateDialog.show();
+                                }
+                            } catch (PackageManager.NameNotFoundException e) {
+                                e.printStackTrace();
                             }
-                        } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
-                        }
 
+                        }
                     }
+
                 }
 
             }

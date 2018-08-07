@@ -72,7 +72,7 @@ public class DimensionReportDialog extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         setCanceledOnTouchOutside(false);
-        setCancelable(false);
+        setCancelable(true);
         initView();
         initData();
     }
@@ -82,10 +82,7 @@ public class DimensionReportDialog extends Dialog {
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(callback!=null){
-                    callback.onClose();
-                }
-                onDismiss();
+               dismiss();
             }
         });
         tvTitle = (TextView)findViewById(R.id.tv_title);
@@ -212,8 +209,14 @@ public class DimensionReportDialog extends Dialog {
         return stringBuffer.toString();
     }
 
-    public void onDismiss(){
-        this.dismiss();
+    @Override
+    public void dismiss() {
+        super.dismiss();
+
+        if(callback!=null){
+            callback.onClose();
+        }
+
     }
 
     public interface DimensionReportCallback{
