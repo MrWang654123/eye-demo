@@ -1,9 +1,11 @@
 package com.cheersmind.smartbrain.module.mine;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -16,6 +18,7 @@ import com.cheersmind.smartbrain.main.QSApplication;
 import com.cheersmind.smartbrain.main.activity.BaseActivity;
 import com.cheersmind.smartbrain.main.activity.MainActivity;
 import com.cheersmind.smartbrain.main.entity.WXUserInfoEntity;
+import com.cheersmind.smartbrain.main.util.DataCleanCacheUtils;
 import com.cheersmind.smartbrain.main.util.SharedPreferencesUtils;
 import com.cheersmind.smartbrain.main.util.SoundPlayUtils;
 import com.cheersmind.smartbrain.main.util.VersionUpdateUtil;
@@ -36,6 +39,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private TextView tvUpdate;
     private TextView tvCurVersion;
     private TextView tvLicense;
+    private RelativeLayout rtCache;
+    private TextView tvCache;
 
     private RelativeLayout rlUpdate;
 
@@ -77,6 +82,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         });
 
         tvCurVersion.setText("当前版本："+ VersionUpdateUtil.getVerName(this));
+
+        rtCache = (RelativeLayout)findViewById(R.id.rt_cache);
+        rtCache.setOnClickListener(this);
+        tvCache = (TextView)findViewById(R.id.tv_cache);
+        try {
+            tvCache.setText(DataCleanCacheUtils.getTotalCacheSize(SettingActivity.this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -102,6 +116,30 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             intt.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intt);
             finish();
+        }else if(v == rtCache){
+            //清除缓存
+            new AlertDialog.Builder(this)
+                    .setTitle("温馨提示")
+                    .setMessage("确定要清除缓存吗？")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            DataCleanCacheUtils.clearAllCache(SettingActivity.this);
+                            try {
+                                tvCache.setText(DataCleanCacheUtils.getTotalCacheSize(SettingActivity.this));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    })
+                    .create().show();
         }
     }
 }

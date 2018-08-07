@@ -20,17 +20,15 @@ import android.widget.TextView;
 
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
+import com.cheersmind.smartbrain.main.activity.MainActivity;
 import com.cheersmind.smartbrain.main.activity.QsDimensionDetailsActivity;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
-import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
-import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.entity.TopicInfoEntity;
 import com.cheersmind.smartbrain.main.entity.TopicRootEntity;
 import com.cheersmind.smartbrain.main.entity.UpdateNotificationEntity;
-import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
 import com.cheersmind.smartbrain.main.util.DateTimeUtils;
@@ -42,7 +40,6 @@ import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 import com.cheersmind.smartbrain.main.view.MarqueeText;
 import com.cheersmind.smartbrain.main.view.horizon.MyListview;
-import com.cheersmind.smartbrain.main.view.qsdialog.DimensionReportDialog;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizonListviewAdapter;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizontalListView;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -149,6 +146,7 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
         evaluateAdapter = new EvaluateAdapter(getActivity());
         lvEvaluate.setAdapter(evaluateAdapter);
         evaluateAdapter.notifyDataSetChanged();
+
     }
 
     private void updateHeadData(){
@@ -393,58 +391,60 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
                 QsDimensionDetailsActivity.startQsDimensionDetailsActivity(getActivity(),topicInfoEntity,dimensionInfoEntity);
             }else{
                 //量表报告
-                LoadingView.getInstance().show(getActivity());
-                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
-                        dimensionInfoEntity.getChildDimension().getExamId(),
-                        dimensionInfoEntity.getTopicDimensionId(),
-                        ChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
-                        "0", new BaseService.ServiceCallback() {
-                            @Override
-                            public void onFailure(QSCustomException e) {
-                                LoadingView.getInstance().dismiss();
-                                ToastUtil.showShort(getActivity(),"获取量表报告失败");
-                            }
-
-                            @Override
-                            public void onResponse(Object obj) {
-                                LoadingView.getInstance().dismiss();
-                                if(obj!=null){
-                                    Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
-                                    ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
-                                    if(data!=null && data.getChartDatas()!=null){
-
-                                        if(data.getChartDatas().size()==0 && data.getReportResults().size()==0){
-                                            ToastUtil.showShort(getActivity(),"感谢您的信息搜集");
-                                            return;
-                                        }
-                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
-                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
-                                        if(dimensionReports!=null && dimensionReports.size()>0) {
-                                            for (int i = 0; i < dimensionReports.size(); i++) {
-                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
-                                                    if (dimensionReports.get(i).getReportResult() == null) {
-                                                        if(dimensionReports.get(i).getReportResult()==null){
-                                                            dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(getActivity(), dimensionReports,dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
-                                            @Override
-                                            public void onClose() {
-
-                                            }
-                                        });
-                                        dimensionReportDialog.show();
-                                    }
-
-                                }
-                            }
-                        });
+                showReportPanel(null,dimensionInfoEntity);
+//                LoadingView.getInstance().show(getActivity());
+//                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
+//                        dimensionInfoEntity.getChildDimension().getExamId(),
+//                        dimensionInfoEntity.getTopicDimensionId(),
+//                        ChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
+//                        "0", new BaseService.ServiceCallback() {
+//                            @Override
+//                            public void onFailure(QSCustomException e) {
+//                                LoadingView.getInstance().dismiss();
+//                                ToastUtil.showShort(getActivity(),"获取量表报告失败");
+//                            }
+//
+//                            @Override
+//                            public void onResponse(Object obj) {
+//                                LoadingView.getInstance().dismiss();
+//                                if(obj!=null){
+//                                    Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
+//                                    ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
+//                                    if(data!=null && data.getChartDatas()!=null){
+//
+//                                        if(data.getChartDatas().size()==0 && data.getReportResults().size()==0){
+//                                            ToastUtil.showShort(getActivity(),"感谢您的信息搜集");
+//                                            return;
+//                                        }
+//                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
+//                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
+//                                        if(dimensionReports!=null && dimensionReports.size()>0) {
+//                                            for (int i = 0; i < dimensionReports.size(); i++) {
+//                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
+//                                                    if (dimensionReports.get(i).getReportResult() == null) {
+//                                                        if(dimensionReports.get(i).getReportResult()==null){
+//                                                            dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
+//                                                        }
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//
+//                                        showReportPanel(dimensionReports,dimensionInfoEntity);
+//                                    }
+//
+//                                }
+//                            }
+//                        });
 
             }
+        }
+    }
+
+    private void showReportPanel(List<ReportItemEntity> dimensionReports, DimensionInfoEntity entity){
+        if(getActivity() instanceof MainActivity){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            mainActivity.showReportPanel(dimensionReports,entity);
         }
     }
 

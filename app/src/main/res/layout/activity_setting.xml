@@ -105,6 +105,38 @@
 
     <TextView
         android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_e7e7e7"/>
+
+    <RelativeLayout
+        android:id="@+id/rt_cache"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/color_717171"
+            android:textSize="14sp"
+            android:text="清除缓存" />
+
+        <TextView
+            android:id="@+id/tv_cache"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/color_717171"
+            android:textSize="14sp"
+            android:text="0M" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="10dp"
         android:textColor="@color/color_b3b3b3"
         android:textSize="14sp"

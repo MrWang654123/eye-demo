@@ -13,21 +13,28 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheersmind.smartbrain.R;
+import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
+import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
 import com.cheersmind.smartbrain.main.event.CommonEvent;
 import com.cheersmind.smartbrain.main.fragment.QsEvaluateFragment;
 import com.cheersmind.smartbrain.main.fragment.QsMineFragment;
 import com.cheersmind.smartbrain.main.fragment.QsReportFragment;
+import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.SoundPlayUtils;
 import com.cheersmind.smartbrain.main.util.VersionUpdateUtil;
 import com.cheersmind.smartbrain.main.view.CustomViewPager;
+import com.cheersmind.smartbrain.main.view.qshorizon.ReportViewLayout;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,6 +58,10 @@ public class MainActivity extends BaseActivity{
     private GridView gvTabbar;//底部tabbar
     private long lastTimeMillis;
 
+    //报告底部弹窗
+    private RelativeLayout rtReportPopRoot;
+    private RelativeLayout rtReportPopContent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +71,15 @@ public class MainActivity extends BaseActivity{
         vpMainFragments = (CustomViewPager) findViewById(R.id.vp_main_fragments);
         vpMainFragments.setOffscreenPageLimit(3);
         gvTabbar = (GridView) findViewById(R.id.gv_tabbar);
+
+        rtReportPopContent = (RelativeLayout)findViewById(R.id.rt_report_pop_content);
+        rtReportPopRoot = (RelativeLayout)findViewById(R.id.rt_report_pop_root);
+        rtReportPopRoot.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                hiddenReportPanel();
+            }
+        });
 
         initFraments();
         setupTabbar();
@@ -296,6 +316,49 @@ public class MainActivity extends BaseActivity{
         }
         return super.onKeyDown(keyCode,event);
     }
+
+
+    public void showReportPanel(List<ReportItemEntity> dimensionReports, DimensionInfoEntity entity){
+        if(rtReportPopRoot.getVisibility() == View.GONE){
+            ReportViewLayout reportViewLayout = new ReportViewLayout(MainActivity.this, dimensionReports, entity, new ReportViewLayout.DimensionReportCallback() {
+                @Override
+                public void onClose() {
+                    hiddenReportPanel();
+                }
+            });
+            rtReportPopContent.removeAllViews();
+            rtReportPopContent.addView(reportViewLayout);
+            rtReportPopRoot.setVisibility(View.VISIBLE);
+            Animation showAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_bottom_center);
+            showAnim.setDuration(300);
+            rtReportPopContent.startAnimation(showAnim);
+        }
+    }
+
+    private void hiddenReportPanel(){
+        if(rtReportPopRoot.getVisibility() == View.VISIBLE){
+            Animation hideAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_center_bottom);
+            hideAnim.setDuration(300);
+            hideAnim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    rtReportPopRoot.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            rtReportPopContent.startAnimation(hideAnim);
+        }
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNeedRefreshRoport(CommonEvent commonEvent){

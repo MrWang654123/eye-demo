@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
+import com.cheersmind.smartbrain.main.activity.MainActivity;
 import com.cheersmind.smartbrain.main.dao.ChildInfoDao;
 import com.cheersmind.smartbrain.main.entity.DimensionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
@@ -30,7 +31,6 @@ import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
-import com.cheersmind.smartbrain.main.view.qsdialog.DimensionReportDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +120,7 @@ public class TopicDimensionReportFragmet extends Fragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
             if(convertView == null){
                 convertView = View.inflate(getActivity(),R.layout.item_topic_dimension_report,null);
@@ -169,13 +169,14 @@ public class TopicDimensionReportFragmet extends Fragment {
             holder.tvLockDetail.setOnClickListener(new OnMultiClickListener() {
                 @Override
                 public void onMultiClick(View view) {
-                    DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(getActivity(), reportItemEntities,new DimensionInfoEntity(), new DimensionReportDialog.DimensionReportCallback() {
-                        @Override
-                        public void onClose() {
-
-                        }
-                    });
-                    dimensionReportDialog.show();
+//                    DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(getActivity(), reportItemEntities,new DimensionInfoEntity(), new DimensionReportDialog.DimensionReportCallback() {
+//                        @Override
+//                        public void onClose() {
+//
+//                        }
+//                    });
+//                    dimensionReportDialog.show();
+                    showReportPanel(reportItemEntities,new DimensionInfoEntity());
                 }
             });
             return convertView;
@@ -200,6 +201,13 @@ public class TopicDimensionReportFragmet extends Fragment {
             tvResultStatus = (TextView)view.findViewById(R.id.tv_result_status);
             tvResultContent = (TextView)view.findViewById(R.id.tv_result_content);
             tvLockDetail = (TextView)view.findViewById(R.id.tv_lock_detail);
+        }
+    }
+
+    private void showReportPanel(List<ReportItemEntity> dimensionReports, DimensionInfoEntity entity){
+        if(getActivity() instanceof MainActivity){
+            MainActivity mainActivity = (MainActivity)getActivity();
+            mainActivity.showReportPanel(dimensionReports,entity);
         }
     }
 
