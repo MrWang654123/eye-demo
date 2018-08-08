@@ -302,6 +302,14 @@ public class MainActivity extends BaseActivity{
 
     //按返回键时， 不退出程序而是返回上一浏览页面
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if(keyCode == KeyEvent.KEYCODE_BACK && rtReportPopRoot.getVisibility() == View.VISIBLE ){
+            if(!isHiddenAniming){
+                hiddenReportPanel();
+            }
+            return false;
+        }
+
         if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
             long currTimeMillis = System.currentTimeMillis();
             if (currTimeMillis - lastTimeMillis <= 1000) {
@@ -335,19 +343,22 @@ public class MainActivity extends BaseActivity{
         }
     }
 
+    private boolean isHiddenAniming = false;
     private void hiddenReportPanel(){
         if(rtReportPopRoot.getVisibility() == View.VISIBLE){
+
             Animation hideAnim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.anim_center_bottom);
             hideAnim.setDuration(300);
             hideAnim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-
+                    isHiddenAniming = true;
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     rtReportPopRoot.setVisibility(View.GONE);
+                    isHiddenAniming = false;
                 }
 
                 @Override

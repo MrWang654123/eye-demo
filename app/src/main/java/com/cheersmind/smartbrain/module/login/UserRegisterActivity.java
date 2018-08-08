@@ -19,12 +19,14 @@ import com.cheersmind.smartbrain.R;
 import com.cheersmind.smartbrain.main.Exception.QSCustomException;
 import com.cheersmind.smartbrain.main.activity.BaseActivity;
 import com.cheersmind.smartbrain.main.constant.HttpConfig;
+import com.cheersmind.smartbrain.main.entity.ErrorCodeEntity;
 import com.cheersmind.smartbrain.main.entity.WXTokenEntity;
 import com.cheersmind.smartbrain.main.entity.WXUserInfoEntity;
 import com.cheersmind.smartbrain.main.helper.AutoLoginHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
+import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 
 import java.util.Calendar;
@@ -147,12 +149,32 @@ public class UserRegisterActivity extends BaseActivity implements View.OnClickLi
                 BaseService.post(url, map, false, new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
-                        LoadingView.getInstance().dismiss();
-                        Log.i("WXTest", "班级群号不存在" );
-                        String str = e.getMessage() == null ? "message为空" : e.getMessage();
-                        Log.i("WXTest error_message", str);
+                        if(!TextUtils.isEmpty(e.getMessage())){
+                            try{
+                                String bodyStr = e.getMessage();
+                                Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                                ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                                if(errorCodeEntity!=null){
+                                    String message = errorCodeEntity.getMessage();
+                                    if(TextUtils.isEmpty(message)){
+                                        ToastUtil.showShort(UserRegisterActivity.this,getResources().getString(R.string.error_code_common_text));
+                                    }else{
+                                        ToastUtil.showShort(UserRegisterActivity.this,message);
+                                    }
+                                }else{
+                                    ToastUtil.showShort(UserRegisterActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }
+                            }catch (Exception err){
+                                if(TextUtils.isEmpty(e.getMessage())){
+                                    ToastUtil.showShort(UserRegisterActivity.this,getResources().getString(R.string.error_code_common_text));
+                                }else{
+                                    ToastUtil.showShort(UserRegisterActivity.this,e.getMessage());
+                                }
+                            }
+                        }else{
+                            ToastUtil.showShort(UserRegisterActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }
 
-                        Toast.makeText(UserRegisterActivity.this,"注册失败",Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

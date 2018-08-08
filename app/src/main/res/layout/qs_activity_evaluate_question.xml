@@ -150,4 +150,23 @@
         layout="@layout/qs_layout_go_down"
         android:visibility="gone"/>
 
+    <RelativeLayout
+        android:id="@+id/rt_report_pop_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:id="@+id/rt_report_pop_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/shape_corner_white">
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>

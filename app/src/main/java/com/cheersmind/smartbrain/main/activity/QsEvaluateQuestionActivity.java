@@ -28,27 +28,24 @@ import com.cheersmind.smartbrain.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionInfoEntity;
 import com.cheersmind.smartbrain.main.entity.QuestionRootEntity;
 import com.cheersmind.smartbrain.main.entity.ReportItemEntity;
-import com.cheersmind.smartbrain.main.entity.ReportResultEntity;
-import com.cheersmind.smartbrain.main.entity.ReportRootEntity;
 import com.cheersmind.smartbrain.main.event.ContinueFactorEvent;
 import com.cheersmind.smartbrain.main.fragment.questype.QsAccordJudgeFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsBalanceSelectFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsDefaultQuestionFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsFrequencySelectFragment;
 import com.cheersmind.smartbrain.main.fragment.questype.QsTickedCorrectFragment;
-import com.cheersmind.smartbrain.main.helper.ChartViewHelper;
 import com.cheersmind.smartbrain.main.service.BaseService;
 import com.cheersmind.smartbrain.main.service.DataRequestService;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
+import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.RepetitionClickUtil;
 import com.cheersmind.smartbrain.main.util.SoundPlayUtils;
-import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.LoadingView;
-import com.cheersmind.smartbrain.main.view.qsdialog.DimensionReportDialog;
 import com.cheersmind.smartbrain.main.view.qsdialog.FactorReportDialog;
 import com.cheersmind.smartbrain.main.view.qsdialog.QuestionCompleteDialog;
 import com.cheersmind.smartbrain.main.view.qsdialog.QuestionQuitDialog;
+import com.cheersmind.smartbrain.main.view.qshorizon.ReportViewLayout;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -82,8 +79,9 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
     private TextView tvQuestionCur;
     private TextView tvQuestionTitle;
 
-//    private QuestionCompleteDialog questionCompleteDialog;
-//    private QuestionQuitDialog questionQuitDialog;
+    //报告底部弹窗
+    private RelativeLayout rtReportPopRoot;
+    private RelativeLayout rtReportPopContent;
 
     List<QuestionInfoEntity> questionList = new ArrayList<>();
     private int timeCount = 120;
@@ -164,6 +162,8 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
 //        commitChildFactor(getConstTimeCount(),true);
     }
 
+
+
     private void initView(){
         ivStop = (ImageView) findViewById(R.id.iv_stop);
         tvTime = (TextView) findViewById(R.id.tv_time);
@@ -182,6 +182,15 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
         tvQuestionTitle = (TextView)findViewById(R.id.tv_question_title);
 
         initViewGo();
+
+        rtReportPopContent = (RelativeLayout)findViewById(R.id.rt_report_pop_content);
+        rtReportPopRoot = (RelativeLayout)findViewById(R.id.rt_report_pop_root);
+        rtReportPopRoot.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                hiddenReportPanel();
+            }
+        });
     }
 
     private void initData(){
@@ -278,6 +287,51 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
         });
     }
 
+    public void showReportPanel(List<ReportItemEntity> dimensionReports, DimensionInfoEntity entity){
+        if(rtReportPopRoot.getVisibility() == View.GONE){
+            ReportViewLayout reportViewLayout = new ReportViewLayout(QsEvaluateQuestionActivity.this, dimensionReports, entity, new ReportViewLayout.DimensionReportCallback() {
+                @Override
+                public void onClose() {
+                    hiddenReportPanel();
+                }
+            });
+            rtReportPopContent.removeAllViews();
+            rtReportPopContent.addView(reportViewLayout);
+            rtReportPopRoot.setVisibility(View.VISIBLE);
+            Animation showAnim = AnimationUtils.loadAnimation(QsEvaluateQuestionActivity.this, R.anim.anim_bottom_center);
+            showAnim.setDuration(300);
+            rtReportPopContent.startAnimation(showAnim);
+        }
+    }
+
+    private void hiddenReportPanel(){
+        if(rtReportPopRoot.getVisibility() == View.VISIBLE){
+            Animation hideAnim = AnimationUtils.loadAnimation(QsEvaluateQuestionActivity.this, R.anim.anim_center_bottom);
+            hideAnim.setDuration(300);
+            hideAnim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    rtReportPopRoot.setVisibility(View.GONE);
+
+                    //最后一个因子点击关闭，关闭量表详情页面
+                    EventBus.getDefault().post(new ContinueFactorEvent(null));
+                    finish();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            rtReportPopContent.startAnimation(hideAnim);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if(!RepetitionClickUtil.isFastClick()){
@@ -324,6 +378,12 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+
+            if(rtReportPopRoot.getVisibility() == View.VISIBLE){
+                hiddenReportPanel();
+                return  false;
+            }
+
             if(hasAnswer==questionList.size()){
                 showQuestionQuitDialog(QuestionQuitDialog.QUIT_TYPE_STOP);
                 return false;
@@ -557,7 +617,10 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                 commitChildFactor(getConstTimeCount(),true);
             }
         });
-        questionCompleteDialog.show();
+        if(QsEvaluateQuestionActivity.this!=null){
+            questionCompleteDialog.show();
+        }
+
 
     }
 
@@ -579,7 +642,9 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                 startTimeTask();
             }
         });
-        questionQuitDialog.show();
+        if(QsEvaluateQuestionActivity.this!=null){
+            questionQuitDialog.show();
+        }
     }
 
     private void loadChildQuestions(){
@@ -685,48 +750,50 @@ public class QsEvaluateQuestionActivity extends BaseActivity implements View.OnC
                         public void onNextFactor() {
                             if(isLastFactor){
 
-                                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
-                                        dimensionInfoEntity.getChildDimension().getExamId(),
-                                        dimensionInfoEntity.getTopicDimensionId(),
-                                        ChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
-                                        "0", new BaseService.ServiceCallback() {
-                                            @Override
-                                            public void onFailure(QSCustomException e) {
-                                                ToastUtil.showShort(QsEvaluateQuestionActivity.this, "获取量表报告失败");
-                                            }
+                                showReportPanel(null,dimensionInfoEntity);
 
-                                            @Override
-                                            public void onResponse(Object obj) {
-                                                if (obj != null) {
-
-                                                    Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
-                                                    ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
-                                                    if(data!=null && data.getChartDatas()!=null && data.getChartDatas().size()>0){
-                                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
-                                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
-                                                        if(dimensionReports!=null && dimensionReports.size()>0) {
-                                                            for (int i = 0; i < dimensionReports.size(); i++) {
-                                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
-                                                                    if (dimensionReports.get(i).getReportResult() == null) {
-                                                                        dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(QsEvaluateQuestionActivity.this,dimensionReports, dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
-                                                            @Override
-                                                            public void onClose() {
-                                                                //最后一个因子点击关闭，关闭量表详情页面
-                                                                EventBus.getDefault().post(new ContinueFactorEvent(null));
-                                                                finish();
-                                                            }
-                                                        });
-                                                        dimensionReportDialog.show();
-                                                    }
-
-                                                }
-                                            }
-                                        });
+//                                DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
+//                                        dimensionInfoEntity.getChildDimension().getExamId(),
+//                                        dimensionInfoEntity.getTopicDimensionId(),
+//                                        ChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
+//                                        "0", new BaseService.ServiceCallback() {
+//                                            @Override
+//                                            public void onFailure(QSCustomException e) {
+//                                                ToastUtil.showShort(QsEvaluateQuestionActivity.this, "获取量表报告失败");
+//                                            }
+//
+//                                            @Override
+//                                            public void onResponse(Object obj) {
+//                                                if (obj != null) {
+//
+//                                                    Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
+//                                                    ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap,ReportRootEntity.class);
+//                                                    if(data!=null && data.getChartDatas()!=null && data.getChartDatas().size()>0){
+//                                                        List<ReportResultEntity> reportResultEntities = data.getReportResults();
+//                                                        List<ReportItemEntity>  dimensionReports = data.getChartDatas();
+//                                                        if(dimensionReports!=null && dimensionReports.size()>0) {
+//                                                            for (int i = 0; i < dimensionReports.size(); i++) {
+//                                                                if (reportResultEntities != null && reportResultEntities.size() > 0) {
+//                                                                    if (dimensionReports.get(i).getReportResult() == null) {
+//                                                                        dimensionReports.get(i).setReportResult(reportResultEntities.get(0));
+//                                                                    }
+//                                                                }
+//                                                            }
+//                                                        }
+//                                                        DimensionReportDialog dimensionReportDialog = new DimensionReportDialog(QsEvaluateQuestionActivity.this,dimensionReports, dimensionInfoEntity, new DimensionReportDialog.DimensionReportCallback() {
+//                                                            @Override
+//                                                            public void onClose() {
+//                                                                //最后一个因子点击关闭，关闭量表详情页面
+//                                                                EventBus.getDefault().post(new ContinueFactorEvent(null));
+//                                                                finish();
+//                                                            }
+//                                                        });
+//                                                        dimensionReportDialog.show();
+//                                                    }
+//
+//                                                }
+//                                            }
+//                                        });
 
 
                             }else{
