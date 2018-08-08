@@ -3,6 +3,8 @@ package com.cheersmind.smartbrain.module.login;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,6 +34,8 @@ import com.cheersmind.smartbrain.main.view.LoadingView;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.app.AlertDialog.THEME_HOLO_LIGHT;
 
@@ -93,11 +97,15 @@ public class UserRegisterActivity extends BaseActivity implements View.OnClickLi
         btnRegister = (Button)findViewById(R.id.btn_register);
         btnRegister.setOnClickListener(this);
 
+        etBirthday.setOnClickListener(this);
         ivTimeSelect = (ImageView)findViewById(R.id.iv_time_select);
         ivTimeSelect.setOnClickListener(this);
 
         tvClassGroup = (TextView)findViewById(R.id.tv_class_group);
         tvClassGroup.setOnClickListener(this);
+
+        setEtFilter(etUserName);
+
     }
 
     private void initData(){
@@ -112,7 +120,7 @@ public class UserRegisterActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         if(v == tvClassGroup){
             startActivity(new Intent(UserRegisterActivity.this,ClassGroupActivity.class));
-        } else if(v == ivTimeSelect){
+        } else if(v == ivTimeSelect || v == etBirthday){
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -149,6 +157,7 @@ public class UserRegisterActivity extends BaseActivity implements View.OnClickLi
                 BaseService.post(url, map, false, new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
+                        LoadingView.getInstance().dismiss();
                         if(!TextUtils.isEmpty(e.getMessage())){
                             try{
                                 String bodyStr = e.getMessage();
@@ -231,5 +240,47 @@ public class UserRegisterActivity extends BaseActivity implements View.OnClickLi
         return true;
 
     }
+
+    //过滤特殊字符和表情
+    private void setEtFilter(EditText et) {
+        if (et == null) {
+            return;
+        }
+        //表情过滤器
+        InputFilter emojiFilter = new InputFilter() {
+
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
+                                       int dstart, int dend) {
+                Pattern emoji = Pattern.compile(
+                        "[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",
+                        Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE);
+                Matcher emojiMatcher = emoji.matcher(source);
+                if (emojiMatcher.find()) {
+                    return "";
+                }
+                return null;
+            }
+        };
+        //特殊字符过滤器
+        InputFilter specialCharFilter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                String regexStr = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+                Pattern pattern = Pattern.compile(regexStr);
+                Matcher matcher = pattern.matcher(source.toString());
+                if (matcher.matches()) {
+                    return "";
+                } else {
+                    return null;
+                }
+
+            }
+        };
+
+
+        et.setFilters(new InputFilter[]{emojiFilter, specialCharFilter});
+    }
+
 
 }
