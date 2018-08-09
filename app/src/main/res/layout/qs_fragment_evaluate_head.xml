@@ -1,39 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:dapeng="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/color_12b2f4">
-
-    <RelativeLayout
-        android:id="@+id/rl_notification"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:background="#ffe3e8">
-
-        <com.cheersmind.smartbrain.main.view.MarqueeText
-            android:id="@+id/tv_notification"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:gravity="center_vertical"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:layout_marginRight="30dp"
-            android:text=""
-            android:textSize="14sp"
-            android:textColor="@color/color_666666"/>
-        <ImageView
-            android:id="@+id/iv_notification"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:scaleType="center"
-            android:src="@mipmap/qs_icon_close"/>
-    </RelativeLayout>
-
 
     <LinearLayout
         android:id="@+id/ll_root"

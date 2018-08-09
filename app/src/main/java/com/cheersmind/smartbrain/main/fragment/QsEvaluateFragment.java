@@ -36,9 +36,9 @@ import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
+import com.cheersmind.smartbrain.main.view.CustomScrollBar;
 import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
-import com.cheersmind.smartbrain.main.view.MarqueeText;
 import com.cheersmind.smartbrain.main.view.horizon.MyListview;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizonListviewAdapter;
 import com.cheersmind.smartbrain.main.view.qshorizon.QsHorizontalListView;
@@ -57,9 +57,10 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     private View headView;
     private EmptyLayout emptyLayout;
 
-    private MarqueeText tvNotification;
+//    private MarqueeText tvNotification;
+//    private CustomScrollBar tvNotification;
     private RelativeLayout rlNotification;
-    private ImageView ivNotification;
+//    private ImageView ivNotification;
 
     private LinearLayout llRoot;
     private Button btnLateStart;
@@ -102,10 +103,6 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
     public void onClick(View view) {
         if(view == btnLateStart){
             startCurrrentDimension(headDimension,new TopicInfoEntity());
-        }else if(view == ivNotification){
-            if(rlNotification.getVisibility() == View.VISIBLE){
-                rlNotification.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -124,12 +121,9 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        headView = View.inflate(getActivity(),R.layout.qs_fragment_evaluate_head,null);
+        rlNotification = (RelativeLayout) contentView.findViewById(R.id.rl_notification);
 
-        rlNotification = (RelativeLayout) headView.findViewById(R.id.rl_notification);
-        tvNotification = (MarqueeText)headView.findViewById(R.id.tv_notification);
-        ivNotification = (ImageView) headView.findViewById(R.id.iv_notification);
-        ivNotification.setOnClickListener(this);
+        headView = View.inflate(getActivity(),R.layout.qs_fragment_evaluate_head,null);
 
         llRoot = (LinearLayout)headView.findViewById(R.id.ll_root);
         tvDimensionName = (TextView)headView.findViewById(R.id.tv_dimension_name);
@@ -462,8 +456,20 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
                     UpdateNotificationEntity notificationEntity = InjectionWrapperUtil.injectMap(map,UpdateNotificationEntity.class);
                     if(notificationEntity!=null){
                         if(notificationEntity.isNotice() && !TextUtils.isEmpty(notificationEntity.getMessage())){
-                            tvNotification.setText(notificationEntity.getMessage());
+                            View view = View.inflate(getActivity(),R.layout.layout_notification,null);
                             rlNotification.setVisibility(View.VISIBLE);
+                            rlNotification.removeAllViews();
+                            rlNotification.addView(view);
+                            CustomScrollBar tvNotification = (CustomScrollBar) view.findViewById(R.id.tv_notification);
+                            tvNotification.setText(notificationEntity.getMessage());
+                            ImageView ivNotification = (ImageView)view.findViewById(R.id.iv_notification);
+                            ivNotification.setOnClickListener(new OnMultiClickListener() {
+                                @Override
+                                public void onMultiClick(View view) {
+                                    rlNotification.removeAllViews();
+                                    rlNotification.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     }
                 }

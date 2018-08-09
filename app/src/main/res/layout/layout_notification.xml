@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dapeng="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:background="#ffe3e8">
+
+        <com.cheersmind.smartbrain.main.view.CustomScrollBar
+            android:id="@+id/tv_notification"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginRight="30dp"
+            android:paddingTop="13dp"
+            android:gravity="center_vertical"
+            dapeng:clickEnableScroll="true"
+            dapeng:isHorizontalScroll="true"
+            dapeng:speedScroll="3"
+            dapeng:textScroll="dapeng dapeng"
+            dapeng:textColorScroll="@color/color_666666"
+            dapeng:textSizeScroll="14sp" />
+        <ImageView
+            android:id="@+id/iv_notification"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="center"
+            android:src="@mipmap/qs_icon_close"/>
+    </RelativeLayout>
+
+</LinearLayout>

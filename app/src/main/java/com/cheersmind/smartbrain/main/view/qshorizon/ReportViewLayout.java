@@ -53,6 +53,7 @@ public class ReportViewLayout extends RelativeLayout {
     private LinearLayout llResult;
 
     private LinearLayout llChart;
+    private TextView tvNone;
 
     private List<ReportItemEntity> dimensionReports;
     private List<ReportFactorEntity> factorEntities = new ArrayList<>();
@@ -103,6 +104,7 @@ public class ReportViewLayout extends RelativeLayout {
 
         llChart = (LinearLayout) findViewById(R.id.ll_chart);
         llResult = (LinearLayout)findViewById(R.id.ll_result);
+        tvNone = (TextView)findViewById(R.id.tv_none);
     }
 
     private void initData(){
@@ -239,7 +241,8 @@ public class ReportViewLayout extends RelativeLayout {
                             if(data!=null && data.getChartDatas()!=null){
 
                                 if(data.getChartDatas().size()==0 && data.getReportResults().size()==0){
-                                    ToastUtil.showShort(context,"感谢您的信息搜集");
+//                                    ToastUtil.showShort(context,"感谢您的信息搜集");
+                                    tvNone.setVisibility(View.VISIBLE);
                                     return;
                                 }
                                 List<ReportResultEntity> reportResultEntities = data.getReportResults();

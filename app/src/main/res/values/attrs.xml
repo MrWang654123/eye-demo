@@ -15,4 +15,14 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="CustomScrollBar">
+        <attr name="clickEnableScroll" format="boolean" />
+        <attr name="isHorizontalScroll" format="boolean" />
+        <attr name="speedScroll" format="integer" />
+        <attr name="textScroll" format="string" />
+        <attr name="textColorScroll" format="color" />
+        <attr name="textSizeScroll" format="dimension" />
+        <attr name="timesScroll" format="integer" />
+    </declare-styleable>
+
 </resources>

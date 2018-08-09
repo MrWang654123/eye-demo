@@ -47,9 +47,10 @@ import com.cheersmind.smartbrain.main.util.DateTimeUtils;
 import com.cheersmind.smartbrain.main.util.InjectionWrapperUtil;
 import com.cheersmind.smartbrain.main.util.JsonUtil;
 import com.cheersmind.smartbrain.main.util.LogUtils;
+import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
+import com.cheersmind.smartbrain.main.view.CustomScrollBar;
 import com.cheersmind.smartbrain.main.view.LoadingView;
-import com.cheersmind.smartbrain.main.view.MarqueeText;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
@@ -92,9 +93,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private LinearLayout llWx;
     private LinearLayout llUser;
 
-    private MarqueeText tvNotification;
+//    private MarqueeText tvNotification;
     private RelativeLayout rlNotification;
-    private ImageView ivNotification;
 
 //    public static WXTokenEntity tokenData ;
 
@@ -167,9 +167,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         llUser = (LinearLayout)findViewById(R.id.ll_user);
 
         rlNotification = (RelativeLayout) findViewById(R.id.rl_notification);
-        tvNotification = (MarqueeText)findViewById(R.id.tv_notification);
-        ivNotification = (ImageView) findViewById(R.id.iv_notification);
-        ivNotification.setOnClickListener(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -189,7 +186,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onResume() {
         super.onResume();
-        getUpdateNotification();
     }
 
     @Override
@@ -223,10 +219,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 //            testToken();
         }else if(v == ivUserLogin){
             updateLoginView(false);
-        }else if(v == ivNotification){
-            if(rlNotification.getVisibility() == View.VISIBLE){
-                rlNotification.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -635,7 +627,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         DataRequestService.getInstance().getServerTime(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-
+                getUpdateNotification();
             }
 
             @Override
@@ -660,6 +652,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                                 LogUtils.w("wxtest","重新请求token1");
                                 rtAuto.setVisibility(View.GONE);
                                 scvLogin.setVisibility(View.VISIBLE);
+                                getUpdateNotification();
                             }
                         }else{
                             //重新请求token
@@ -667,6 +660,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             LogUtils.w("wxtest","重新请求token2");
                             rtAuto.setVisibility(View.GONE);
                             scvLogin.setVisibility(View.VISIBLE);
+                            getUpdateNotification();
 
                         }
                     }
@@ -727,16 +721,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     UpdateNotificationEntity notificationEntity = InjectionWrapperUtil.injectMap(map,UpdateNotificationEntity.class);
                     if(notificationEntity!=null){
                         if(notificationEntity.isNotice() && !TextUtils.isEmpty(notificationEntity.getMessage())){
-                            tvNotification.setText(notificationEntity.getMessage());
+                            View view = View.inflate(LoginActivity.this,R.layout.layout_notification,null);
                             rlNotification.setVisibility(View.VISIBLE);
-                        }else{
-                            rlNotification.setVisibility(View.GONE);
+                            rlNotification.removeAllViews();
+                            rlNotification.addView(view);
+                            CustomScrollBar tvNotification = (CustomScrollBar) view.findViewById(R.id.tv_notification);
+                            tvNotification.setText(notificationEntity.getMessage());
+                            ImageView ivNotification = (ImageView)view.findViewById(R.id.iv_notification);
+                            ivNotification.setOnClickListener(new OnMultiClickListener() {
+                                @Override
+                                public void onMultiClick(View view) {
+                                    rlNotification.removeAllViews();
+                                    rlNotification.setVisibility(View.GONE);
+                                }
+                            });
                         }
-                    }else{
-                        rlNotification.setVisibility(View.GONE);
                     }
-                }else{
-                    rlNotification.setVisibility(View.GONE);
                 }
             }
         });

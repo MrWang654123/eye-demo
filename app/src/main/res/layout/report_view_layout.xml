@@ -174,5 +174,17 @@
 
         </ScrollView>
 
+        <TextView
+            android:id="@+id/tv_none"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textSize="20sp"
+            android:textColor="@color/color_ffa200"
+            android:text="感谢您提交的信息，该信息将用于辅助其他报告的生成，谢谢支持！"/>
+
     </RelativeLayout>
 </LinearLayout>
