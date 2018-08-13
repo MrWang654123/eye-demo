@@ -250,7 +250,7 @@ public class QsDimensionDetailsActivity extends BaseActivity implements View.OnC
             if(TextUtils.isEmpty(factorInfoEntity.getInstruction())){
                 holder.tvFactorHint.setText("");
             }else{
-                String hint ="答题提醒：<br/>" + factorInfoEntity.getInstruction();
+                String hint ="提醒：<br/>" + factorInfoEntity.getInstruction();
                 holder.tvFactorHint.setText(Html.fromHtml(hint));
             }
 

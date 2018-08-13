@@ -241,6 +241,17 @@ public class QsEvaluateFragment extends Fragment implements View.OnClickListener
             TextView tvProjName = (TextView)convertView.findViewById(R.id.tv_topic_name);
             tvProjName.setText(topicList.get(position).getTopicName());
 
+            TextView tvProjsSatus = (TextView)convertView.findViewById(R.id.tv_topic_status);
+            if(topicList.get(position).getChildTopic() == null){
+                tvProjsSatus.setText(getActivity().getResources().getString(R.string.qs_topic_status));
+            }else{
+                if(topicList.get(position).getChildTopic().getStatus() == 1){
+                    tvProjsSatus.setText(getActivity().getResources().getString(R.string.qs_topic_status1));
+                }else{
+                    tvProjsSatus.setText(getActivity().getResources().getString(R.string.qs_topic_status0));
+                }
+            }
+
             final List<DimensionInfoEntity> dimensions = topicList.get(position).getDimensions();
             QsHorizontalListView horizontalListView = (QsHorizontalListView) convertView.findViewById(R.id.hsv);
             QsHorizonListviewAdapter adapter = new QsHorizonListviewAdapter(getActivity(),

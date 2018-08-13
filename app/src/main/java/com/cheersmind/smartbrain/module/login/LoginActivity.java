@@ -50,6 +50,7 @@ import com.cheersmind.smartbrain.main.util.LogUtils;
 import com.cheersmind.smartbrain.main.util.OnMultiClickListener;
 import com.cheersmind.smartbrain.main.util.ToastUtil;
 import com.cheersmind.smartbrain.main.view.CustomScrollBar;
+import com.cheersmind.smartbrain.main.view.EmptyLayout;
 import com.cheersmind.smartbrain.main.view.LoadingView;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -172,6 +173,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWXTokenEntity(WXLoginEvent event) {
         LogUtils.w("WXTest","onEvent微信登入成功回调返回login");
+        LoadingView.getInstance().dismiss();
+        if("error".equals(event.getCode())){
+            ToastUtil.showShort(LoginActivity.this,"微信授权失败！");
+            return;
+        }
         if(event!=null && !TextUtils.isEmpty(event.getCode())){
             getwxToken(event.getCode());
         }
@@ -472,10 +478,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void startWxLogin(){
+        if(!EmptyLayout.isConnectivity(LoginActivity.this)){
+            ToastUtil.showShort(LoginActivity.this,"网络连接异常");
+            return;
+        }
         if (!Constant.wx_api.isWXAppInstalled()) {
             Toast.makeText(LoginActivity.this,"您还未安装微信客户端",Toast.LENGTH_SHORT).show();
             return;
         }
+        LoadingView.getInstance().show(LoginActivity.this);
         final SendAuth.Req req = new SendAuth.Req();
         req.scope = "snsapi_userinfo";
         req.state = "wechat_cheersmind_smartbrain";
@@ -628,6 +639,38 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
             @Override
             public void onFailure(QSCustomException e) {
                 getUpdateNotification();
+                rtAuto.setVisibility(View.GONE);
+                scvLogin.setVisibility(View.VISIBLE);
+
+                if(!EmptyLayout.isConnectivity(LoginActivity.this)){
+                    ToastUtil.showShort(LoginActivity.this,"网络连接有误！");
+                    return;
+                }
+                if(!TextUtils.isEmpty(e.getMessage())){
+                    try{
+                        String bodyStr = e.getMessage();
+                        Map map = JsonUtil.fromJson(bodyStr,Map.class);
+                        ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map,ErrorCodeEntity.class);
+                        if(errorCodeEntity!=null){
+                            String message = errorCodeEntity.getMessage();
+                            if(TextUtils.isEmpty(message)){
+                                ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                            }else{
+                                ToastUtil.showShort(LoginActivity.this,message);
+                            }
+                        }else{
+                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }
+                    }catch (Exception err){
+                        if(TextUtils.isEmpty(e.getMessage())){
+                            ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                        }else{
+                            ToastUtil.showShort(LoginActivity.this,e.getMessage());
+                        }
+                    }
+                }else{
+                    ToastUtil.showShort(LoginActivity.this,getResources().getString(R.string.error_code_common_text));
+                }
             }
 
             @Override

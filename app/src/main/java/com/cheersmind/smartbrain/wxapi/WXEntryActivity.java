@@ -61,16 +61,19 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
                 LogUtils.w("WXTest", "onResp ERR_USER_CANCEL ");
+                EventBus.getDefault().post(new WXLoginEvent("error"));
                 finish();
                 //发送取消
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
                 LogUtils.w("WXTest", "onResp ERR_AUTH_DENIED");
+                EventBus.getDefault().post(new WXLoginEvent("error"));
                 finish();
                 //发送被拒绝
                 break;
             default:
                 LogUtils.w("WXTest", "onResp default errCode " + resp.errCode);
+                EventBus.getDefault().post(new WXLoginEvent("error"));
                 finish();
                 //发送返回
                 break;

@@ -22,7 +22,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:visibility="gone"
-            android:text="最近测评"
+            android:text="最近智评"
             android:textSize="14sp"
             android:textColor="@color/color_6e6e6e"/>
 
@@ -185,7 +185,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="测评话题"
+        android:text="智评话题"
         android:textSize="16sp"
         android:textColor="@color/color_text_white"/>
 
