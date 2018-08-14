@@ -103,27 +103,52 @@ public class MPRadarChart extends MPBaseChart {
         }
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
-        ArrayList<RadarEntry> yValues = new ArrayList<RadarEntry>();
-        for(int i=0;i<items.size();i++){
-            ReportFactorEntity rfe = items.get(i);
-            xLabels.add(rfe.getItemName());
-            yValues.add(new RadarEntry((float) rfe.getChildScore()));
+
+
+        int chartCounts = 1;
+        if(items.get(0).getCompareScore()>0){
+            chartCounts = 2;
+        }
+
+        ArrayList<IRadarDataSet> sets = new ArrayList<IRadarDataSet>();
+        for(int j=0;j<chartCounts;j++){
+            ArrayList<RadarEntry> yValues = new ArrayList<RadarEntry>();
+            for(int i=0;i<items.size();i++){
+                ReportFactorEntity rfe = items.get(i);
+                if(j == 0){
+                    xLabels.add(rfe.getItemName());
+                    yValues.add(new RadarEntry((float) rfe.getChildScore()));
+                }else if(j == 1){
+                    yValues.add(new RadarEntry((float) rfe.getCompareScore()));
+                }
+
+            }
+
+            RadarDataSet set1;
+            if(j == 0){
+                set1 = new RadarDataSet(yValues, "我");
+                set1.setColor(Color.rgb(103, 110, 129));
+                set1.setFillColor(Color.rgb(103, 110, 129));
+                set1.setDrawFilled(true);
+                set1.setFillAlpha(180);
+                set1.setLineWidth(2f);
+                set1.setDrawHighlightCircleEnabled(true);
+                set1.setDrawHighlightIndicators(false);
+            }else{
+                set1 = new RadarDataSet(yValues, "全国");
+                set1.setColor(Color.parseColor("#12b2f4"));
+                set1.setFillColor(Color.parseColor("#f7f7f7"));
+                set1.setDrawFilled(true);
+                set1.setFillAlpha(180);
+                set1.setLineWidth(2f);
+                set1.setDrawHighlightCircleEnabled(true);
+                set1.setDrawHighlightIndicators(false);
+            }
+
+            sets.add(set1);
         }
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
-
-        RadarDataSet set1 = new RadarDataSet(yValues, "我");
-        set1.setColor(Color.rgb(103, 110, 129));
-        set1.setFillColor(Color.rgb(103, 110, 129));
-        set1.setDrawFilled(true);
-        set1.setFillAlpha(180);
-        set1.setLineWidth(2f);
-        set1.setDrawHighlightCircleEnabled(true);
-        set1.setDrawHighlightIndicators(false);
-
-
-        ArrayList<IRadarDataSet> sets = new ArrayList<IRadarDataSet>();
-        sets.add(set1);
 
         RadarData data = new RadarData(sets);
         data.setValueTypeface(mTfLight);

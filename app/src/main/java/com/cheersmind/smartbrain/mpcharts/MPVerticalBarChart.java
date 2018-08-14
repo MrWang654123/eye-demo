@@ -133,25 +133,39 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
         }
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
-        ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
-        for(int i=0;i<items.size();i++){
-            ReportFactorEntity rfe = items.get(i);
-            xLabels.add(rfe.getItemName());
-            yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
+
+        int chartCounts = 1;
+        if(items.get(0).getCompareScore()>0){
+            chartCounts = 2;
+        }
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        for(int j=0;j<chartCounts;j++) {
+            ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
+            for (int i = 0; i < items.size(); i++) {
+                ReportFactorEntity rfe = items.get(i);
+                if (j == 0) {
+                    xLabels.add(rfe.getItemName());
+                    yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
+                } else if (j == 1) {
+                    yValues.add(new BarEntry(i, (float) rfe.getCompareScore()));
+                }
+            }
+
+            BarDataSet set1;
+            if(j == 0){
+                set1 = new BarDataSet(yValues, "我");
+                set1.setDrawIcons(false);
+                set1.setColors(Color.parseColor("#12b2f4"));
+            }else{
+                set1 = new BarDataSet(yValues, "全国");
+                set1.setDrawIcons(false);
+                set1.setColors(Color.parseColor("#ffa400"));
+            }
+            dataSets.add(set1);
         }
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
-
-        BarDataSet set1;
-
-        set1 = new BarDataSet(yValues, "我");
-
-        set1.setDrawIcons(false);
-
-        set1.setColors(Color.parseColor("#12b2f4"));
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(set1);
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);

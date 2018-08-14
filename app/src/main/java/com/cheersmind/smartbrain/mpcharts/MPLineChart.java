@@ -20,6 +20,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
@@ -143,37 +144,61 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
         }
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
-        ArrayList<Entry> yValues = new ArrayList<Entry>();
-        for(int i=0;i<items.size();i++){
-            ReportFactorEntity rfe = items.get(i);
-            xLabels.add(rfe.getItemName());
-            yValues.add(new Entry(i, (float) rfe.getChildScore()));
+
+        int chartCounts = 1;
+        if(items.get(0).getCompareScore()>0){
+            chartCounts = 2;
+        }
+
+        List<ILineDataSet> dataSets = new ArrayList<>();
+        for(int j=0;j<chartCounts;j++){
+            ArrayList<Entry> yValues = new ArrayList<Entry>();
+            for(int i=0;i<items.size();i++){
+                ReportFactorEntity rfe = items.get(i);
+                if(j == 0){
+                    xLabels.add(rfe.getItemName());
+                    yValues.add(new Entry(i, (float) rfe.getChildScore()));
+                }else if(j == 1){
+                    yValues.add(new Entry(i, (float) rfe.getCompareScore()));
+                }
+            }
+
+            LineDataSet set1;
+
+            if(j == 0){
+                set1 = new LineDataSet(yValues, "我");
+                set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+                set1.setColor(ColorTemplate.getHoloBlue());
+                set1.setCircleColor(ColorTemplate.getHoloBlue());
+                set1.setLineWidth(3f);
+                set1.setCircleRadius(4f);
+                set1.setFillAlpha(65);
+                set1.setFillColor(ColorTemplate.getHoloBlue());
+                set1.setHighLightColor(Color.rgb(244, 117, 117));
+                set1.setDrawCircleHole(false);
+            }else{
+                set1 = new LineDataSet(yValues, "全国");
+                set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+                set1.setColor(ColorTemplate.getHoloBlue());
+                set1.setCircleColor(ColorTemplate.getHoloBlue());
+                set1.setLineWidth(3f);
+                set1.setCircleRadius(4f);
+                set1.setFillAlpha(65);
+                set1.setFillColor(ColorTemplate.getHoloBlue());
+                set1.setHighLightColor(Color.rgb(244, 117, 117));
+                set1.setDrawCircleHole(false);
+            }
+            dataSets.add(set1);
+
+
         }
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
-        LineDataSet set1 = new LineDataSet(yValues, "我");
-
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setColor(ColorTemplate.getHoloBlue());
-        set1.setCircleColor(ColorTemplate.getHoloBlue());
-        set1.setLineWidth(3f);
-        set1.setCircleRadius(4f);
-        set1.setFillAlpha(65);
-        set1.setFillColor(ColorTemplate.getHoloBlue());
-        set1.setHighLightColor(Color.rgb(244, 117, 117));
-        set1.setDrawCircleHole(false);
-        //set1.setFillFormatter(new MyFillFormatter(0f));
-        //set1.setDrawHorizontalHighlightIndicator(false);
-        //set1.setVisible(false);
-        //set1.setCircleHoleColor(Color.WHITE);
-
-
         // create a data object with the datasets
-        LineData data = new LineData(set1);
+        LineData data = new LineData(dataSets);
         data.setValueTextColor(Color.parseColor("#666666"));
         data.setValueTextSize(9f);
-
         // set data
         mChart.setData(data);
     }
