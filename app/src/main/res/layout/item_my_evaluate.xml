@@ -36,12 +36,12 @@
 
     </RelativeLayout>
 
-    <com.cheersmind.smartbrain.main.view.horizon.HorizontalListView
+    <com.cheersmind.cheersgenie.main.view.horizon.HorizontalListView
         android:id="@+id/hsv"
         android:layout_width="wrap_content"
         android:layout_height="120dp"
         android:scrollbars="none">
 
-    </com.cheersmind.smartbrain.main.view.horizon.HorizontalListView>
+    </com.cheersmind.cheersgenie.main.view.horizon.HorizontalListView>
 
 </LinearLayout>

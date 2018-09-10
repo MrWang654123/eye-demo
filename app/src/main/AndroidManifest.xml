@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.cheersmind.smartbrain">
+    package="com.cheersmind.cheersgenie">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,53 +13,253 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!-- <uses-permission android:name="android.permission.CLEAR_APP_CACHE" /> -->
+    <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_SETTINGS" />
 
     <application
-        android:name="com.cheersmind.smartbrain.main.QSApplication"
+        android:name=".main.QSApplication"
         android:allowBackup="false"
-        tools:replace="android:allowBackup"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.cheersmind.smartbrain.main.activity.StartActivity">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
+        <activity android:name=".main.activity.StartActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".main.activity.BaseActivity" />
+        <activity android:name=".main.activity.NewFeatureActivity" />
+        <activity android:name=".module.login.LoginActivity" />
+        <activity android:name=".main.activity.MainActivity" />
+        <activity android:name=".module.mine.AboutActivity" />
+        <activity android:name=".module.login.InvitationCodeActivity" />
+        <activity android:name=".module.login.UserLicenseActivity" />
+        <activity android:name=".module.login.PerfectUserInfoActivity" />
+        <activity android:name=".module.mine.MineInfoActivity" />
+        <activity android:name=".module.mine.SettingActivity" />
+        <activity android:name=".module.mine.MyFlowerActivity" />
+        <activity android:name=".module.mine.CommentAppActivity" />
+        <activity android:name=".module.login.UserRegisterActivity" />
+        <activity android:name=".module.login.ClassGroupActivity" />
+        <activity android:name=".main.activity.QsEvaluateQuestionActivity" />
+        <activity android:name=".main.activity.QsDimensionDetailsActivity" />
+
+        <!-- 微信相关页面 begin -->
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- 微信相关页面 end -->
+
+
+        <!-- 友盟相关 begin -->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5a2bbbec8f4a9d7ac10001da" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="${CHANNEL_NAME}" />
+
+        <!-- 友盟相关 end -->
+
+
+        <!-- 启动页面 -->
+        <activity android:name=".features.modules.base.activity.SplashActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <!-- 主页面 -->
+        <activity android:name=".features.modules.base.activity.MasterTabActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <!-- 引导页面 -->
+        <activity android:name=".features.modules.base.activity.GuideActivity" />
+        <!-- 登录主页面 -->
+        <activity android:name=".features.modules.login.activity.XLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.cheersmind.smartbrain.main.activity.BaseActivity" />
-        <activity android:name="com.cheersmind.smartbrain.main.activity.NewFeatureActivity" />
-        <activity android:name="com.cheersmind.smartbrain.module.login.LoginActivity" />
-        <activity android:name="com.cheersmind.smartbrain.main.activity.MainActivity" />
-        <activity android:name="com.cheersmind.smartbrain.module.mine.AboutActivity" />
-        <activity android:name="com.cheersmind.smartbrain.module.login.InvitationCodeActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.login.UserLicenseActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.login.PerfectUserInfoActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.mine.MineInfoActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.mine.SettingActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.mine.MyFlowerActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.mine.CommentAppActivity"></activity>
-        <activity android:name="com.cheersmind.smartbrain.module.login.UserRegisterActivity"></activity>
-        <activity android:name=".module.login.ClassGroupActivity"></activity>
-
-        <activity android:name=".main.activity.QsEvaluateQuestionActivity"></activity>
-        <activity android:name=".main.activity.QsDimensionDetailsActivity"></activity>
-
-
+        <!-- 账号登录 -->
         <activity
-            android:name="com.cheersmind.smartbrain.wxapi.WXEntryActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:name=".features.modules.login.activity.XLoginAccountActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 手机号输入页面（注册） -->
+        <activity
+            android:name=".features.modules.register.activity.RegisterPhoneNumActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 验证码输入页面（注册） -->
+        <activity android:name=".features.modules.register.activity.RegisterCaptchaActivity" />
+        <!-- 密码初始化页面（注册） -->
+        <activity
+            android:name=".features.modules.register.activity.PasswordInitActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 班级群号输入页面（注册） -->
+        <activity android:name=".features.modules.register.activity.ClassNumActivity" />
+        <!-- 完善用户信息页面 -->
+        <activity
+            android:name=".features.modules.register.activity.UserInfoInitActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 手机号快捷登录页面 -->
+        <activity
+            android:name=".features.modules.login.activity.PhoneNumLoginActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <!-- 量表详细页面 -->
+        <activity android:name=".features.modules.exam.activity.DimensionDetailActivity" />
+        <!-- 作答页面 -->
+        <activity android:name=".features.modules.exam.activity.ReplyQuestionActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <!-- 话题详细 -->
+        <activity android:name=".features.modules.exam.activity.TopicDetailActivity" />
+        <!-- 我的积分 -->
+        <activity android:name=".features.modules.mine.activity.MineIntegralActivity" />
+        <!-- 我的消息 -->
+        <activity android:name=".features.modules.mine.activity.MineMessageActivity" />
+        <!-- 我的收藏 -->
+        <activity android:name=".features.modules.mine.activity.MineFavoriteActivity" />
+        <!-- 收缩appbar测试页面 -->
+        <activity android:name=".features.modules.test.activity.CollapsedAppBarActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <!-- 文章详细 -->
+        <activity android:name=".features.modules.article.activity.ArticleDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" >
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <!-- webview测试页面 -->
+        <activity
+            android:name=".features.modules.test.activity.WebviewTestActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:hardwareAccelerated="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".features.modules.test.activity.SchemaActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+
+        <!-- QQ相关页面 begin -->
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="tencent1107697503" />
+                <!-- 100380359 100381104 222222 -->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <!-- QQ相关页面 end -->
+
+        <activity android:name=".features.modules.test.activity.TextViewForHtmlImageActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
-        <meta-data android:value="5a2bbbec8f4a9d7ac10001da" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="${CHANNEL_NAME}" android:name="UMENG_CHANNEL"/>
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".features.modules.mine.activity.UserInfoActivity" />
+
+        <!-- 阿里服务推送 begin -->
+        <meta-data
+            android:name="com.alibaba.app.appkey"
+            android:value="25035344" /> <!-- 请填写你自己的- appKey -->
+        <meta-data
+            android:name="com.alibaba.app.appsecret"
+            android:value="1b1b8a41c7f29936fd735ac8bf0cc8d2" /> <!-- 请填写你自己的appSecret -->
+
+
+        <!-- 消息接收监听器 （用户可自主扩展） -->
+        <receiver
+            android:name=".features.component.MyMessageReceiver"
+            android:exported="false">
+            <intent-filter>
+                 
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_OPENED" />
+            </intent-filter>
+            <intent-filter>
+                     
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_REMOVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.sdk.android.push.RECEIVE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".features.component.MyMessageIntentService"
+            android:exported="false">
+            <intent-filter>
+                 
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_OPENED" />
+            </intent-filter>
+            <intent-filter>
+                     
+                <action android:name="com.alibaba.push2.action.NOTIFICATION_REMOVED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alibaba.sdk.android.push.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <!-- 阿里服务推送 end -->
+
+
+        <!-- 设置页面 -->
+        <activity android:name=".features.modules.mine.activity.XSettingActivity" />
+        <activity android:name=".features.modules.mine.activity.AccountBindActivity" />
+        <activity android:name=".features.modules.mine.activity.ModifyPasswordActivity" />
+        <activity android:name=".features.modules.register.activity.RetrievePasswordActivity" />
+        <activity android:name=".features.modules.exam.activity.ReportActivity" />
+        <activity android:name=".features.modules.article.activity.VideoActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait" ></activity>
     </application>
 
 </manifest>

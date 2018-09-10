@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:startColor="#ffbcc1c8" android:endColor="#ffadb2bb" android:angle="270.0" android:centerColor="#ffbababa" />
+            <corners android:radius="@dimen/button_fullscreen_corner_radius" />
+        </shape>
+    </item>
+    <item android:left="1.0dip" android:top="1.0dip" android:right="1.0dip" android:bottom="1.0dip">
+        <shape android:shape="rectangle">
+            <gradient android:startColor="#ffe7e9ec" android:endColor="#fff7f8fa" android:angle="90.0" />
+            <corners android:radius="@dimen/button_fullscreen_corner_radius" />
+            <padding android:left="@dimen/button_fullscreen_padding" android:top="@dimen/button_fullscreen_padding" android:right="@dimen/button_fullscreen_padding" android:bottom="@dimen/button_fullscreen_padding" />
+        </shape>
+    </item>
+</layer-list>

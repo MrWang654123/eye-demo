@@ -17,12 +17,12 @@
 
     </ListView>
 
-    <com.cheersmind.smartbrain.main.view.EmptyLayout
+    <com.cheersmind.cheersgenie.main.view.EmptyLayout
         android:id="@+id/emptyLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
-    </com.cheersmind.smartbrain.main.view.EmptyLayout>
+    </com.cheersmind.cheersgenie.main.view.EmptyLayout>
 
 </RelativeLayout>

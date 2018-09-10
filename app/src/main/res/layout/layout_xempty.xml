@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pageerrLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#f6f6f6" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" >
+
+                <ImageView
+                    android:id="@+id/img_error_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/pagefailed_bg"
+                    android:visibility="gone" />
+
+                <!--<ProgressBar-->
+                    <!--android:id="@+id/animProgress"-->
+                    <!--android:layout_width="30dip"-->
+                    <!--android:layout_height="30dip"-->
+                    <!--android:visibility="gone"-->
+                    <!--style="@style/empty_loading"-->
+                    <!--/>-->
+                <ProgressBar
+                    android:id="@+id/animProgress"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:indeterminateDrawable="@anim/loading_auto"
+                    android:indeterminateDuration="1200"
+                    android:visibility="gone"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_error_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10.0dip"
+                android:visibility="visible"
+                android:lines="2"
+                android:gravity="center"
+                android:text="@string/error_view_loading"
+                android:textColor="#999999"
+                android:textSize="16.0dip" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

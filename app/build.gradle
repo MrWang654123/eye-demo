@@ -1,50 +1,55 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
-        if("debug".equals(BUILD_TYPE)){
-            applicationId "com.cheersmind.smartbrain.debug"
-        }else{
-            applicationId "com.cheersmind.smartbrain"
+        if ("debug".equals(BUILD_TYPE)) {
+//            applicationId "com.cheersmind.cheersgenie.debug"
+            applicationId "com.cheersmind.cheersgenie"
+        } else {
+            applicationId "com.cheersmind.cheersgenie"
         }
-        minSdkVersion 15
-        targetSdkVersion 23
+        minSdkVersion 16
+        targetSdkVersion 27
         versionCode 67
         versionName APP_VERSION_NAME
         flavorDimensions "versionCode"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
 
     lintOptions {
-      abortOnError false
+        abortOnError false
     }
 
     signingConfigs {
         release {
-            storeFile file("../appkey/qs.jks");
-            keyAlias "qs"
-            keyPassword "fj.*QS&2017"
-            storePassword "fj.*QS&2017"
+            storeFile file("../appkey/cheersgenie.jks");
+            keyAlias "cheersgenie"
+            keyPassword "cheersmind0820"
+            storePassword "cheersmind0820"
         }
         debug {
-//            storeFile file("../appkey/qs.jks");
-//            keyAlias "qs"
-//            keyPassword "fj.*QS&2017"
-//            storePassword "fj.*QS&2017"
+            storeFile file("../appkey/cheersgenie.jks");
+            keyAlias "cheersgenie"
+            keyPassword "cheersmind0820"
+            storePassword "cheersmind0820"
         }
     }
 
     productFlavors {
         normal {
-            manifestPlaceholders = [ CHANNEL_NAME:"NORMAL"]
+            manifestPlaceholders = [CHANNEL_NAME: "NORMAL"]
         }
         umeng {
-            manifestPlaceholders = [ CHANNEL_NAME:"UMENG" ]
+            manifestPlaceholders = [CHANNEL_NAME: "UMENG"]
         }
         qihu360 {
-            manifestPlaceholders = [ CHANNEL_NAME:"QIHU360" ]
+            manifestPlaceholders = [CHANNEL_NAME: "QIHU360"]
         }
 
     }
@@ -55,36 +60,36 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String","HOST_TYPE","\"" + HOST_TYPE + "\""
+            buildConfigField "String", "HOST_TYPE", "\"" + HOST_TYPE + "\""
         }
         debug {
             signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String","HOST_TYPE","\"" + HOST_TYPE + "\""
+            buildConfigField "String", "HOST_TYPE", "\"" + HOST_TYPE + "\""
         }
     }
     applicationVariants.all { variant ->        
-        variant.outputs.all { output ->            
-           def newName            
-           def timeNow            
-           def outDirectory
+        variant.outputs.all { output ->
+            def newName
+            def timeNow
+            def outDirectory
             if ("true".equals(project.IS_JENKINS)) {
-               newName = APK_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '-' + HOST_TYPE + '.apk'
-           } else {             
-               outDirectory = output.outputFile.getParent()                
-               if ('debug'.equals(variant.buildType.name)) {                    
-                   newName = APK_NAME + "${APP_VERSION_NAME}-debug.apk"
-               } else {
-                   newName = APK_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '-' + HOST_TYPE + '.apk'
-               }            
-           }
-	   def outFile = output.outputFile
-	   if (outFile != null && outFile.name.endsWith('.apk')) {
-		outputFileName = newName
-	   }
-       }    
+                newName = APK_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '-' + HOST_TYPE + '.apk'
+            } else {
+                outDirectory = output.outputFile.getParent()
+                if ('debug'.equals(variant.buildType.name)) {
+                    newName = APK_NAME + "${APP_VERSION_NAME}-debug.apk"
+                } else {
+                    newName = APK_NAME + '-' + PRODUCT_FLAVORS + '-' + BUILD_TYPE + '-' + HOST_TYPE + '.apk'
+                }
+            }
+            def outFile = output.outputFile
+            if (outFile != null && outFile.name.endsWith('.apk')) {
+                outputFileName = newName
+            }
+        }
     }
 
     packagingOptions {
@@ -107,31 +112,47 @@ repositories {
         dirs 'libs'
     }
 }
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
-    compile 'com.facebook.fresco:fresco:1.10.0'
-    compile 'me.relex:circleindicator:1.2.2@aar'
-    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile files('libs/gson-2.3.1.jar')
-    compile files('libs/jackson-annotations-2.3.0.jar')
-    compile files('libs/jackson-core-2.3.2.jar')
-    compile files('libs/jackson-databind-2.3.2.jar')
-    compile files('libs/litepal-1.2.0.jar')
-    compile(name: 'alicloud-android-feedback-3.1.1', ext: 'aar')
-    compile files('libs/alicloud-android-monitor-2.5.1.1_for_bc_proguard.jar')
-    compile files('libs/alicloud-android-utils-1.1.1.jar')
-    compile files('libs/utdid4all-1.1.5.3_proguard.jar')
-    compile files('libs/umeng-analytics-7.4.0.jar')
-    compile files('libs/umeng-common-1.4.0.jar')
-//    compile 'org.xclcharts:lib:2.4'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.2'
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'me.relex:circleindicator:1.2.2@aar'
+    implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation files('libs/gson-2.3.1.jar')
+    implementation files('libs/jackson-annotations-2.3.0.jar')
+    implementation files('libs/jackson-core-2.3.2.jar')
+    implementation files('libs/jackson-databind-2.3.2.jar')
+    implementation files('libs/litepal-1.2.0.jar')
     implementation project(':chartlibrary')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    implementation 'com.jakewharton:butterknife:8.4.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.contrarywind:Android-PickerView:3.2.6'
+    implementation 'com.bigkoo:ConvenientBanner:2.1.4'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:support-vector-drawable:27.1.1'
+    implementation 'org.jsoup:jsoup:1.10.2'
+    implementation files('libs/open_sdk_r6008_lite.jar')
+
+    implementation files('libs/alicloud-android-beacon-1.0.1.jar')
+    implementation files('libs/alicloud-android-ut-5.1.0.jar')
+    implementation files('libs/alicloud-android-utils-1.1.3.jar')
+    implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
+    implementation files('libs/alisdk-feedback-3.1.7.aar')
+    implementation files('libs/alicloud-android-man-1.2.4.aar')
+    implementation files('libs/alicloud-android-push-3.1.4.aar')
+
+    implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
+
 }

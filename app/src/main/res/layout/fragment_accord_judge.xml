@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp">
-                <com.cheersmind.smartbrain.main.view.RoundProgressBar
+                <com.cheersmind.cheersgenie.main.view.RoundProgressBar
                     android:id="@+id/roundProgressBar"
                     android:layout_width="200dp"
                     android:layout_height="200dp"

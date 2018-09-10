@@ -1,16 +1,15 @@
 <resources>
-    <string name="app_name">天天智学</string>
+    <string name="app_name">奇思火眼</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- 启动页 -->
     <string name="start_tip">帮助每个孩子获得成功</string>
     <string name="start_tip1">Easy Learning Easy Winning</string>
-    
+
     <!-- 注册登入 -->
     <string name="how_to_invite_content">天天智学采用邀请码注册机制，仅限有邀请码的用户，验证通过后才能注册使用。</string>
-    
+
     <!-- 推荐 -->
     <string name="recommend_first_select">已关注%s个话题 (下一步)</string>
 
@@ -37,24 +36,24 @@
     <string name="myflower_record_title2">解锁(%s)</string>
     <string name="factor_details_tip">第%s阶段</string>
     <string name="factor_details_tip_complete">第%s阶段完成</string>
-    <string formatted="false" name="factor_info_complete">%s/%s</string>
+    <string name="factor_info_complete" formatted="false">%s/%s</string>
     <string name="factor_info_rank">第%s名</string>
     <string name="factor_info_exceed">%s</string>
     <string name="dimension_hot_lock">%s朵鲜花</string>
     <string name="report_title">%s-智能评价</string>
-    <string formatted="false" name="factor_commit_success">阶段%s:%s测评结果提交成功</string>
-    <string formatted="false" name="factor_commit_fail">阶段%s:%s测评结果提交失败,请重试！</string>
-    <string formatted="false" name="factor_details_show_tip">参与【阶段%s:%s】测评的班级同学得分排名。\n小贴士：测评时间影响最终排名</string>
-    <string formatted="false" name="evaluate_question_commit">已完成【阶段%s:%s】的所有问题，是否提交结果？</string>
-    <string formatted="false" name="factor_datails_common"><Data><![CDATA[<font color="#f5a400"><b>%s</b></font>/%s]]></Data></string>
+    <string name="factor_commit_success" formatted="false">阶段%s:%s测评结果提交成功</string>
+    <string name="factor_commit_fail" formatted="false">阶段%s:%s测评结果提交失败,请重试！</string>
+    <string name="factor_details_show_tip" formatted="false">参与【阶段%s:%s】测评的班级同学得分排名。\n小贴士：测评时间影响最终排名</string>
+    <string name="evaluate_question_commit" formatted="false">已完成【阶段%s:%s】的所有问题，是否提交结果？</string>
+    <string name="factor_datails_common" formatted="false"><Data><![CDATA[<font color="#f5a400"><b>%s</b></font>/%s]]></Data></string>
 
-    <string formatted="false" name="qs_factor_complete_hint">已完成(阶段%s:%s)的所有问题，是否提交结果？</string>
+    <string name="qs_factor_complete_hint" formatted="false">已完成(阶段%s:%s)的所有问题，是否提交结果？</string>
     <string name="qs_ques_complete_hint">答题还没全部完成确定要退出吗？</string>
     <string name="qs_factor_report_btn_next">继续下一阶段测评</string>
     <string name="qs_factor_report_btn_report">已经全部完成·点击查看报告</string>
     <string name="qs_factor_report_btn_result"><Data><![CDATA[你的总得分，比同个级别<font color="#00b8e9"><b>%s</b></font>的同学更优秀哦！]]></Data></string>
-    <string formatted="false" name="qs_factor_detail_ques_count">%s/%s个数量</string>
-    <string formatted="false" name="qs_factor_detail_flower_count">花池%s/%s朵</string>
+    <string name="qs_factor_detail_ques_count" formatted="false">%s/%s个数量</string>
+    <string name="qs_factor_detail_flower_count" formatted="false">花池%s/%s朵</string>
     <string name="qs_factor_detail_react_count">反应时间%s</string>
     <string name="qs_dimension_report_hint">该项%s个阶段你已全部完成，以下是测评结果</string>
     <string name="qs_dimension_report_reuslt">%s结果:</string>
@@ -76,5 +75,59 @@
 
     <!-- Error code -->
     <string name="error_code_common_text">服务器繁忙，请稍后重试！</string>
+
+    <!--主页面（底部Tab页面）-->
+    <string name="title_home">首页</string>
+    <string name="title_exam">测评</string>
+    <string name="title_report">报告</string>
+    <string name="title_message">消息</string>
+    <string name="title_mine">我的</string>
+
+    <!--占位字符串-->
+    <string name="placeholder_for_item">######</string>
+
+    <!--列表加载更多-->
+    <string name="brvah_loading">正在加载中...</string>
+    <string name="brvah_load_failed">加载失败，请点我重试</string>
+    <string name="brvah_load_end">已经到底了</string>
+
+    <!--评测-->
+    <string name="exam_topic_suitable_user">适合人群：%s</string>
+    <string name="exam_topic_endtime">有效期至 %s</string>
+    <string name="exam_topic_navigate_to_report">测评结果 >></string>
+    <string name="exam_dimension_use_count">%s人测过</string>
+    <string name="exam_dimension_status_complete">已完成</string>
+    <string name="exam_question_count">题量：%s</string>
+    <string name="exam_need_to_know">-- 测评须知 --</string>
+    <string name="student">学生</string>
+    <string name="parent">家长</string>
+
+    <!--注册-->
+    <string name="captcha">验证码</string>
+    <string name="captcha_has_send_to">已发送验证码至%s</string>
+    <string name="next">下一步</string>
+    <string name="register">注册</string>
+    <string name="bind">绑定</string>
+
+    <!--评论-->
+    <string name="comment_count">评论（%s）</string>
+    <string name="comment_mine">我的评论</string>
+
+    <!--密码修改-->
+    <string name="password_tip">密码长度6-24位，可以是数字、字母等任意字符</string>
+    <string name="old_password">旧  密  码</string>
+    <string name="new_password">新  密  码</string>
+    <string name="again_password">确认密码</string>
+    <string name="input_old_password_tip">请输入旧密码</string>
+    <string name="input_new_password_tip">请输入新密码</string>
+    <string name="input_again_password_tip">请输入确认密码</string>
+    <string name="confirm_modify">确认修改</string>
+
+    <!--积分-->
+    <string name="total_integral">已获得积分：%s</string>
+    <string name="available_integral">可用积分：%s</string>
+
+    <!--通用-->
+    <string name="operate_fail">操作失败，请稍后再试</string>
 
 </resources>

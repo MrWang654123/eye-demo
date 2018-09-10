@@ -15,7 +15,7 @@
             android:visibility="gone">
         </RelativeLayout>
 
-        <com.cheersmind.smartbrain.main.view.horizon.MyListview
+        <com.cheersmind.cheersgenie.main.view.horizon.MyListview
             android:id="@+id/lv_my_evaluate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,12 +24,12 @@
             android:divider="@color/color_7b7b7b" />
     </LinearLayout>
 
-    <com.cheersmind.smartbrain.main.view.EmptyLayout
+    <com.cheersmind.cheersgenie.main.view.EmptyLayout
         android:id="@+id/emptyLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
 
-    </com.cheersmind.smartbrain.main.view.EmptyLayout>
+    </com.cheersmind.cheersgenie.main.view.EmptyLayout>
 
 </RelativeLayout>

@@ -4,11 +4,15 @@
      <color name="colorPrimaryDark">#303F9F</color>-->
     <color name="transpera">#00000000</color>
     <color name="btranspera">#b0000000</color>
-    <!--<color name="colorPrimary">#6b82e2</color>-->
     <color name="colorPrimary">#12b2f4</color>
-    <color name="colorPrimaryDark">#12b2f4</color>
+    <color name="colorPrimaryDark">#06719F</color>
+    <color name="colorAccent">#FF8A08</color>
+    <!--<color name="colorPrimary">#6b82e2</color>-->
     <!--<color name="colorPrimaryDark">#4185cc</color>-->
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="color_333333">#333333</color>
+    <color name="color_444444">#444444</color>
+    <color name="color_555555">#555555</color>
     <color name="color_7b7b7b">#7b7b7b</color>
     <color name="color_b5b5b5">#b5b5b5</color>
     <color name="color_626262">#626262</color>
@@ -50,7 +54,7 @@
     <color name="color_bar_blue">#00b5e9</color>
     <color name="color_bar_gray">#9c9c9c</color>
 
-
+    <color name="white">#ffffff</color>
 
 
 

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="50dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="分类"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:textColor="@color/color_333333"/>
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/qs_icon_close"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/color_e7e7e7"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/color_eeeeee">
+
+        <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+            android:id="@+id/warpLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            app:grivate="left"
+            app:horizontal_Space="10dp"
+            app:isFull="false"
+            app:vertical_Space="15dp"/>
+
+        <!--空布局-->
+        <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+            android:id="@+id/emptyLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+        </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

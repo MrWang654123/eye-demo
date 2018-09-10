@@ -1,0 +1,185 @@
+package com.cheersmind.cheersgenie.features.view;
+
+import android.content.Context;
+import android.support.v4.view.ViewPager;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.widget.Scroller;
+
+import java.lang.reflect.Field;
+
+/**
+ * 回答问题的ReplyQuestionViewpager（存在一个最后可左滑索引）
+ */
+public class ReplyQuestionViewPager extends ViewPager {
+
+    //最后可显示的页索引
+    private int lastCanShowPageIndex;
+    //按下时的x、y
+    private int mPosX;
+    private int mPosY;
+    //当前的x、y
+    private int mCurPosX;
+    private int mCurPosY;
+
+    //左滑禁止时的监听
+    private LeftSildeForbidListener leftSildeForbidListener;
+
+    public ReplyQuestionViewPager(Context context) {
+        super(context);
+        //设置滚动器
+        setMyScroller();
+    }
+
+    public ReplyQuestionViewPager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        //设置滚动器
+        setMyScroller();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (getCurrentItem() == lastCanShowPageIndex) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mPosX = (int) event.getX();
+                    mPosY = (int) event.getY();
+//                    System.out.println("ACTION_DOWN mPosX = " + mPosX);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    mCurPosX = (int) event.getX();
+                    mCurPosY = (int) event.getY();
+//                    System.out.println("mCurPosX = " + mCurPosX + "    mPosX = " + mPosX);
+                    //左滑
+                    if (isLeftSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
+                        return false;
+                    }
+
+                    break;
+                case MotionEvent.ACTION_UP:
+                    mCurPosX = (int) event.getX();
+                    mCurPosY = (int) event.getY();
+//                    System.out.println("ACTION_UP mCurPosX = " + mCurPosX + "    mPosX = " + mPosX);
+                    //左滑
+                    if (isLeftSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
+                        //左滑禁止时的监听
+                        if (leftSildeForbidListener != null) {
+                            leftSildeForbidListener.doingLeftSildeForbid();
+                        }
+
+                        return false;
+                    }
+
+                    break;
+            }
+        }
+
+//        return true;
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //子类中有listview，会影响事件的捕获，所以放在dispatchTouchEvent中处理
+
+        return super.onTouchEvent(event);
+    }
+
+
+    /**
+     * 判断是否右滑
+     * @param oldPosX 前一个位置x
+     * @param oldPosY 前一个位置y
+     * @param curPosX 当前位置x
+     * @param curPosY 当前位置y
+     * @return
+     */
+    private boolean isLeftSile(int oldPosX, int oldPosY, int curPosX, int curPosY) {
+//         && (Math.abs(curPosX - oldPosX) > 25)
+        if (curPosX < oldPosX) {
+//            LogUtils.w("Pos ReplyQuestionViewpager", "左滑");
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 获取最后能显示的页索引
+     * @return
+     */
+    public int getLastCanShowPageIndex() {
+        return lastCanShowPageIndex;
+    }
+
+    /**
+     * 设置最后能显示的页索引
+     * @param lastCanShowPageIndex
+     */
+    public void setLastCanShowPageIndex(int lastCanShowPageIndex) {
+        this.lastCanShowPageIndex = lastCanShowPageIndex;
+    }
+
+    /**
+     * 左滑禁止时的监听
+     */
+    public interface LeftSildeForbidListener {
+        //当左滑被禁止时
+        public void doingLeftSildeForbid();
+    }
+
+    /**
+     * 设置左滑禁止被触发时的监听
+     * @param leftSildeForbidListener
+     */
+    public void addLeftSildeForbidListener(LeftSildeForbidListener leftSildeForbidListener) {
+        this.leftSildeForbidListener = leftSildeForbidListener;
+    }
+
+
+    /**
+     * 设置滚动器
+     */
+    private void setMyScroller() {
+        try {
+            Class<?> viewpager = ViewPager.class;
+            Field scroller = viewpager.getDeclaredField("mScroller");
+            scroller.setAccessible(true);
+            scroller.set(this, new MyScroller(getContext()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 滚动器
+     */
+    public class MyScroller extends Scroller {
+        public MyScroller(Context context) {
+            //减速
+//            super(context, new DecelerateInterpolator());
+            //先加速后减速
+//            super(context, new AccelerateDecelerateInterpolator());
+            //匀速
+//            super(context, new LinearInterpolator());
+            //加速
+//            super(context, new AccelerateInterpolator());
+            super(context);
+        }
+
+        @Override
+        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+            //200的时候就是setCurrentItem（dx是屏幕宽度），否则是手动滑动
+            if (duration == 200) {
+                super.startScroll(startX, startY, dx, dy, 1000);
+            } else {
+                super.startScroll(startX, startY, dx, dy, duration);
+            }
+        }
+    }
+
+}

@@ -10,6 +10,10 @@
         <item name="android:windowFullscreen">false</item>
         <!-- 隐藏标题栏 -->
         <item name="android:windowNoTitle">true</item>
+        <!--去掉原来的ActionBar-->
+        <item name="windowActionBar">false</item>
+        <!-- API Level 22 编译要去点android -->
+        <item name="windowNoTitle">true</item>
         <!-- 设置actionbar高度 -->
         <!--<item name="android:actionBarSize">42dp</item>-->
         <!--<item name="actionBarSize">42dp</item>-->
@@ -28,19 +32,41 @@
     <style name="loading_dialog" parent="android:style/Theme.Dialog">
         <!-- 边框 -->
         <item name="android:windowFrame">@null</item>
+        <!--无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否有遮盖-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!-- 窗体半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <!-- 背景透明 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!-- 背景模糊 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 背景模糊的值（灰度值） -->
+        <item name="android:backgroundDimAmount">0.8</item>
+    </style>
+
+    <!-- 底部对话框样式（默认弹出软键盘） -->
+    <style name="dialog_bottom_full" parent="android:style/Theme.Dialog">
+        <!--无标题 -->
         <item name="android:windowNoTitle">true</item>
         <!-- 背景透明 -->
         <item name="android:windowBackground">@android:color/transparent</item>
         <!-- 是否浮现在activity之上 -->
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <!-- 半透明 -->
-        <item name="android:windowIsTranslucent">true</item>
-        <!-- 就是用来控制灰度的值 -->
-        <item name="android:backgroundDimAmount">0.8</item>
-        <!-- 模糊 -->
-        <item name="android:backgroundDimEnabled">true</item>
+        <!--默认打开软键盘-->
+        <item name="android:windowSoftInputMode">stateVisible</item>
     </style>
+
+    <!--底部对话框进、出动画-->
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/translate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
+    </style>
+
 
     <style name="proj_popwindow">
         <!-- 指定显示的动画xml -->
@@ -57,4 +83,26 @@
         <item name="android:indeterminateDuration">1000</item>
         <item name="android:indeterminateOnly">true</item>
     </style>
+
+    <!--验证码单数字编辑框-->
+    <style name="captch_edit">
+        <item name="android:layout_width">@dimen/heightDefaultWidget</item>
+        <item name="android:layout_height">@dimen/heightDefaultWidget</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:maxLength">2</item>
+        <item name="android:inputType">number</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/edit_captcha_round</item>
+    </style>
+
+    <!--可换行布局的默认风格-->
+    <style name="WarpLinearLayoutDefault">
+        <item name="grivate">left</item>
+        <item name="horizontal_Space">20dp</item>
+        <item name="vertical_Space">20dp</item>
+        <item name="isFull">false</item>
+    </style>
+
+
 </resources>

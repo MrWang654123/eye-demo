@@ -1,0 +1,386 @@
+package com.cheersmind.cheersgenie.features.modules.register.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
+
+import com.bigkoo.pickerview.TimePickerView;
+import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.constant.HttpConfig;
+import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.cheersmind.cheersgenie.module.login.UserService;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * 用户信息初始化页面（注册）
+ */
+public class UserInfoInitActivity extends BaseActivity {
+
+    //班级号
+    private static final String CLASS_NUM = "class_num";
+
+    //用户名
+    @BindView(R.id.et_username)
+    EditText etUsername;
+    //生日显示
+    @BindView(R.id.et_birthday)
+    EditText etBirthday;
+    //生日选择器触发图片
+    @BindView(R.id.iv_time_select)
+    ImageView ivTimeSelect;
+    //性别单选框组
+    @BindView(R.id.rg_sex)
+    RadioGroup rgSex;
+    //确认
+    @BindView(R.id.btn_confirm)
+    Button btnConfirm;
+
+    //选择器的开始日期
+    Calendar startDate;
+
+    //班级号
+    String classNum;
+    //性别（值）
+    private String genderVal = "1";//男
+
+    /**
+     * 开启注册环节的用户信息完善页面
+     * @param context
+     * @param classNum 班级号
+     */
+    public static void startUserInfoInitActivity(Context context, String classNum) {
+        Intent intent = new Intent(context, UserInfoInitActivity.class);
+        Bundle extras = new Bundle();
+        extras.putSerializable(CLASS_NUM, classNum);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
+
+    @Override
+    protected int setContentView() {
+        return R.layout.activity_user_info_init;
+    }
+
+    @Override
+    protected String settingTitle() {
+        return "用户信息初始化";
+    }
+
+    @Override
+    protected void onInitView() {
+        rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                //男
+                if(checkedId == R.id.rb_gender_male){
+                    genderVal = "1";
+                }else{
+                    genderVal = "2";
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onInitData() {
+        //选择器的开始日期
+        Date date = getDateFromStr("1900-01-01", "yyyy-MM-dd");
+        startDate = Calendar.getInstance();
+        startDate.setTime(date);
+
+        if (getIntent() == null || getIntent().getExtras() == null) {
+            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            return;
+        }
+
+        classNum = getIntent().getExtras().getString(CLASS_NUM);
+        if (TextUtils.isEmpty(classNum))  {
+            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            return;
+        }
+    }
+
+
+    @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday})
+    public void click(View view) {
+
+        Calendar calendar1 = Calendar.getInstance();
+
+        switch (view.getId()) {
+            case R.id.iv_time_select:
+            case R.id.et_birthday: {
+                //隐藏软键盘
+                SoftInputUtil.closeSoftInput(UserInfoInitActivity.this);
+                Calendar calendar = Calendar.getInstance();
+                if (etBirthday.getText().length() > 0) {
+                    Date date = getDateFromStr(etBirthday.getText().toString(), "yyyy-MM-dd");
+                    calendar.setTime(date);
+                }
+                showDate(calendar);
+                break;
+            }
+            case R.id.btn_confirm:
+                //下一步操作
+                doNextDept();
+                break;
+        }
+    }
+
+    /**
+     * 日期时间控件
+     * @param selectedDate
+     */
+    private void showDate(Calendar selectedDate) {
+        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+            @Override
+            public void onTimeSelect(Date date, View v) {
+                String time = getTime(date);
+                etBirthday.setText(time);
+            }
+        })
+                .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
+                .setCancelText("取消")//取消按钮文字
+                .setSubmitText("确定")//确认按钮文字
+//                .setContentSize(18)//滚轮文字大小
+//                .setTitleSize(20)//标题文字大小
+//                //.setTitleText("Title")//标题文字
+                .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示
+                .isCyclic(true)//是否循环滚动
+//                //.setTitleColor(Color.BLACK)//标题文字颜色
+//                .setSubmitColor(Color.BLUE)//确定按钮文字颜色
+//                .setCancelColor(Color.BLUE)//取消按钮文字颜色
+//                //.setTitleBgColor(0xFF666666)//标题背景颜色 Night mode
+//                .setBgColor(0xFF333333)//滚轮背景颜色 Night mode
+                .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/
+                .setRangDate(startDate,Calendar.getInstance())//起始终止年月日设定
+//                //.setLabel("年","月","日","时","分","秒")//默认设置为年月日时分秒
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                //.isDialog(true)//是否显示为对话框样式
+                .build();
+
+        pvTime.show();
+    }
+
+    /**
+     * date转str
+     * @param date
+     * @return
+     */
+    private String getTime(Date date) {//可根据需要自行截取数据显示
+        //"YYYY-MM-DD HH:MM:SS"        "yyyy-MM-dd"
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
+    }
+
+    /**
+     * str转date
+     * @param dateStr
+     * @param formatStr
+     * @return
+     */
+    private Date getDateFromStr(String dateStr, String formatStr) {
+        SimpleDateFormat format = new SimpleDateFormat(formatStr);
+        Date parse = null;
+        try {
+            parse = format.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return parse;
+    }
+
+    /**
+     * 下一步操作：提交用户信息
+     */
+    private void doNextDept() {
+        //提交用户信息
+        submitUserInfoWrap();
+    }
+
+    /**
+     * 提交用户信息
+     */
+    private void submitUserInfoWrap() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(UserInfoInitActivity.this);
+        //数据验证
+        if (!checkData()) return;
+        //提交用户信息
+        String username = etUsername.getText().toString();
+        String birthday = etBirthday.getText().toString();
+        postUserInfo(classNum, genderVal, username, birthday);
+    }
+
+    /**
+     * 注册环节提交用户信息
+     * @param classNum //班级群号
+     * @param gender //孩子性别 1-男，2-女
+     * @param username //孩子名称
+     * @param birthday //孩子生日
+//     * @param role //家长角色：1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
+     */
+    private void postUserInfo(String classNum, String gender, String username, String birthday) {
+        //通信等待提示
+        LoadingView.getInstance().show(UserInfoInitActivity.this);
+        String url = HttpConfig.URL_REGISTER_SUBMIT_USERINFO;
+//        {
+//            "group_no":"string",        //班级群号
+//                "sex":"1",                  //孩子性别 1-男，2-女
+//                "name":"string",            //孩子名称
+//                "birthday":"data",          //孩子生日
+//                "parent_role":"int"         //家长角色：1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
+//        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("group_no", classNum);
+        map.put("sex", gender);
+        map.put("name", username);
+        map.put("birthday", birthday);
+//        map.put("parent_role", role);
+        //注册环节提交用户信息
+        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                LoadingView.getInstance().dismiss();
+                //提交完善信息成功后的处理
+                postUserInfoSubmitComplete();
+            }
+        });
+    }
+
+
+    /**
+     * 提交用户信息成功后的处理
+     */
+    private void postUserInfoSubmitComplete() {
+        //获取孩子信息
+        getChildList();
+    }
+
+
+    /**
+     * 验证数据格式
+     * @return
+     */
+    private boolean checkData() {
+        String username = etUsername.getText().toString();
+        String birthday = etBirthday.getText().toString();
+
+        //用户名非空
+        if (TextUtils.isEmpty(username)) {
+            ToastUtil.showShort(getApplicationContext(), "请输入姓名");
+            return false;
+        }
+
+        //生日非空
+        if (TextUtils.isEmpty(birthday)) {
+            ToastUtil.showShort(getApplicationContext(), "请选择生日");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 获取当前用户的孩子列表
+     */
+    private void getChildList() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(UserInfoInitActivity.this);
+        //开启通信等待提示
+        LoadingView.getInstance().show(this);
+
+        UserService.getChildList(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+                //跳转到账号登录页面
+                gotoAccountLoginPage(UserInfoInitActivity.this);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待提示
+                LoadingView.getInstance().dismiss();
+
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ChildInfoRootEntity childData = InjectionWrapperUtil.injectMap(dataMap, ChildInfoRootEntity.class);
+                    List<ChildInfoEntity> childList = childData.getItems();
+                    if (childList.size() == 0) {
+                        throw new Exception();
+                    }
+
+                    //清空本地数据中的孩子列表
+                    ChildInfoDao.deleteAllChild();
+                    //1、保存孩子列表到数据库；2、设置第一个孩子为默认孩子
+                    for (int i = 0; i < childList.size(); i++) {
+                        ChildInfoEntity entity = childList.get(i);
+                        if (i == 0) {
+                            entity.setDefaultChild(true);
+                        } else {
+                            entity.setDefaultChild(false);
+                        }
+                        UCManager.getInstance().setDefaultChild(entity);
+                        entity.save();
+                    }
+
+                    //孩子列表获取成功之后的处理
+                    postChildListGetComplete();
+
+                } catch (Exception e) {
+                    ToastUtil.showShort(getApplicationContext(), "用户信息【child】不完整");
+                    //用户刚完善了信息，获取孩子列表却失败，这种情况可能是什么原因？目前先让它跳转到账号登录页面
+                    //跳转到账号登录页面
+                    gotoAccountLoginPage(UserInfoInitActivity.this);
+                }
+            }
+
+        });
+    }
+
+    /**
+     * 获取孩子列表成功之后的处理
+     */
+    private void postChildListGetComplete() {
+        //跳转到主页面
+        gotoMainPage(UserInfoInitActivity.this);
+    }
+
+
+}
+

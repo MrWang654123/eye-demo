@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rt_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_12b2f4">
+            <RelativeLayout
+                android:id="@+id/rt_time"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+                <ImageView
+                    android:id="@+id/iv_stop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:background="@mipmap/qs_ques_cur_stop"/>
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:drawableLeft="@mipmap/qs_ques_cur_time"
+                    android:text=""
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_white"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_flower"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:gravity="center"-->
+                    <!--android:drawablePadding="5dp"-->
+                    <!--android:drawableLeft="@mipmap/qs_ques_cur_flower"-->
+                    <!--android:text="0"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:textColor="@color/color_text_white"/>-->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_question_cur"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="02"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_text_white" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="/"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_text_white" />
+                    <TextView
+                        android:id="@+id/tv_question_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="08"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_text_white" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_below="@+id/rt_time"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_question_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:text=""
+                    android:textSize="16sp"
+                    android:textColor="@color/color_text_white" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager
+            android:id="@+id/vp_question"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_below="@+id/rt_top"
+            android:layout_above="@+id/ll_bottom">
+
+        </com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager>
+
+        <LinearLayout
+            android:id="@+id/ll_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:id="@+id/btn_pre"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/color_eeeeee"
+                android:text="上一题"/>
+
+            <Button
+                android:id="@+id/btn_submit"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:background="@color/color_eeeeee"
+                android:text="提交"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+    </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+
+    <include
+        android:id="@+id/layout_count_down"
+        layout="@layout/qs_layout_go_down"
+        android:visibility="gone"/>
+
+</RelativeLayout>

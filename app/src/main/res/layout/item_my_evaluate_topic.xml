@@ -13,7 +13,7 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/shape_corner_b0b0b0">
 
-        <com.cheersmind.smartbrain.main.view.VerticalProgressBar
+        <com.cheersmind.cheersgenie.main.view.VerticalProgressBar
             android:id="@+id/ver_pregress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

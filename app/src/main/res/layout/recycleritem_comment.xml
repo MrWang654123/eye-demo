@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="3dp"
+    android:orientation="vertical"
+    android:layout_marginRight="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <!--android:background="@drawable/shape_rectangle"-->
+
+        <ImageView
+            android:id="@+id/iv_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_username"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp"
+                android:text="感恩的心水电费"/>
+
+            <TextView
+                android:id="@+id/tv_send_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/color_717171"
+                android:layout_marginTop="3dp"
+                android:text="2018-08-23 08:05"/>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/color_555555"
+                android:lineSpacingMultiplier="1.2"
+                android:text="瑟夫解锁等时将对方斯蒂芬金三角的封建士大夫精神的风景使对方是否就开始减肥的"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:visibility="gone"
+        android:background="#c7c7c7"/>
+
+</LinearLayout>

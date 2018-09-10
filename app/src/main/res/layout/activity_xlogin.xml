@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/login_new_bg"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <!--app:layout_constraintDimensionRatio="W,15:25"-->
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="h,12:4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_user"
+        app:layout_constraintVertical_chainStyle="spread_inside" >
+        <!--<ImageView-->
+            <!--android:id="@+id/ic_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="35dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:src="@mipmap/login_new_title" />-->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="35dp"
+            android:textColor="@color/white"
+            android:text="奇 思 火 眼"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/rl_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_third_login">
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginHorizontal="50dp"
+            android:background="@drawable/btn_common_round"
+            android:enabled="true"
+            android:text="登录"
+            android:textColor="@color/color_text_white"
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginHorizontal="50dp"
+            android:background="@drawable/btn_common_round"
+            android:enabled="true"
+            android:text="注册"
+            android:textColor="@color/color_text_white"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_third_page"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginHorizontal="50dp"
+            android:background="@drawable/btn_common_round"
+            android:enabled="true"
+            android:text="测试按钮"
+            android:textColor="@color/color_text_white"
+            android:visibility="visible"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_third_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_user"
+        app:layout_constraintBottom_toTopOf="@+id/rl_logo"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="40dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_wx_login"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:visibility="visible"
+                    android:background="@mipmap/login_new_wx" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="微信账户"
+                    android:textSize="14sp"
+                    android:textColor="@color/color_88ffffff"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="40dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_qq_login"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:visibility="visible"
+                    android:background="@mipmap/login_new_qs" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="QQ登录"
+                    android:textSize="14sp"
+                    android:textColor="@color/color_88ffffff"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rl_logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_third_login"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingVertical="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="12sp"
+            android:textColor="@color/color_88ffffff"
+            android:text="登录即代表阅读并同意"/>
+
+        <TextView
+            android:id="@+id/tv_license"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_tips"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/color_text_white"
+            android:text="服务条款"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

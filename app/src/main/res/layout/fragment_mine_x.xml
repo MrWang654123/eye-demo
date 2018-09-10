@@ -1,0 +1,390 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/color_eeeeee">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:orientation="horizontal"
+        android:background="@color/color_12b2f4">
+
+        <RelativeLayout
+            android:layout_width="110dp"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/avatar_parent_default"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_profile"
+                android:layout_centerHorizontal="true"
+                android:textSize="18sp"
+                android:text="LV21"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:text="张三"/>
+                <TextView
+                    android:id="@+id/tv_user_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_333333"
+                    android:text="个人资料 >>"/>
+            </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="ID: 123123123"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_sign_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="签到"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_mine_integral"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_answer_nor"/>
+
+                <TextView
+                    android:id="@+id/tv_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="我的积分"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#c7c7c7"/>
+
+            <LinearLayout
+                android:id="@+id/ll_mine_message"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_mine_flower"/>
+
+                <TextView
+                    android:id="@+id/tv_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="我的消息" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#c7c7c7" />
+
+
+
+            <LinearLayout
+                android:id="@+id/ll_mine_collect"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_mine_comment"/>
+
+                <TextView
+                    android:id="@+id/tv_appraise"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="我的收藏" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#c7c7c7"/>
+
+            <LinearLayout
+                android:id="@+id/ll_mine_report"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_mine_comment"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="我的智评" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#c7c7c7"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="10dp"
+                android:background="#c7c7c7"/>
+
+            <LinearLayout
+                android:id="@+id/ll_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_mine_feedback"/>
+
+                <TextView
+                    android:id="@+id/tv_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="意见反馈" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#c7c7c7"/>
+
+            <LinearLayout
+                android:id="@+id/ll_setting"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:background="@drawable/selector_mine_btn">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/qs_mine_setting"/>
+
+                <TextView
+                    android:id="@+id/tv_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/color_7b7b7b"
+                    android:textSize="14sp"
+                    android:text="设置" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp">
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#c7c7c7"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:textColor="@color/color_0073b7"
+        android:textSize="14sp"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:background="@color/color_text_white" />
+
+</LinearLayout>

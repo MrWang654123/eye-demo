@@ -49,12 +49,12 @@
 
     </RelativeLayout>
 
-    <com.cheersmind.smartbrain.main.view.qshorizon.QsHorizontalListView
+    <com.cheersmind.cheersgenie.main.view.qshorizon.QsHorizontalListView
         android:id="@+id/hsv"
         android:layout_width="wrap_content"
         android:layout_height="120dp"
         android:scrollbars="none">
 
-    </com.cheersmind.smartbrain.main.view.qshorizon.QsHorizontalListView>
+    </com.cheersmind.cheersgenie.main.view.qshorizon.QsHorizontalListView>
 
 </LinearLayout>

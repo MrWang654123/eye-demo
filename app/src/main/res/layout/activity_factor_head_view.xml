@@ -73,7 +73,7 @@
                     android:textColor="@color/color_text_white"
                     android:textSize="14sp"/>
 
-                <com.cheersmind.smartbrain.main.view.FactorsCharView
+                <com.cheersmind.cheersgenie.main.view.FactorsCharView
                     android:id="@+id/chart_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

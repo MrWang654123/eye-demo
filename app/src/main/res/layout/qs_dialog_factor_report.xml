@@ -86,7 +86,7 @@
                         android:textColor="@color/color_f5a400"/>
                 </RelativeLayout>
 
-                <com.cheersmind.smartbrain.main.view.NormalityView
+                <com.cheersmind.cheersgenie.main.view.NormalityView
                     android:id="@+id/factor_char"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

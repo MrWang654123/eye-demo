@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--标题栏-->
+        <include layout="@layout/toolbar"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="欢迎使用奇思火眼"
+                android:textSize="25dp"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="45dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_phonenum"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:background="#00000000"
+                android:textSize="15sp"
+                android:textColor="@color/color_333333"
+                android:hint="请输入手机号码"
+                android:maxLines="1"
+                android:maxLength="11"
+                android:inputType="phone"
+                android:singleLine="true"/>
+
+            <include layout="@layout/edittext_bottom_part_line"/>
+
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightDefaultWidget"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/btn_common_round"
+                android:enabled="true"
+                android:text="下一步"
+                android:textColor="@color/color_text_white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_goto_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:text="检测到您手机号已注册，请登录→"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

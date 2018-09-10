@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/color_text_white"
-    tools:context="com.cheersmind.smartbrain.module.mine.MineFragment">
+    tools:context="com.cheersmind.cheersgenie.module.mine.MineFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="3dp"
+    android:layout_marginRight="3dp"
+
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardCornerRadius="2dp"
+    card_view:cardElevation="1dp"
+    card_view:cardUseCompatPadding="true">
+    <!--android:foreground="?android:attr/selectableItemBackground"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/home_sample"
+            android:scaleType="centerCrop" />
+        <!--android:scaleType="fitCenter"-->
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/color_333333"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:text="成功人士郑成功的7中成功的方法，你学到吗？第四条超管用"/>
+
+        <TextView
+            android:id="@+id/tv_used_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="10dp"
+            android:lines="2"
+            android:ellipsize="end"
+            android:text="中学生中因学习、生活而焦虑的心态普遍存在。而且在不同时期会有不同的焦虑表现。适度的焦虑对学生并无害处......"
+            android:textColor="@color/color_ffa200"
+            android:textSize="@dimen/sp_14" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp">
+
+            <TextView
+                android:id="@+id/tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="学习策略" />
+
+            <CheckBox
+                android:id="@+id/cboxCollect"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="收藏"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_evaluation"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/cboxCollect">
+
+                <TextView
+                    android:id="@+id/tv_evaluation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="测" />
+                <TextView
+                    android:id="@+id/tv_evaluation_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/tv_evaluation"
+                    android:layout_toRightOf="@+id/tv_evaluation"
+                    android:text="123"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/rl_evaluation">
+
+                <TextView
+                    android:id="@+id/tv_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="阅" />
+                <TextView
+                    android:id="@+id/tv_read_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/tv_read"
+                    android:layout_toRightOf="@+id/tv_read"
+                    android:text="212"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

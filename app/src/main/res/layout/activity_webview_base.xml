@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.cheersmind.smartbrain.main.activity.WebViewBaseActivity">
+    tools:context="com.cheersmind.cheersgenie.main.activity.WebViewBaseActivity">
 
     <WebView
         android:id="@+id/wv"

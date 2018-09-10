@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="46dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_patch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="20180201"/>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/color_666666"/>
+
+    <TextView
+        android:id="@+id/tv_result_simple"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:gravity="center"
+        android:text="物理、地理、生物"/>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/color_333333"/>
+
+    <TextView
+        android:id="@+id/tv_goto_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:gravity="center"
+        android:text="查看"/>
+
+</LinearLayout>

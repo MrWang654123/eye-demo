@@ -1,0 +1,319 @@
+package com.cheersmind.cheersgenie.features.modules.base.activity;
+
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.alibaba.sdk.android.man.MANService;
+import com.alibaba.sdk.android.man.MANServiceProvider;
+import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
+import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.cheersmind.cheersgenie.module.login.UserService;
+
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * 基础页面
+ */
+public abstract class BaseActivity extends AppCompatActivity implements MessageHandlerCallback, View.OnClickListener {
+
+    //标题栏
+    @BindView(R.id.toolbar)
+    @Nullable Toolbar toolbar;
+    //标题
+    @BindView(R.id.tv_toolbar_title)
+    @Nullable TextView tvToolbarTitle;
+
+    //消息处理器
+    protected Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            //统一回调
+            BaseActivity.this.onHandleMessage(msg);
+        }
+    };
+
+    /**
+     * 设置Activity要显示的布局
+     *
+     * @return 布局的layoutId
+     */
+    protected abstract int setContentView();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);// 隐藏标题栏
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        super.onCreate(savedInstanceState);
+//        getSupportActionBar().hide();
+        //设置布局的layoutId
+        setContentView(setContentView());
+        ButterKnife.bind(this);
+        //用Toolbar替代原来的ActionBar
+        setSupportActionBar(toolbar);
+
+        //设置title
+        if (tvToolbarTitle != null) {
+            tvToolbarTitle.setText(settingTitle());
+        }
+
+        //初始化视图控件
+        onInitView();
+        //初始化数据
+        onInitData();
+    }
+
+    /**
+     * 设置title
+     */
+    protected abstract String settingTitle();
+
+    /**
+     * 初始化视图控件
+     */
+    protected abstract void onInitView();
+
+    /**
+     * 初始化数据
+     */
+    protected abstract void onInitData();
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //统计：页面埋点
+        MANService manService = MANServiceProvider.getService();
+        manService.getMANPageHitHelper().pageAppear(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //统计：页面埋点
+        MANService manService = MANServiceProvider.getService();
+        manService.getMANPageHitHelper().pageDisAppear(this);
+    }
+
+    /**
+     * mHandler发送的消息处理
+     * @param msg
+     */
+    @Override
+    public void onHandleMessage(Message msg) {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //toolbar中的左侧键（一般是返回键）
+        if(item.getItemId()==android.R.id.home){
+            onToolbarLeftButtonClick();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * toolbar左侧键点击处理
+     */
+    protected void onToolbarLeftButtonClick() {
+        finish();
+    }
+
+    /**
+     * 默认的通信失败处理
+     * @param e 自定义异常
+     */
+    public void onFailureDefault(QSCustomException e) {
+        onFailureDefault(e, null);
+    }
+
+    /**
+     * 默认的通信失败处理
+     * @param e
+     * @param errorCodeCallBack ErrorCodeEntity对象回调
+     */
+    public void onFailureDefault(QSCustomException e, FailureDefaultErrorCodeCallBack errorCodeCallBack) {
+        //关闭通信等待
+        LoadingView.getInstance().dismiss();
+        //服务器繁忙，请稍后重试！
+        String message = getResources().getString(R.string.error_code_common_text);
+        //回调方法已经处理了该异常，默认false：执行默认提示
+        boolean callBackHandleTheError = false;
+
+        try {
+            String bodyStr = e.getMessage();
+            Map map = JsonUtil.fromJson(bodyStr, Map.class);
+            ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map, ErrorCodeEntity.class);
+            //ErrorCodeEntity对象回调
+            if (errorCodeEntity != null && errorCodeCallBack != null) {
+                //true：处理了异常，则直接return；false：未处理异常，则继续走默认流程
+                callBackHandleTheError = errorCodeCallBack.onErrorCodeCallBack(errorCodeEntity);
+                if (callBackHandleTheError) {
+                    return;
+                }
+            }
+            //服务端返回的错误消息
+            String tempMessage = errorCodeEntity.getMessage();
+            if (!TextUtils.isEmpty(tempMessage)) {
+                message = tempMessage;
+            }
+        } catch (Exception err) {
+            //异常处理（如何只处理自定义的异常信息，程序错误按默认信息提示？）
+            String tempMessage = e.getMessage();
+            if (!TextUtils.isEmpty(tempMessage)) {
+                message = tempMessage;
+            }
+
+        } finally {
+            //回调方法没有处理该异常，则走默认提示流程
+            if (!callBackHandleTheError) {
+                ToastUtil.showShort(BaseActivity.this, message);
+            }
+        }
+    }
+
+    /**
+     * 默认错误解析的ErrorCodeEntity对象回调
+     */
+    public interface FailureDefaultErrorCodeCallBack {
+        /**
+         * ErrorCodeEntity对象回调
+         * @param errorCodeEntity
+         * @return true：处理了异常；false：未处理异常
+         */
+        public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity);
+    }
+
+
+    /**
+     * 跳转到主页面
+     */
+    protected void gotoMainPage(BaseActivity baseActivity) {
+        Intent intent = new Intent(baseActivity, MasterTabActivity.class);
+        //作为根activity
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转到账号登录页面
+     */
+    protected void gotoAccountLoginPage(BaseActivity baseActivity) {
+        Intent intent = new Intent(baseActivity, XLoginAccountActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转到登录主页面
+     */
+    protected void gotoLoginPage(BaseActivity baseActivity) {
+        Intent intent = new Intent(baseActivity, XLoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent);
+    }
+
+    /**
+     * 跳转到完善用户信息环节
+     * @param from
+     */
+    protected void gotoPerfectUserInfo(BaseActivity from) {
+        //目前完善用户信息环节是从班级号输入页面开始
+        Intent intent = new Intent(from, ClassNumActivity.class);
+        startActivity(intent);
+    }
+
+
+    /**
+     * 获取当前用户的孩子列表
+     */
+    protected void doGetChildListWrap() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(this);
+        //开启通信等待提示
+        LoadingView.getInstance().show(this);
+
+        UserService.getChildList(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+                //跳转到登录主页面或者账号登录页面，目前默认跳转到登录主页面
+                gotoLoginPage(BaseActivity.this);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待提示
+                LoadingView.getInstance().dismiss();
+
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ChildInfoRootEntity childData = InjectionWrapperUtil.injectMap(dataMap, ChildInfoRootEntity.class);
+                    List<ChildInfoEntity> childList = childData.getItems();
+                    if (childList.size() == 0) {
+                        throw new Exception();
+                    }
+
+                    //清空本地数据中的孩子列表
+                    ChildInfoDao.deleteAllChild();
+                    //1、保存孩子列表到数据库；2、设置第一个孩子为默认孩子
+                    for (int i = 0; i < childList.size(); i++) {
+                        ChildInfoEntity entity = childList.get(i);
+                        if (i == 0) {
+                            entity.setDefaultChild(true);
+                        } else {
+                            entity.setDefaultChild(false);
+                        }
+                        UCManager.getInstance().setDefaultChild(entity);
+                        entity.save();
+                    }
+
+                    //跳转到主页面
+                    gotoMainPage(BaseActivity.this);
+
+                } catch (Exception e) {
+                    // 走完善信息的流程
+                    gotoPerfectUserInfo(BaseActivity.this);
+                }
+            }
+
+        });
+    }
+
+}

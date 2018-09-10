@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/color_eeeeee"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--标题栏-->
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/heightDefaultWidget"
+        android:background="@android:color/white">
+        <!--app:navigationIcon="@android:drawable/btn_dialog"-->
+        <ImageView
+            android:id="@+id/iv_category"
+            android:layout_width="@dimen/heightDefaultWidget"
+            android:layout_height="@dimen/heightDefaultWidget"
+            android:src="@android:drawable/btn_plus"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_6e6e6e"
+            android:textSize="18sp"
+            android:layout_gravity="center"
+            android:text="火眼资讯"/>
+    </android.support.v7.widget.Toolbar>
+
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/color_eeeeee">
+
+                <!--Banner-->
+                <include layout="@layout/recycler_header_home_banner"
+                    android:id="@+id/convenientBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    app:layout_scrollFlags="scroll" />
+
+                <!--最新测评-->
+                <include layout="@layout/recycler_header_home_evaluation"
+                    android:id="@+id/evaluation_block"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="2dp"
+                    app:layout_scrollFlags="scroll"/>
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycleView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        </android.support.design.widget.CoordinatorLayout>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</LinearLayout>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--标题栏-->
+    <include layout="@layout/toolbar"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_topic_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="18sp"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:text="中学生焦虑"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_suitable_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="适合人群：高中生"/>
+
+                <TextView
+                    android:id="@+id/tv_used_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="9503人测过"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:lineSpacingMultiplier="1.5"
+                android:paddingHorizontal="10dp"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp"
+                android:visibility="gone"
+                android:text="       老师希望每个学生都有良好的学习习惯，家长希望孩子有良好的学习习惯，学生也希望自己有良好的学习习惯，但是不同的人对良好的学习习惯的定义不同，方法也不同。"/>
+
+            <ImageView
+                android:id="@+id/iv_desc"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="180dp" />
+
+            <TextView
+                android:id="@+id/tv_content_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.5"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp"
+                android:layout_marginTop="20dp"
+                android:text="111111"/>
+
+            <!--       老师希望每个学生都有良好的学习习惯，家长希望孩子有良好的学习习惯，学生也希望自己有良好的学习习惯，但是不同的人对良好的学习习惯的定义不同，方法也不同。-->
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</LinearLayout>
