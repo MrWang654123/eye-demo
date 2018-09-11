@@ -34,6 +34,20 @@ public class DataCheckUtil {
             return mobileNums.matches(telRegex);
     }
 
+    /**
+     * 数字和字母
+     * @param str
+     * @return
+     */
+    public static boolean isNumberOrLetter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        } else {
+            String reg = "[a-zA-Z0-9]*";
+            return str.matches(reg);
+        }
+    }
+
 
 }
 

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ClassInfoEntity;
@@ -187,6 +188,13 @@ public class ClassNumActivity extends BaseActivity {
                 //设置编辑框的内容为ZERO_WIDTH_SPACE（用于监听删除键的响应）
                 etCaptchaNumList.get(position).setText(ZERO_WIDTH_SPACE);
                 etCaptchaNumList.get(position).setSelection(1);
+
+            } else if (i > position) {
+                //当前焦点之后的清空
+                et.setFocusable(false);
+                et.setFocusableInTouchMode(false);
+                etCaptchaNumList.get(position).setText("");
+
             } else {
                 et.setFocusable(false);
                 et.setFocusableInTouchMode(false);
@@ -347,7 +355,7 @@ public class ClassNumActivity extends BaseActivity {
             EditText editText = etCaptchaNumList.get(i);
             String num = editText.getText().toString().trim();
             //每个数字编辑框内容为1个ZERO_WIDTH_SPACE和一个数字时说明验证码已经填写完成，否则验证不通过
-            if (num.length() == 2 && TextUtils.isDigitsOnly(num.charAt(1)+"")) {
+            if (num.length() == 2 && DataCheckUtil.isNumberOrLetter(num.charAt(1)+"")) {
 
             } else {
                 //验证不通过的处理
@@ -365,10 +373,10 @@ public class ClassNumActivity extends BaseActivity {
      */
     private void doCheckDataError(int position) {
         //验证不通过
-        position = position;
+        this.position = position;
         //初始编辑框的焦点
         switchFocus(position);
-        ToastUtil.showShort(getApplicationContext(), "请输入班级号");
+        ToastUtil.showShort(getApplicationContext(), "格式不正确，请重新输入");
     }
 
 }

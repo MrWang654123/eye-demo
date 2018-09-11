@@ -24,16 +24,19 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
 
     @Override
     public void startVideo() {
+        super.startVideo();
+
         //全屏
+        /*
         if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
-            super.startVideo();
+
         } else {
             super.startVideo();
             //进入全屏
             onEvent(JZUserAction.ON_ENTER_FULLSCREEN);
             startWindowFullscreen();
         }
-
+*/
     }
 
     /**
@@ -42,9 +45,12 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     @Override
     public void playOnThisJzvd() {
         super.playOnThisJzvd();
+
 //        JZVideoPlayer.goOnPlayOnPause();//暂停后，下次不走startVideo
+        /*
         JZMediaManager.instance().releaseMediaPlayer();
         JZVideoPlayerManager.completeAll();
+        */
     }
 
 }

@@ -21,22 +21,22 @@
             android:gravity="center_horizontal">
             <EditText
                 android:id="@+id/et_captcha_num1"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
             <EditText
                 android:id="@+id/et_captcha_num2"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
             <EditText
                 android:id="@+id/et_captcha_num3"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
             <EditText
                 android:id="@+id/et_captcha_num4"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
             <EditText
                 android:id="@+id/et_captcha_num5"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
             <EditText
                 android:id="@+id/et_captcha_num6"
-                style="@style/captch_edit"/>
+                style="@style/captcha_edit"/>
         </LinearLayout>
 
         <LinearLayout

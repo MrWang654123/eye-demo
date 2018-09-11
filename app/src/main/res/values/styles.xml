@@ -85,7 +85,7 @@
     </style>
 
     <!--验证码单数字编辑框-->
-    <style name="captch_edit">
+    <style name="captcha_edit">
         <item name="android:layout_width">@dimen/heightDefaultWidget</item>
         <item name="android:layout_height">@dimen/heightDefaultWidget</item>
         <item name="android:layout_marginLeft">5dp</item>
