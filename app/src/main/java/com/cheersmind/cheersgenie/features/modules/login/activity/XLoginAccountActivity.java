@@ -225,7 +225,8 @@ public class XLoginAccountActivity extends BaseActivity {
         accountLoginDto.setPassword(pwd);//密码
         accountLoginDto.setTenant(Dictionary.Tenant_CheersMind);//租户名
         accountLoginDto.setDeviceType("android");//设备类型
-        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
+//        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
+        accountLoginDto.setDeviceDesc("android phone");//设备描述（华为 XXXX）
         accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
         doAccountLogin(accountLoginDto);
     }

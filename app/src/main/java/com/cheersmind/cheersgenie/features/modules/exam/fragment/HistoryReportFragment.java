@@ -14,6 +14,7 @@ import com.cheersmind.cheersgenie.features.adapter.HistoryReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.HistoryReportRootEntity;
@@ -68,7 +69,15 @@ public class HistoryReportFragment extends LazyLoadFragment {
                 //查看
                 case R.id.tv_goto_detail: {
                     HistoryReportItemEntity historyReportItemEntity = recyclerItem.get(position);
-                    ToastUtil.showShort(getContext(), "点击查看 + " + (position + 1));
+                    String childExamId = historyReportItemEntity.getChildExamId();
+                    topicInfo.getChildTopic().setChildExamId(childExamId);
+//                    ToastUtil.showShort(getContext(), "点击查看 " + (position + 1));
+                    try {
+                        new TopicReportDialog().setTopicInfo(topicInfo).show(getChildFragmentManager(), "报告");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ToastUtil.showShort(getContext(), e.getMessage());
+                    }
                     break;
                 }
             }
@@ -169,7 +178,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
                             recyclerItem = data.getItems();
                             recyclerItem.add(0, new HistoryReportItemEntity(HistoryReportItemEntity.HEAD));
                             recyclerAdapter.setNewData(recyclerItem);
-                            recyclerAdapter.notifyDataSetChanged();
+//                            recyclerAdapter.notifyDataSetChanged();
 
                         } catch (Exception e) {
                             e.printStackTrace();

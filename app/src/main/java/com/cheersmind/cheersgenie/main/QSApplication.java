@@ -73,7 +73,11 @@ public class QSApplication extends LitePalApplication {
         //消息推送
         initCloudChannel(this);
 
+        //设置服务器地址
        setHostType();
+
+       //设置
+
     }
 
     @Override

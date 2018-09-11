@@ -1,9 +1,12 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.BaseFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
@@ -52,6 +56,16 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
     QuestionInfoEntity questionInfoEntity;
     //选项集合
     List<OptionsEntity> optionsList;
+
+
+    //消息处理器
+    @SuppressLint("HandlerLeak")
+    protected Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+    };
 
 
     @Override
@@ -211,7 +225,13 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                     //问题类型：只选
                     if (entity.getType()== Dictionary.QUESTION_TYPE_SELECT_ONLY) {
                         notifyDataSetChanged();
-                        SoundPlayUtils.play(4);
+                        SoundPlayUtils.play(3);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                SoundPlayUtils.play(4);
+                            }
+                        }, 200);
                         //处理答题数据，并跳转到下一题
                         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, "");
                         hiddenSoft();
@@ -326,7 +346,14 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         optionText = answer;
 
         adapter.notifyDataSetChanged();
-        SoundPlayUtils.play(4);
+        SoundPlayUtils.play(3);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SoundPlayUtils.play(4);
+            }
+        }, 200);
+
         //处理答题数据，并跳转到下一题
         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, optionText);
         hiddenSoft();
@@ -335,7 +362,13 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
         tv.setVisibility(View.VISIBLE);
-        SoundPlayUtils.play(4);
+        SoundPlayUtils.play(3);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SoundPlayUtils.play(4);
+            }
+        }, 200);
         //处理答题数据，并跳转到下一题
 //        saveReplyInfo(optionsEntity);
     }

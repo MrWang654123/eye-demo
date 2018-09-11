@@ -23,6 +23,7 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import java.util.List;
@@ -40,12 +41,15 @@ public class SystemMessageFragment extends LazyLoadFragment {
     RecyclerView recycleView;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
+    //空布局
+    @BindView(R.id.emptyLayout)
+    XEmptyLayout emptyLayout;
+
     Unbinder unbinder;
 
     //适配器的数据列表
     SystemMessageRecyclerAdapter recyclerAdapter;
-    //空布局
-    XEmptyLayout xemptyLayout;
+
 
     //下拉刷新的监听
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -116,18 +120,24 @@ public class SystemMessageFragment extends LazyLoadFragment {
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
         recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置空数据布局
-        View view = getLayoutInflater().inflate(R.layout.layout_xempty_recycler, (ViewGroup) recycleView.getParent(), false);
-        xemptyLayout = view.findViewById(R.id.xemptyLayout);
-        recyclerAdapter.setEmptyView(view);
         //设置加载更多视图
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
+        //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
+        recyclerAdapter.setPreLoadNumber(4);
         //item点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
+
+        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                //加载更多消息数据
+                loadMoreMessageData();
+            }
+        });
     }
 
     @Override
@@ -159,7 +169,9 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 //结束下拉刷新动画
                 swipeRefreshLayout.setRefreshing(false);
                 //设置空布局：网络错误
-                xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                //清空列表数据
+                recyclerAdapter.setNewData(null);
             }
 
             @Override
@@ -170,7 +182,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                     //结束下拉刷新动画
                     swipeRefreshLayout.setRefreshing(false);
                     //设置空布局：隐藏
-                    xemptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     MessageRootEntity messageRootEntity = InjectionWrapperUtil.injectMap(dataMap, MessageRootEntity.class);
@@ -180,7 +192,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
                         return;
                     }
 
@@ -201,7 +213,9 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
-                    xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    //清空列表数据
+                    recyclerAdapter.setNewData(null);
                 }
             }
         });
@@ -218,7 +232,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
         if (recyclerAdapter.getData().size() == 0) {
-            xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
         DataRequestService.getInstance().getMessage(pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
@@ -229,7 +243,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                 if (recyclerAdapter.getData().size() == 0) {
                     //设置空布局：网络错误
-                    xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                 } else {
                     //加载失败处理
                     recyclerAdapter.loadMoreFail();
@@ -242,7 +256,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                     //开启下拉刷新功能
                     swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
                     //设置空布局：隐藏
-                    xemptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     MessageRootEntity messageRootEntity = InjectionWrapperUtil.injectMap(dataMap, MessageRootEntity.class);
@@ -252,7 +266,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
                         return;
                     }
 
@@ -280,7 +294,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();

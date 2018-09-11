@@ -20,6 +20,7 @@
 
         <!--下段代码就是去除阴影的-->
         <item name="android:windowContentOverlay">@null</item>
+        <item name="elevation">0dp</item>
     </style>
     <style name="Dialog" parent="android:style/Theme.Dialog">
         <item name="android:background">#00000000</item>

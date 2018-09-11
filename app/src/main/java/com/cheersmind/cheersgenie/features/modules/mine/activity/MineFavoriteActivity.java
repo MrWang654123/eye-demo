@@ -41,8 +41,8 @@ public class MineFavoriteActivity extends BaseActivity {
     RecyclerView recycleView;
 
     //空布局模块
-//    @BindView(R.id.emptyLayout)
-    XEmptyLayout xemptyLayout;
+    @BindView(R.id.emptyLayout)
+    XEmptyLayout emptyLayout;
 
     //适配器的数据列表
 //    List<SimpleArticleEntity> recyclerItem;
@@ -67,7 +67,7 @@ public class MineFavoriteActivity extends BaseActivity {
     };
 
     //页长度
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 10;
     //页码
     private int pageNum = 1;
     //后台总记录数
@@ -123,12 +123,10 @@ public class MineFavoriteActivity extends BaseActivity {
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
         recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置空数据布局
-        View view = getLayoutInflater().inflate(R.layout.layout_xempty_recycler, (ViewGroup) recycleView.getParent(), false);
-        xemptyLayout = view.findViewById(R.id.xemptyLayout);
-        recyclerAdapter.setEmptyView(view);
         //设置加载更多视图
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
+        //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
+        recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(MineFavoriteActivity.this));
         recycleView.setAdapter(recyclerAdapter);
         //设置子项点击监听
@@ -139,11 +137,11 @@ public class MineFavoriteActivity extends BaseActivity {
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
-        xemptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                //刷新“我的收藏”数据
-                refreshFavoriteData();
+                //加载更多“我的收藏”数据
+                loadMoreFavoriteData();
             }
         });
     }
@@ -176,7 +174,9 @@ public class MineFavoriteActivity extends BaseActivity {
                 //结束下拉刷新动画
                 swipeRefreshLayout.setRefreshing(false);
                 //设置空布局：网络错误
-                xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                //清空列表数据
+                recyclerAdapter.setNewData(null);
             }
 
             @Override
@@ -187,7 +187,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //结束下拉刷新动画
                     swipeRefreshLayout.setRefreshing(false);
                     //设置空布局：隐藏
-                    xemptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
@@ -197,7 +197,7 @@ public class MineFavoriteActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
                         return;
                     }
 
@@ -218,7 +218,9 @@ public class MineFavoriteActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
-                    xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    //清空列表数据
+                    recyclerAdapter.setNewData(null);
                 }
 
             }
@@ -234,7 +236,7 @@ public class MineFavoriteActivity extends BaseActivity {
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
         if (recyclerAdapter.getData().size() == 0) {
-            xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
         MineDto dto = new MineDto();
@@ -249,7 +251,7 @@ public class MineFavoriteActivity extends BaseActivity {
 
                 if (recyclerAdapter.getData().size() == 0) {
                     //设置空布局：网络错误
-                    xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                 } else {
                     //加载失败处理
                     recyclerAdapter.loadMoreFail();
@@ -262,7 +264,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //开启下拉刷新功能
                     swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
                     //设置空布局：隐藏
-                    xemptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
@@ -272,7 +274,7 @@ public class MineFavoriteActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
                         return;
                     }
 
@@ -300,7 +302,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();
@@ -341,7 +343,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //无数据处理
                     if (recyclerAdapter.getData().size() == 0) {
                         //空布局设置：没有数据
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
                     }
 
                 } catch (Exception e) {

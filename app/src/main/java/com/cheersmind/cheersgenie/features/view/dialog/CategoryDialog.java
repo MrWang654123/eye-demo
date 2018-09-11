@@ -49,11 +49,12 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
     //分类集合数据
     private List<CategoryEntity> categories;
 
-    private QuestionQuitDialogCallback callback;
+    //操作监听
+    private OnOperationListener listener;
 
-    public CategoryDialog(@NonNull Context context, QuestionQuitDialogCallback callback) {
+    public CategoryDialog(@NonNull Context context, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
-        this.callback = callback;
+        this.listener = listener;
     }
 
     @Override
@@ -152,8 +153,8 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
             return;
         }
         if (v == ivClose) {
-            if (callback != null) {
-                callback.onQuesExit();
+            if (listener != null) {
+                listener.onExit();
             }
             dismiss();
         }
@@ -187,6 +188,13 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
         //设置属性
         getWindow().setAttributes(layoutParams);
 
+    }
+
+    //操作监听
+    public interface OnOperationListener {
+
+        //退出操作
+        void onExit();
     }
 
 }

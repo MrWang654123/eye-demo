@@ -137,15 +137,16 @@ public class HomeFragment extends LazyLoadFragment {
             loadBannerData();
             //加载最新操作的评测
             loadLastOperateEvaluation();
-            //加载列表数据
-            loadHomeDataList();
+            //刷新文章数据
+            refreshArticleData();
         }
     };
     //上拉加载更多的监听
     BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
         @Override
         public void onLoadMoreRequested() {
-            loadHomeDataList();
+            //加载更多文章数据
+            loadMoreArticleData();
         }
     };
 
@@ -282,8 +283,8 @@ public class HomeFragment extends LazyLoadFragment {
                 loadBannerData();
                 //加载最新操作的评测
                 loadLastOperateEvaluation();
-                //加载列表数据
-                loadHomeDataList();
+                //加载更多文章数据
+                loadMoreArticleData();
             }
         });
 
@@ -325,8 +326,8 @@ public class HomeFragment extends LazyLoadFragment {
         loadBannerData();
         //加载最新操作的评测
         loadLastOperateEvaluation();
-        //加载列表数据
-        loadHomeDataList();
+        //加载更多文章数据
+        loadMoreArticleData();
     }
 
     @Override
@@ -435,8 +436,155 @@ public class HomeFragment extends LazyLoadFragment {
         });
     }
 
+    /**
+     * 刷新文章列表
+     */
+    private void refreshArticleData() {
+        //下拉刷新
+        pageNum = 1;
+        //关闭上拉加载功能
+        recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
+        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
+        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //发送通信错误消息
+                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+
+                //开启上拉加载功能
+                recyclerAdapter.setEnableLoadMore(true);
+                //结束下拉刷新动画
+                swipeRefreshLayout.setRefreshing(false);
+                //清空列表数据
+                recyclerAdapter.setNewData(null);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启上拉加载功能
+                    recyclerAdapter.setEnableLoadMore(true);
+                    //结束下拉刷新动画
+                    swipeRefreshLayout.setRefreshing(false);
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+
+                    totalCount = articleRootEntity.getTotal();
+                    List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        //显示暂无文章
+                        return;
+                    }
+
+                    //下拉刷新
+                    recyclerAdapter.setNewData(dataList);
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
+                    //设置空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //发送通信错误消息
+                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    //清空列表数据
+                    recyclerAdapter.setNewData(null);
+                    //加载失败处理
+                    recyclerAdapter.loadMoreFail();
+                }
+
+            }
+        });
+    }
+
+    /**
+     * 加载更多文章
+     */
+    private void loadMoreArticleData() {
+        //关闭下拉刷新功能
+        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
+
+        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
+        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //发送通信错误消息
+                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+
+                //开启下拉刷新功能
+                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+
+                //加载失败处理
+                recyclerAdapter.loadMoreFail();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启下拉刷新功能
+                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+
+                    totalCount = articleRootEntity.getTotal();
+                    List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        //显示暂无文章
+                        return;
+                    }
+
+                    //当前列表无数据
+                    if (recyclerAdapter.getData().size() == 0) {
+                        recyclerAdapter.setNewData(dataList);
+
+                    } else {
+                        recyclerAdapter.addData(dataList);
+                    }
+
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
+                    //空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //发送通信错误消息
+                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    //加载失败处理
+                    recyclerAdapter.loadMoreFail();
+                }
+
+            }
+        });
+    }
+
     //获取首页数据列表（目前是热门文章）
-    public void loadHomeDataList() {
+    /*public void loadHomeDataList() {
         //设置空布局，当前列表还没有数据的情况，提示：通信等待提示中
 //        if (ArrayListUtil.isEmpty(recyclerItem)) {
 //            xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
@@ -536,7 +684,7 @@ public class HomeFragment extends LazyLoadFragment {
                 }
             }
         });
-    }
+    }*/
 
     /**
      * 处理banner点击事件

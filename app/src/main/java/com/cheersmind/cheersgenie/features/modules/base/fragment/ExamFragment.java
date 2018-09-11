@@ -66,7 +66,8 @@ public class ExamFragment extends LazyLoadFragment {
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
     //空布局
-    XEmptyLayout xemptyLayout;
+    @BindView(R.id.emptyLayout)
+    XEmptyLayout emptyLayout;
 
     //recycler子项的点击监听
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener =  new BaseQuickAdapter.OnItemClickListener() {
@@ -110,19 +111,21 @@ public class ExamFragment extends LazyLoadFragment {
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            loadChildTopicList();
+            //刷新孩子话题
+            refreshChildTopList();
         }
     };
     //上拉加载更多的监听
     BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
         @Override
         public void onLoadMoreRequested() {
-            loadChildTopicList();
+            //加载更多孩子话题
+            loadMoreChildTopicList();
         }
     };
 
     //页长度
-    private static final int PAGE_SIZE = 1;
+    private static final int PAGE_SIZE = 5;
     //页码
     private int pageNum = 1;
     //后台总记录数
@@ -135,7 +138,8 @@ public class ExamFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        loadChildTopicList();
+        //加载更多孩子话题
+        loadMoreChildTopicList();
     }
 
     /**
@@ -155,10 +159,6 @@ public class ExamFragment extends LazyLoadFragment {
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
         recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置空数据布局
-        View view = getLayoutInflater().inflate(R.layout.layout_xempty_recycler, (ViewGroup) recycleView.getParent(), false);
-        xemptyLayout = view.findViewById(R.id.xemptyLayout);
-        recyclerAdapter.setEmptyView(view);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //设置子项的孩子视图点击监听
@@ -171,10 +171,11 @@ public class ExamFragment extends LazyLoadFragment {
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
         //空布局重载点击监听
-        xemptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadChildTopicList();
+                //加载更多孩子话题
+                loadMoreChildTopicList();
             }
         });
     }
@@ -230,8 +231,8 @@ public class ExamFragment extends LazyLoadFragment {
             if (dimension == null) {
                 //重置为第一页
                 resetPageInfo();
-                //重载整个话题量表
-                loadChildTopicList();
+                //刷新孩子话题
+                refreshChildTopList();
 
             } else {
                 //局部刷新量表对应的视图项
@@ -259,8 +260,8 @@ public class ExamFragment extends LazyLoadFragment {
                                 if (isMeetUnlockCondition(topicInfo)) {
                                     //重置为第一页
                                     resetPageInfo();
-                                    //重载整个话题量表
-                                    loadChildTopicList();
+                                    //刷新孩子话题
+                                    refreshChildTopList();
 
                                 } else {
                                     //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
@@ -380,102 +381,69 @@ public class ExamFragment extends LazyLoadFragment {
         totalCount = 0;
     }
 
-    //获取孩子关注主题列表
-    public void loadChildTopicList() {
-        //设置空布局，当前列表还没有数据的情况，提示：通信等待提示中
-        if (ArrayListUtil.isEmpty(topicList)) {
-            xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
-        if (swipeRefreshLayout.isRefreshing()) {
-            //下拉刷新
-            pageNum = 1;
-            recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
-        }
 
-//        String defaultChildId = ChildInfoDao.getDefaultChildId();
+    /**
+     * 刷新孩子话题列表
+     */
+    private void refreshChildTopList() {
+        //重置为第一页
+        resetPageInfo();
+        //确保显示了刷新动画
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        //关闭上拉加载功能
+        recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
         DataRequestService.getInstance().loadChildTopicList(defaultChildId, pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //下拉刷新
-                if (swipeRefreshLayout.isRefreshing()) {
-                    //开启上拉加载功能
-                    recyclerAdapter.setEnableLoadMore(true);
-                    //结束下拉刷新动画
-                    swipeRefreshLayout.setRefreshing(false);
-
-                } else {//上拉加载
-                    if (ArrayListUtil.isNotEmpty(topicList)) {
-                        //加载失败处理
-                        recyclerAdapter.loadMoreFail();
-                    }
-                }
-
-                //设置空布局：当前列表还没有数据的情况，提示：网络连接有误，或者请求失败
-                if (ArrayListUtil.isEmpty(topicList)) {
-                    xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                }
+                //开启上拉加载功能
+                recyclerAdapter.setEnableLoadMore(true);
+                //结束下拉刷新动画
+                swipeRefreshLayout.setRefreshing(false);
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                //清空列表数据
+                recyclerAdapter.setNewData(null);
             }
 
             @Override
             public void onResponse(Object obj) {
-                //设置空布局
-//                emptyLayout.setErrorType(EmptyLayout.HIDE_LAYOUT);
-
                 try {
-                    Map<String, Object> dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //开启上拉加载功能
+                    recyclerAdapter.setEnableLoadMore(true);
+                    //结束下拉刷新动画
+                    swipeRefreshLayout.setRefreshing(false);
+                    //设置空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
-                    //非空
-                    if (ArrayListUtil.isEmpty(topicData.getItems())) {
-                        //设置空布局：当前列表还没有数据的情况，提示：没有数据
-                        if (ArrayListUtil.isEmpty(topicList)) {
-                            xemptyLayout.setErrorType(XEmptyLayout.NODATA);
-                            return;
-                        } else {
-                            throw new Exception();
-                        }
-                    }
 
                     //后台总记录数
                     totalCount = topicData.getTotal();
-                    List<TopicInfoEntity> topicInfoList = topicData.getItems();
+                    List<TopicInfoEntity> dataList = topicData.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        return;
+                    }
+
                     //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                    recyclerItem = topicInfoEntityToRecyclerSection(topicInfoList);
+                    recyclerItem = topicInfoEntityToRecyclerSection(dataList);
 
                     //下拉刷新
-                    if (swipeRefreshLayout.isRefreshing()) {
-                        //数据处理
-                        topicList = topicInfoList;
-//                        if (topicList  == null) topicList = new ArrayList<>();
-//                        topicList.addAll(topicInfoList);
-                        recyclerAdapter.setNewData(recyclerItem);
-
-                        //视图处理
-                        //判断是否全部加载结束
-                        if (topicList.size() >= totalCount) {
-                            //全部加载结束
-                            recyclerAdapter.loadMoreEnd();
-                        }
-
-                    } else {//上拉加载
-                        //数据处理
-                        if (ArrayListUtil.isEmpty(topicList)) {
-                            topicList = topicInfoList;
-                            recyclerAdapter.setNewData(recyclerItem);
-                        } else {
-                            topicList.addAll(topicInfoList);
-                            recyclerAdapter.addData(recyclerItem);
-                        }
-
-                        //视图处理
-                        //判断是否全部加载结束
-                        if (topicList.size() >= totalCount) {
-                            //全部加载结束
-                            recyclerAdapter.loadMoreEnd();
-                        } else {
-                            //本次加载完成
-                            recyclerAdapter.loadMoreComplete();
-                        }
+                    recyclerAdapter.setNewData(recyclerItem);
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
                     }
 
                     //页码+1
@@ -483,37 +451,103 @@ public class ExamFragment extends LazyLoadFragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    //列表中已经加载成功过数据，本次加载数据为0条，则认为已经全部加载结束
-                    if (recyclerAdapter.getItemCount() > 0) {
-                        //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
-                    } else {
-                        //无数据情况处理
-                        //本次加载完成
-                        recyclerAdapter.loadMoreComplete();
-                        recyclerAdapter.setNewData(null);
-                    }
-
-                    //设置空布局，当前列表还没有数据的情况，提示：没有数据
-//                    if (ArrayListUtil.isEmpty(topicList)) {
-//                        xemptyLayout.setErrorType(XEmptyLayout.NODATA);
-//                    }
-                    //设置空布局：当前列表还没有数据的情况，提示：没有数据
-                    if (ArrayListUtil.isEmpty(topicList)) {
-                        xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
-                    }
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    //清空列表数据
+                    recyclerAdapter.setNewData(null);
                 }
 
-                //下拉刷新，还原动画
-                if (swipeRefreshLayout.isRefreshing()) {
-                    //开启上拉加载功能
-                    recyclerAdapter.setEnableLoadMore(true);
-                    //结束下拉刷新动画
-                    swipeRefreshLayout.setRefreshing(false);
-                }
             }
         });
     }
+
+    /**
+     * 加载更多孩子话题列表
+     */
+    private void loadMoreChildTopicList() {
+        //关闭下拉刷新功能
+        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
+
+        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
+        if (recyclerAdapter.getData().size() == 0) {
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        }
+
+        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().loadChildTopicList(defaultChildId, pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //开启下拉刷新功能
+                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+
+                if (recyclerAdapter.getData().size() == 0) {
+                    //设置空布局：网络错误
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                } else {
+                    //加载失败处理
+                    recyclerAdapter.loadMoreFail();
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启下拉刷新功能
+                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+                    //设置空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
+
+                    //后台总记录数
+                    totalCount = topicData.getTotal();
+                    List<TopicInfoEntity> dataList = topicData.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        return;
+                    }
+
+                    //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
+                    recyclerItem = topicInfoEntityToRecyclerSection(dataList);
+
+                    //当前列表无数据
+                    if (recyclerAdapter.getData().size() == 0) {
+                        recyclerAdapter.setNewData(recyclerItem);
+
+                    } else {
+                        recyclerAdapter.addData(recyclerItem);
+                    }
+
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (recyclerAdapter.getData().size() == 0) {
+                        //设置空布局：没有数据，可重载
+                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    } else {
+                        //加载失败处理
+                        recyclerAdapter.loadMoreFail();
+                    }
+                }
+
+            }
+        });
+    }
+
 
     /**
      * 话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
