@@ -22,6 +22,7 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.List;
@@ -138,6 +139,13 @@ public class MineFavoriteActivity extends BaseActivity {
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
+        xemptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                //刷新“我的收藏”数据
+                refreshFavoriteData();
+            }
+        });
     }
 
     @Override

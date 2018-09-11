@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.request;
 
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
@@ -40,6 +41,10 @@ public class BaseRequest {
 //    }
 
     private static String getHeader(String url,String method) {
+        return getHeader(url, method, null);
+    }
+
+    private static String getHeader(String url,String method, Map<String,Object> params) {
         if (url.equals(HttpConfig.URL_LOGIN)
                 || url.equals(HttpConfig.URL_CODE_INVATE)
                 || url.equals(HttpConfig.URL_CODE_REGISTERS)
@@ -48,7 +53,6 @@ public class BaseRequest {
                 || url.contains(HttpConfig.URL_UC_REGISTER)
                 || url.equals(HttpConfig.URL_UPDATE_NOTIFICATION)
                 || url.equals(HttpConfig.URL_SERVER_TIME)
-                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)
                 || url.equals(HttpConfig.URL_PHONE_MESSAGE_REGISTER)
                 || url.equals(HttpConfig.URL_PHONE_NUM_LOGIN)
                 || url.equals(HttpConfig.URL_ACCOUNT_LOGIN)
@@ -56,6 +60,17 @@ public class BaseRequest {
                 || url.equals(HttpConfig.URL_RESET_PASSWORD)) {
             return "";
         }
+
+        //发送短信验证码，其中绑定手机号的情况得传token
+        if (url.equals(HttpConfig.URL_PHONE_CAPTCHA)) {
+            if (params != null) {
+                Integer type = (Integer)params.get("type");
+                if (type != Dictionary.SmsType_Bind_Phone_Num) {
+                    return "";
+                }
+            }
+        }
+
         String host = url.startsWith(HttpConfig.API_HOST)?HttpConfig.API_HOST:HttpConfig.UC_HOST;
         String nonce = System.currentTimeMillis()+":";
         String[] randomStrs = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
@@ -150,7 +165,7 @@ public class BaseRequest {
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
-                .addHeader("Authorization",getHeader(url,"POST"))
+                .addHeader("Authorization",getHeader(url,"POST", params))
                 .post(formBody)
                 .build();
         //new call

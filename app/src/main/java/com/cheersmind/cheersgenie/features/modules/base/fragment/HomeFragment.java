@@ -1,6 +1,8 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
+import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,11 +20,14 @@ import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
+import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.holder.BannerHomeHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -32,12 +37,18 @@ import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.main.event.WXLoginEvent;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Map;
@@ -192,6 +203,13 @@ public class HomeFragment extends LazyLoadFragment {
 
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //注册事件
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
     protected int setContentView() {
         return R.layout.fragment_home;
     }
@@ -201,7 +219,6 @@ public class HomeFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, contentView);
 
         //初始隐藏banner和最新评测模块
-//        convenientBanner.setBackgroundColor(Color.parseColor("#ffffff"));
         convenientBanner.setVisibility(View.GONE);
         evaluationBlock.setVisibility(View.GONE);
 
@@ -234,17 +251,6 @@ public class HomeFragment extends LazyLoadFragment {
         //设置样式刷新显示的位置
         swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
-        //初始化header：banner
-//        headerBanner = getLayoutInflater().inflate(R.layout.recycler_header_home_banner, (ViewGroup) recycleView.getParent(), false);
-//        convenientBanner = headerBanner.findViewById(R.id.convenientBanner);
-
-        //初始化header：最新操作的评测
-//        headerEvalation = getLayoutInflater().inflate(R.layout.recycler_header_home_evaluation, (ViewGroup) recycleView.getParent(), false);
-//        tvLastDimensionTitle = headerEvalation.findViewById(R.id.tv_last_dimension_title);
-//        btnGotoLastDimension = headerEvalation.findViewById(R.id.btn_goto_last_dimension);
-//        btnGotoLastDimension.setOnClickListener(HomeFragment.this);
-//        headerBanner = findViewById(R.id.header_banner);
-//        headerEvaluation = findViewById(R.id.header_evaluation);
 
         //设置显示时的动画
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
@@ -301,6 +307,13 @@ public class HomeFragment extends LazyLoadFragment {
         }
         //取消toast
         ToastUtil.cancelToast();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //注销事件
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -394,7 +407,11 @@ public class HomeFragment extends LazyLoadFragment {
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     lastDimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
-                    if (lastDimension != null && !TextUtils.isEmpty(lastDimension.getDimensionId())) {
+                    //有量表对象，且量表处于未完成状态
+                    if (lastDimension != null
+                            && !TextUtils.isEmpty(lastDimension.getDimensionId())
+                            && lastDimension.getChildDimension() != null
+                            && lastDimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                         //刷新最新操作测评的视图
                         tvLastDimensionTitle.setText(lastDimension.getDimensionName());
 
@@ -597,4 +614,27 @@ public class HomeFragment extends LazyLoadFragment {
             }
         }
     }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+//    @Subscribe
+    public void onLastExamNotice(LastHandleExamEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        //更新最新测评
+        if (event.getHandleType() == LastHandleExamEvent.HANDLE_TYPE_UPDATE) {
+            //加载最新操作的评测
+            loadLastOperateEvaluation();
+
+        } else if (event.getHandleType() == LastHandleExamEvent.HANDLE_TYPE_COMPLETE) {//刚完成一个新的测评，此时无最新操作测评
+            //隐藏视图，清理数据
+            lastDimension = null;
+            evaluationBlock.setVisibility(View.GONE);
+        }
+
+    }
+
+
 }

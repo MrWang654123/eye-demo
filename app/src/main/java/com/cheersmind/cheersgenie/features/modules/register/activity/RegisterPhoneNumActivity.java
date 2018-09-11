@@ -131,7 +131,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     /**
      * 请求发送注册验证码
      * @param phoneNum 手机号
-     * @param smsType 短信业务类型：0:注册用户，1：短信登录，2：绑定手机号
+     * @param smsType 短信业务类型：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
      */
     private void querySendCaptcha(final String phoneNum, final int smsType) {
         //隐藏软键盘

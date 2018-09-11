@@ -1,34 +1,36 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.fragment.questype.QuestionTypeBaseFragment;
-import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 
 import java.util.List;
@@ -42,14 +44,15 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
     private TextView tvQuesTitle;
     private ListView lvQuestion;
 
-    private EditText etAnswer;
-
-    private int curSelect = -1;//当前选中选项，默认没选中
+    //当前选中选项，默认没选中
+    private int curSelect = -1;
+    //填写的答案
+    String optionText;
+    //问题对象
     QuestionInfoEntity questionInfoEntity;
+    //选项集合
     List<OptionsEntity> optionsList;
-//    String childFactorId = "";
 
-    QuestionInfoChildEntity childQuestion;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         //记录当前选中项
         Bundle arguments = getArguments();
         arguments.putInt("curSelect", curSelect);
+        arguments.putString("optionText", optionText);
         super.onDestroyView();
     }
 
@@ -90,10 +94,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         if(bundle!=null){
 //            childFactorId = bundle.getString("child_factor_id");
             int curSelect = bundle.getInt("curSelect", -1);
+            String optionText = bundle.getString("optionText", "");
             if (curSelect != -1) {
                 //非第一次初始化
                 if (optionsList != null) {
                     this.curSelect = curSelect;
+                    this.optionText = optionText;
                     adapter.notifyDataSetChanged();
                 }
 
@@ -106,13 +112,17 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
                     optionsList = questionInfoEntity.getOptions();
                     //如果之前回答过本题,更新对应选项选中状态
-                    childQuestion = questionInfoEntity.getChildQuestion();
+                    QuestionInfoChildEntity childQuestion = questionInfoEntity.getChildQuestion();
                     if (childQuestion != null) {
                         for (int i = 0; i < optionsList.size(); i++) {
                             if (childQuestion.getOptionId().equals(optionsList.get(i).getOptionId())) {
+                                //初始化当前选中项
                                 this.curSelect = i;
                             }
                         }
+
+                        //填写的答案
+                        this.optionText = childQuestion.getOptionText();
                     }
 
                     if (optionsList != null) {
@@ -154,147 +164,190 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
             final OptionsEntity entity = optionsList.get(position);
 
-            //问题类型：手填
-            if(entity.getType()== Dictionary.QUESTION_TYPE_EDIT){
-                //显示填写答案的布局
-                viewHolder.llFill.setVisibility(View.VISIBLE);
-                //隐藏只选时的问题选项
-                viewHolder.tvAnswerTitle.setVisibility(View.GONE);
-                //显示填写答案时的问题选项文本
-                viewHolder.tvOption.setText(entity.getContent());
-                etAnswer = viewHolder.etOption;
-            }else{
-                //默认问题类型：只选
-                //隐藏填写答案的布局
-                viewHolder.llFill.setVisibility(View.GONE);
-                //显示只选时的问题选项
-                viewHolder.tvAnswerTitle.setVisibility(View.VISIBLE);
-                etAnswer = null;
-                viewHolder.tvAnswerTitle.setText(entity.getContent());
-            }
+            //隐藏填写答案文本
+            viewHolder.tvOptionText.setVisibility(View.GONE);
 
-            if(curSelect == position){
+            //选项标题
+            viewHolder.tvOptionTitle.setText(entity.getContent());
+            //选中索引
+            if (curSelect == position) {
+                //选中图标
                 viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_select);
-                viewHolder.tvAnswerbg.setVisibility(View.VISIBLE);
-//                if(entity.getType() == 2 && !TextUtils.isEmpty(childQuestion.getOptionText())){
-//                    viewHolder.etOption.setText(childQuestion.getOptionText());
-//                }else{
-//                    viewHolder.etOption.setText("");
-//                }
-            }else{
-                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
-                viewHolder.tvAnswerbg.setVisibility(View.GONE);
+                //选中背景
+                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f5a400_12dp);
+                //选中选项标题
+                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#ffffff"));
+                //问题类型：手填
+                if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {
+                    //显示填写答案文本
+                    viewHolder.tvOptionText.setVisibility(View.VISIBLE);
+                    //设置填写的答案
+                    viewHolder.tvOptionText.setText(optionText);
+                    //选中的填写答案
+                    viewHolder.tvOptionText.setTextColor(Color.parseColor("#ffffff"));
+                }
 
+            } else {
+                //未选中图标
+                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
+                //未选中背景
+                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f4f3ee_12dp);
+                //未选中选项标题
+                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#7b7b7b"));
+                //问题类型：手填
+                if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {
+                    //选中的填写答案
+                    viewHolder.tvOptionText.setTextColor(Color.parseColor("#898989"));
+                }
             }
 
-            /*viewHolder.rtSelect.setOnClickListener(new OnMultiClickListener() {
+            //选项点击监听
+            viewHolder.llOption.setOnClickListener(new View.OnClickListener() {
+
                 @Override
-                public void onMultiClick(View view) {
-                    if(entity.getType()==2){
-                        String str = viewHolder.etOption.getText().toString();
-                        if(TextUtils.isEmpty(str)){
-                            Toast.makeText(getActivity(),"请填写当前选项说明",Toast.LENGTH_SHORT).show();
-                        }else{
-                            curSelect = position;
-                            notifyDataSetChanged();
-                            showAnimBg(viewHolder.tvAnswerbg,entity);
-                        }
-                    }else{
-                        curSelect = position;
+                public void onClick(View v) {
+                    int preSelect = curSelect;
+                    curSelect = position;
+                    //问题类型：只选
+                    if (entity.getType()== Dictionary.QUESTION_TYPE_SELECT_ONLY) {
                         notifyDataSetChanged();
-                        showAnimBg(viewHolder.tvAnswerbg,entity);
+                        SoundPlayUtils.play(4);
+                        //处理答题数据，并跳转到下一题
+                        saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, "");
                         hiddenSoft();
-                    }
-                }
-            });*/
-            viewHolder.rtSelect.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(entity.getType() == Dictionary.QUESTION_TYPE_EDIT){
-                        String str = viewHolder.etOption.getText().toString();
-                        if(TextUtils.isEmpty(str)){
-                            Toast.makeText(getActivity(),"请填写当前选项说明",Toast.LENGTH_SHORT).show();
-                        }else{
-                            curSelect = position;
-                            notifyDataSetChanged();
-                            showAnimBg(viewHolder.tvAnswerbg,entity);
-                        }
-                    }else{
-                        curSelect = position;
-                        notifyDataSetChanged();
-                        showAnimBg(viewHolder.tvAnswerbg,entity);
-                        hiddenSoft();
+
+                    } else if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {//问题类型：填写
+                        //弹出填写答案的对话框
+                        String initContent = preSelect == curSelect ? optionText : "";
+                        popupAnswerEditWindows(optionsList.get(curSelect).getContent(), initContent);
                     }
                 }
             });
 
             return convertView;
         }
+
     };
 
     class ViewHolder{
+        //布局容器
+        private LinearLayout llOption;
+        //选中图标
         private ImageView ivIcon;
-        private TextView tvAnswerTitle;
-        private TextView tvAnswerbg;
-        private LinearLayout llFill;
-        private RelativeLayout rtSelect;
-        private TextView tvOption;
-        private EditText etOption;
+        //选项标题
+        private TextView tvOptionTitle;
+        //填写的答案
+        private TextView tvOptionText;
         void initView(View view){
-            ivIcon = (ImageView)view.findViewById(R.id.iv_icon);
-            tvAnswerTitle = (TextView)view.findViewById(R.id.tv_answer_title);
-            tvAnswerbg = (TextView) view.findViewById(R.id.tv_answer_bg);
-            rtSelect = (RelativeLayout)view.findViewById(R.id.rt_select);
-            llFill = (LinearLayout)view.findViewById(R.id.ll_fill);
-            tvOption = (TextView)view.findViewById(R.id.tv_option);
-            etOption = (EditText)view.findViewById(R.id.et_option);
+            llOption = view.findViewById(R.id.ll_option);
+            ivIcon = view.findViewById(R.id.iv_icon);
+            tvOptionTitle = view.findViewById(R.id.tv_option_title);
+            tvOptionText = view.findViewById(R.id.tv_option_text);
         }
     }
 
-    /*private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
-        tv.setVisibility(View.VISIBLE);
-        Animation showAnim = AnimationUtils.loadAnimation(
-                getActivity(), R.anim.anim_scale_center);
-        showAnim.setDuration(200);
-        tv.startAnimation(showAnim);
 
-        showAnim.setAnimationListener(new Animation.AnimationListener() {
+    /**
+     * 弹出填写答案对话框
+     */
+    private void popupAnswerEditWindows(String title, String content) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.popup_window_edit_answer, null);
+        final Dialog dialog = new Dialog(getContext(), R.style.dialog_bottom_full);
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        window.setContentView(view);
+
+        WindowManager.LayoutParams lp = window.getAttributes(); // 获取对话框当前的参数值
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;//宽度占满屏幕
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(lp);
+        window.setWindowAnimations(R.style.BottomDialog_Animation);//动画
+        dialog.show();
+
+        //标题
+        TextView tvTitle = view.findViewById(R.id.tv_title);
+        tvTitle.setText(title);
+        //评论编辑框
+        final EditText etAnswer = view.findViewById(R.id.et_answer);
+        //初始化内容
+        if (!TextUtils.isEmpty(content)) {
+            etAnswer.setText(content);
+            etAnswer.setSelection(content.length());
+        }
+
+        //确定按钮
+        final Button btnConfirm = view.findViewById(R.id.btn_confirm);
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                SoundPlayUtils.play(3);
+            public void onClick(View v) {
+                dialog.dismiss();
+                //确定答案
+                confirmAnswer(etAnswer.getText().toString(), optionsList.get(curSelect));
             }
-
+        });
+        //关闭按钮
+        final Button btnClose = view.findViewById(R.id.btn_cancel);
+        btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAnimationEnd(Animation animation) {
-                SoundPlayUtils.play(4);
-//                commitQuestion(getActivity(),optionsEntity,childFactorId);
-                //处理答题数据，并跳转到下一题
-                saveReplyInfo(optionsEntity);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
 
-    }*/
+        etAnswer.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //没输入，则确定按钮禁用
+                if (s.length() == 0) {
+                    btnConfirm.setEnabled(false);
+                } else {
+                    btnConfirm.setEnabled(true);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 确定填写的答案
+     * @param answer
+     */
+    private void confirmAnswer(String answer, OptionsEntity entity) {
+        optionText = answer;
+
+        adapter.notifyDataSetChanged();
+        SoundPlayUtils.play(4);
+        //处理答题数据，并跳转到下一题
+        saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, optionText);
+        hiddenSoft();
+    }
+
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
         tv.setVisibility(View.VISIBLE);
         SoundPlayUtils.play(4);
         //处理答题数据，并跳转到下一题
-        saveReplyInfo(optionsEntity);
+//        saveReplyInfo(optionsEntity);
     }
 
     /**
      * 保存当前题目的答题
      * @param optionsEntity
      */
-    private void saveReplyInfo(OptionsEntity optionsEntity) {
+    private void saveReplyInfo(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
         //处理答题信息
-        activity.saveCurHasedReply(questionInfoEntity.getChildFactorId(), optionsEntity);
+        activity.saveCurHasedReply(childFactorId, optionsEntity, optionText);
         //跳到下一题
         activity.toNextQuestion();
     }

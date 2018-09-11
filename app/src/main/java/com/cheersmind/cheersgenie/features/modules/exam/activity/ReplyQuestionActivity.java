@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
+import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
@@ -348,7 +349,7 @@ public class ReplyQuestionActivity extends BaseActivity {
      * 添加当前题目的答案到集合中
      * @param optionsEntity
      */
-    public void saveCurHasedReply(String childFactorId, OptionsEntity optionsEntity) {
+    public void saveCurHasedReply(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         if (optionsEntity == null) return;
 
         //当前题目如果为上一次进入作答页面时作答过的，则检测答案选项是否改变，有改变的情况才添加到当前作答的题目答案集合中
@@ -372,7 +373,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         }
 
         //添加到当前题目答案的集合：key为问题ID
-        AnswerDto answerDto = optionsEntityToAnswerDto(childFactorId, optionsEntity);
+        AnswerDto answerDto = assembleAnswerDto(childFactorId, optionsEntity, optionText);
         arrayMapCurHasedReply.put(questionId, answerDto);
         LogUtils.w("当前题目答案的集合长度：" + arrayMapCurHasedReply.size());
     }
@@ -383,7 +384,7 @@ public class ReplyQuestionActivity extends BaseActivity {
      * @param optionsEntity
      * @return
      */
-    private AnswerDto optionsEntityToAnswerDto(String childFactorId, OptionsEntity optionsEntity) {
+    private AnswerDto assembleAnswerDto(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         AnswerDto answerDto = new AnswerDto();
         //问题ID
         answerDto.setQuestion_id(optionsEntity.getQuestionId());
@@ -391,8 +392,8 @@ public class ReplyQuestionActivity extends BaseActivity {
         answerDto.setChild_factor_id(childFactorId);
         //选项ID
         answerDto.setOption_id(optionsEntity.getOptionId());
-        //选项文本
-        answerDto.setOption_text(optionsEntity.getContent());
+        //填写的答案
+        answerDto.setOption_text(optionText);
 
         return answerDto;
     }
@@ -557,6 +558,9 @@ public class ReplyQuestionActivity extends BaseActivity {
 //                        ToastUtil.showShort(getApplicationContext(), "提交问题成功，继续下一步？？");
                         //标记问题提交成功
                         hasSubmitSuccess = true;
+                        //释放计时器
+                        releaseTimeTask();
+
                         try {
                             Map map = JsonUtil.fromJson(obj.toString(), Map.class);
                             DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
@@ -567,6 +571,8 @@ public class ReplyQuestionActivity extends BaseActivity {
 
                             //发送问题提交成功的事件通知，附带量表对象
                             EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
+                            //发送最新操作测评通知：完成操作
+                            EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
                         } catch (Exception e) {
                             onFailure(new QSCustomException("获取报告失败"));
@@ -611,6 +617,10 @@ public class ReplyQuestionActivity extends BaseActivity {
     private void doPostSaveQuestions() {
         //问题已经提交成功了，则直接return
         if (hasSubmitSuccess) return;
+        //当前有作答
+        if (arrayMapCurHasedReply.size() == 0) {
+            return;
+        }
 
         DataRequestService.getInstance().postQuestionAnswersSave(
                 dimensionInfoEntity.getChildDimension().getChildDimensionId(),
@@ -626,6 +636,8 @@ public class ReplyQuestionActivity extends BaseActivity {
                     @Override
                     public void onResponse(Object obj) {
 //                        ToastUtil.showShort(getApplicationContext(), "保存答案成功");
+                        //发送最新操作测评通知：更新操作
+                        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
                     }
                 });
     }

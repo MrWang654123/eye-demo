@@ -16,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
+import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -30,6 +31,8 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Map;
 
@@ -186,7 +189,7 @@ public class DimensionDetailActivity extends BaseActivity {
         }
 
         //被锁定
-        if(dimensionInfoEntity.getIsLocked() == 1){
+        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE){
             //锁定提示
             lockedDimensionTip();
 
@@ -200,7 +203,7 @@ public class DimensionDetailActivity extends BaseActivity {
 
             } else {//已经开启过的状态
                 //未完成状态，继续作答
-                if (entity.getStatus() == 0) {
+                if (entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                     //打开答题页面，传递分量表对象
                     ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity);
 
@@ -276,6 +279,9 @@ public class DimensionDetailActivity extends BaseActivity {
                         dimensionInfoEntity.setChildDimension(startEntity);
                         //打开答题页面，传递分量表对象
                         ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity);
+
+                        //发送最新操作测评通知：更新操作
+                        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
                     }
 
                 } catch (Exception e) {

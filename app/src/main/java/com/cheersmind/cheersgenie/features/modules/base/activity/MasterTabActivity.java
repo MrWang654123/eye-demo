@@ -182,7 +182,7 @@ public class MasterTabActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        ToastUtil.showShort(getApplicationContext(), "主页面");
+//        ToastUtil.showShort(getApplicationContext(), "主页面");
     }
 
 }
