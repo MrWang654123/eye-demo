@@ -8,8 +8,10 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
+import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
@@ -22,6 +24,7 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.google.gson.JsonElement;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -94,6 +97,14 @@ public class AccountBindActivity extends BaseActivity {
     protected void onInitData() {
         //查询绑定平台
         queryBindPlatform();
+
+        if (UCManager.getInstance().getUserInfo() != null) {
+            UserInfo userInfo = UCManager.getInstance().getUserInfo();
+            tvPhonenum.setText(userInfo.getUserName());
+        } else {
+            //获取用户信息
+            getUserInfo();
+        }
     }
 
     /**
@@ -556,6 +567,36 @@ public class AccountBindActivity extends BaseActivity {
                 doThirdPlatBind(bindDto);
             }
         }
+    }
+
+
+    /**
+     * 获取用户信息
+     */
+    private void getUserInfo () {
+        LoadingView.getInstance().show(this);
+
+        DataRequestService.getInstance().getUserInfo(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                LoadingView.getInstance().dismiss();
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    UserInfo userInfo = InjectionWrapperUtil.injectMap(dataMap, UserInfo.class);
+                    tvPhonenum.setText(userInfo.getUserName());
+                    //设置用户信息
+                    UCManager.getInstance().setUserInfo(userInfo);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

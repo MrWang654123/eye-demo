@@ -57,6 +57,9 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
     //选项集合
     List<OptionsEntity> optionsList;
 
+    //时间间隔
+    private long INTERVAL_TIME = 220;
+
 
     //消息处理器
     @SuppressLint("HandlerLeak")
@@ -231,7 +234,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                             public void run() {
                                 SoundPlayUtils.play(4);
                             }
-                        }, 200);
+                        }, INTERVAL_TIME);
                         //处理答题数据，并跳转到下一题
                         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, "");
                         hiddenSoft();
@@ -352,7 +355,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
             public void run() {
                 SoundPlayUtils.play(4);
             }
-        }, 200);
+        }, INTERVAL_TIME);
 
         //处理答题数据，并跳转到下一题
         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, optionText);
@@ -368,7 +371,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
             public void run() {
                 SoundPlayUtils.play(4);
             }
-        }, 200);
+        }, INTERVAL_TIME);
         //处理答题数据，并跳转到下一题
 //        saveReplyInfo(optionsEntity);
     }

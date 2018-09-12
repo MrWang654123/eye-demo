@@ -145,6 +145,9 @@ public class DimensionDetailActivity extends BaseActivity {
         } else if (dimensionInfoEntity.getSuitableUser() == Dictionary.Exam_Suitable_User_Parent) {
             //家长
             suitableUser = getResources().getString(R.string.exam_topic_suitable_user, getResources().getString(R.string.parent));
+        } else {
+            //默认 "--"
+            suitableUser = getResources().getString(R.string.exam_topic_suitable_user, "--");
         }
 
         tvSuitableUser.setText(suitableUser);

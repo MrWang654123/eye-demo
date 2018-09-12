@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -62,7 +63,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
     //话题列表（话题基础数据、孩子话题的信息、量表）
     List<TopicInfoEntity> topicList;
     //适配器的数据列表
-    List<RecyclerCommonSection<DimensionInfoEntity>> recyclerItem;
+//    List<RecyclerCommonSection<DimensionInfoEntity>> recyclerItem;
     //适配器
     ExamDimensionRecyclerAdapter recyclerAdapter;
     @BindView(R.id.swipeRefreshLayout)
@@ -154,8 +155,8 @@ public class ExamDoingFragment extends LazyLoadFragment {
         //注册事件
         EventBus.getDefault().register(this);
 
-        recyclerItem = new ArrayList<>();
-        recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamDoingFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, recyclerItem);
+//        recyclerItem = new ArrayList<>();
+        recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamDoingFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -442,7 +443,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
                     }
 
                     //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                    recyclerItem = topicInfoEntityToRecyclerSection(dataList);
+                    List<RecyclerCommonSection<DimensionInfoEntity>> recyclerItem = topicInfoEntityToRecyclerSection(dataList);
 
                     //下拉刷新
                     recyclerAdapter.setNewData(recyclerItem);
@@ -521,7 +522,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
                             }
 
                             //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                            recyclerItem = topicInfoEntityToRecyclerSection(dataList);
+                            List<RecyclerCommonSection<DimensionInfoEntity>> recyclerItem = topicInfoEntityToRecyclerSection(dataList);
 
                             //当前列表无数据
                             if (recyclerAdapter.getData().size() == 0) {
@@ -601,7 +602,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
         //被锁定
         if(dimensionInfoEntity.getIsLocked() == 1){
             //锁定提示
-            lockedDimensionTip();
+            lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
 
         } else {
             //孩子量表对象
@@ -642,8 +643,30 @@ public class ExamDoingFragment extends LazyLoadFragment {
     /**
      * 量表被锁定的提示
      */
-    private void lockedDimensionTip() {
-        ToastUtil.showShort(getContext(), "被锁定");
+    private void lockedDimensionTip(DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
+//        ToastUtil.showShort(getContext(), "被锁定");
+
+        if(!TextUtils.isEmpty(dimensionInfoEntity.getPreDimensions())){
+            String [] dimensionIds = dimensionInfoEntity.getPreDimensions().split(",");
+            List<DimensionInfoEntity> dimensions = topicInfoEntity.getDimensions();
+            if(dimensionIds.length>0 && dimensions.size()>0){
+                StringBuffer stringBuffer = new StringBuffer("");
+                for(int i=0;i<dimensions.size();i++){
+                    for(int j=0;j<dimensionIds.length;j++){
+                        if(dimensionIds[j].equals(dimensions.get(i).getDimensionId())){
+                            stringBuffer.append(dimensions.get(i).getDimensionName());
+                            if(j!=dimensionIds.length-1){
+                                stringBuffer.append("、");
+                            }
+                        }
+                    }
+                }
+                if(!TextUtils.isEmpty(stringBuffer.toString())){
+                    String str = getActivity().getResources().getString(R.string.lock_tip,stringBuffer.toString());
+                    ToastUtil.showLong(getActivity(),str);
+                }
+            }
+        }
     }
 
 }

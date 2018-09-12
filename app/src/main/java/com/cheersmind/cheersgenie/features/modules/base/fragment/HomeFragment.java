@@ -118,7 +118,7 @@ public class HomeFragment extends LazyLoadFragment {
     };
 
     //适配器的数据列表
-    List<SimpleArticleEntity> recyclerItem;
+//    List<SimpleArticleEntity> recyclerItem;
     //适配器
     HomeRecyclerAdapter recyclerAdapter;
 
@@ -167,7 +167,7 @@ public class HomeFragment extends LazyLoadFragment {
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 //            ToastUtil.showShort(getContext(), "点击第" + (position + 1) + "项");
             //跳转到文章详情页面
-            String articleId = recyclerItem.get(position).getId();
+            String articleId = recyclerAdapter.getData().get(position).getId();
             ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
 //            VideoActivity.startVideoActivity(getContext(), articleId);
         }
@@ -181,7 +181,7 @@ public class HomeFragment extends LazyLoadFragment {
             switch (view.getId()) {
                 //收藏
                 case R.id.ibtn_favorite: {
-                    SimpleArticleEntity simpleArticleEntity = recyclerItem.get(position);
+                    SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     String articleId = simpleArticleEntity.getId();
                     doFavorite(articleId, position);
                     break;
@@ -224,7 +224,7 @@ public class HomeFragment extends LazyLoadFragment {
         evaluationBlock.setVisibility(View.GONE);
 
         //适配器
-        recyclerAdapter = new HomeRecyclerAdapter(getContext(), R.layout.recycleritem_home, recyclerItem);
+        recyclerAdapter = new HomeRecyclerAdapter(getContext(), R.layout.recycleritem_home, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -715,7 +715,7 @@ public class HomeFragment extends LazyLoadFragment {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新收藏视图
                     Boolean favorite = (Boolean) dataMap.get("favorite");
-                    SimpleArticleEntity simpleArticleEntity = recyclerItem.get(position);
+                    SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     simpleArticleEntity.setFavorite(favorite);
                     int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();
                     //局部刷新列表项，把header计算在内

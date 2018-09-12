@@ -9,7 +9,7 @@ public class ArticleDto extends BaseDto {
     private String filter;
 
     //种类ID
-    private String category_id;
+    private String categoryId;
 
     public ArticleDto() {
     }
@@ -26,11 +26,11 @@ public class ArticleDto extends BaseDto {
         this.filter = filter;
     }
 
-    public String getCategory_id() {
-        return category_id;
+    public String getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(String category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 }

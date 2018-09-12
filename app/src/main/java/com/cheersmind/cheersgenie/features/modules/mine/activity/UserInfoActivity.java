@@ -1,21 +1,21 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.view.View;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.cheersmind.cheersgenie.module.login.UserService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -54,6 +54,12 @@ public class UserInfoActivity extends BaseActivity {
     @Override
     protected void onInitView() {
 
+        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                getUserInfo();
+            }
+        });
     }
 
     @Override
@@ -71,7 +77,7 @@ public class UserInfoActivity extends BaseActivity {
         DataRequestService.getInstance().getUserInfo(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
+//                onFailureDefault(e);
                 //空布局提示：网络错误
                 emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
             }
@@ -80,25 +86,13 @@ public class UserInfoActivity extends BaseActivity {
             public void onResponse(Object obj) {
                 //空布局提示：隐藏
                 emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-//                Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-//                UserInfoEntity childData = InjectionWrapperUtil.injectMap(dataMap, UserInfoEntity.class);
                 try {
-                    JSONObject objData = (JSONObject) obj;
-                    try {
-                        JSONObject obje = objData.getJSONObject("org_exinfo");
-                        String realName = obje.getString("real_name");
-                        UCManager.getInstance().setRealName(realName);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    WXUserInfoEntity wxUserInfoEntity = new WXUserInfoEntity();
-                    wxUserInfoEntity.setAccessToken(UCManager.getInstance().getAcccessToken());
-                    wxUserInfoEntity.setUserId(UCManager.getInstance().getUserId());
-                    wxUserInfoEntity.setMacKey(UCManager.getInstance().getMacKey());
-                    wxUserInfoEntity.setRefreshToken(UCManager.getInstance().getRefreshToken());
-                    wxUserInfoEntity.setSysTimeMill(System.currentTimeMillis());
-                    DataSupport.deleteAll(WXUserInfoEntity.class);
-                    wxUserInfoEntity.save();
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    UserInfo userInfo = InjectionWrapperUtil.injectMap(dataMap, UserInfo.class);
+                    tvUserName.setText(userInfo.getUserName());
+                    tvGender.setText(userInfo.getSex() == 1 ? "男": "女");
+                    //设置用户信息
+                    UCManager.getInstance().setUserInfo(userInfo);
 
                 } catch (Exception e) {
                     e.printStackTrace();

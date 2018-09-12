@@ -40,8 +40,8 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     private int isReferenceTest;
 
     //简介
-    @InjectMap(name = "content_short")
-    private String contentShort;
+    @InjectMap(name = "summary")
+    private String summary;
 
     //标签集合
     @InjectMap(name = "tags")
@@ -107,12 +107,12 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
         this.isReferenceTest = isReferenceTest;
     }
 
-    public String getContentShort() {
-        return contentShort;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setContentShort(String contentShort) {
-        this.contentShort = contentShort;
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public int getContentType() {

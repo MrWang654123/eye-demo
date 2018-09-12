@@ -101,6 +101,7 @@
     <string name="exam_need_to_know">-- 测评须知 --</string>
     <string name="student">学生</string>
     <string name="parent">家长</string>
+    <string name="lock_tip">请先完成%s场景下相关测评</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>

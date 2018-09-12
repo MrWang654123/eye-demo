@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.module.login;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
@@ -19,7 +20,10 @@ public class UCManager {
     private String nickName;
     private String realName;
 
+    //默认孩子
     private ChildInfoEntity defaultChild;
+    //用户信息
+    private UserInfo userInfo;
 
     private static UCManager instance;
     private UCManager (){}
@@ -120,6 +124,7 @@ public class UCManager {
         this.nickName = "";
         this.realName = "";
         this.defaultChild = null;
+        this.userInfo = null;
     }
 
     /**
@@ -137,4 +142,11 @@ public class UCManager {
         setRefreshToken(wxUserInfoEntity.getRefreshToken());
     }
 
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }

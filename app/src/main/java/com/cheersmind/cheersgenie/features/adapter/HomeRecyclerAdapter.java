@@ -38,8 +38,8 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         //标题
         helper.setText(R.id.tv_article_title, item.getArticleTitle());
         //简介
-        if (!TextUtils.isEmpty(item.getContentShort())) {
-            helper.setText(R.id.tv_article_desc, item.getContentShort());
+        if (!TextUtils.isEmpty(item.getSummary())) {
+            helper.setText(R.id.tv_article_desc, item.getSummary());
         } else {
             helper.getView(R.id.tv_article_desc).setVisibility(View.GONE);
         }
@@ -61,7 +61,8 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
 
         //标签（目前用的是类型）
         if (item.getCategory() != null && !TextUtils.isEmpty(item.getCategory().getName())) {
-            helper.setText(R.id.tv_tag, number+ "、" + item.getCategory().getName());
+//            helper.setText(R.id.tv_tag, number+ "、" + item.getCategory().getName());
+            helper.setText(R.id.tv_tag, item.getCategory().getName());
         } else {
             helper.getView(R.id.tv_tag).setVisibility(View.GONE);
         }
@@ -70,7 +71,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         if (item.getPageView() > 0) {
             helper.setText(R.id.tv_read_count, item.getPageView() + "");
         } else {
-            helper.getView(R.id.rl_evaluation).setVisibility(View.GONE);
+            helper.getView(R.id.rl_read).setVisibility(View.GONE);
         }
 
         //有关联测评
@@ -80,10 +81,10 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
                 //评测过的数量
                 helper.setText(R.id.tv_evaluation_count, item.getTestCount() + "");
             } else {
-                helper.getView(R.id.rl_read).setVisibility(View.GONE);
+                helper.getView(R.id.rl_evaluation).setVisibility(View.GONE);
             }
         } else {
-            helper.getView(R.id.rl_read).setVisibility(View.GONE);
+            helper.getView(R.id.rl_evaluation).setVisibility(View.GONE);
         }
 
         //收藏状态初始化

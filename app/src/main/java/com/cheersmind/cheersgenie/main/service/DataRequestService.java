@@ -967,6 +967,15 @@ public class DataRequestService {
         Map<String, Object> params = new HashMap<>();
         params.put("page", dto.getPage());
         params.put("size", dto.getSize());
+        //分类
+        if (!TextUtils.isEmpty(dto.getCategoryId())) {
+            params.put("category_id", dto.getCategoryId());
+        }
+        //搜索文本
+        if (!TextUtils.isEmpty(dto.getFilter())) {
+            params.put("filter", dto.getFilter());
+        }
+
         //拼接参数
         url = BaseService.settingGetParams(url, params);
 

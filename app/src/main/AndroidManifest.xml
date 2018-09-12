@@ -126,7 +126,8 @@
         <!-- 量表详细页面 -->
         <activity android:name=".features.modules.exam.activity.DimensionDetailActivity" />
         <!-- 作答页面 -->
-        <activity android:name=".features.modules.exam.activity.ReplyQuestionActivity"
+        <activity
+            android:name=".features.modules.exam.activity.ReplyQuestionActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <!-- 话题详细 -->
         <activity android:name=".features.modules.exam.activity.TopicDetailActivity" />
@@ -145,9 +146,10 @@
             <!-- </intent-filter> -->
         </activity>
         <!-- 文章详细 -->
-        <activity android:name=".features.modules.article.activity.ArticleDetailActivity"
+        <activity
+            android:name=".features.modules.article.activity.ArticleDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -257,9 +259,11 @@
         <activity android:name=".features.modules.mine.activity.ModifyPasswordActivity" />
         <activity android:name=".features.modules.register.activity.RetrievePasswordActivity" />
         <activity android:name=".features.modules.exam.activity.ReportActivity" />
-        <activity android:name=".features.modules.article.activity.VideoActivity"
+        <activity
+            android:name=".features.modules.article.activity.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait" ></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".features.modules.article.activity.ArticleListActivity"></activity>
     </application>
 
 </manifest>

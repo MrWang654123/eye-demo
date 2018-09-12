@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.dto.ArticleDto;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleListActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -132,7 +134,10 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                         tv.setOnClickListener(new OnMultiClickListener() {
                             @Override
                             public void onMultiClick(View view) {
-                                ToastUtil.showShort(getContext(), "选中了" + categories.get((int)view.getTag()).getName());
+                                ArticleDto articleDto = new ArticleDto();
+                                CategoryEntity tempCategory = categories.get((int) view.getTag());
+                                articleDto.setCategoryId(tempCategory.getId());
+                                ArticleListActivity.startArticleListActivity(getContext(), articleDto);
                             }
                         });
                         warpLinearLayout.addView(tv);
