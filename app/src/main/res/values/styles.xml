@@ -18,7 +18,7 @@
         <!--<item name="android:actionBarSize">42dp</item>-->
         <!--<item name="actionBarSize">42dp</item>-->
 
-        <!--下段代码就是去除阴影的-->
+        <!--去除标题栏（动作栏）阴影-->
         <item name="android:windowContentOverlay">@null</item>
         <item name="elevation">0dp</item>
     </style>

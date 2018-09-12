@@ -14,4 +14,6 @@ public class ErrorCode {
 
     //手机号已注册
     public static final String AC_PHONE_HAS_REGISTER = "AC_PHONE_HAS_REGISTER";
+    //账号登录：密码不正确
+    public static final String AC_WRONG_PASSWORD = "AC_WRONG_PASSWORD";
 }

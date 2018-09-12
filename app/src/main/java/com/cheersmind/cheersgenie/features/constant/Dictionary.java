@@ -76,4 +76,15 @@ public class Dictionary {
     //消息状态：已读
     public static final int MESSAGE_STATUS_READ = 1;
 
+    //创建会话：注册（手机）
+    public static final int CREATE_SESSION_REGISTER = 0;
+    //创建会话：登录(帐号、密码登录)
+    public static final int CREATE_SESSION_ACCOUNT_LOGIN = 1;
+    //创建会话：手机找回密码
+    public static final int CREATE_SESSION_RETRIEVE_PASSWORD = 2;
+    //创建会话：登录(短信登录)
+    public static final int CREATE_SESSION_PHONE_MESSAGE_LOGIN = 3;
+    //创建会话：下发短信验证码
+    public static final int CREATE_SESSION_MESSAGE_CAPTCHA = 4;
+
 }

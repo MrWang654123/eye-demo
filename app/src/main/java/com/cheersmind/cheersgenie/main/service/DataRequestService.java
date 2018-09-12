@@ -13,9 +13,12 @@ import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
@@ -27,9 +30,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2017/10/28.
@@ -1612,5 +1626,134 @@ public class DataRequestService {
             }
         });
     }
+
+
+    /**
+     * 创建会话
+     * @param dto
+     * @param callback
+     */
+    public void postAccountsSessions(CreateSessionDto dto, final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_CREATE_SESSION;
+//        {
+//            "session_type":"int",   //会话类型，0：注册(手机)，1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)，4:下发短信验证码
+//                "device_id":"string",   //设备唯一ID
+//                "tenant":"string"       //租户名称（选填）
+//        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("session_type", dto.getSessionType());
+        map.put("device_id", dto.getDeviceId());
+        map.put("tenant", dto.getTenant());
+        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
+
+    /**
+     * 获取图形验证码
+     * @param sessionId 会话ID
+     * @param callback
+     */
+    public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_IMAGE_CAPTCHA
+                .replace("{session_id}", sessionId);
+
+        //创建okHttpClient对象
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        //请求超时设置
+        mOkHttpClient.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS).build();
+        //创建一个Request
+        final Request request = new Request.Builder()
+                .addHeader("Content-Type","application/json; charset=utf-8")
+                .addHeader("Accept","application/json")
+                .url(url)
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
+//                .addHeader("Authorization",getHeader(url,"GET"))
+                .build();
+        //new call
+        Call call = mOkHttpClient.newCall(request);
+        //请求加入调度
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                if (callback != null) {
+                    QSApplication.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (e instanceof SocketTimeoutException) {
+                                //判断超时异常
+                                callback.onFailure(new QSCustomException("网络连接超时"));
+                            }else if (e instanceof ConnectException) {
+                                //判断连接异常
+                                callback.onFailure(new QSCustomException("网络连接异常"));
+                            } else {
+                                //默认处理
+//                                callback.onFailure(new QSCustomException(e.getMessage()));
+                                callback.onFailure(new QSCustomException("网络异常"));
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onResponse(final Call call, final Response response) throws IOException {
+                if (callback != null) {
+                    try {
+                        //返回结果信息
+                        final InputStream inputStream = response.body().byteStream();
+                        //返回结果信息
+                        final String bodyStr = response.body().string();
+
+                        QSApplication.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
+                                    // 而只会返回什么400+，500+之类的，并且附带错误信息串
+                                    if (response.code() == 200 || response.code() == 201) {
+                                        callback.onResponse(inputStream);
+                                    } else {
+                                        callback.onFailure(new QSCustomException(bodyStr));
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    callback.onFailure(new QSCustomException("服务器返回数据异常"));
+                                }
+                            }
+                        });
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        callback.onFailure(new QSCustomException("返回数据异常"));
+                    }
+                }
+            }
+        });
+
+//        BaseService.get(url, new BaseService.ServiceCallback() {
+//            @Override
+//            public void onFailure(QSCustomException e) {
+//                callback.onFailure(e);
+//            }
+//
+//            @Override
+//            public void onResponse(Object obj) {
+//                callback.onResponse(obj);
+//            }
+//        });
+    }
+
 
 }

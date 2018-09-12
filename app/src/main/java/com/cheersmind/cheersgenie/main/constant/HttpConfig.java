@@ -105,6 +105,12 @@ public class HttpConfig {
     //标记消息为已读
     public static final String URL_MARK_READ = API_HOST + "/v2/messages/{message_id}/read";
 
+    //创建会话
+    public static final String URL_CREATE_SESSION = API_HOST + "/v2/accounts/sessions";
+
+    //获取图形验证码
+    public static final String URL_IMAGE_CAPTCHA = API_HOST + "/v2/accounts/sessions/{session_id}/verification_code";
+
 
     /**-----------------------------------------------------------------------
      *---------------------------业务相关-----------------------------------

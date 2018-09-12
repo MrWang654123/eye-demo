@@ -2,12 +2,14 @@ package com.cheersmind.cheersgenie.features.modules.login.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -16,8 +18,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
@@ -25,10 +27,10 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
-import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
@@ -36,9 +38,6 @@ import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
@@ -51,7 +50,6 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.cheersmind.cheersgenie.module.login.UserService;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -61,12 +59,11 @@ import com.tencent.tauth.UiError;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.InputStream;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -98,6 +95,12 @@ public class XLoginAccountActivity extends BaseActivity {
     ImageView ivWxLogin;
     @BindView(R.id.iv_qq_login)
     ImageView ivQqLogin;
+    @BindView(R.id.et_image_captcha)
+    EditText etImageCaptcha;
+    @BindView(R.id.iv_image_captcha)
+    ImageView ivImageCaptcha;
+    @BindView(R.id.rl_image_captcha)
+    RelativeLayout rlImageCaptcha;
 
     @Override
     protected int setContentView() {
@@ -150,18 +153,100 @@ public class XLoginAccountActivity extends BaseActivity {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         String userNameLocal = pref.getString("user_name", "");
         String passwordLocal = pref.getString("user_password", "");
+        etPassword.setText(passwordLocal);
         etUsername.setText(userNameLocal);
         if (!TextUtils.isEmpty(passwordLocal)) {
             etUsername.setSelection(userNameLocal.length());//将光标移至文字末尾
         }
-        etPassword.setText(passwordLocal);
+
     }
 
     @Override
     protected void onInitData() {
         //注册事件
         EventBus.getDefault().register(this);
+
+        //创建会话：类型账号登陆
+//        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
     }
+
+    //Session创建结果
+    SessionCreateResult sessionCreateResult;
+
+    /**
+     * 创建会话
+     *
+     * @param type 类型：会话类型，0：注册(手机)，1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)，4:下发短信验证码
+     */
+    private void doPostAccountSession(int type) {
+        CreateSessionDto dto = new CreateSessionDto();
+        dto.setSessionType(type);//类型
+        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        //请求创建会话
+        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                //异常如何处理？
+                //……
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
+                    //非空
+                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+                        throw new Exception();
+                    }
+
+                    //不正常
+                    if (!sessionCreateResult.getNormal()) {
+                        //显示图形验证码布局
+                        rlImageCaptcha.setVisibility(View.VISIBLE);
+                        //请求图形验证码
+                        getImageCaptcha(sessionCreateResult.getSessionId());
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException("会话创建失败"));
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取图形验证码
+     *
+     * @param sessionId
+     */
+    private void getImageCaptcha(String sessionId) {
+        DataRequestService.getInstance().getImageCaptcha(sessionId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                //异常如何处理？
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    InputStream inputStream = (InputStream) obj;
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    ivImageCaptcha.setImageBitmap(bitmap);
+                    inputStream.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -170,13 +255,14 @@ public class XLoginAccountActivity extends BaseActivity {
         EventBus.getDefault().unregister(this);
     }
 
+
     /**
      * 点击事件处理
      *
      * @param view
      */
-    @OnClick({R.id.btn_login, R.id.tv_phonenum_login, R.id.tv_retrieve_password, R.id.iv_wx_login, R.id.iv_qq_login})
-    public void click(View view) {
+    @OnClick({R.id.btn_login, R.id.tv_phonenum_login, R.id.tv_retrieve_password, R.id.iv_wx_login, R.id.iv_qq_login, R.id.iv_image_captcha})
+    public void onClickView(View view) {
         switch (view.getId()) {
             //手机号快捷登录
             case R.id.tv_phonenum_login: {
@@ -202,6 +288,12 @@ public class XLoginAccountActivity extends BaseActivity {
             //QQ登录
             case R.id.iv_qq_login: {
                 doQQLogin();
+                break;
+            }
+            //图形验证码
+            case R.id.iv_image_captcha: {
+                //请求图形验证码
+                getImageCaptcha(sessionCreateResult.getSessionId());
                 break;
             }
         }
@@ -234,6 +326,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 账号登录
+     *
      * @param accountLoginDto
      */
     private void doAccountLogin(final AccountLoginDto accountLoginDto) {
@@ -249,12 +342,16 @@ public class XLoginAccountActivity extends BaseActivity {
                     @Override
                     public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
                         String errorCode = errorCodeEntity.getCode();
-                        //账号不存在
-                        if (ErrorCode.AC_ACCOUNT_NOT_EXIST.equals(errorCode)) {
+                        //账号不存在、密码不正确
+                        if (ErrorCode.AC_ACCOUNT_NOT_EXIST.equals(errorCode)
+                                || ErrorCode.AC_WRONG_PASSWORD.equals(errorCode)) {
                             ToastUtil.showShort(getApplicationContext(), "用户名或密码错误");
                             //标记已经处理了异常
                             return true;
                         }
+
+                        //创建会话：类型账号登陆
+//                        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
 
                         //标记未处理异常，继续走默认处理流程
                         return false;
@@ -297,7 +394,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     }
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
+                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
                     //获取孩子信息
 //                    doGetChildListWrap();
@@ -310,7 +407,6 @@ public class XLoginAccountActivity extends BaseActivity {
             }
         });
     }
-
 
 
     /**
@@ -328,7 +424,6 @@ public class XLoginAccountActivity extends BaseActivity {
     }
 
 
-
     /**
      * 微信登录
      */
@@ -340,9 +435,9 @@ public class XLoginAccountActivity extends BaseActivity {
         }
 
         //微信必须已经安装
-        if(Constant.wx_api.isWXAppInstalled()){
+        if (Constant.wx_api.isWXAppInstalled()) {
             startWxLogin();
-        }else{
+        } else {
             ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
         }
     }
@@ -350,10 +445,10 @@ public class XLoginAccountActivity extends BaseActivity {
     /**
      * 发起微信登录请求
      */
-    private void startWxLogin(){
+    private void startWxLogin() {
         //检查网络
-        if(!NetworkUtil.isConnectivity(XLoginAccountActivity.this)){
-            ToastUtil.showShort(XLoginAccountActivity.this,"网络连接异常");
+        if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
+            ToastUtil.showShort(XLoginAccountActivity.this, "网络连接异常");
             return;
         }
 
@@ -379,21 +474,21 @@ public class XLoginAccountActivity extends BaseActivity {
     @Subscribe(priority = 1)
     public void onWXTokenEntity(WXLoginEvent event) {
         //取消事件继续往下传送
-        EventBus.getDefault().cancelEventDelivery(event) ;
+        EventBus.getDefault().cancelEventDelivery(event);
 
-        if("error".equals(event.getCode())){
+        if ("error".equals(event.getCode())) {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
-                    ToastUtil.showShort(XLoginAccountActivity.this,"微信授权失败！");
+                    ToastUtil.showShort(XLoginAccountActivity.this, "微信授权失败！");
                 }
             });
             return;
         }
         //成功
-        if(event!=null && !TextUtils.isEmpty(event.getCode())){
+        if (event != null && !TextUtils.isEmpty(event.getCode())) {
             //获取微信token根据返回的code
             getWxToken(event.getCode());
         }
@@ -401,9 +496,10 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 获取微信token根据code
+     *
      * @param code
      */
-    private void getWxToken(String code){
+    private void getWxToken(String code) {
         String url = HttpConfig.URL_WX_GET_TOKEN
                 .replace("{appid}", Constant.WX_APP_ID)
                 .replace("{secret}", Constant.WX_APP_SECTET)
@@ -441,11 +537,12 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 获取微信token成功之后的处理
+     *
      * @param entity 微信token对象
      */
-    private void doGetWxTokenComplete(WXTokenEntity entity){
+    private void doGetWxTokenComplete(WXTokenEntity entity) {
         //第三方登入返回
-        if(entity!=null){
+        if (entity != null) {
             //请求数据
             final ThirdLoginDto thirdLoginDto = new ThirdLoginDto();
             thirdLoginDto.setOpenId(entity.getOpenid());//openId
@@ -462,6 +559,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 第三方登录
+     *
      * @param thirdLoginDto 第三方平台登录信息dto
      */
     private void doThirdLogin(final ThirdLoginDto thirdLoginDto) {
@@ -506,7 +604,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
+                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {
@@ -534,12 +632,12 @@ public class XLoginAccountActivity extends BaseActivity {
      */
     private void doQQLogin() {
         if (mTencent == null) {
-            mTencent = Tencent.createInstance(Constant.QQ_APP_ID,getApplicationContext());
+            mTencent = Tencent.createInstance(Constant.QQ_APP_ID, getApplicationContext());
         }
 
         //检查网络
-        if(!NetworkUtil.isConnectivity(XLoginAccountActivity.this)){
-            ToastUtil.showShort(XLoginAccountActivity.this,"网络连接异常");
+        if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
+            ToastUtil.showShort(XLoginAccountActivity.this, "网络连接异常");
             return;
         }
 
@@ -560,7 +658,7 @@ public class XLoginAccountActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         //QQ在某些低端机上调用登录后，由于内存紧张导致APP被系统回收，登录成功后无法成功回传数据。//解决如下
         if (requestCode == Constants.REQUEST_LOGIN) {
-            Tencent.onActivityResultData(requestCode,resultCode,data,loginListener);
+            Tencent.onActivityResultData(requestCode, resultCode, data, loginListener);
         }
 //        Tencent.onActivityResultData(requestCode, resultCode, data, loginListener);
 //
@@ -573,11 +671,12 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 获取QQ token成功之后的处理
+     *
      * @param entity 微信token对象
      */
-    private void doGetQqTokenComplete(QQTokenEntity entity){
+    private void doGetQqTokenComplete(QQTokenEntity entity) {
         //第三方登入返回
-        if(entity!=null){
+        if (entity != null) {
             //请求数据
             final ThirdLoginDto thirdLoginDto = new ThirdLoginDto();
             thirdLoginDto.setOpenId(entity.getOpenid());
@@ -609,6 +708,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 初始化QQ的token等信息
+     *
      * @param jsonObject
      */
     public static void initOpenidAndToken(JSONObject jsonObject) {
@@ -621,9 +721,10 @@ public class XLoginAccountActivity extends BaseActivity {
                 mTencent.setAccessToken(token, expires);
                 mTencent.setOpenId(openId);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
         }
     }
+
 
     /**
      * QQ登录监听器

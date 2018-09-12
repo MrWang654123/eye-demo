@@ -57,7 +57,8 @@ public class BaseRequest {
                 || url.equals(HttpConfig.URL_PHONE_NUM_LOGIN)
                 || url.equals(HttpConfig.URL_ACCOUNT_LOGIN)
                 || url.equals(HttpConfig.URL_UC_THIRD_LOGIN_V2)
-                || url.equals(HttpConfig.URL_RESET_PASSWORD)) {
+                || url.equals(HttpConfig.URL_RESET_PASSWORD)
+                || url.equals(HttpConfig.URL_CREATE_SESSION)) {
             return "";
         }
 
