@@ -41,10 +41,6 @@ public class BaseRequest {
 //    }
 
     private static String getHeader(String url,String method) {
-        return getHeader(url, method, null);
-    }
-
-    private static String getHeader(String url,String method, Map<String,Object> params) {
         if (url.equals(HttpConfig.URL_LOGIN)
                 || url.equals(HttpConfig.URL_CODE_INVATE)
                 || url.equals(HttpConfig.URL_CODE_REGISTERS)
@@ -58,18 +54,9 @@ public class BaseRequest {
                 || url.equals(HttpConfig.URL_ACCOUNT_LOGIN)
                 || url.equals(HttpConfig.URL_UC_THIRD_LOGIN_V2)
                 || url.equals(HttpConfig.URL_RESET_PASSWORD)
-                || url.equals(HttpConfig.URL_CREATE_SESSION)) {
+                || url.equals(HttpConfig.URL_CREATE_SESSION)
+                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)) {
             return "";
-        }
-
-        //发送短信验证码，其中绑定手机号的情况得传token
-        if (url.equals(HttpConfig.URL_PHONE_CAPTCHA)) {
-            if (params != null) {
-                Integer type = (Integer)params.get("type");
-                if (type != Dictionary.SmsType_Bind_Phone_Num) {
-                    return "";
-                }
-            }
         }
 
         String host = url.startsWith(HttpConfig.API_HOST)?HttpConfig.API_HOST:HttpConfig.UC_HOST;
@@ -166,7 +153,7 @@ public class BaseRequest {
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
-                .addHeader("Authorization",getHeader(url,"POST", params))
+                .addHeader("Authorization",getHeader(url,"POST"))
                 .post(formBody)
                 .build();
         //new call
