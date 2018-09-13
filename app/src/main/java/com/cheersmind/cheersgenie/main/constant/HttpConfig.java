@@ -29,8 +29,12 @@ public class HttpConfig {
     //获取用户详情
     public static final String URL_USER_INFO = UC_HOST+"/v1/api/users";
     //获取用户详情 V2
-    public static final String URL_USER_INFO_V2 = UC_HOST+"/v2/oauth2/users";
+    public static final String URL_USER_INFO_V2 = UC_HOST+"/v2/api/users";
+    //获取孩子列表
     public static final String URL_CHILD_LIST = API_HOST+"/v1/api/users/children";
+    //获取孩子列表V2
+    public static final String URL_CHILD_LIST_V2 = API_HOST+"/v2/api/users/children";
+
 //    public static final String URL_CHILD_LIST = API_HOST+"/v1/api/children";
     public static final String URL_CHILD_INFO = API_HOST+"/v1/api/children/{child_id}";
 

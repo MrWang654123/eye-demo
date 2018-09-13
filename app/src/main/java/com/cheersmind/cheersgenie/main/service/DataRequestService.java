@@ -9,6 +9,7 @@ import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
+import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
@@ -749,23 +750,49 @@ public class DataRequestService {
     }
 
     /**
-     * 获取手机验证码
-     * @param phoneNum 手机号
-     * @param smsType 短信业务类型(必填)：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
+     * 获取短信验证码
+     * @param dto
      * @param callback
+     * @throws QSCustomException
      */
-    public void postRegisterCaptcha(String phoneNum,final int smsType, final BaseService.ServiceCallback callback){
+    public void postSendMessageCaptcha(MessageCaptchaDto dto, final BaseService.ServiceCallback callback) throws QSCustomException {
         String url = HttpConfig.URL_PHONE_CAPTCHA;
 //        {
 //            "mobile":"15808082221",         //手机号(必填)，检验手机的合法性
-//                "type":"int",                   //短信业务类型(必填)：0:注册用户，1：短信登录
+//                "type":"int",                   //短信业务类型(必填)：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
 //                "tenant":"string",              //租户名称（选填）
-//                "area_code":"string"            //区号（选填），中国：+86（默认）
+//                "area_code":"string",           //区号（选填），中国：+86（默认）
+//                "session_id":"string",          //会话ID（必填）
+//                "verification_code":"string"    //验证码
 //        }
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("mobile", phoneNum);
-        map.put("type", smsType);
-        map.put("tenant", Dictionary.Tenant_CheersMind);
+        //手机号
+        if (TextUtils.isEmpty(dto.getMobile())) {
+            throw new QSCustomException("手机号不能为空");
+        }
+        map.put("mobile", dto.getMobile());
+        //短信业务类型(必填)：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
+        map.put("type", dto.getType());
+        //租户名
+        if (TextUtils.isEmpty(dto.getTenant())) {
+            dto.setTenant(Dictionary.Tenant_CheersMind);
+        }
+        map.put("tenant", dto.getTenant());
+        //区号
+        if (TextUtils.isEmpty(dto.getAreaCode())) {
+            dto.setAreaCode(Dictionary.Area_Code_86);
+        }
+        map.put("area_code", dto.getAreaCode());
+        //会话ID
+        if (TextUtils.isEmpty(dto.getSessionId())) {
+            throw new QSCustomException("会话ID不能为空");
+        }
+        map.put("session_id", dto.getSessionId());
+        //图形验证码
+        if (!TextUtils.isEmpty(dto.getImageCaptcha())) {
+            map.put("verification_code", dto.getImageCaptcha());
+        }
+
         BaseService.post(url,map, false, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -890,10 +917,11 @@ public class DataRequestService {
 //        {
 //            "mobile":"string",          //手机号（必填）
 //                "mobile_code":"string",     //短信验证码（必填）
-//                "tenant":"string",          //租户名称（选填）
+//                "tenant":"string",          //租户名称（必填）
 //                "device_type":"string",      //登录设备类型(可选)，如：ios\android\browser
 //                "device_desc":"string",     //登录设备机器型号(可选)，如：小米6，苹果8
-//                "device_id":"string"         //设备ID
+//                "device_id":"string",         //设备ID（必填）
+//                "session_id":"string"       //会话ID
 //        }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("mobile", phoneNumLoginDto.getMobile());
@@ -902,6 +930,7 @@ public class DataRequestService {
         map.put("device_type", phoneNumLoginDto.getDeviceType());
         map.put("device_desc", phoneNumLoginDto.getDeviceDesc());
         map.put("device_id", phoneNumLoginDto.getDeviceId());
+        map.put("session_id", phoneNumLoginDto.getSessionId());
 
         BaseService.post(url,map, false, new BaseService.ServiceCallback() {
             @Override
@@ -938,6 +967,11 @@ public class DataRequestService {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("account", accountLoginDto.getAccount());
         map.put("password", pwdMd5);
+        map.put("session_id", accountLoginDto.getSessionId());
+        //图形验证码
+        if (!TextUtils.isEmpty(accountLoginDto.getVerificationCode())) {
+            map.put("verification_code", accountLoginDto.getVerificationCode());
+        }
         map.put("tenant", accountLoginDto.getTenant());
         map.put("device_type", accountLoginDto.getDeviceType());
         map.put("device_desc", accountLoginDto.getDeviceDesc());
@@ -1236,11 +1270,11 @@ public class DataRequestService {
     }
 
     /**
-     * 获取用户详情
+     * 获取用户详情V2
      * @param callback
      */
-    public static void getUserInfo (final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_USER_INFO;
+    public static void getUserInfoV2 (final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_USER_INFO_V2;
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -1250,6 +1284,29 @@ public class DataRequestService {
             @Override
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
+            }
+        });
+    }
+
+    /**
+     * 获取孩子列表V2
+     * @param callback
+     */
+    public static void getChildListV2(final BaseService.ServiceCallback callback) {
+        String url = HttpConfig.URL_CHILD_LIST_V2;
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
             }
         });
     }
@@ -1669,33 +1726,24 @@ public class DataRequestService {
 
     /**
      * 获取图形验证码
-     * @param sessionId 会话ID
-     * @param callback
+     * @param sessionId
      */
-    public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback){
+    public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback) {
         String url = HttpConfig.URL_IMAGE_CAPTCHA
                 .replace("{session_id}", sessionId);
-
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
         //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
         //请求超时设置
-        mOkHttpClient.newBuilder()
+        okHttpClient.newBuilder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS).build();
-        //创建一个Request
-        final Request request = new Request.Builder()
-                .addHeader("Content-Type","application/json; charset=utf-8")
-                .addHeader("Accept","application/json")
-                .url(url)
-                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
-//                .addHeader("Authorization",getHeader(url,"GET"))
-                .build();
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
+        Call call = okHttpClient.newCall(request);
         call.enqueue(new Callback() {
             @Override
-            public void onFailure(final Call call, final IOException e) {
+            public void onFailure(Call call, final IOException e) {
                 if (callback != null) {
                     QSApplication.getHandler().post(new Runnable() {
                         @Override
@@ -1717,28 +1765,36 @@ public class DataRequestService {
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
+            public void onResponse(Call call, final Response response) throws IOException {
                 if (callback != null) {
                     try {
                         //返回结果信息
-                        final InputStream inputStream = response.body().byteStream();
-                        //返回结果信息
-                        final String bodyStr = response.body().string();
+                        final byte[] bodyBytes = response.body().bytes();
 
                         QSApplication.getHandler().post(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
-                                    // 而只会返回什么400+，500+之类的，并且附带错误信息串
-                                    if (response.code() == 200 || response.code() == 201) {
-                                        callback.onResponse(inputStream);
-                                    } else {
-                                        callback.onFailure(new QSCustomException(bodyStr));
+                                //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
+                                // 而只会返回什么400+，500+之类的，并且附带错误信息串
+                                if (response.code() == 200 || response.code() == 201) {
+                                    if (bodyBytes.length == 0) {
+                                        callback.onFailure(new QSCustomException("获取验证码失败"));
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    callback.onFailure(new QSCustomException("服务器返回数据异常"));
+                                    callback.onResponse(bodyBytes);
+
+                                } else if (response.code() == 400) {
+                                    JSONObject respObj = null;
+                                    try {
+                                        respObj = new JSONObject(new String(bodyBytes));
+                                        callback.onResponse(respObj);
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        callback.onFailure(new QSCustomException("服务器返回数据异常"));
+                                    }
+
+                                } else {
+                                    callback.onFailure(new QSCustomException("获取验证码失败"));
                                 }
                             }
                         });
@@ -1749,19 +1805,8 @@ public class DataRequestService {
                     }
                 }
             }
-        });
 
-//        BaseService.get(url, new BaseService.ServiceCallback() {
-//            @Override
-//            public void onFailure(QSCustomException e) {
-//                callback.onFailure(e);
-//            }
-//
-//            @Override
-//            public void onResponse(Object obj) {
-//                callback.onResponse(obj);
-//            }
-//        });
+        });
     }
 
 

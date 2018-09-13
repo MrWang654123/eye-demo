@@ -651,6 +651,10 @@ public class ArticleDetailActivity extends BaseActivity {
                     List<CommentEntity> dataList = commentRootEntity.getItems();
                     //无数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
+                        //显示评论模块
+                        showCommentBlock();
+                        //刷新评论内容模块的header
+                        refreshCommentContentBlockHeaderView(totalCount);
                         //暂无评论
                         settingNoCommentView();
                         return;
@@ -668,14 +672,13 @@ public class ArticleDetailActivity extends BaseActivity {
                         recyclerAdapter.loadMoreComplete();
                     }
 
-                    //刷新评论内容模块的header
-                    refreshCommentContentBlockHeaderView(totalCount);
-
                     //页码+1
                     pageNum++;
 
                     //显示评论模块
                     showCommentBlock();
+                    //刷新评论内容模块的header
+                    refreshCommentContentBlockHeaderView(totalCount);
                     //显示评论内容
                     settingHasCommentView();
 
@@ -714,7 +717,7 @@ public class ArticleDetailActivity extends BaseActivity {
     }
 
     /**
-     * 没有评论内容时的视图设置
+     * 有评论内容时的视图设置
      */
     private void settingHasCommentView() {
         //评论列表
@@ -731,8 +734,6 @@ public class ArticleDetailActivity extends BaseActivity {
         recycleView.setVisibility(View.GONE);
         //无评论提示
         tvNoComment.setVisibility(View.VISIBLE);
-        //刷新评论内容模块的header
-        refreshCommentContentBlockHeaderView(totalCount);
     }
 
     /**

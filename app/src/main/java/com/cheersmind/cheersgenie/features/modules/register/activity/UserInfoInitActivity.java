@@ -275,20 +275,12 @@ public class UserInfoInitActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 LoadingView.getInstance().dismiss();
-                //提交完善信息成功后的处理
-                postUserInfoSubmitComplete();
+                //提交完善信息成功后，获取孩子列表
+                doGetChildListWrap();
             }
         });
     }
 
-
-    /**
-     * 提交用户信息成功后的处理
-     */
-    private void postUserInfoSubmitComplete() {
-        //获取孩子信息
-        getChildList();
-    }
 
 
     /**
@@ -314,72 +306,6 @@ public class UserInfoInitActivity extends BaseActivity {
         return true;
     }
 
-
-    /**
-     * 获取当前用户的孩子列表
-     */
-    private void getChildList() {
-        //隐藏软键盘
-        SoftInputUtil.closeSoftInput(UserInfoInitActivity.this);
-        //开启通信等待提示
-        LoadingView.getInstance().show(this);
-
-        UserService.getChildList(new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
-                //跳转到账号登录页面
-                gotoAccountLoginPage(UserInfoInitActivity.this);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
-
-                try {
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ChildInfoRootEntity childData = InjectionWrapperUtil.injectMap(dataMap, ChildInfoRootEntity.class);
-                    List<ChildInfoEntity> childList = childData.getItems();
-                    if (childList.size() == 0) {
-                        throw new Exception();
-                    }
-
-                    //清空本地数据中的孩子列表
-                    ChildInfoDao.deleteAllChild();
-                    //1、保存孩子列表到数据库；2、设置第一个孩子为默认孩子
-                    for (int i = 0; i < childList.size(); i++) {
-                        ChildInfoEntity entity = childList.get(i);
-                        if (i == 0) {
-                            entity.setDefaultChild(true);
-                        } else {
-                            entity.setDefaultChild(false);
-                        }
-                        UCManager.getInstance().setDefaultChild(entity);
-                        entity.save();
-                    }
-
-                    //孩子列表获取成功之后的处理
-                    postChildListGetComplete();
-
-                } catch (Exception e) {
-                    ToastUtil.showShort(getApplicationContext(), "用户信息【child】不完整");
-                    //用户刚完善了信息，获取孩子列表却失败，这种情况可能是什么原因？目前先让它跳转到账号登录页面
-                    //跳转到账号登录页面
-                    gotoAccountLoginPage(UserInfoInitActivity.this);
-                }
-            }
-
-        });
-    }
-
-    /**
-     * 获取孩子列表成功之后的处理
-     */
-    private void postChildListGetComplete() {
-        //跳转到主页面
-        gotoMainPage(UserInfoInitActivity.this);
-    }
 
 
 }

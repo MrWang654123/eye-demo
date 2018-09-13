@@ -87,4 +87,7 @@ public class Dictionary {
     //创建会话：下发短信验证码
     public static final int CREATE_SESSION_MESSAGE_CAPTCHA = 4;
 
+    //http通信结果非json
+//    public static final String HTTP_NO_JSON_RESULT = "HTTP_NO_JSON_RESULT";
+
 }

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
@@ -30,6 +31,7 @@ import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
+import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
@@ -65,6 +67,7 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -80,6 +83,11 @@ import static com.cheersmind.cheersgenie.main.constant.Constant.mTencent;
  * 登陆页面
  */
 public class XLoginAccountActivity extends BaseActivity {
+
+    //刷新图形验证码
+    private static final int MSG_REFRESH_IMAGE_CAPTCHA = 1;
+    //需要图形验证码
+    private static final int MSG_REQUIRED_IMAGE_CAPTCHA = 2;
 
     @BindView(R.id.et_username)
     EditText etUsername;
@@ -101,6 +109,10 @@ public class XLoginAccountActivity extends BaseActivity {
     ImageView ivImageCaptcha;
     @BindView(R.id.rl_image_captcha)
     RelativeLayout rlImageCaptcha;
+
+    //Session创建结果
+    SessionCreateResult sessionCreateResult;
+
 
     @Override
     protected int setContentView() {
@@ -167,84 +179,7 @@ public class XLoginAccountActivity extends BaseActivity {
         EventBus.getDefault().register(this);
 
         //创建会话：类型账号登陆
-//        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
-    }
-
-    //Session创建结果
-    SessionCreateResult sessionCreateResult;
-
-    /**
-     * 创建会话
-     *
-     * @param type 类型：会话类型，0：注册(手机)，1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)，4:下发短信验证码
-     */
-    private void doPostAccountSession(int type) {
-        CreateSessionDto dto = new CreateSessionDto();
-        dto.setSessionType(type);//类型
-        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
-        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
-        //请求创建会话
-        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                //异常如何处理？
-                //……
-                onFailureDefault(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
-                    //非空
-                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
-                        throw new Exception();
-                    }
-
-                    //不正常
-                    if (!sessionCreateResult.getNormal()) {
-                        //显示图形验证码布局
-                        rlImageCaptcha.setVisibility(View.VISIBLE);
-                        //请求图形验证码
-                        getImageCaptcha(sessionCreateResult.getSessionId());
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onFailure(new QSCustomException("会话创建失败"));
-                }
-            }
-        });
-    }
-
-    /**
-     * 获取图形验证码
-     *
-     * @param sessionId
-     */
-    private void getImageCaptcha(String sessionId) {
-        DataRequestService.getInstance().getImageCaptcha(sessionId, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                //异常如何处理？
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-                    InputStream inputStream = (InputStream) obj;
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    ivImageCaptcha.setImageBitmap(bitmap);
-                    inputStream.close();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        doPostAccountSessionForImageCaptcha(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
     }
 
 
@@ -293,7 +228,9 @@ public class XLoginAccountActivity extends BaseActivity {
             //图形验证码
             case R.id.iv_image_captcha: {
                 //请求图形验证码
-                getImageCaptcha(sessionCreateResult.getSessionId());
+                if (sessionCreateResult != null) {
+                    getImageCaptcha(sessionCreateResult.getSessionId(), null);
+                }
                 break;
             }
         }
@@ -304,10 +241,20 @@ public class XLoginAccountActivity extends BaseActivity {
      * 账号登录
      */
     private void doAccountLoginWrap() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(this);
+
         //数据校验
-//        if (!checkDataForPhoneNumLogin()) {
-//            return;
-//        }
+        if (!checkData()) {
+            return;
+        }
+
+        //账号登录必须要有sessionId
+        if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+            //创建会话然后直接登录
+            doPostAccountSessionForAccountLogin();
+            return;
+        }
 
         //请求账号登录
         String loginName = etUsername.getText().toString();
@@ -315,12 +262,48 @@ public class XLoginAccountActivity extends BaseActivity {
         AccountLoginDto accountLoginDto = new AccountLoginDto();
         accountLoginDto.setAccount(loginName);//用户名
         accountLoginDto.setPassword(pwd);//密码
+        accountLoginDto.setSessionId(sessionCreateResult.getSessionId());//会话ID
+        //图形验证码
+        if (!sessionCreateResult.getNormal()) {
+            accountLoginDto.setVerificationCode(etImageCaptcha.getText().toString());
+        }
         accountLoginDto.setTenant(Dictionary.Tenant_CheersMind);//租户名
         accountLoginDto.setDeviceType("android");//设备类型
 //        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
         accountLoginDto.setDeviceDesc("android phone");//设备描述（华为 XXXX）
         accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
         doAccountLogin(accountLoginDto);
+    }
+
+    /**
+     * 检测数据
+     * @return
+     */
+    private boolean checkData() {
+        //用户名
+        String userName = etUsername.getText().toString();
+        if (TextUtils.isEmpty(userName)) {
+            ToastUtil.showShort(getApplicationContext(), "请输入用户名");
+            return false;
+        }
+
+        //密码
+        String password = etPassword.getText().toString();
+        if (TextUtils.isEmpty(password)) {
+            ToastUtil.showShort(getApplicationContext(), "请输入密码");
+        }
+
+        //图形验证码
+        if (sessionCreateResult != null && !sessionCreateResult.getNormal()) {
+            String imageCaptcha = etImageCaptcha.getText().toString();
+            if (TextUtils.isEmpty(imageCaptcha)) {
+                //需要图形验证码
+                Message.obtain(mHandler, MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -346,12 +329,57 @@ public class XLoginAccountActivity extends BaseActivity {
                         if (ErrorCode.AC_ACCOUNT_NOT_EXIST.equals(errorCode)
                                 || ErrorCode.AC_WRONG_PASSWORD.equals(errorCode)) {
                             ToastUtil.showShort(getApplicationContext(), "用户名或密码错误");
+                            //重新获取会话，处理是否需要图形验证码
+//                            sessionCreateResult = null;
+//                            doPostAccountSessionForImageCaptcha(false);
+
                             //标记已经处理了异常
                             return true;
-                        }
 
-                        //创建会话：类型账号登陆
-//                        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
+                        } else if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {//Session 未创建或已过期、无效
+                            //重新获取会话
+                            sessionCreateResult = null;
+                            //创建会话后直接登录
+                            doPostAccountSessionForAccountLogin();
+
+                            //标记已经处理了异常
+                            return true;
+
+                        } else if (ErrorCode.AC_IDENTIFY_CODE_REQUIRED.equals(errorCode)) {//需要图形验证码
+                            //开启通信等待
+                            LoadingView.getInstance().show(XLoginAccountActivity.this);
+                            //请求图形验证码
+                            getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
+
+                                @Override
+                                public void onSuccess(Object... objects) {
+                                    //关闭通信等待
+                                    LoadingView.getInstance().dismiss();
+                                    //需要图形验证码，才能登录的提示处理
+                                    requiredImageCaptchaForSendError();
+                                }
+
+                                @Override
+                                public void onFailed(Object... objects) {
+
+                                }
+                            });
+
+                            //标记已经处理了异常
+                            return true;
+
+                        } else if (ErrorCode.AC_IDENTIFY_CODE_INVALID.equals(errorCode)) {//无效的验证码
+                            //清空并聚焦
+                            etImageCaptcha.setText("");
+                            etImageCaptcha.requestFocus();
+                            //请求图形验证码
+                            if (sessionCreateResult != null) {
+                                getImageCaptcha(sessionCreateResult.getSessionId(), null);
+                            }
+
+                            //标记未处理异常，采用服务端返回的提示
+                            return false;
+                        }
 
                         //标记未处理异常，继续走默认处理流程
                         return false;
@@ -767,6 +795,187 @@ public class XLoginAccountActivity extends BaseActivity {
             LoadingView.getInstance().dismiss();
 //            ToastUtil.showShort(getApplicationContext(), "取消登录");
         }
+    }
+
+
+    /**
+     * 创建会话后处理是否得输入图形验证码
+     * @param showLoading
+     */
+    private void doPostAccountSessionForImageCaptcha(boolean showLoading) {
+
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, showLoading, new OnResultListener() {
+
+            @Override
+            public void onSuccess(Object... objects) {
+                //不正常
+                if (!sessionCreateResult.getNormal()) {
+                    //显示图形验证码布局
+//                    rlImageCaptcha.setVisibility(View.VISIBLE);
+                    //请求图形验证码
+                    getImageCaptcha(sessionCreateResult.getSessionId(), null);
+                }
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+
+            }
+        });
+    }
+
+
+    /**
+     * 创建会话然后直接登录
+     */
+    private void doPostAccountSessionForAccountLogin() {
+        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN, true, new OnResultListener() {
+            @Override
+            public void onSuccess(Object... objects) {
+                //账号登录
+                doAccountLoginWrap();
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+
+            }
+        });
+    }
+
+    /**
+     * 创建会话（目前只用打*的两种类型）
+     *
+     * @param type 类型：会话类型，0：注册(手机)， *1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)， *4:下发短信验证码
+     * @param showLoading 是否显示通信等待
+     * @param listener 监听
+     */
+    private void doPostAccountSession(int type, boolean showLoading, final OnResultListener listener) {
+        if (showLoading) {
+            LoadingView.getInstance().show(XLoginAccountActivity.this);
+        }
+
+        CreateSessionDto dto = new CreateSessionDto();
+        dto.setSessionType(type);//类型
+        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        //请求创建会话
+        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    LoadingView.getInstance().dismiss();
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
+                    //非空
+                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+                        throw new Exception();
+                    }
+
+                    //成功加载
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
+            }
+        });
+    }
+
+
+
+    /**
+     * 获取图形验证码
+     * @param sessionId
+     */
+    private void getImageCaptcha(String sessionId, final OnResultListener listener) {
+        DataRequestService.getInstance().getImageCaptcha(sessionId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                    @Override
+                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                        String errorCode = errorCodeEntity.getCode();
+                        //Session 未创建或已过期、无效
+                        if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {
+                            //重新获取会话
+                            sessionCreateResult = null;
+                            doPostAccountSessionForImageCaptcha(false);
+
+                            //标记已经处理了异常
+                            return true;
+                        }
+
+                        //标记未处理异常，继续走默认处理流程
+                        return false;
+                    }
+                });
+
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //通过handler更新UI
+                Message.obtain(mHandler, MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
+
+                //成功回调
+                if (listener != null) {
+                    listener.onSuccess();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * mHandler发送的消息处理
+     * @param msg
+     */
+    @Override
+    public void onHandleMessage(Message msg) {
+        //图形验证码
+        if (msg.what == MSG_REFRESH_IMAGE_CAPTCHA) {
+            byte[] captcha = (byte[]) msg.obj;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(captcha, 0, captcha.length);
+            ivImageCaptcha.setImageBitmap(bitmap);
+
+        }  else if (msg.what == MSG_REQUIRED_IMAGE_CAPTCHA) {//需要图形验证码
+            //如果当前图形验证码的布局还没显示，则显示并且请求图形验证码
+            if (rlImageCaptcha.getVisibility() == View.GONE) {
+                //显示图形验证码布局
+                rlImageCaptcha.setVisibility(View.VISIBLE);
+                //需要图形验证码，才能登录的提示处理
+                requiredImageCaptchaForSendError();
+                //请求图形验证码
+                getImageCaptcha(sessionCreateResult.getSessionId(), null);
+            } else {
+                //聚焦图形验证码
+                etImageCaptcha.requestFocus();
+                ToastUtil.showShort(getApplicationContext(), "请输入图形验证码");
+            }
+        }
+    }
+
+
+    /**
+     * 需要图形验证码，才能登录的提示处理
+     */
+    private void requiredImageCaptchaForSendError() {
+        ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新登录");
+
+        //清空图形验证码，并聚焦图形验证码
+        etImageCaptcha.setText("");
+        etImageCaptcha.requestFocus();
     }
 
 }

@@ -74,7 +74,7 @@ public class UserInfoActivity extends BaseActivity {
         //空布局提示：正在加载
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
-        DataRequestService.getInstance().getUserInfo(new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getUserInfoV2(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
 //                onFailureDefault(e);

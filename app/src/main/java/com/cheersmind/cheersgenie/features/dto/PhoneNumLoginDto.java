@@ -11,6 +11,9 @@ public class PhoneNumLoginDto extends LoginBaseDto {
     //短信验证码
     private String mobile_code;
 
+    //会话ID
+    private String sessionId;
+
     public String getMobile() {
         return mobile;
     }
@@ -25,5 +28,13 @@ public class PhoneNumLoginDto extends LoginBaseDto {
 
     public void setMobile_code(String mobile_code) {
         this.mobile_code = mobile_code;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

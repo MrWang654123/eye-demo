@@ -14,16 +14,24 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
+import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
+import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -129,48 +137,113 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     }
 
     /**
-     * 请求发送注册验证码
+     * 请求发送短信验证码
      * @param phoneNum 手机号
      * @param smsType 短信业务类型：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
      */
-    private void querySendCaptcha(final String phoneNum, final int smsType) {
+    private void querySendCaptcha(final String phoneNum, final int smsType, String sessionId, String imageCaptcha) {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(RegisterPhoneNumActivity.this);
         //开启通信等待提示
         LoadingView.getInstance().show(this);
 
-        DataRequestService.getInstance().postRegisterCaptcha(phoneNum, smsType, new BaseService.ServiceCallback() {
+        MessageCaptchaDto dto = new MessageCaptchaDto();
+        dto.setMobile(phoneNum);
+        dto.setType(smsType);
+        dto.setTenant(Dictionary.Tenant_CheersMind);
+        dto.setAreaCode(Dictionary.Area_Code_86);
+        dto.setSessionId(sessionId);
+        dto.setImageCaptcha(imageCaptcha);
+
+        try {
+            DataRequestService.getInstance().postSendMessageCaptcha(dto, new BaseService.ServiceCallback() {
+                @Override
+                public void onFailure(QSCustomException e) {
+                    onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                        @Override
+                        public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                            String errorCode = errorCodeEntity.getCode();
+                            //手机号已注册
+                            if (ErrorCode.AC_PHONE_HAS_REGISTER.equals(errorCode)) {
+                                //显示可以直接跳转到账号登录页面的按钮
+                                tvGotoLogin.setVisibility(View.VISIBLE);
+                                ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+                                //标记已经处理了异常
+                                return true;
+                            }
+
+                            //标记未处理异常，继续走默认处理流程
+                            return false;
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onResponse(Object obj) {
+                    //关闭通信等待提示
+                    LoadingView.getInstance().dismiss();
+                    //跳转验证码输入页面
+                    RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto);
+                }
+            });
+        } catch (QSCustomException e) {
+            e.printStackTrace();
+            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+        }
+    }
+
+
+    //Session创建结果
+    SessionCreateResult sessionCreateResult;
+
+    /**
+     * 创建会话（目前只用打*的两种类型）
+     *
+     * @param type 类型：会话类型，0：注册(手机)， *1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)， *4:下发短信验证码
+     */
+    private void doPostAccountSession(int type) {
+        CreateSessionDto dto = new CreateSessionDto();
+        dto.setSessionType(type);//类型
+        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        //请求创建会话
+        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
-                    @Override
-                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
-                        String errorCode = errorCodeEntity.getCode();
-                        //手机号已注册
-                        if (ErrorCode.AC_PHONE_HAS_REGISTER.equals(errorCode)) {
-                            //显示可以直接跳转到账号登录页面的按钮
-                            tvGotoLogin.setVisibility(View.VISIBLE);
-                            ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
-                            //标记已经处理了异常
-                            return true;
-                        }
-
-                        //标记未处理异常，继续走默认处理流程
-                        return false;
-                    }
-                });
-
+                onFailureDefault(e);
             }
 
             @Override
             public void onResponse(Object obj) {
-                //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
-                //跳转验证码输入页面
-                RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto);
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
+                    //非空
+                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+                        throw new Exception();
+                    }
+
+                    //不正常
+                    if (!sessionCreateResult.getNormal()) {
+                        //显示图形验证码布局
+//                        rlImageCaptcha.setVisibility(View.VISIBLE);
+                        //请求图形验证码
+//                        getImageCaptcha(sessionCreateResult.getSessionId());
+                    } else {
+                        //请求发送短信验证码
+                        String phoneNum = etPhonenum.getText().toString();
+                        querySendCaptcha(phoneNum, smsType, sessionCreateResult.getSessionId(), null);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException("操作失败"));
+                }
             }
         });
     }
+
 
     /**
      * 下一步操作：1、格式验证；2、请求发送验证码；3、验证成功后跳转验证码输入页面
@@ -180,10 +253,15 @@ public class RegisterPhoneNumActivity extends BaseActivity {
         SoftInputUtil.closeSoftInput(RegisterPhoneNumActivity.this);
         //格式验证
         if (!checkData()) return;
-        //请求发送验证码
-        String phoneNum = etPhonenum.getText().toString();
-        querySendCaptcha(phoneNum, smsType);
-        //跳转验证码输入页面
+
+        //创建会话，类型：下发短信验证码
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA);
+        //请求发送短信验证码
+//        String phoneNum = etPhonenum.getText().toString();
+//        querySendCaptcha(phoneNum, smsType);
+
+
+        //测试：跳转验证码输入页面
 //        RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto);
     }
 

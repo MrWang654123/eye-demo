@@ -14,25 +14,17 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
-import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.cheersmind.cheersgenie.module.login.UserService;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -389,7 +381,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //开启计时器
                 countTimer.start();
                 //请求发送验证码
-                querySendCaptcha(phoneNum);
+                querySendMessageCaptcha(phoneNum, smsType, null, null);
                 break;
             }
             //下一步
@@ -426,27 +418,40 @@ public class RegisterCaptchaActivity extends BaseActivity {
     }
 
     /**
-     * 请求发送注册验证码
+     * 请求发送短信验证码
      * @param phoneNum
      */
-    private void querySendCaptcha(final String phoneNum) {
+    private void querySendMessageCaptcha(final String phoneNum,final int smsType, String sessionId, String imageCaptcha) {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
         //开启通信等待提示
         LoadingView.getInstance().show(this);
 
-        DataRequestService.getInstance().postRegisterCaptcha(phoneNum, smsType, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
-            }
+        MessageCaptchaDto dto = new MessageCaptchaDto();
+        dto.setMobile(phoneNum);
+        dto.setType(smsType);
+        dto.setTenant(Dictionary.Tenant_CheersMind);
+        dto.setAreaCode(Dictionary.Area_Code_86);
+        dto.setSessionId(sessionId);
+        dto.setImageCaptcha(imageCaptcha);
 
-            @Override
-            public void onResponse(Object obj) {
-                //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
-            }
-        });
+        try {
+            DataRequestService.getInstance().postSendMessageCaptcha(dto, new BaseService.ServiceCallback() {
+                @Override
+                public void onFailure(QSCustomException e) {
+                    onFailureDefault(e);
+                }
+
+                @Override
+                public void onResponse(Object obj) {
+                    //关闭通信等待提示
+                    LoadingView.getInstance().dismiss();
+                }
+            });
+        } catch (QSCustomException e) {
+            e.printStackTrace();
+            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+        }
     }
 
 }

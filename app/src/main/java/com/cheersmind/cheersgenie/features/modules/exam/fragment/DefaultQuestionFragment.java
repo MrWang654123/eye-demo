@@ -232,7 +232,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                SoundPlayUtils.play(4);
+//                                SoundPlayUtils.play(4);
                             }
                         }, INTERVAL_TIME);
                         //处理答题数据，并跳转到下一题
@@ -353,7 +353,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SoundPlayUtils.play(4);
+//                SoundPlayUtils.play(4);
             }
         }, INTERVAL_TIME);
 
@@ -369,7 +369,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                SoundPlayUtils.play(4);
+//                SoundPlayUtils.play(4);
             }
         }, INTERVAL_TIME);
         //处理答题数据，并跳转到下一题

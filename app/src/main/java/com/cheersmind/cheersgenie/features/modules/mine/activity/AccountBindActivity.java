@@ -576,7 +576,7 @@ public class AccountBindActivity extends BaseActivity {
     private void getUserInfo () {
         LoadingView.getInstance().show(this);
 
-        DataRequestService.getInstance().getUserInfo(new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getUserInfoV2(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);

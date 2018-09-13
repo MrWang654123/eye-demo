@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.main.service;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;

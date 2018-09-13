@@ -55,7 +55,8 @@ public class BaseRequest {
                 || url.equals(HttpConfig.URL_UC_THIRD_LOGIN_V2)
                 || url.equals(HttpConfig.URL_RESET_PASSWORD)
                 || url.equals(HttpConfig.URL_CREATE_SESSION)
-                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)) {
+                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)
+                || url.contains("verification_code")) {
             return "";
         }
 

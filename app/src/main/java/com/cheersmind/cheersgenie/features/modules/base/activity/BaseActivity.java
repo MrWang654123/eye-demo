@@ -27,6 +27,7 @@ import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -269,7 +270,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //开启通信等待提示
         LoadingView.getInstance().show(this);
 
-        UserService.getChildList(new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getChildListV2(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
