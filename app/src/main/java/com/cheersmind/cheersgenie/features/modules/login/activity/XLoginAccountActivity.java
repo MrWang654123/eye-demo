@@ -420,6 +420,8 @@ public class XLoginAccountActivity extends BaseActivity {
 
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {
+                        //关闭通信等待提示
+                        LoadingView.getInstance().dismiss();
                         //跳转手机号绑定流程
                         RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Bind_Phone_Num, null);
 
