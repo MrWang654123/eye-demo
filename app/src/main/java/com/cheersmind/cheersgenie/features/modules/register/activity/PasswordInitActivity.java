@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -22,15 +21,20 @@ import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
+import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
+import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
-import com.cheersmind.cheersgenie.main.util.EncryptUtil;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -39,11 +43,9 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -68,6 +70,8 @@ public class PasswordInitActivity extends BaseActivity {
     CheckBox cboxPassword;
     @BindView(R.id.cbox_again_password)
     CheckBox cboxAgainPassword;
+    @BindView(R.id.tv_forbid_login)
+    TextView tvForbidLogin;
 
     //手机号
     String phoneNum;
@@ -75,6 +79,9 @@ public class PasswordInitActivity extends BaseActivity {
     String captcha;
     //第三方平台登录信息dto
     private ThirdLoginDto thirdLoginDto;
+
+    //Session创建结果
+    SessionCreateResult sessionCreateResult;
 
     /**
      * 启动密码初始化页面
@@ -225,8 +232,24 @@ public class PasswordInitActivity extends BaseActivity {
         SoftInputUtil.closeSoftInput(PasswordInitActivity.this);
         //格式验证
         if (!checkData()) return;
+
+        //账号注册必须要有sessionId
+        if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+            //创建会话后直接注册
+            doPostAccountSessionForRegister();
+            return;
+        }
+
         //请求注册
-        queryRegister(phoneNum, captcha, etPassword.getText().toString(), thirdLoginDto);
+        RegisterDto dto = new RegisterDto();
+        dto.setMobile(phoneNum);
+        dto.setMobileCode(captcha);
+        dto.setPassword(etPassword.getText().toString());
+        dto.setAreaCode(Dictionary.Area_Code_86);
+        dto.setTenant(Dictionary.Tenant_CheersMind);
+        dto.setThirdLoginDto(thirdLoginDto);
+        dto.setSessionId(sessionCreateResult.getSessionId());
+        queryRegister(dto);
         //跳转班级号输入页面
 //        gotoClassNumPage();
     }
@@ -241,51 +264,50 @@ public class PasswordInitActivity extends BaseActivity {
 
     /**
      * 请求手机短信账号注册
-     * @param phoneNum 手机号
-     * @param captcha 短信验证码
-     * @param password 密码
-     * @param thirdLoginDto 第三方平台登录信息dto
+     * @param dto
      */
-    private void queryRegister(final String phoneNum, String captcha, final String password, ThirdLoginDto thirdLoginDto) {
-        String url = HttpConfig.URL_PHONE_MESSAGE_REGISTER;
-//        {
-//            "mobile":"string",            //手机号(必填)
-//                "mobile_code":"string",       //手机验证码(必填)，
-//                "password":"string",      //登录密码(必填)
-//                "area_code":"string",     //手机国际区号(选填)，中国：+86（默认）
-//                "tenant":"string",        //租户名称（选填）
-//                "open_id":"",             //第三方平台ID(第三方+手机号时必填)
-//                "plat_source":"",         //微信：weixin,(第三方+手机号时必填)
-//                "third_access_token":""   //第三方平台token(第三方+手机号时必填)
-//        }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("mobile", phoneNum);
-        map.put("mobile_code", captcha);
-        //密码加密
-        String pwdMd5 = EncryptUtil.encryptMD5_QS(password);
-        map.put("password", pwdMd5);
-        map.put("tenant", Dictionary.Tenant_CheersMind);
-        //第三方登录的初次注册
-        if (thirdLoginDto != null) {
-            map.put("open_id",thirdLoginDto.getOpenId());
-            map.put("plat_source",thirdLoginDto.getPlatSource());
-            map.put("third_access_token",thirdLoginDto.getThirdAccessToken());
-            //我们的应用在第三方平台注册的ID
-            if (!TextUtils.isEmpty(thirdLoginDto.getAppId())) {
-                map.put("app_id", thirdLoginDto.getAppId());
-            }
-        }
+    private void queryRegister(final RegisterDto dto) {
+        //关闭软键盘
+        SoftInputUtil.closeSoftInput(PasswordInitActivity.this);
         //开启通信等待提示
         LoadingView.getInstance().show(PasswordInitActivity.this);
-        //手机短信账号注册
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
+        //请求注册
+        DataRequestService.getInstance().postRegister(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
+                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                    @Override
+                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                        String errorCode = errorCodeEntity.getCode();
+                        if (ErrorCode.AC_SMS_INVALID.equals(errorCode)) {//短信验证码无效
+                            //不处理
+                            return false;
+
+                        } else if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {//Session 未创建或已过期、无效
+                            //重新获取会话
+                            sessionCreateResult = null;
+                            //创建会话后直接注册
+                            doPostAccountSessionForRegister();
+
+                            //标记已经处理了异常
+                            return true;
+
+                        } else if (ErrorCode.AC_SMSCODE_ERROR_OVER_SUM.equals(errorCode)) {//您的今天短信验证码输入错误次数已超过上限
+                            //禁用绑定手机号
+                            forbidBindPhoneNum(errorCodeEntity.getMessage());
+                            //继续走默认提示
+                            return false;
+                        }
+
+                        //标记未处理异常，继续走默认处理流程
+                        return false;
+                    }
+                });
             }
 
             @Override
             public void onResponse(Object obj) {
+                //关闭通信等待提示
                 LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
@@ -297,7 +319,7 @@ public class PasswordInitActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
                     //本地缓存用户名和密码（这边就以手机号作为用户名）
-                    saveUserAccount(phoneNum, password);
+                    saveUserAccount(phoneNum, dto.getPassword());
 
                     // 统计：注册用户埋点("usernick")
                     MANService manService = MANServiceProvider.getService();
@@ -307,13 +329,11 @@ public class PasswordInitActivity extends BaseActivity {
                     gotoClassNumPage();
 
                 } catch (Exception e) {
-                    ErrorCodeEntity errorCodeEntity = new ErrorCodeEntity();
-                    errorCodeEntity.setMessage("服务器数据异常");
-                    String errorStr = JsonUtil.toJson(errorCodeEntity);
-                    onFailure(new QSCustomException(errorStr));
+                    onFailure(new QSCustomException("注册异常，请稍后再试"));
                 }
             }
         });
+
     }
 
 
@@ -329,6 +349,91 @@ public class PasswordInitActivity extends BaseActivity {
         editor.putString("user_name", userName);
         editor.putString("user_password", password);
         editor.commit();
+    }
+
+
+    /**
+     * 创建会话（目前只用打*的两种类型）
+     *
+     * @param type 类型：会话类型，0：注册(手机)， *1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)， *4:下发短信验证码
+     * @param showLoading 是否显示通信等待
+     * @param listener 监听
+     */
+    private void doPostAccountSession(int type, boolean showLoading, final OnResultListener listener) {
+        if (showLoading) {
+            LoadingView.getInstance().show(PasswordInitActivity.this);
+        }
+
+        CreateSessionDto dto = new CreateSessionDto();
+        dto.setSessionType(type);//类型
+        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        //请求创建会话
+        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    LoadingView.getInstance().dismiss();
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
+                    //非空
+                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+                        throw new Exception();
+                    }
+
+                    //成功加载
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 创建会话后直接注册
+     */
+    private void doPostAccountSessionForRegister() {
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, true, new OnResultListener() {
+
+            @Override
+            public void onSuccess(Object... objects) {
+                //账号注册
+                doRegister();
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+
+            }
+        });
+    }
+
+
+    /**
+     * 禁用绑定手机号
+     * @param tip
+     */
+    private void forbidBindPhoneNum(String tip) {
+        //显示禁用登录的提示（目前用默认的文本）
+        tvForbidLogin.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(tip)) {
+            tvForbidLogin.setText(tip);
+        }
+        //关闭登录按钮
+        btnConfirm.setEnabled(false);
     }
 
 }

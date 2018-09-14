@@ -1,28 +1,24 @@
 package com.cheersmind.cheersgenie.features.dto;
 
 /**
- * 重置密码的dto
+ * 绑定手机号dto
  */
-public class ResetPasswordDto {
+public class BindPhoneNumDto {
 
-    //手机号
+    //手机号(必填)，检验手机的合法性
     private String mobile;
 
-    //短信验证码
-    private String mobile_code;
+    //短信验证码（必填）
+    private String mobileCode;
 
-    //租户名称
+    //租户名（必填）
     private String tenant;
 
-    //新密码
-    private String new_password;
-
     //手机国际区号(选填)，中国：+86（默认）
-    private String area_code;
+    private String areaCode;
 
     //会话ID（必填）
     private String sessionId;
-
 
     public String getMobile() {
         return mobile;
@@ -32,12 +28,12 @@ public class ResetPasswordDto {
         this.mobile = mobile;
     }
 
-    public String getMobile_code() {
-        return mobile_code;
+    public String getMobileCode() {
+        return mobileCode;
     }
 
-    public void setMobile_code(String mobile_code) {
-        this.mobile_code = mobile_code;
+    public void setMobileCode(String mobileCode) {
+        this.mobileCode = mobileCode;
     }
 
     public String getTenant() {
@@ -48,20 +44,12 @@ public class ResetPasswordDto {
         this.tenant = tenant;
     }
 
-    public String getNew_password() {
-        return new_password;
+    public String getAreaCode() {
+        return areaCode;
     }
 
-    public void setNew_password(String new_password) {
-        this.new_password = new_password;
-    }
-
-    public String getArea_code() {
-        return area_code;
-    }
-
-    public void setArea_code(String area_code) {
-        this.area_code = area_code;
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
     }
 
     public String getSessionId() {

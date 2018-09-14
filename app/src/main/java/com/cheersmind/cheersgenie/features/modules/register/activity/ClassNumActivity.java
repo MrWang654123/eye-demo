@@ -111,7 +111,7 @@ public class ClassNumActivity extends BaseActivity {
                     //两个字符时（一个0宽度空格，一个数字），跳转到下一个编辑框
                     if (len == 2) {
                         char c = editable.charAt(1);
-                        if (TextUtils.isDigitsOnly(c + "")) {
+//                        if (TextUtils.isDigitsOnly(c + "")) {
                             //验证码输入结束的处理
                             if (position == etCaptchaNumList.size() - 1) {
                                 //班级号输入完成后的处理
@@ -120,7 +120,7 @@ public class ClassNumActivity extends BaseActivity {
                                 //跳转到下一个数字编辑框
                                 toNextEdit();
                             }
-                        }
+//                        }
 
                     } else if (len == 0) {
                         //防止第一个编辑框的0宽度空格符被删除
@@ -179,27 +179,50 @@ public class ClassNumActivity extends BaseActivity {
      * @param position
      */
     private void switchFocus(int position) {
+
+        //要先聚焦，否则下面的setFocusable(false)会把软键盘给收起来
+        EditText etTemp = etCaptchaNumList.get(position);
+        etTemp.setEnabled(true);
+        etTemp.setFocusable(true);
+        etTemp.setFocusableInTouchMode(true);
+        etTemp.requestFocus();
+        //设置编辑框的内容为ZERO_WIDTH_SPACE（用于监听删除键的响应）
+        etTemp.setText(ZERO_WIDTH_SPACE);
+        etTemp.setSelection(1);
+
         for (int i = 0; i < etCaptchaNumList.size(); i++) {
             EditText et = etCaptchaNumList.get(i);
             if (i == position) {
+                /*et.setEnabled(true);
                 et.setFocusable(true);
                 et.setFocusableInTouchMode(true);
                 et.requestFocus();
                 //设置编辑框的内容为ZERO_WIDTH_SPACE（用于监听删除键的响应）
-                etCaptchaNumList.get(position).setText(ZERO_WIDTH_SPACE);
-                etCaptchaNumList.get(position).setSelection(1);
+                et.setText(ZERO_WIDTH_SPACE);
+                et.setSelection(1);*/
 
             } else if (i > position) {
-                //当前焦点之后的清空
+                et.setEnabled(false);
+                //当前焦点之后的清空（赋值空白符，赋值空串会被监听然后回退）
                 et.setFocusable(false);
                 et.setFocusableInTouchMode(false);
-                etCaptchaNumList.get(position).setText("");
+                et.setText(ZERO_WIDTH_SPACE);
 
             } else {
+                et.setEnabled(false);
                 et.setFocusable(false);
                 et.setFocusableInTouchMode(false);
             }
         }
+
+        //放到for外面处理是为了保证光标置于ZERO_WIDTH_SPACE之后
+        /*EditText et = etCaptchaNumList.get(position);
+        et.setFocusable(true);
+        et.setFocusableInTouchMode(true);
+        et.requestFocus();
+        //设置编辑框的内容为ZERO_WIDTH_SPACE（用于监听删除键的响应）
+        etCaptchaNumList.get(position).setText(ZERO_WIDTH_SPACE);
+        etCaptchaNumList.get(position).setSelection(1);*/
     }
 
 
@@ -376,6 +399,8 @@ public class ClassNumActivity extends BaseActivity {
         this.position = position;
         //初始编辑框的焦点
         switchFocus(position);
+        SoftInputUtil.openSoftInput(ClassNumActivity.this, etCaptchaNumList.get(position));
+
         ToastUtil.showShort(getApplicationContext(), "格式不正确，请重新输入");
     }
 

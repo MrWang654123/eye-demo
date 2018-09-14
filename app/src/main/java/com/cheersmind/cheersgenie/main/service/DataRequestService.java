@@ -8,11 +8,13 @@ import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
+import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
+import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
@@ -830,25 +832,24 @@ public class DataRequestService {
 
     /**
      * 绑定手机号
-     * @param phoneNum 手机号
-     * @param captcha 验证码
-     * @param tenant 承租人
-     * @param areaCode 手机号区域码
-     * @param callback 回调
+     * @param dto
+     * @param callback
      */
-    public void putBindPhoneNum(String phoneNum, String captcha, String tenant, String areaCode, final BaseService.ServiceCallback callback){
+    public void putBindPhoneNum(BindPhoneNumDto dto, final BaseService.ServiceCallback callback){
         String url = HttpConfig.URL_BIND_PHONE_NUM;
 //        {
 //            "mobile":"string",            //手机号（必填）
 //                "mobile_code":"string",       //短信验证码（必填）
 //                "tenant":"string",            //租户名称（选填）
-//                "area_code":"string"      //手机国际区号(选填)，中国：+86（默认）
+//                "area_code":"string",     //手机国际区号(选填)，中国：+86（默认）
+//                "session_id":"string"     //会话ID
 //        }
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("mobile", phoneNum);
-        map.put("mobile_code", captcha);
-        map.put("tenant", tenant);
-//        map.put("area_code", areaCode);
+        map.put("mobile", dto.getMobile());
+        map.put("mobile_code", dto.getMobileCode());
+        map.put("tenant", dto.getTenant());
+        map.put("area_code", dto.getAreaCode());
+        map.put("session_id", dto.getSessionId());
         BaseService.put(url,map, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -989,6 +990,61 @@ public class DataRequestService {
             }
         });
     }
+
+
+    /**
+     * 账号注册
+     * @param dto,
+     * @param callback
+     */
+    public void postRegister(RegisterDto dto, final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_PHONE_MESSAGE_REGISTER;
+//        {
+//            "mobile":"string",            //手机号(必填)
+//                "mobile_code":"string",       //手机验证码(必填)，
+//                "password":"string",      //登录密码(必填)
+//                "area_code":"string",     //手机国际区号(选填)，中国：+86（默认）
+//                "tenant":"string",        //租户名称（必填）
+//                "open_id":"",             //第三方平台ID(第三方+手机号时必填)
+//                "app_id":"",              //QQ平台必填
+//                "plat_source":"",         //微信：weixin,(第三方+手机号时必填)
+//                "third_access_token":"",   //第三方平台token(第三方+手机号时必填)
+//                "session_id":"string"       //会话ID（必填）
+//        }
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("mobile", dto.getMobile());
+        map.put("mobile_code", dto.getMobileCode());
+        //密码加密
+        String pwdMd5 = EncryptUtil.encryptMD5_QS(dto.getPassword());
+        map.put("password", pwdMd5);
+        map.put("tenant", dto.getTenant());
+        //第三方登录的初次注册
+        ThirdLoginDto thirdLoginDto = dto.getThirdLoginDto();
+        if (thirdLoginDto != null) {
+            map.put("open_id",thirdLoginDto.getOpenId());
+            map.put("plat_source",thirdLoginDto.getPlatSource());
+            map.put("third_access_token",thirdLoginDto.getThirdAccessToken());
+            //我们的应用在第三方平台注册的ID
+            if (!TextUtils.isEmpty(thirdLoginDto.getAppId())) {
+                map.put("app_id", thirdLoginDto.getAppId());
+            }
+        }
+        map.put("session_id", dto.getSessionId());
+
+        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
 
     /**
      * 获取文章列表
@@ -1356,7 +1412,8 @@ public class DataRequestService {
 //                "mobile_code":"string",        //短信验证码（必填）
 //                "tenant":"string",            //租户名称（选填）
 //                "new_password":"string",       //密码（加密后）
-//                "area_code":"string"          //手机国际区号(选填)，中国：+86（默认）
+//                "area_code":"string",         //手机国际区号(选填)，中国：+86（默认）
+//                "session_id":"string"     //会话ID
 //        }
         String passwordNewMd5 = EncryptUtil.encryptMD5_QS(dto.getNew_password());
 
@@ -1366,6 +1423,7 @@ public class DataRequestService {
         map.put("tenant", dto.getTenant());
         map.put("new_password", passwordNewMd5);
         map.put("area_code", dto.getArea_code());
+        map.put("session_id", dto.getSessionId());
 
         BaseService.patch(url,map, new BaseService.ServiceCallback() {
             @Override

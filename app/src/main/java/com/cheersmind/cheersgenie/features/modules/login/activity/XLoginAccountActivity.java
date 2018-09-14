@@ -165,9 +165,14 @@ public class XLoginAccountActivity extends BaseActivity {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         String userNameLocal = pref.getString("user_name", "");
         String passwordLocal = pref.getString("user_password", "");
-        etPassword.setText(passwordLocal);
         etUsername.setText(userNameLocal);
-        if (!TextUtils.isEmpty(passwordLocal)) {
+        etPassword.setText(passwordLocal);
+        //设置焦点：没有密码时聚焦密码框，否则聚焦账号框
+        if (!TextUtils.isEmpty(userNameLocal) && TextUtils.isEmpty(passwordLocal)) {
+            etPassword.requestFocus();
+            etPassword.setSelection(passwordLocal.length());//将光标移至文字末尾
+        } else {
+            etUsername.requestFocus();
             etUsername.setSelection(userNameLocal.length());//将光标移至文字末尾
         }
 
@@ -252,7 +257,8 @@ public class XLoginAccountActivity extends BaseActivity {
         //账号登录必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后直接登录
-            doPostAccountSessionForAccountLogin();
+            LoadingView.getInstance().show(this);
+            doPostAccountSessionForAccountLogin(false);
             return;
         }
 
@@ -340,7 +346,8 @@ public class XLoginAccountActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接登录
-                            doPostAccountSessionForAccountLogin();
+                            LoadingView.getInstance().show(XLoginAccountActivity.this);
+                            doPostAccountSessionForAccountLogin(false);
 
                             //标记已经处理了异常
                             return true;
@@ -391,7 +398,7 @@ public class XLoginAccountActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
+//                LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //解析用户数据
@@ -802,12 +809,14 @@ public class XLoginAccountActivity extends BaseActivity {
      * 创建会话后处理是否得输入图形验证码
      * @param showLoading
      */
-    private void doPostAccountSessionForImageCaptcha(boolean showLoading) {
+    private void doPostAccountSessionForImageCaptcha(final boolean showLoading) {
 
         doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, showLoading, new OnResultListener() {
 
             @Override
             public void onSuccess(Object... objects) {
+                if (showLoading)
+
                 //不正常
                 if (!sessionCreateResult.getNormal()) {
                     //显示图形验证码布局
@@ -827,9 +836,10 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 创建会话然后直接登录
+     * @param showLoading 是否显示通信等待
      */
-    private void doPostAccountSessionForAccountLogin() {
-        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN, true, new OnResultListener() {
+    private void doPostAccountSessionForAccountLogin(boolean showLoading) {
+        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN, showLoading, new OnResultListener() {
             @Override
             public void onSuccess(Object... objects) {
                 //账号登录
@@ -850,7 +860,7 @@ public class XLoginAccountActivity extends BaseActivity {
      * @param showLoading 是否显示通信等待
      * @param listener 监听
      */
-    private void doPostAccountSession(int type, boolean showLoading, final OnResultListener listener) {
+    private void doPostAccountSession(int type, final boolean showLoading, final OnResultListener listener) {
         if (showLoading) {
             LoadingView.getInstance().show(XLoginAccountActivity.this);
         }
@@ -870,7 +880,9 @@ public class XLoginAccountActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 try {
-                    LoadingView.getInstance().dismiss();
+                    if (showLoading) {
+                        LoadingView.getInstance().dismiss();
+                    }
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
@@ -945,6 +957,9 @@ public class XLoginAccountActivity extends BaseActivity {
     public void onHandleMessage(Message msg) {
         //图形验证码
         if (msg.what == MSG_REFRESH_IMAGE_CAPTCHA) {
+            //显示图形验证码布局
+            rlImageCaptcha.setVisibility(View.VISIBLE);
+            //刷新图形验证码
             byte[] captcha = (byte[]) msg.obj;
             Bitmap bitmap = BitmapFactory.decodeByteArray(captcha, 0, captcha.length);
             ivImageCaptcha.setImageBitmap(bitmap);

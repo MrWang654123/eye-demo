@@ -2,12 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!--标题栏-->
@@ -21,28 +20,73 @@
             android:gravity="center_horizontal">
             <EditText
                 android:id="@+id/et_captcha_num1"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num2"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num3"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num4"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num5"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num6"
-                style="@style/captcha_edit"/>
+                style="@style/captcha_edit"
+                android:hint="@string/blank" />
         </LinearLayout>
+
+        <!--图形验证码-->
+        <RelativeLayout
+            android:id="@+id/rl_image_captcha"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="44dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="15dp">
+
+            <EditText
+                android:id="@+id/et_image_captcha"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="#00000000"
+                android:hint="请输入图形验证码"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:maxLength="8"
+                android:textColor="@color/color_333333"
+                android:imeOptions="actionDone"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/iv_image_captcha"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_image_small"/>
+
+            <include layout="@layout/edittext_bottom_part_line"/>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
             android:orientation="vertical">
 
             <TextView
@@ -77,6 +121,20 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_forbid_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:lineSpacingMultiplier="1.3"
+            android:textColor="@color/color_fa3131"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="@string/forbid_phone_num_login"/>
+        <!--您的今天短信验证码输入错误次数已超过上限-->
 
     </LinearLayout>
 

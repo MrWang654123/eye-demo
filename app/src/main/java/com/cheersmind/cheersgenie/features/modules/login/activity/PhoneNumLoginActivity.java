@@ -276,6 +276,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
                         } else if (ErrorCode.AC_SMSCODE_ERROR_OVER_SUM.equals(errorCode)) {//您的今天短信验证码输入错误次数已超过上限
                             //禁用登录
                             forbidLogin(errorCodeEntity.getMessage());
+                            //继续走默认提示
+                            return false;
                         }
 
                         //标记未处理异常，继续走默认处理流程
@@ -494,9 +496,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
                                 return true;
 
                             } else if (ErrorCode.AC_IDENTIFY_CODE_INVALID.equals(errorCode)) {//无效的验证码
-                                //清空并聚焦
-                                etImageCaptcha.setText("");
-                                etImageCaptcha.requestFocus();
+                                //清空短信验证码、清空并聚焦图形验证码、还原发送按钮
+                                clearCaptchaAndSendButton();
                                 //请求图形验证码
                                 if (sessionCreateResult != null) {
                                     getImageCaptcha(sessionCreateResult.getSessionId(), null);
@@ -516,6 +517,9 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 public void onResponse(Object obj) {
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
+                    //清空并聚焦短信验证码
+                    etCaptcha.setText("");
+                    etCaptcha.requestFocus();
                 }
             });
         } catch (QSCustomException e) {
@@ -720,7 +724,14 @@ public class PhoneNumLoginActivity extends BaseActivity {
      */
     private void requiredImageCaptchaForSendError() {
         ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新发送");
+        //清空短信验证码、清空并聚焦图形验证码、还原发送按钮
+        clearCaptchaAndSendButton();
+    }
 
+    /**
+     * 清空短信验证码、清空并聚焦图形验证码、还原发送按钮
+     */
+    private void clearCaptchaAndSendButton() {
         //清空短信验证码和图形验证码，并聚焦图形验证码
         etCaptcha.setText("");
         etImageCaptcha.setText("");
