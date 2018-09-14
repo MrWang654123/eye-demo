@@ -737,7 +737,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 public void onResponse(Object obj) {
 
                     //提示显示短信验证码
-                    PhoneMessageTestUtil.toastShowMessage(getApplicationContext(), obj);
+                    PhoneMessageTestUtil.toastShowMessage(RegisterCaptchaActivity.this, obj);
 
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();

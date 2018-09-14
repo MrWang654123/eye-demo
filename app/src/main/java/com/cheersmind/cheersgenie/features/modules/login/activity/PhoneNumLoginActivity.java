@@ -518,7 +518,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 public void onResponse(Object obj) {
 
                     //提示显示短信验证码
-                    PhoneMessageTestUtil.toastShowMessage(getApplicationContext(), obj);
+                    PhoneMessageTestUtil.toastShowMessage(PhoneNumLoginActivity.this, obj);
 
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
