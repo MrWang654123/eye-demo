@@ -388,6 +388,7 @@ public class XLoginAccountActivity extends BaseActivity {
         String password = etPassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
             ToastUtil.showShort(getApplicationContext(), "请输入密码");
+            return false;
         }
 
         //图形验证码
@@ -1110,6 +1111,9 @@ public class XLoginAccountActivity extends BaseActivity {
             ivImageCaptcha.setImageBitmap(bitmap);
 
         }  else if (msg.what == MSG_REQUIRED_IMAGE_CAPTCHA) {//需要图形验证码
+            //关闭通信等待
+            LoadingView.getInstance().dismiss();
+
             //如果当前图形验证码的布局还没显示，则显示并且请求图形验证码
             if (rlImageCaptcha.getVisibility() == View.GONE) {
                 //显示图形验证码布局
