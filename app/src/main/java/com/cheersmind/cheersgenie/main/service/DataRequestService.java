@@ -27,6 +27,7 @@ import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
@@ -804,6 +805,13 @@ public class DataRequestService {
             @Override
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
+
+                try {
+                    String result = JsonUtil.toJson(obj);
+                    System.out.println("#### 短信验证码：" + result);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

@@ -29,6 +29,7 @@ import com.cheersmind.cheersgenie.features.modules.login.activity.PhoneNumLoginA
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
+import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
@@ -288,6 +289,10 @@ public class RegisterPhoneNumActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Object obj) {
+
+                    //提示显示短信验证码
+                    PhoneMessageTestUtil.toastShowMessage(getApplicationContext(), obj);
+
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
                     //隐藏可以直接跳转到账号登录页面的按钮

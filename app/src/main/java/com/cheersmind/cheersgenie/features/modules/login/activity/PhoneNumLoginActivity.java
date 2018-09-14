@@ -28,6 +28,7 @@ import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
+import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
@@ -515,6 +516,10 @@ public class PhoneNumLoginActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Object obj) {
+
+                    //提示显示短信验证码
+                    PhoneMessageTestUtil.toastShowMessage(getApplicationContext(), obj);
+
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
                     //清空并聚焦短信验证码
