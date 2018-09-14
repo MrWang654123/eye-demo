@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.login.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,9 +32,11 @@ import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.AccountBindActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
@@ -80,7 +84,7 @@ import okhttp3.Response;
 import static com.cheersmind.cheersgenie.main.constant.Constant.mTencent;
 
 /**
- * 登陆页面
+ * 登陆页面（传递数据中无第三方登录信息就是正常登录操作，有则是绑定账号操作）
  */
 public class XLoginAccountActivity extends BaseActivity {
 
@@ -89,20 +93,36 @@ public class XLoginAccountActivity extends BaseActivity {
     //需要图形验证码
     private static final int MSG_REQUIRED_IMAGE_CAPTCHA = 2;
 
+    //绑定的手机号提示
+    @BindView(R.id.tv_bind_phone_num_tip)
+    TextView tvBindPhoneNumTip;
+    //用户名布局
+    @BindView(R.id.rl_user_name)
+    RelativeLayout rlUserName;
+    //用户名
     @BindView(R.id.et_username)
     EditText etUsername;
+    //密码
     @BindView(R.id.et_password)
     EditText etPassword;
+    //密码显隐
     @BindView(R.id.cbox_password)
     CheckBox cboxPassword;
     @BindView(R.id.btn_login)
     Button btnLogin;
+    //手机号短信快捷登录
     @BindView(R.id.tv_phonenum_login)
     TextView tvPhonenumLogin;
+    //第三方账号布局
+    @BindView(R.id.ll_third_login)
+    LinearLayout llThirdLogin;
+    //微信登录
     @BindView(R.id.iv_wx_login)
     ImageView ivWxLogin;
+    //QQ登录
     @BindView(R.id.iv_qq_login)
     ImageView ivQqLogin;
+
     @BindView(R.id.et_image_captcha)
     EditText etImageCaptcha;
     @BindView(R.id.iv_image_captcha)
@@ -112,6 +132,34 @@ public class XLoginAccountActivity extends BaseActivity {
 
     //Session创建结果
     SessionCreateResult sessionCreateResult;
+
+    //手机号
+    private static final String PHONE_NUM = "phone_num";
+    //第三方平台登录信息Dto
+    private static final String THIRD_LOGIN_DTO = "thirdLoginDto";
+    //第三方平台登录信息
+    private ThirdLoginDto thirdLoginDto;
+    //手机号
+    private String phoneNum;
+    //是否已经绑定成功
+    private boolean hasBindSuccess;
+
+
+    /**
+     * 打开账号登录页面（无第三方登录信息就是正常登录操作，有则是绑定账号操作）
+     * @param context
+     * @param thirdLoginDto 第三方平台登录信息
+     * @param phoneNum 手机号
+     */
+    public static void startXLoginAccountActivity(Context context, ThirdLoginDto thirdLoginDto, String phoneNum) {
+        Intent intent = new Intent(context, XLoginAccountActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Bundle extras = new Bundle();
+        extras.putSerializable(THIRD_LOGIN_DTO, thirdLoginDto);
+        extras.putString(PHONE_NUM, phoneNum);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
 
 
     @Override
@@ -183,10 +231,53 @@ public class XLoginAccountActivity extends BaseActivity {
         //注册事件
         EventBus.getDefault().register(this);
 
+        //第三方登录信息
+        if (getIntent() != null || getIntent().getExtras() != null) {
+            thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
+            phoneNum = getIntent().getStringExtra(PHONE_NUM);
+
+            if (thirdLoginDto != null) {
+                if (TextUtils.isEmpty(phoneNum)) {
+                    ToastUtil.showShort(getApplicationContext(), "绑定操作，手机号不能为空");
+                    finish();
+                    return;
+                }
+                //改变正常登录为绑定操作的视图
+                changeViewForBind();
+            }
+        }
+
         //创建会话：类型账号登陆
 //        doPostAccountSessionForImageCaptcha(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN);
     }
 
+    /**
+     * 改变正常登录为绑定操作的视图
+     */
+    private void changeViewForBind() {
+        //设置title
+        if (tvToolbarTitle != null) {
+            tvToolbarTitle.setText("绑定手机号");
+        }
+        //显示绑定的手机号提示
+        tvBindPhoneNumTip.setVisibility(View.VISIBLE);
+        tvBindPhoneNumTip.setText(getResources().getString(R.string.bind_phone_num_tip, phoneNum));
+        //按钮显示为绑定
+        btnLogin.setText(getResources().getString(R.string.bind_phone_num));
+        //清空且聚焦密码
+        etPassword.requestFocus();
+        etPassword.setText("");
+        etPassword.setSelection(etPassword.getText().length());
+
+        //隐藏用户名布局
+        rlUserName.setVisibility(View.GONE);
+        //用户名设置为手机号（用户名此时是隐藏的）
+        etUsername.setText(phoneNum);
+        //隐藏手机短信快捷登录
+        tvPhonenumLogin.setVisibility(View.GONE);
+        //隐藏第三方登录
+        llThirdLogin.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onDestroy() {
@@ -212,7 +303,7 @@ public class XLoginAccountActivity extends BaseActivity {
             }
             //找回密码
             case R.id.tv_retrieve_password: {
-                RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Retrieve_Password, null);
+                RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Retrieve_Password, null, phoneNum);
                 break;
             }
             //登录
@@ -282,7 +373,7 @@ public class XLoginAccountActivity extends BaseActivity {
     }
 
     /**
-     * 检测数据
+     * 校验数据格式
      * @return
      */
     private boolean checkData() {
@@ -406,29 +497,47 @@ public class XLoginAccountActivity extends BaseActivity {
                     //临时缓存用户数据
                     UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
                     //保存用户名和密码到缓存中
-                    saveUserAccount(etUsername.getText().toString(), etPassword.getText().toString());
+                    saveUserAccount(accountLoginDto.getAccount(), accountLoginDto.getPassword());
                     //保存用户数据到数据库
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
-                    //第三方的统计操作
-                    //当用户使用自有账号登录时，可以这样统计：
-                    //MobclickAgent.onProfileSignIn(String.valueOf(userId));
-                    //当用户使用第三方账号（如新浪微博）登录时，可以这样统计：
-                    //MobclickAgent.onProfileSignIn("WB", "userID");
-                    //……
+                    //正常的登录
+                    if (thirdLoginDto == null) {
+                        //未绑定手机号则跳转绑定
+                        if (!wxUserInfoEntity.isBindMobile()) {
+                            //关闭通信等待提示
+                            LoadingView.getInstance().dismiss();
+                            //跳转手机号绑定流程
+                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Bind_Phone_Num, null, null);
 
-                    //未绑定手机号则跳转绑定
-                    if (!wxUserInfoEntity.isBindMobile()) {
-                        //关闭通信等待提示
-                        LoadingView.getInstance().dismiss();
-                        //跳转手机号绑定流程
-                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Bind_Phone_Num, null);
+                        } else {
+                            //获取孩子信息
+                            doGetChildListWrap();
+                        }
 
-                    } else {
-                        //获取孩子信息
-                        doGetChildListWrap();
+                    } else {//绑定操作
+                        //已经绑定成功则进入正常登录成功后的流程
+                        if (hasBindSuccess) {
+                            //获取孩子信息
+                            doGetChildListWrap();
+
+                        } else {//未绑定则进行绑定操作
+                            ThirdPlatBindDto dto = new ThirdPlatBindDto();
+                            dto.setOpenId(thirdLoginDto.getOpenId());//openId
+                            dto.setPlatSource(thirdLoginDto.getPlatSource());//平台名称
+                            //QQ平台需要传APP_ID
+                            if (Dictionary.Plat_Source_QQ.equals(thirdLoginDto.getPlatSource())) {
+                                dto.setAppId(Constant.QQ_APP_ID);
+                            }
+                            dto.setThirdAccessToken(thirdLoginDto.getThirdAccessToken());//访问token
+                            dto.setTenant(thirdLoginDto.getTenant());//租户名
+                            //请求绑定
+                            doThirdPlatBind(dto);
+                        }
                     }
+
+                    //登录统计
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
@@ -439,8 +548,38 @@ public class XLoginAccountActivity extends BaseActivity {
                 } catch (Exception e) {
                     //完善用户信息（生成孩子）
 //                    gotoPerfectUserInfo(PhoneNumLoginActivity.this);
-                    onFailure(new QSCustomException("登录失败"));
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
+            }
+        });
+    }
+
+
+    /**
+     * 请求第三方平台账号绑定
+     * @param bindDto
+     */
+    private void doThirdPlatBind(final ThirdPlatBindDto bindDto) {
+        LoadingView.getInstance().show(XLoginAccountActivity.this);
+        //绑定第三方平台账号
+        DataRequestService.getInstance().postThirdPlatBind(bindDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待
+//                LoadingView.getInstance().dismiss();
+                ToastUtil.showShort(getApplicationContext(), "绑定成功");
+                //标记已经绑定成功
+                hasBindSuccess = true;
+                //按钮显示为登录
+                btnLogin.setText(getResources().getString(R.string.login));
+
+                //获取孩子信息
+                doGetChildListWrap();
             }
         });
     }
@@ -552,9 +691,13 @@ public class XLoginAccountActivity extends BaseActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LoadingView.getInstance().dismiss();
-//                finish();
-                ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoadingView.getInstance().dismiss();
+                        ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                    }
+                });
             }
 
             @Override
@@ -613,7 +756,7 @@ public class XLoginAccountActivity extends BaseActivity {
                         //第三方账号不存在
                         if (ErrorCode.AC_THIRD_ACCOUNT_NOT_EXIST.equals(errorCode)) {
                             //走手机注册页面流程
-                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Register, thirdLoginDto);
+                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Register, thirdLoginDto, null);
                             //标记已经处理了异常
                             return true;
                         }
@@ -646,7 +789,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {
                         //跳转手机号绑定流程
-                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Bind_Phone_Num, null);
+                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginAccountActivity.this, Dictionary.SmsType_Bind_Phone_Num, null, null);
 
                     } else {
                         //获取孩子信息

@@ -130,7 +130,7 @@ public class XLoginActivity extends BaseActivity {
             //注册
             case R.id.btn_register: {
                 //手机号注册
-                RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Register, null);
+                RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Register, null, null);
                 break;
             }
             //登录
@@ -265,9 +265,13 @@ public class XLoginActivity extends BaseActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                LoadingView.getInstance().dismiss();
-//                finish();
-                ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        LoadingView.getInstance().dismiss();
+                        ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                    }
+                });
             }
 
             @Override
@@ -324,7 +328,7 @@ public class XLoginActivity extends BaseActivity {
                         //第三方账号不存在
                         if (ErrorCode.AC_THIRD_ACCOUNT_NOT_EXIST.equals(errorCode)) {
                             //走手机注册页面流程
-                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Register, thirdLoginDto);
+                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Register, thirdLoginDto, null);
                             //标记已经处理了异常
                             return true;
                         }
@@ -339,7 +343,7 @@ public class XLoginActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
+//                LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //解析用户数据
@@ -356,8 +360,10 @@ public class XLoginActivity extends BaseActivity {
 
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {
+                        //关闭通信等待提示
+                        LoadingView.getInstance().dismiss();
                         //跳转手机号绑定流程
-                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Bind_Phone_Num, null);
+                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(XLoginActivity.this, Dictionary.SmsType_Bind_Phone_Num, null, null);
 
                     } else {
                         //获取孩子信息
@@ -365,10 +371,7 @@ public class XLoginActivity extends BaseActivity {
                     }
 
                 } catch (Exception e) {
-                    ErrorCodeEntity errorCodeEntity = new ErrorCodeEntity();
-                    errorCodeEntity.setMessage("登录失败");
-                    String errorStr = JsonUtil.toJson(errorCodeEntity);
-                    onFailure(new QSCustomException(errorStr));
+                    onFailure(new QSCustomException("登录失败"));
                 }
             }
         });

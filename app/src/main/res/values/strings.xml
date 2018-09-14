@@ -115,7 +115,7 @@
     <string name="comment_mine">我的评论</string>
 
     <!--密码修改-->
-    <string name="password_tip">密码长度6-24位，可以是数字、字母等任意字符</string>
+    <string name="password_tip">密码长度6&#8211;24位，可以是数字、字母等任意字符</string>
     <string name="old_password">旧  密  码</string>
     <string name="new_password">新  密  码</string>
     <string name="again_password">确认密码</string>
@@ -132,7 +132,12 @@
     <string name="operate_fail">操作失败，请稍后再试</string>
     <string name="blank"> </string>
 
-    <!--手机号短信登录-->
+    <!--短信验证码错误次数已超过上限-->
     <string name="forbid_phone_num_login">您今天的短信验证码输入错误次数已超过上限，请明天再试。给您造成的不便，敬请谅解，谢谢！</string>
+
+    <!--登录-->
+    <string name="bind_phone_num_tip">绑定手机号：%s</string>
+    <string name="login">登    录</string>
+    <string name="bind_phone_num">绑    定</string>
 
 </resources>

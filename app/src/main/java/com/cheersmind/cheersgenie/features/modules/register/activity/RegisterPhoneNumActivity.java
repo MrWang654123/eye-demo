@@ -26,6 +26,7 @@ import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.PhoneNumLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
@@ -57,11 +58,15 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     private static final String  SMS_TYPE = "sms_type";
     //第三方平台登录信息Dto
     private static final String THIRD_LOGIN_DTO = "thirdLoginDto";
+    //手机号
+    private static final String PHONE_NUM = "phone_num";
 
     //短信业务类型：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
     private int smsType;
     //第三方平台登录信息dto
     private ThirdLoginDto thirdLoginDto;
+    //手机号
+    String phoneNum;
 
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -85,12 +90,15 @@ public class RegisterPhoneNumActivity extends BaseActivity {
      * @param context
      * @param smsType 短信业务类型(必填)：0:注册用户，1：短信登录，2、绑定手机，3、重置密码
      * @param thirdLoginDto 第三方平台登录信息
+     * @param phoneNum 手机号
      */
-    public static void startRegisterPhoneNumActivity(Context context, int smsType, ThirdLoginDto thirdLoginDto) {
+    public static void startRegisterPhoneNumActivity(Context context, int smsType, ThirdLoginDto thirdLoginDto,  String phoneNum) {
         Intent intent = new Intent(context, RegisterPhoneNumActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle extras = new Bundle();
         extras.putInt(SMS_TYPE, smsType);
         extras.putSerializable(THIRD_LOGIN_DTO, thirdLoginDto);
+        extras.putString(PHONE_NUM, phoneNum);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -135,7 +143,13 @@ public class RegisterPhoneNumActivity extends BaseActivity {
         }
         smsType = getIntent().getExtras().getInt(SMS_TYPE);
         thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
+        phoneNum = getIntent().getExtras().getString(PHONE_NUM);
 
+        //初始化手机号
+        if (!TextUtils.isEmpty(phoneNum)) {
+            etPhonenum.setText(phoneNum);
+            etPhonenum.setSelection(phoneNum.length());
+        }
     }
 
 
@@ -194,14 +208,27 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                             String errorCode = errorCodeEntity.getCode();
                             //手机号已注册
                             if (ErrorCode.AC_PHONE_HAS_REGISTER.equals(errorCode)) {
-                                //绑定手机号的清空特殊处理
+                                //绑定手机号
                                 if (smsType == Dictionary.SmsType_Bind_Phone_Num) {
-                                    ToastUtil.showShort(getApplicationContext(), "绑定手机号对于已注册手机进行特殊处理，开发中……");
-
-                                } else {
                                     //显示可以直接跳转到账号登录页面的按钮
                                     tvGotoLogin.setVisibility(View.VISIBLE);
                                     ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+
+                                } else if (smsType == Dictionary.SmsType_Register) {//注册
+                                    //注册
+                                    if (thirdLoginDto == null) {
+                                        //显示可以直接跳转到账号登录页面的按钮
+                                        tvGotoLogin.setVisibility(View.VISIBLE);
+                                        ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+
+                                    } else {//第三方平台登录（用户可以有两个选择：1、跳转账号登录页面；2、用该手机号绑定该第三方平台）
+                                        //显示可以直接跳转到账号登录页面的按钮
+                                        tvGotoLogin.setVisibility(View.VISIBLE);
+
+                                        //直接进入绑定环节
+                                        XLoginAccountActivity.startXLoginAccountActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
+//                                        ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+                                    }
                                 }
 
                                 //标记已经处理了异常
@@ -263,6 +290,10 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                 public void onResponse(Object obj) {
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
+                    //隐藏可以直接跳转到账号登录页面的按钮
+                    if (tvGotoLogin.getVisibility() == View.VISIBLE) {
+                        tvGotoLogin.setVisibility(View.GONE);
+                    }
                     //跳转验证码输入页面
                     RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto);
                 }

@@ -51,7 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     @Nullable Toolbar toolbar;
     //标题
     @BindView(R.id.tv_toolbar_title)
-    @Nullable TextView tvToolbarTitle;
+    protected @Nullable TextView tvToolbarTitle;
 
     //消息处理器
     protected Handler mHandler = new Handler() {
@@ -266,9 +266,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      */
     protected void doGetChildListWrap() {
         //隐藏软键盘
-        SoftInputUtil.closeSoftInput(this);
+        SoftInputUtil.closeSoftInput(BaseActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(BaseActivity.this);
 
         DataRequestService.getInstance().getChildListV2(new BaseService.ServiceCallback() {
             @Override
