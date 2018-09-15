@@ -110,6 +110,9 @@
     <string name="register">注册</string>
     <string name="bind">绑定</string>
 
+    <!--文章-->
+    <string name="search_edit_text_hint">搜索你想看到的内容</string>
+
     <!--评论-->
     <string name="comment_count">评论（%s）</string>
     <string name="comment_mine">我的评论</string>
@@ -131,7 +134,6 @@
     <!--通用-->
     <string name="operate_fail">操作失败，请稍后再试</string>
     <string name="blank"> </string>
-
     <!--短信验证码错误次数已超过上限-->
     <string name="forbid_phone_num_login">您今天的短信验证码输入错误次数已超过上限，请明天再试。给您造成的不便，敬请谅解，谢谢！</string>
 

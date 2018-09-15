@@ -6,13 +6,21 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
+import com.cheersmind.cheersgenie.features.adapter.MineFavoriteRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
+import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -24,30 +32,40 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class ArticleListActivity extends BaseActivity {
+/**
+ * 搜索文章页面
+ */
+public class SearchArticleActivity extends BaseActivity {
 
     //文章查询Dto
     private static final String  ARTICLE_DTO = "articleDto";
     private ArticleDto articleDto;
 
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.et_search)
+    EditText etSearch;
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-
-    //空布局模块
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
+
+    //适配器的数据列表
+//    List<SimpleArticleEntity> recyclerItem;
     //适配器
     HomeRecyclerAdapter recyclerAdapter;
-
 
     //下拉刷新的监听
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -81,7 +99,7 @@ public class ArticleListActivity extends BaseActivity {
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             //跳转到文章详情页面
             String articleId = recyclerAdapter.getData().get(position).getId();
-            ArticleDetailActivity.startArticleDetailActivity(ArticleListActivity.this, articleId);
+            ArticleDetailActivity.startArticleDetailActivity(SearchArticleActivity.this, articleId);
         }
     };
 
@@ -104,12 +122,12 @@ public class ArticleListActivity extends BaseActivity {
 
 
     /**
-     * 打开文章列表页面
+     * 打开文章搜索页面
      * @param context
      * @param articleDto
      */
-    public static void startArticleListActivity(Context context, ArticleDto articleDto) {
-        Intent intent = new Intent(context, ArticleListActivity.class);
+    public static void startSearchArticleActivity(Context context, ArticleDto articleDto) {
+        Intent intent = new Intent(context, SearchArticleActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(ARTICLE_DTO, articleDto);
         intent.putExtras(extras);
@@ -119,18 +137,19 @@ public class ArticleListActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_article_list;
+        return R.layout.activity_search_article;
     }
 
     @Override
     protected String settingTitle() {
-        return "文章列表";
+        return null;
     }
 
     @Override
     protected void onInitView() {
+
         //适配器
-        recyclerAdapter = new HomeRecyclerAdapter(ArticleListActivity.this, R.layout.recycleritem_home, null);
+        recyclerAdapter = new HomeRecyclerAdapter(SearchArticleActivity.this, R.layout.recycleritem_home, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -140,7 +159,7 @@ public class ArticleListActivity extends BaseActivity {
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
-        recycleView.setLayoutManager(new LinearLayoutManager(ArticleListActivity.this));
+        recycleView.setLayoutManager(new LinearLayoutManager(SearchArticleActivity.this));
         recycleView.setAdapter(recyclerAdapter);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
@@ -155,6 +174,31 @@ public class ArticleListActivity extends BaseActivity {
             public void onMultiClick(View view) {
                 //加载更多文章数据
                 loadMoreArticleData();
+            }
+        });
+
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.GONE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.GONE);
+                    }
+                }
             }
         });
     }
@@ -172,11 +216,20 @@ public class ArticleListActivity extends BaseActivity {
 
             articleDto.setPage(pageNum);
             articleDto.setSize(PAGE_SIZE);
+            //初始化搜索框
+            if (TextUtils.isEmpty(articleDto.getFilter())) {
+                ivClear.setVisibility(View.GONE);
+            } else {
+                etSearch.setText(articleDto.getFilter());
+                ivClear.setVisibility(View.VISIBLE);
+            }
         }
 
-
-        //加载更多文章数据
-        loadMoreArticleData();
+        //非空
+        if (!TextUtils.isEmpty(articleDto.getFilter())) {
+            //加载更多文章数据
+            loadMoreArticleData();
+        }
     }
 
     /**
@@ -187,6 +240,11 @@ public class ArticleListActivity extends BaseActivity {
         pageNum = 1;
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
+        //确保显示下拉刷新
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
 
         DataRequestService.getInstance().getArticles(articleDto, new BaseService.ServiceCallback() {
             @Override
@@ -332,6 +390,34 @@ public class ArticleListActivity extends BaseActivity {
     }
 
 
+    @OnClick({R.id.iv_back, R.id.iv_clear, R.id.iv_search})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            //回退
+            case R.id.iv_back: {
+                finish();
+                break;
+            }
+            //清空搜索框
+            case R.id.iv_clear: {
+                etSearch.setText("");
+                break;
+            }
+            //搜索
+            case R.id.iv_search: {
+                String filterText = etSearch.getText().toString();
+                //目前空搜索文本不进行搜索，搜索文本有进行变动才搜索
+                if (!TextUtils.isEmpty(filterText) && !filterText.equals(articleDto.getFilter())) {
+                    articleDto.setFilter(filterText);
+                    //刷新文章数据
+                    refreshArticleData();
+                }
+                break;
+            }
+        }
+    }
+
+
     /**
      * 收藏操作
      *
@@ -365,5 +451,6 @@ public class ArticleListActivity extends BaseActivity {
             }
         });
     }
+
 
 }

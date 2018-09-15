@@ -17,6 +17,7 @@
             android:id="@+id/iv_category"
             android:layout_width="@dimen/heightDefaultWidget"
             android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_gravity="left"
             android:src="@android:drawable/btn_plus"/>
 
         <TextView
@@ -26,6 +27,14 @@
             android:textSize="18sp"
             android:layout_gravity="center"
             android:text="火眼资讯"/>
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="@dimen/heightDefaultWidget"
+            android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_gravity="right"
+            android:src="@android:drawable/btn_plus"/>
+
     </android.support.v7.widget.Toolbar>
 
 

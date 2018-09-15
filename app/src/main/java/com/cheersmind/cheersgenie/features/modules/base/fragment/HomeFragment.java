@@ -26,6 +26,7 @@ import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.holder.BannerHomeHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -731,7 +732,7 @@ public class HomeFragment extends LazyLoadFragment {
     }
 
 
-    @OnClick({R.id.iv_category, R.id.btn_goto_last_dimension})
+    @OnClick({R.id.iv_category, R.id.btn_goto_last_dimension, R.id.iv_search})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //分类
@@ -742,6 +743,11 @@ public class HomeFragment extends LazyLoadFragment {
             //进入最新测评
             case R.id.btn_goto_last_dimension: {
                 DimensionDetailActivity.startDimensionDetailActivity(getContext(), lastDimension, null);
+                break;
+            }
+            //搜索
+            case R.id.iv_search: {
+                SearchArticleActivity.startSearchArticleActivity(getContext(), null);
                 break;
             }
         }

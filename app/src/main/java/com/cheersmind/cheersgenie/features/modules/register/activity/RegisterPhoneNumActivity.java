@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
@@ -289,18 +290,21 @@ public class RegisterPhoneNumActivity extends BaseActivity {
 
                 @Override
                 public void onResponse(Object obj) {
-
-                    //提示显示短信验证码
-                    PhoneMessageTestUtil.toastShowMessage(RegisterPhoneNumActivity.this, obj);
-
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
                     //隐藏可以直接跳转到账号登录页面的按钮
                     if (tvGotoLogin.getVisibility() == View.VISIBLE) {
                         tvGotoLogin.setVisibility(View.GONE);
                     }
+
+                    String messageCaptcha = "";
+                    String hostType = BuildConfig.HOST_TYPE;
+                    if(!"product".equals(hostType)) {
+                        Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                        messageCaptcha = "短信验证码【" + dataMap.get("code").toString() + "】";
+                    }
                     //跳转验证码输入页面
-                    RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto);
+                    RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto, messageCaptcha);
                 }
             });
         } catch (QSCustomException e) {

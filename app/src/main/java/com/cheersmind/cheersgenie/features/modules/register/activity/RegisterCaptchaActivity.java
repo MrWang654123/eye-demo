@@ -62,6 +62,8 @@ public class RegisterCaptchaActivity extends BaseActivity {
     private static final String  SMS_TYPE = "sms_type";
     //第三方平台登录信息Dto
     private static final String THIRD_LOGIN_DTO = "thirdLoginDto";
+    //短信验证码
+    private static final String MESSAGE_CAPTCHA = "MESSAGE_CAPTCHA";
 
     //短信业务类型：0:注册用户，1：短信登录，2：绑定手机号，3、重置密码
     private int smsType;
@@ -101,6 +103,8 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
     //手机号
     String phoneNum;
+    //短信验证码
+    private String messageCaptcha;
 
     //Session创建结果
     SessionCreateResult sessionCreateResult;
@@ -111,13 +115,15 @@ public class RegisterCaptchaActivity extends BaseActivity {
      * @param phoneNum 手机号
      * @param smsType 短信业务类型：0:注册用户，1：短信登录，2：绑定手机号，3、重置密码
      * @param thirdLoginDto 第三方平台登录信息
+     * @param messageCaptcha 短信验证码（用于测试环境，弹窗显示）
      */
-    public static void startRegisterCaptchaActivity(Context context, String phoneNum, int smsType, ThirdLoginDto thirdLoginDto) {
+    public static void startRegisterCaptchaActivity(Context context, String phoneNum, int smsType, ThirdLoginDto thirdLoginDto, String messageCaptcha) {
         Intent intent = new Intent(context, RegisterCaptchaActivity.class);
         Bundle extras = new Bundle();
         extras.putString(PHONE_NUM, phoneNum);
         extras.putInt(SMS_TYPE, smsType);
         extras.putSerializable(THIRD_LOGIN_DTO, thirdLoginDto);
+        extras.putString(MESSAGE_CAPTCHA, messageCaptcha);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -153,7 +159,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         }
 
 //        topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
-        phoneNum = getIntent().getExtras().getString(PHONE_NUM);
+        phoneNum = getIntent().getStringExtra(PHONE_NUM);
         if (TextUtils.isEmpty(phoneNum)) {
             ToastUtil.showShort(getApplicationContext(), "数据传递有误");
             return;
@@ -161,7 +167,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //发送号码提示
         tvSendPhonenumTip.setText(getResources().getString(R.string.captcha_has_send_to, phoneNum));
         //操作类型
-        smsType = getIntent().getExtras().getInt(SMS_TYPE);
+        smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
         //操作类型为绑定手机号
         if (smsType == Dictionary.SmsType_Bind_Phone_Num) {
             //修改按钮文字为“绑定”
@@ -169,6 +175,12 @@ public class RegisterCaptchaActivity extends BaseActivity {
         }
 
         thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
+
+        //短信验证码
+        messageCaptcha = getIntent().getStringExtra(MESSAGE_CAPTCHA);
+        if (!TextUtils.isEmpty(messageCaptcha)) {
+            PhoneMessageTestUtil.toastShowMessage(RegisterCaptchaActivity.this, messageCaptcha);
+        }
     }
 
     @Override
