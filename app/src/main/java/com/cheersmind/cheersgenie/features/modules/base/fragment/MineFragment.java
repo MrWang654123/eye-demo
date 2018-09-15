@@ -1,12 +1,16 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
@@ -19,6 +23,9 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.mine.SettingActivity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import butterknife.BindView;
@@ -33,8 +40,20 @@ public class MineFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
 
+    //签到
     @BindView(R.id.btn_sign_in)
     Button btnSignIn;
+
+    @BindView(R.id.tv_new_message_count)
+    TextView tvNewMessageCount;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //注册事件
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected int setContentView() {
@@ -44,12 +63,79 @@ public class MineFragment extends LazyLoadFragment {
     @Override
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
+
+        //初始隐藏最新消息条数
+        tvNewMessageCount.setVisibility(View.GONE);
+
+        //获取最新消息条数
+        queryNewMessageCount();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //注销事件
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void lazyLoad() {
         //查询当前签到状态
         queryDailySignInStatus();
+
+        //如果最新消息数量为隐藏，则再获取一次
+        if (tvNewMessageCount.getVisibility() == View.VISIBLE) {
+            //获取最新消息条数
+            queryNewMessageCount();
+        }
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+//    @Subscribe
+    public void onLastExamNotice(MessageReadEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        //最新消息数量
+        int newMessageCount = Integer.parseInt(tvNewMessageCount.getText().toString());
+        if (newMessageCount > 0) {
+            newMessageCount = newMessageCount - 1;
+        }
+        tvNewMessageCount.setText(String.valueOf(newMessageCount));
+        //数量为0就隐藏
+        if (newMessageCount == 0) {
+            tvNewMessageCount.setVisibility(View.GONE);
+        }
+
+    }
+
+
+    /**
+     * 获取最新消息条数
+     */
+    private void queryNewMessageCount() {
+        DataRequestService.getInstance().getNewMessageCount(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    int messageCount = ((JSONObject) obj).getInt("total");
+                    if (messageCount > 0) {
+                        tvNewMessageCount.setVisibility(View.VISIBLE);
+                        tvNewMessageCount.setText(String.valueOf(messageCount));
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**

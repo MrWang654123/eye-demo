@@ -87,7 +87,27 @@ public class Dictionary {
     //创建会话：下发短信验证码
     public static final int CREATE_SESSION_MESSAGE_CAPTCHA = 4;
 
-    //http通信结果非json
-//    public static final String HTTP_NO_JSON_RESULT = "HTTP_NO_JSON_RESULT";
+    //用户的角色：自己
+    public static final int PARENT_ROLE_MYSELF = 0;
+    //用户的角色：父亲
+    public static final int PARENT_ROLE_FATHER = 1;
+    //用户的角色：母亲
+    public static final int PARENT_ROLE_MOTHER = 2;
+    //用户的角色：爷爷或外公
+    public static final int PARENT_ROLE_GRANDPA = 3;
+    //用户的角色：奶奶或外婆
+    public static final int PARENT_ROLE_GRANDMA = 4;
+    //用户的角色：其他
+    public static final int PARENT_ROLE_OTHER = 99;
+
+    //学段：幼儿园
+    public static final int PERIOD_KINDERGARTEN = 1;
+    //学段：小学
+    public static final int PERIOD_PRIMARY_SCHOOL = 2;
+    //学段：初中
+    public static final int PERIOD_MIDDLE_SCHOOL = 3;
+    //学段：高中
+    public static final int PERIOD_HIGH_SCHOOL = 4;
+
 
 }

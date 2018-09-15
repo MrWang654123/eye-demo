@@ -17,6 +17,7 @@ import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
+import com.cheersmind.cheersgenie.features.modules.register.activity.ParentRoleActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.SchemaActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.TextViewForHtmlImageActivity;
@@ -163,8 +164,11 @@ public class XLoginActivity extends BaseActivity {
 //                }
 
                 //TextView显示html文本带图片
-                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
+//                startActivity(intent);
+
+                //家长角色选择页面
+                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
 
                 break;
             }

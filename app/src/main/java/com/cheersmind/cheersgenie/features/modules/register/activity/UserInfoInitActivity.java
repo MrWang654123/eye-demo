@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 
 import com.bigkoo.pickerview.TimePickerView;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
@@ -46,6 +47,8 @@ public class UserInfoInitActivity extends BaseActivity {
 
     //班级号
     private static final String CLASS_NUM = "class_num";
+    //角色
+    private static final String PARENT_ROLE = "PARENT_ROLE";
 
     //用户名
     @BindView(R.id.et_username)
@@ -68,6 +71,8 @@ public class UserInfoInitActivity extends BaseActivity {
 
     //班级号
     String classNum;
+    //家长角色（默认自己）
+    int parentRole = Dictionary.PARENT_ROLE_MYSELF;
     //性别（值）
     private String genderVal = "1";//男
 
@@ -76,10 +81,11 @@ public class UserInfoInitActivity extends BaseActivity {
      * @param context
      * @param classNum 班级号
      */
-    public static void startUserInfoInitActivity(Context context, String classNum) {
+    public static void startUserInfoInitActivity(Context context, String classNum, int parentRole) {
         Intent intent = new Intent(context, UserInfoInitActivity.class);
         Bundle extras = new Bundle();
-        extras.putSerializable(CLASS_NUM, classNum);
+        extras.putString(CLASS_NUM, classNum);
+        extras.putInt(PARENT_ROLE, parentRole);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -116,16 +122,15 @@ public class UserInfoInitActivity extends BaseActivity {
         startDate = Calendar.getInstance();
         startDate.setTime(date);
 
-        if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+        //班级号
+        classNum = getIntent().getStringExtra(CLASS_NUM);
+        if (TextUtils.isEmpty(classNum))  {
+            ToastUtil.showShort(getApplicationContext(), "班级号不能为空");
             return;
         }
 
-        classNum = getIntent().getExtras().getString(CLASS_NUM);
-        if (TextUtils.isEmpty(classNum))  {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
-            return;
-        }
+        //家长角色
+        parentRole = getIntent().getIntExtra(PARENT_ROLE, Dictionary.PARENT_ROLE_MYSELF);
     }
 
 
@@ -237,7 +242,7 @@ public class UserInfoInitActivity extends BaseActivity {
         //提交用户信息
         String username = etUsername.getText().toString();
         String birthday = etBirthday.getText().toString();
-        postUserInfo(classNum, genderVal, username, birthday);
+        postUserInfo(classNum, genderVal, username, birthday, parentRole);
     }
 
     /**
@@ -248,7 +253,7 @@ public class UserInfoInitActivity extends BaseActivity {
      * @param birthday //孩子生日
 //     * @param role //家长角色：1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
      */
-    private void postUserInfo(String classNum, String gender, String username, String birthday) {
+    private void postUserInfo(String classNum, String gender, String username, String birthday, int parentRole) {
         //通信等待提示
         LoadingView.getInstance().show(UserInfoInitActivity.this);
         String url = HttpConfig.URL_REGISTER_SUBMIT_USERINFO;
@@ -264,7 +269,7 @@ public class UserInfoInitActivity extends BaseActivity {
         map.put("sex", gender);
         map.put("name", username);
         map.put("birthday", birthday);
-//        map.put("parent_role", role);
+        map.put("parent_role", parentRole);
         //注册环节提交用户信息
         BaseService.post(url,map, false, new BaseService.ServiceCallback() {
             @Override

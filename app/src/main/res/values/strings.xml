@@ -142,4 +142,7 @@
     <string name="login">登    录</string>
     <string name="bind_phone_num">绑    定</string>
 
+    <!--用户信息-->
+    <string name="child_info">孩子信息：</string>
+
 </resources>

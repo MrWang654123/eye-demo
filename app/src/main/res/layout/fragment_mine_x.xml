@@ -144,16 +144,29 @@
                     android:scaleType="center"
                     android:src="@mipmap/qs_mine_flower"/>
 
-                <TextView
-                    android:id="@+id/tv_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="@color/color_7b7b7b"
-                    android:textSize="14sp"
-                    android:text="我的消息" />
+                <FrameLayout
+                    android:layout_width="70dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp">
+                    <TextView
+                        android:id="@+id/tv_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/color_7b7b7b"
+                        android:textSize="14sp"
+                        android:text="我的消息" />
+
+                    <TextView
+                        android:id="@+id/tv_new_message_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|top"
+                        android:text="3"/>
+
+                </FrameLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

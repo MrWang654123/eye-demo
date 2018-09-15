@@ -12,6 +12,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.SystemMessageRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
@@ -25,6 +26,8 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -326,6 +329,9 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();
                 //局部刷新列表项，把header计算在内
                 recyclerAdapter.notifyItemChanged(tempPosition);
+
+                //发送消息读取事件（更新“我的”页面中的数量）
+                EventBus.getDefault().post(new MessageReadEvent());
             }
         });
     }

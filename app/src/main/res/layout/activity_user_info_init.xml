@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!--标题栏-->
@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginHorizontal="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
             android:layout_gravity="center_horizontal"
             android:text="更好为您提供数据服务，请输入真实的信息"
             android:textColor="@color/colorAccent"/>
@@ -168,7 +169,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="45dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
             android:orientation="vertical">
 
             <Button

@@ -12,19 +12,20 @@ import java.io.Serializable;
 
 public class ChildInfoEntity extends DataSupport implements Serializable{
 
-//    "child_id": "1",
-//            "child_name": "冯猛儿子1",
-//            "sex": 1,
-//            "usr_id": 0,
-//            "class_id": "1",
-//            "birth_day": "2017-10-03T00:00:00.000+0800",
-//            "avatar": "1",
-//            "invite_code": "222",
-//            "class_name": "test",
-//            "school_id": "1",
-//            "grade": "2017",
-//            "period": "4",
-//            "school_name": "test"
+//            "child_id": "99988864-64e2-41ab-4389-a407b28df394",
+//                    "child_name": "苏小梅",
+//                    "sex": 2,//孩子性别 1-男，2-女
+//                    "user_id": 0,
+//                    "class_id": "56fec92a-fd5f-7c02-828d-e30c3646e544",
+//                    "birth_day": "1998-07-09T00:00:00.000+0800",
+//                    "avatar": null,
+//                    "class_name": "49班（珍珠班）",
+//                    "school_id": "f65291ab-dcc3-11e7-8a83-f0761cdecc9e",
+//                    "grade": "高三",
+//                    "period": "高中",
+//                    "school_name": "宁夏育才中学",
+//                    "parent_role": 0 //用户的角色，1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
+
     @InjectMap(name = "child_id")
     private String childId;
     @InjectMap(name = "child_name")
@@ -51,6 +52,9 @@ public class ChildInfoEntity extends DataSupport implements Serializable{
     private String period;
     @InjectMap(name = "school_name")
     private String schoolName;
+    //用户的角色，1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
+    @InjectMap(name = "parent_role")
+    private int parentRole;
 
     private boolean isDefaultChild;
     private int flowerCount;
@@ -174,5 +178,13 @@ public class ChildInfoEntity extends DataSupport implements Serializable{
 
     public void setFlowerCount(int flowerCount) {
         this.flowerCount = flowerCount;
+    }
+
+    public int getParentRole() {
+        return parentRole;
+    }
+
+    public void setParentRole(int parentRole) {
+        this.parentRole = parentRole;
     }
 }

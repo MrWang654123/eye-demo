@@ -106,8 +106,12 @@ public class HttpConfig {
     //?page={page}&size={size}
     public static final String URL_MESSAGE = API_HOST + "/v2/api/messages?page={page}&size={size}";
 
+    //获取新消息条数
+    //?page={page}&size={size}
+    public static final String URL_NEW_MESSAGE_COUNT = API_HOST + "/v2/api/messages/unread_message/count";
+
     //标记消息为已读
-    public static final String URL_MARK_READ = API_HOST + "/v2/messages/{message_id}/read";
+    public static final String URL_MARK_READ = API_HOST + "/v2/api/messages/{message_id}/read";
 
     //创建会话
     public static final String URL_CREATE_SESSION = API_HOST + "/v2/accounts/sessions";

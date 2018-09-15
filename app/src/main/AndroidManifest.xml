@@ -264,7 +264,8 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity android:name=".features.modules.article.activity.ArticleListActivity" />
-        <activity android:name=".features.modules.article.activity.SearchArticleActivity"></activity>
+        <activity android:name=".features.modules.article.activity.SearchArticleActivity" />
+        <activity android:name=".features.modules.register.activity.ParentRoleActivity"></activity>
     </application>
 
 </manifest>

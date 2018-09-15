@@ -22,6 +22,7 @@ import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -408,6 +409,8 @@ public class SearchArticleActivity extends BaseActivity {
                 String filterText = etSearch.getText().toString();
                 //目前空搜索文本不进行搜索，搜索文本有进行变动才搜索
                 if (!TextUtils.isEmpty(filterText) && !filterText.equals(articleDto.getFilter())) {
+                    //关闭软键盘
+                    SoftInputUtil.closeSoftInput(SearchArticleActivity.this);
                     articleDto.setFilter(filterText);
                     //刷新文章数据
                     refreshArticleData();

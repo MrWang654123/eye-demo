@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
@@ -62,6 +63,9 @@ public class ClassNumActivity extends BaseActivity {
 
     //班级信息
     private ClassInfoEntity classInfo;
+
+    //班级号
+    String classNum;
 
     @Override
     protected int setContentView() {
@@ -283,9 +287,25 @@ public class ClassNumActivity extends BaseActivity {
 
         } else {
             //获取完整的班级号字符串
-            String classNum = getFullClassNumStr();
-            //跳转到用户信息完善页面
-            UserInfoInitActivity.startUserInfoInitActivity(ClassNumActivity.this, classNum);
+//            String classNum = getFullClassNumStr();
+            //获取班级信息成功之后就赋值了该次的班级号
+            String classNum = ClassNumActivity.this.classNum;
+            if (TextUtils.isEmpty(classNum)) {
+                ToastUtil.showShort(getApplicationContext(), "请输入班级号");
+                return;
+            }
+
+            //学段：1-幼儿园，2-小学，3-初中，4-高中
+            //目前默认幼儿园和小学跳转到家长角色选择
+            if (classInfo.getPeriod() == Dictionary.PERIOD_KINDERGARTEN
+                    || classInfo.getPeriod() == Dictionary.PERIOD_PRIMARY_SCHOOL) {
+                //跳转到家长角色选择页面
+                ParentRoleActivity.startParentRoleActivity(ClassNumActivity.this, classNum);
+
+            } else {
+                //跳转到用户信息完善页面
+                UserInfoInitActivity.startUserInfoInitActivity(ClassNumActivity.this, classNum, Dictionary.PARENT_ROLE_MYSELF);
+            }
         }
     }
 
@@ -308,7 +328,7 @@ public class ClassNumActivity extends BaseActivity {
      * 根据班级号请求班级信息
      * @param classNum
      */
-    private void queryClassInfoByClassNum(String classNum) {
+    private void queryClassInfoByClassNum(final String classNum) {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(ClassNumActivity.this);
         //开启通信等待提示
@@ -334,8 +354,11 @@ public class ClassNumActivity extends BaseActivity {
                             || TextUtils.isEmpty(classInfo.getClassName())) {
                         throw new QSCustomException("班级号无效");
                     }
+
                     //刷新页面的班级信息
                     refreshClassInfoView(classInfo);
+                    //赋值班级号
+                    ClassNumActivity.this.classNum = classNum;
 
                 } catch (QSCustomException err) {
                     onFailure(err);
@@ -350,7 +373,8 @@ public class ClassNumActivity extends BaseActivity {
      * 刷新页面的班级信息
      */
     private void refreshClassInfoView(ClassInfoEntity classInfo) {
-        tvClassInfo.setText(classInfo.getSchoolName() + "-" + classInfo.getPeriod() + "-" + classInfo.getClassName());
+        String classInfoStr = classInfo.getSchoolName() + "-" + getPeriodName(classInfo.getPeriod()) + "-" + classInfo.getClassName();
+        tvClassInfo.setText(classInfoStr);
     }
 
     /**
@@ -360,7 +384,9 @@ public class ClassNumActivity extends BaseActivity {
     private String getFullClassNumStr() {
         String captcha = "";
         for (EditText editText : etCaptchaNumList) {
-            captcha += (editText.getText().charAt(1) + "");
+            if (editText.getText().length() > 1) {
+                captcha += (editText.getText().charAt(1) + "");
+            }
         }
 
         int len = captcha.length();
@@ -402,6 +428,36 @@ public class ClassNumActivity extends BaseActivity {
         SoftInputUtil.openSoftInput(ClassNumActivity.this, etCaptchaNumList.get(position));
 
         ToastUtil.showShort(getApplicationContext(), "格式不正确，请重新输入");
+    }
+
+    /**
+     * 获取学段名称
+     * @param period
+     * @return
+     */
+    private String getPeriodName(int period) {
+        String periodName = "";
+
+        switch (period) {
+            case Dictionary.PERIOD_KINDERGARTEN: {
+                periodName = "幼儿园";
+                break;
+            }
+            case Dictionary.PERIOD_PRIMARY_SCHOOL: {
+                periodName = "小学";
+                break;
+            }
+            case Dictionary.PERIOD_MIDDLE_SCHOOL: {
+                periodName = "初中";
+                break;
+            }
+            case Dictionary.PERIOD_HIGH_SCHOOL: {
+                periodName = "高中";
+                break;
+            }
+        }
+
+        return periodName;
     }
 
 }

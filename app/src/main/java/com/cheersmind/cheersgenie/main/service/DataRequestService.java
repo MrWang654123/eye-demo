@@ -1738,6 +1738,27 @@ public class DataRequestService {
 
 
     /**
+     * 获取新消息条数
+     * @param callback
+     */
+    public void getNewMessageCount(final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_NEW_MESSAGE_COUNT;
+
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
+
+    /**
      * 标记消息为已读
      * @param messageId
      * @param callback
