@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <!-- 隐藏状态栏 -->
         <item name="android:windowFullscreen">false</item>
-        <!-- 隐藏标题栏 -->
+        <!-- 隐藏系统标题栏 -->
         <item name="android:windowNoTitle">true</item>
         <!--去掉原来的ActionBar-->
         <item name="windowActionBar">false</item>

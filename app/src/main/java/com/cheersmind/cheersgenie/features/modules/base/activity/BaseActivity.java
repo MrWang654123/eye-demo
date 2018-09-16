@@ -1,7 +1,12 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.man.MANService;
@@ -88,6 +96,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             tvToolbarTitle.setText(settingTitle());
         }
 
+        //设置状态栏颜色
+        setStatusBarColor(this, getStatusBarColor());
+
         //初始化视图控件
         onInitView();
         //初始化数据
@@ -124,6 +135,81 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageDisAppear(this);
     }
+
+
+    /**
+     * 设置状态栏颜色
+     * （目前只支持5.0以上，4.4到5.0之间由于各厂商存在兼容问题，故暂不考虑）
+     * （用全屏的方式来强行模拟，感觉没必要）
+     * @param activity
+     * @param colorStatus
+     */
+    private static void setStatusBarColor(Activity activity, int colorStatus) {
+        //5.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(colorStatus);
+            //底部导航栏
+            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+
+            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }
+
+            //4.4到5.0
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            /*Window window = activity.getWindow();
+            ViewGroup decorViewGroup = (ViewGroup) window.getDecorView();
+            View statusBarView = new View(window.getContext());
+            int statusBarHeight = getStatusBarHeight(window.getContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+            params.gravity = Gravity.TOP;
+            statusBarView.setLayoutParams(params);
+            statusBarView.setBackgroundColor(colorStatus);
+            decorViewGroup.addView(statusBarView);
+
+            ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }*/
+        }
+    }
+
+    /**
+     * 用于子页面设置状态栏颜色（目前只支持5.0以后）
+     * @return
+     */
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.colorPrimary);
+    }
+
+    /**
+     * 获取状态栏高度
+     * @param context
+     * @return
+     */
+    private static int getStatusBarHeight(Context context) {
+        int statusBarHeight = 0;
+        Resources res = context.getResources();
+        int resourceId = res.getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = res.getDimensionPixelSize(resourceId);
+        }
+        return statusBarHeight;
+    }
+
 
     /**
      * mHandler发送的消息处理
