@@ -1,15 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-        google()
         jcenter()
-        mavenCentral()
-//	 maven{
-//            url'https://maven.google.com'
-//        }
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 //        Android Studio3.0与butterknife 8.8.1的冲突，暂时的解决方法是降至8.4.0的版本
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
 
@@ -18,14 +16,10 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
         jcenter()
-	
-//        maven{
-//            url'https://maven.google.com'
-//        }
-
-        maven { url 'https://jitpack.io' }
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven { url "https://jitpack.io" }
+        google()
     }
 }
 

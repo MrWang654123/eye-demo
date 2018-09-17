@@ -14,6 +14,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 
 import java.util.List;
@@ -48,12 +49,8 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         ImageView imageView = helper.getView(R.id.iv_main);
         Glide.with(context)
                 .load(url)
-                .skipMemoryCache(false)
                 .thumbnail(0.5f)
-                .placeholder(R.mipmap.dimension_icon_default)
-                .error(R.mipmap.dimension_icon_default)
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(QSApplication.getDefaultOptions())
                 .into(imageView);
 
         //测试编号

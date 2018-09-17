@@ -9,6 +9,7 @@ import com.bigkoo.convenientbanner.holder.Holder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 
 /**
@@ -34,12 +35,8 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
 //        if(!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.ivPost))){
             Glide.with(fragment)
                     .load(entity.getArticleImg())
-                    .skipMemoryCache(false)//使用缓存
                     .thumbnail(0.5f)//缩略图
-                    .placeholder(R.mipmap.dimension_icon_default)//默认占位图
-                    .error(R.mipmap.dimension_icon_default)//加载失败的图
-                    .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)//启用磁盘
+                    .apply(QSApplication.getDefaultOptions())
                     .into(imageView);
 //            imageView.setTag(R.id.ivPost,url);
 //        }

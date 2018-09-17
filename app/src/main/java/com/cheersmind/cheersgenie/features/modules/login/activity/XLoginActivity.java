@@ -164,11 +164,11 @@ public class XLoginActivity extends BaseActivity {
 //                }
 
                 //TextView显示html文本带图片
-//                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
+                startActivity(intent);
 
                 //家长角色选择页面
-                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+//                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
 
                 break;
             }

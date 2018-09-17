@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
 import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
@@ -170,6 +171,9 @@ public class ArticleDetailActivity extends BaseActivity {
     //后台总记录数
     private int totalCount = 0;
 
+    //默认Glide配置
+    RequestOptions options;
+
 
     /**
      * 开启文章详情页面
@@ -261,6 +265,11 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         });
 
+        options = new RequestOptions();
+        options.skipMemoryCache(false);//不忽略内存
+        options.placeholder(R.drawable.ic_username);//占位图
+        options.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        options.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
     }
 
 
@@ -854,12 +863,8 @@ public class ArticleDetailActivity extends BaseActivity {
             if (!TextUtils.isEmpty(avatar)) {
                 Glide.with(ArticleDetailActivity.this)
                         .load(avatar)
-                        .skipMemoryCache(false)
                         .thumbnail(0.5f)
-                        .placeholder(R.drawable.ic_username)
-                        .error(R.drawable.ic_username)
-                        .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(options)
                         .into(imageView);
             }
 

@@ -7,11 +7,13 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
@@ -130,13 +132,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         if(!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))){
             Glide.with(fragment)
                     .load(url)
-                    .skipMemoryCache(false)
                     .thumbnail(0.5f)
-//                    .fitCenter()
-                    .placeholder(R.mipmap.dimension_icon_default)
-                    .error(R.mipmap.dimension_icon_default)
-                    .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(QSApplication.getDefaultOptions())
                     .into(imageView);
             imageView.setTag(R.id.iv_icon,url);
         }

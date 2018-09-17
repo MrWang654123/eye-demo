@@ -20,13 +20,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.TopicDetail;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -158,12 +158,8 @@ public class TopicDetailActivity extends BaseActivity {
 
         Glide.with(TopicDetailActivity.this)
                 .load(topicDetail.getIcon())
-                .skipMemoryCache(false)
                 .thumbnail(0.5f)
-                .placeholder(R.mipmap.dimension_icon_default)
-                .error(R.mipmap.dimension_icon_default)
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(QSApplication.getDefaultOptions())
                 .into(ivDesc);
     }
 

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.holder.BaseHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
@@ -21,10 +22,18 @@ import java.util.List;
 public class CommentAdapter extends BaseAdapter<CommentEntity> {
 
     private Context context;
+    //默认Glide配置
+    RequestOptions options;
 
     public CommentAdapter(Context context, int layoutId, List<CommentEntity> list) {
         super(layoutId, list);
         this.context = context;
+
+        options = new RequestOptions();
+        options.skipMemoryCache(false);//不忽略内存
+        options.placeholder(R.drawable.ic_username);//占位图
+        options.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        options.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
     }
 
     @Override
@@ -38,12 +47,8 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
             if (!TextUtils.isEmpty(avatar)) {
                 Glide.with(context)
                         .load(avatar)
-                        .skipMemoryCache(false)
                         .thumbnail(0.5f)
-                        .placeholder(R.drawable.ic_username)
-                        .error(R.drawable.ic_username)
-                        .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(options)
                         .into(imageView);
             }
 

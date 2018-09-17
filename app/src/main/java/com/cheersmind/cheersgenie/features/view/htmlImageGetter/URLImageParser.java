@@ -2,17 +2,30 @@ package com.cheersmind.cheersgenie.features.view.htmlImageGetter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
+import com.cheersmind.cheersgenie.features.GlideApp;
 
 /**
  * Html图片加载器（用于TextView显示html文本带图片）
@@ -45,7 +58,42 @@ public class URLImageParser implements Html.ImageGetter {
     @Override
     public Drawable getDrawable(String source) {
         final URLImageParser.URLDrawable urlDrawable = new URLImageParser.URLDrawable();
-        Glide.with(context)
+        RequestOptions options = new RequestOptions();
+        options.diskCacheStrategy(DiskCacheStrategy.ALL);
+        GlideApp.with(context)
+                .load(source)
+                .apply(options)
+                .into(new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        //目前TextView加左右padding的时候左边会留白边，未找到原因，所以用margin替代
+                        //控件宽度 - 左右padding = 图片宽度
+                        float width = tvContent.getWidth() - tvContent.getPaddingLeft() - tvContent.getPaddingRight();
+                        Bitmap resourceBitmap = ((BitmapDrawable)resource).getBitmap();
+                        int resourceWidth = resourceBitmap.getWidth();
+                        int resourceHeight = resourceBitmap.getHeight();
+                        float scale = width / resourceWidth;
+
+                        int afterWidth = (int) (resourceWidth * scale);
+                        int afterHeight = (int) (resourceHeight * scale);
+
+                        //进行等比例缩放设置
+                        Matrix matrix = new Matrix();
+                        //高的比例减去0.05是因为底部总是会多出一行空白行
+//                        matrix.postScale(scale,  (scale - 0.05f));
+                        matrix.postScale(scale,  scale);
+
+                        //缩放
+                        resourceBitmap = Bitmap.createBitmap(resourceBitmap, 0, 0, resourceWidth, resourceHeight, matrix, true);
+                        //设置到urlDrawable中
+                        urlDrawable.setBounds(0, 0, afterWidth, afterHeight);
+                        urlDrawable.setBitmap(resourceBitmap);
+
+                        tvContent.invalidate();
+                        tvContent.setText(tvContent.getText());// 解决图文重叠
+                    }
+                });
+        /*Glide.with(context)
                 .load(source)
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -73,7 +121,7 @@ public class URLImageParser implements Html.ImageGetter {
                         tvContent.invalidate();
                         tvContent.setText(tvContent.getText());// 解决图文重叠
                     }
-                });
+                });*/
         return urlDrawable;
     }
 

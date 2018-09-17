@@ -13,7 +13,10 @@ import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.BuildConfig;
+import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -32,6 +35,9 @@ public class QSApplication extends LitePalApplication {
 
     private static Context context;
     private static Handler mHandler;
+
+    //默认Glide处理参数
+    private static RequestOptions defaultOptions;
 
     /**
      * 网络状态
@@ -76,7 +82,12 @@ public class QSApplication extends LitePalApplication {
         //设置服务器地址
        setHostType();
 
-       //设置
+       //默认Glide处理参数
+        defaultOptions = new RequestOptions();
+        defaultOptions.skipMemoryCache(false);//不忽略内存
+        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
 
     }
 
@@ -175,4 +186,11 @@ public class QSApplication extends LitePalApplication {
 //        GcmRegister.register(applicationContext, "send_id", "application_id"); // 接入FCM/GCM初始化推送
     }
 
+    /**
+     * 获取默认Glide处理参数
+     * @return
+     */
+    public static RequestOptions getDefaultOptions() {
+        return defaultOptions;
+    }
 }

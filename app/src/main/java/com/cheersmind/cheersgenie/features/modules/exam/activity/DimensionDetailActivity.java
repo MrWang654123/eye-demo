@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
@@ -126,13 +127,8 @@ public class DimensionDetailActivity extends BaseActivity {
         //图片
         Glide.with(DimensionDetailActivity.this)
                 .load(dimensionInfoEntity.getIcon())
-                .skipMemoryCache(false)
                 .thumbnail(0.5f)
-//                    .fitCenter()
-//                .placeholder(R.mipmap.dimension_icon_default)
-                .error(R.mipmap.dimension_icon_default)
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(QSApplication.getDefaultOptions())
                 .into(ivDimension);
         //名称
         tvDimensionName.setText(dimensionInfoEntity.getDimensionName());
