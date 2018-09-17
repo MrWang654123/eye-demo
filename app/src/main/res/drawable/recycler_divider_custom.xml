@@ -7,7 +7,7 @@
         <!--android:endColor="#ff0000ff"-->
         <!--android:startColor="#ffff0000"  -->
         <!--android:type="linear" />-->
-    <solid android:color="@color/color_eeeeee"/>
+    <solid android:color="@color/color_f2f2f2"/>
     <size android:height="8dp"/>
 
 </shape>

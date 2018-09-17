@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -184,7 +186,7 @@ public class HomeFragment extends LazyLoadFragment {
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
             switch (view.getId()) {
                 //收藏
-                case R.id.ibtn_favorite: {
+                case R.id.iv_favorite: {
                     SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     String articleId = simpleArticleEntity.getId();
                     doFavorite(articleId, position);
@@ -250,6 +252,10 @@ public class HomeFragment extends LazyLoadFragment {
         recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
+        //添加自定义分割线
+        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
+        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听

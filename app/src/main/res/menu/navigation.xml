@@ -3,18 +3,21 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/tab_home"
         android:title="@string/title_home" />
+    <!--android:icon="@drawable/ic_home_black_24dp"-->
 
     <item
         android:id="@+id/navigation_exam"
-        android:icon="@drawable/ic_check_circle_black_24dp"
+        android:icon="@drawable/tab_exam"
         android:title="@string/title_exam" />
+    <!--android:icon="@drawable/ic_check_circle_black_24dp"-->
 
     <item
         android:id="@+id/navigation_report"
-        android:icon="@drawable/ic_description_black_24dp"
+        android:icon="@drawable/tab_report"
         android:title="@string/title_report" />
+    <!--android:icon="@drawable/ic_description_black_24dp"-->
 
     <!--<item-->
         <!--android:id="@+id/navigation_message"-->
@@ -23,7 +26,8 @@
 
     <item
         android:id="@+id/navigation_mine"
-        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:icon="@drawable/tab_mine"
         android:title="@string/title_mine" />
+    <!--android:icon="@drawable/ic_account_circle_black_24dp"-->
 
 </menu>

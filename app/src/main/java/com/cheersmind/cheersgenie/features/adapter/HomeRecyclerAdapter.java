@@ -88,16 +88,16 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         }
 
         //收藏状态初始化
-        ImageButton ibtnFavorite = helper.getView(R.id.ibtn_favorite);
+        ImageView ivFavorite = helper.getView(R.id.iv_favorite);
         if (item.isFavorite()) {
             //收藏状态
-            ibtnFavorite.setBackgroundResource(R.drawable.favorite_do);
+            ivFavorite.setImageDrawable(context.getResources().getDrawable(R.drawable.favorite_do));
         } else {
             //未收藏状态
-            ibtnFavorite.setBackgroundResource(R.drawable.favorite_not);
+            ivFavorite.setImageDrawable(context.getResources().getDrawable(R.drawable.favorite_not));
         }
         //收藏点击监听
-        helper.addOnClickListener(R.id.ibtn_favorite);
+        helper.addOnClickListener(R.id.iv_favorite);
 
     }
 }
