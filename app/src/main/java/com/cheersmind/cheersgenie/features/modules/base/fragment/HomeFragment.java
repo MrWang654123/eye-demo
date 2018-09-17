@@ -32,6 +32,7 @@ import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.banner.loader.loader.GlideImageLoader;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
@@ -46,11 +47,15 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -65,8 +70,8 @@ import butterknife.Unbinder;
 public class HomeFragment extends LazyLoadFragment {
 
     //banner
-    @BindView(R.id.convenientBanner)
-    ConvenientBanner convenientBanner;
+    @BindView(R.id.banner)
+    Banner banner;
     //最新测评模块
     @BindView(R.id.evaluation_block)
     View evaluationBlock;
@@ -84,8 +89,6 @@ public class HomeFragment extends LazyLoadFragment {
     SwipeRefreshLayout swipeRefreshLayout;
     Unbinder unbinder;
 
-    //banner内容集合
-    List<String> bannerlist;
 
     private String[] images = {"http://img2.imgtn.bdimg.com/it/u=3093785514,1341050958&fm=21&gp=0.jpg",
             "http://img2.3lian.com/2014/f2/37/d/40.jpg",
@@ -204,6 +207,10 @@ public class HomeFragment extends LazyLoadFragment {
     private static final int MSG_ERROR_QUANTITY = 1;
 
 
+    //banner文章集合
+    List<SimpleArticleEntity> bannerArticleList;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,7 +228,7 @@ public class HomeFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, contentView);
 
         //初始隐藏banner和最新评测模块
-        convenientBanner.setVisibility(View.GONE);
+        banner.setVisibility(View.GONE);
         evaluationBlock.setVisibility(View.GONE);
 
         //适配器
@@ -295,8 +302,9 @@ public class HomeFragment extends LazyLoadFragment {
     public void onResume() {
         super.onResume();
         //开始自动翻页
-        if (convenientBanner != null) {
-            convenientBanner.startTurning(BANNER_AUTO_NEXT_PAGE_TIME);
+        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
+            //开始轮播
+            banner.startAutoPlay();
         }
     }
 
@@ -304,8 +312,9 @@ public class HomeFragment extends LazyLoadFragment {
     public void onPause() {
         super.onPause();
         //停止翻页
-        if (convenientBanner != null) {
-            convenientBanner.stopTurning();
+        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
+            //结束轮播
+            banner.stopAutoPlay();
         }
         //取消toast
         ToastUtil.cancelToast();
@@ -345,7 +354,7 @@ public class HomeFragment extends LazyLoadFragment {
         DataRequestService.getInstance().getHotArticles(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                convenientBanner.setVisibility(View.GONE);
+                banner.setVisibility(View.GONE);
                 //发送通信错误消息
                 mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
@@ -357,11 +366,23 @@ public class HomeFragment extends LazyLoadFragment {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
                     //文章集合
-                    List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+                    bannerArticleList = articleRootEntity.getItems();
                     //非空
-                    if (ArrayListUtil.isNotEmpty(dataList)) {
+                    if (ArrayListUtil.isNotEmpty(bannerArticleList)) {
 //                        bannerlist = Arrays.asList(images);
-                        convenientBanner.setPages(viewHolderCreator, dataList) //mList是图片地址的集合
+                        List<String> images = new ArrayList<>();
+                        for (SimpleArticleEntity simpleArticle : bannerArticleList) {
+                            images.add(simpleArticle.getArticleImg());
+                        }
+
+                        //设置图片加载器
+                        banner.setImageLoader(new GlideImageLoader());
+                        //设置图片集合
+                        banner.setImages(images);
+                        //banner设置方法全部调用完毕时最后调用
+                        banner.start();
+                        /*ConvenientBanner convenientBanner = new ConvenientBanner();
+                        convenientBanner.setPages(viewHolderCreator, bannerArticleList) //mList是图片地址的集合
                                 .setPointViewVisible(true)    //设置指示器是否可见
                                 //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
                                 .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
@@ -370,9 +391,9 @@ public class HomeFragment extends LazyLoadFragment {
                                 .setOnItemClickListener(bannerItemClickListener)//点击监听
                                 .startTurning(BANNER_AUTO_NEXT_PAGE_TIME);     //设置自动切换（同时设置了切换时间间隔）
 //                .setManualPageable(true)  //设置手动影响（设置了该项无法手动切换）
-//        ;
-                        convenientBanner.setVisibility(View.VISIBLE);
-                        convenientBanner.startAnimation(mShowAction);
+//        ;*/
+                        banner.setVisibility(View.VISIBLE);
+                        banner.startAnimation(mShowAction);
                         //空布局：隐藏
                         emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
@@ -383,7 +404,7 @@ public class HomeFragment extends LazyLoadFragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    convenientBanner.setVisibility(View.GONE);
+                    banner.setVisibility(View.GONE);
                 }
 
             }
@@ -769,7 +790,10 @@ public class HomeFragment extends LazyLoadFragment {
         }
     }
 
-
+    /**
+     * 最新操作测评消息
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
     public void onLastExamNotice(LastHandleExamEvent event) {

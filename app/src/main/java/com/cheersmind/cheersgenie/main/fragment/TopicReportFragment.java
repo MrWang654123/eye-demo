@@ -18,7 +18,6 @@ import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
-import com.cheersmind.cheersgenie.main.helper.ChartViewHelper;
 import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -318,7 +317,7 @@ public class TopicReportFragment extends Fragment {
         DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
                 entity.getChildTopic().getExamId(),
                 entity.getTopicId(),
-                ChartViewHelper.REPORT_RELATION_TOPIC,
+                MPChartViewHelper.REPORT_RELATION_TOPIC,
                 "0", new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {

@@ -22,6 +22,11 @@ android {
         multiDexEnabled true
     }
 
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "2g" //4g
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -128,7 +133,7 @@ dependencies {
     implementation files('libs/jackson-core-2.3.2.jar')
     implementation files('libs/jackson-databind-2.3.2.jar')
     implementation files('libs/litepal-1.2.0.jar')
-    implementation project(':chartlibrary')
+//    implementation project(':chartlibrary')
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
@@ -154,5 +159,6 @@ dependencies {
     implementation files('libs/alicloud-android-push-3.1.4.aar')
 
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
+    implementation 'com.youth.banner:banner:1.4.10'
 
 }

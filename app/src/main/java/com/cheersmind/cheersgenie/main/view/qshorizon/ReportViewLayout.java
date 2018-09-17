@@ -19,7 +19,6 @@ import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
-import com.cheersmind.cheersgenie.main.helper.ChartViewHelper;
 import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -224,7 +223,7 @@ public class ReportViewLayout extends RelativeLayout {
         DataRequestService.getInstance().getTopicReportByRelation(ChildInfoDao.getDefaultChildId(),
                 dimensionInfoEntity.getChildDimension().getExamId(),
                 dimensionInfoEntity.getTopicDimensionId(),
-                ChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
+                MPChartViewHelper.REPORT_RELATION_TOPIC_DIMENSION,
                 "0", new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
