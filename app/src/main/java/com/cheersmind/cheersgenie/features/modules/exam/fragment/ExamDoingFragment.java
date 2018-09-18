@@ -172,6 +172,8 @@ public class ExamDoingFragment extends LazyLoadFragment {
         recycleView.setAdapter(recyclerAdapter);
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
+        //设置样式刷新显示的位置
+        swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
         //空布局重载点击监听
         emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {

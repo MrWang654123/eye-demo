@@ -1,12 +1,15 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
+import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -18,11 +21,14 @@ import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * 测评页面的维度的Recycler适配器
@@ -30,6 +36,25 @@ import java.util.List;
 public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<RecyclerCommonSection<DimensionInfoEntity>, BaseViewHolder> {
 
     private Fragment fragment;
+
+    //默认Glide处理参数
+    private static RequestOptions defaultOptions;
+
+    /**
+     * 初始化默认Glide处理参数
+     */
+    private void initRequestOptions() {
+        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
+                new CenterCrop(),
+                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 10), 0, RoundedCornersTransformation.CornerType.ALL));
+        //默认Glide处理参数
+        defaultOptions = new RequestOptions();
+        defaultOptions.skipMemoryCache(false);//不忽略内存
+//        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
+        defaultOptions.transform(multi);
+    }
 
     /**
      * 构造方法
@@ -39,6 +64,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
      */
     public ExamDimensionRecyclerAdapter(int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) {
         super(layoutResId, sectionHeadResId, data);
+
+        initRequestOptions();
     }
 
     /**
@@ -50,10 +77,22 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     public ExamDimensionRecyclerAdapter(Fragment fragment, int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) {
         super(layoutResId, sectionHeadResId, data);
         this.fragment = fragment;
+
+        initRequestOptions();
     }
 
     @Override
     protected void convertHead(BaseViewHolder helper, RecyclerCommonSection item) {
+        //第一个Header的分割线布局隐藏
+        int position = helper.getLayoutPosition();
+        int headCount = getHeaderLayoutCount();
+        boolean isFirst = position - headCount == 0;
+        if (isFirst) {
+            helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+        } else {
+            helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+        }
+
 //        DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item.t;
         TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
         DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
@@ -100,14 +139,16 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         helper.addOnClickListener(R.id.tv_nav_to_report);
     }
 
+//    https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=699364419,1344336727&fm=26&gp=0.jpg
+    String testImageUrl = "https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=699364419,1344336727&fm=26&gp=0.jpg";
+
     @Override
     protected void convert(BaseViewHolder helper, RecyclerCommonSection item) {
         DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item.t;
         //标题
         helper.setText(R.id.tv_title2, dimensionInfo.getDimensionName());
         //使用人数
-        String useCountFormatStr = fragment.getResources().getString(R.string.exam_dimension_use_count);
-        String useCount = String.format(useCountFormatStr, dimensionInfo.getUseCount() + "");
+        String useCount = "• " + fragment.getResources().getString(R.string.exam_dimension_use_count, dimensionInfo.getUseCount() + "");
         helper.setText(R.id.tv_used_count, useCount);
         //状态：是否完成
         DimensionInfoChildEntity childDimension = dimensionInfo.getChildDimension();
@@ -127,13 +168,15 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
 //        draweeView.setImageURI(uri);
 
         String url = dimensionInfo.getIcon();
+//        String url = testImageUrl;
         ImageView imageView = helper.getView(R.id.iv_icon);
 
         if(!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))){
             Glide.with(fragment)
-                    .load(url)
+                    .load(R.drawable.default_image_round)
+//                    .load(url)
                     .thumbnail(0.5f)
-                    .apply(QSApplication.getDefaultOptions())
+                    .apply(defaultOptions)
                     .into(imageView);
             imageView.setTag(R.id.iv_icon,url);
         }

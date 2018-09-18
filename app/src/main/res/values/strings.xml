@@ -102,6 +102,7 @@
     <string name="student">学生</string>
     <string name="parent">家长</string>
     <string name="lock_tip">请先完成%s场景下相关测评</string>
+    <string name="look_report">查看报告</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>

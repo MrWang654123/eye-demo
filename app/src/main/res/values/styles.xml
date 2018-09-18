@@ -106,5 +106,10 @@
         <item name="isFull">false</item>
     </style>
 
+    <!--TabLayout的样式-->
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 
 </resources>
