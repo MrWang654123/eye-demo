@@ -7,6 +7,7 @@
         android:title="@string/title_home" />
     <!--android:icon="@drawable/ic_home_black_24dp"-->
 
+
     <item
         android:id="@+id/navigation_exam"
         android:icon="@drawable/tab_exam"

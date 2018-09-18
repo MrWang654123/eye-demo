@@ -90,26 +90,50 @@ public class MasterTabActivity extends BaseActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            //重置导航默认图标
+            resetToDefaultIcon();
             switch (item.getItemId()) {
                 case R.id.navigation_home://首页
                     viewPager.setCurrentItem(0);
+                    //在这里替换图标
+                    item.setIcon(R.drawable.tab_home_checked);
                     return true;
                 case R.id.navigation_exam://测评
                     viewPager.setCurrentItem(1);
+                    //在这里替换图标
+                    item.setIcon(R.drawable.tab_exam_checked);
                     return true;
                 case R.id.navigation_report://报告
                     viewPager.setCurrentItem(2);
+                    //在这里替换图标
+                    item.setIcon(R.drawable.tab_report_checked);
                     return true;
 //                case R.id.navigation_message://消息
 //                    viewPager.setCurrentItem(2);
 //                    return true;
                 case R.id.navigation_mine://我的
                     viewPager.setCurrentItem(3);
+                    //在这里替换图标
+                    item.setIcon(R.drawable.tab_mine_checked);
                     return true;
             }
             return false;
         }
     };
+
+    /**
+     * 重置导航默认图标
+     */
+    private void resetToDefaultIcon() {
+        MenuItem home =  navigation.getMenu().findItem(R.id.navigation_home);
+        home.setIcon(R.drawable.tab_home_normal);
+        MenuItem exam =  navigation.getMenu().findItem(R.id.navigation_exam);
+        exam.setIcon(R.drawable.tab_exam_normal);
+        MenuItem report =  navigation.getMenu().findItem(R.id.navigation_report);
+        report.setIcon(R.drawable.tab_report_normal);
+        MenuItem mine =  navigation.getMenu().findItem(R.id.navigation_mine);
+        mine.setIcon(R.drawable.tab_mine_normal);
+    }
 
     /**
      * viewpager fragment适配器
