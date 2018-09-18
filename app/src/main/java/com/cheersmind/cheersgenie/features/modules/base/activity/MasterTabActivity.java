@@ -8,9 +8,20 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.HomeFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MessageFragment;
@@ -21,6 +32,7 @@ import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +48,9 @@ public class MasterTabActivity extends BaseActivity {
     //底部导航
     @BindView(R.id.navigation)
     BottomNavigationView navigation;
+    @BindView(R.id.navigationBar)
+    BottomNavigationBar navigationBar;
+
     //内容viewpager
     @BindView(R.id.viewPager)
     ViewPager viewPager;
@@ -73,6 +88,32 @@ public class MasterTabActivity extends BaseActivity {
         viewPager.addOnPageChangeListener(new ViewPageChangeListener());
         //缓存1+3页
         viewPager.setOffscreenPageLimit(3);
+
+        //模式和背景样式
+        navigationBar.setMode(BottomNavigationBar.MODE_FIXED)
+                .setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        //颜色
+        navigationBar //值得一提，模式跟背景的设置都要在添加tab前面，不然不会有效果。
+                .setActiveColor(R.color.color_777777)//选中颜色 图标和文字
+                .setInActiveColor(R.color.color_333333)//默认未选择颜色
+                .setBarBackgroundColor(R.color.white);//默认背景色
+        //选中监听
+        navigationBar.setTabSelectedListener(onTabSelectedListener);
+        navigationBar.offsetTopAndBottom(20);
+        //添加子项
+        navigationBar
+                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"首页")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
+//                        .setBadgeItem(mShapeBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"测评")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
+                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
+//                        .setBadgeItem(mTextBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
+                .setFirstSelectedPosition(0)//设置默认选择的按钮
+                .initialise();//所有的设置需在调用该方法前完成
     }
 
     @Override
@@ -136,6 +177,45 @@ public class MasterTabActivity extends BaseActivity {
     }
 
     /**
+     * BottomNavigationBar的选中监听
+     */
+    BottomNavigationBar.OnTabSelectedListener onTabSelectedListener = new BottomNavigationBar.OnTabSelectedListener() {
+
+        @Override
+        public void onTabSelected(int position) {
+            int index = 0;
+            switch (position){
+                case 0:
+                    index = 0;
+                    break;
+                case 1:
+                    index = 1;
+                    break;
+                case 2:
+                    index = 2;
+                    break;
+                case 3:
+                    index = 3;
+                    break;
+            }
+
+            //ViewPager切换页面
+            viewPager.setCurrentItem(index);
+        }
+
+        @Override
+        public void onTabUnselected(int position) {
+
+        }
+
+        @Override
+        public void onTabReselected(int position) {
+
+        }
+    };
+
+
+    /**
      * viewpager fragment适配器
      */
     class MyFragAdapter extends FragmentStatePagerAdapter {
@@ -176,11 +256,13 @@ public class MasterTabActivity extends BaseActivity {
         public void onPageSelected(int position) {
             //该方法只在滑动停止时调用，position滑动停止所在页面位置
             // 当滑动到某一位置，导航栏对应位置被按下
-            navigation.getMenu().getItem(position).setChecked(true);
+//            navigation.getMenu().getItem(position).setChecked(true);
             //这里使用navigation.setSelectedItemId(position);无效，
             //setSelectedItemId(position)的官网原句：Set the selected
             // menu item ID. This behaves the same as tapping on an item
             //未找到原因
+
+            navigationBar.selectTab(position);
         }
 
         @Override
