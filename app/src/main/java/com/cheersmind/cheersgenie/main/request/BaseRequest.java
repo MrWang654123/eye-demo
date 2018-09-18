@@ -92,9 +92,9 @@ public class BaseRequest {
                 .readTimeout(20, TimeUnit.SECONDS).build();
         //创建一个Request
         final Request request = new Request.Builder()
+                .url(url)
                 .addHeader("Content-Type","application/json; charset=utf-8")
                 .addHeader("Accept","application/json")
-                .url(url)
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"GET"))
                 .build();
@@ -234,6 +234,9 @@ public class BaseRequest {
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","application/json")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PATCH"))
                 .patch(fequestBody)
                 .build();
@@ -276,6 +279,9 @@ public class BaseRequest {
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","application/json")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PUT"))
                 .put(fequestBody)
                 .build();

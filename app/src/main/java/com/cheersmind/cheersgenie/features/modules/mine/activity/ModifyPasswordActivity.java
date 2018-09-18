@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
@@ -191,11 +193,8 @@ public class ModifyPasswordActivity extends BaseActivity {
                 editor.remove("user_password");
                 editor.commit();
 
-                //跳转到登录主页面（作为根activity）
-                Intent intent = new Intent(ModifyPasswordActivity.this, XLoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                //弹出修改密码成功确认对话框
+                popupConfirmModifySuccessWindows();
             }
         });
     }
@@ -245,4 +244,39 @@ public class ModifyPasswordActivity extends BaseActivity {
 
         return true;
     }
+
+
+    /**
+     * 弹出修改密码成功确认对话框
+     */
+    private void popupConfirmModifySuccessWindows() {
+        AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(ModifyPasswordActivity.this)
+                .setTitle(getResources().getString(R.string.dialog_common_title))
+                .setMessage("修改密码成功，请重新登录")
+//                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        //跳转到登录主页面（作为根activity）
+                        Intent intent = new Intent(ModifyPasswordActivity.this, XLoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .create();
+
+        //不能回退关闭
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
 }

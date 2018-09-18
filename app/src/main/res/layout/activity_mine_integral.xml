@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@color/white"
     android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <!--android:background="@color/color_eeeeee"-->
@@ -14,8 +14,9 @@
     <RelativeLayout
         android:id="@+id/rl_total_integral"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_height="55dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
         <TextView
             android:id="@+id/tv_has_integral"
@@ -23,17 +24,50 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_777777"
             android:text="@string/total_integral"/>
+
+        <TextView
+            android:id="@+id/tv_has_integral_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_has_integral"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_ff8b00"
+            android:text="55"/>
+
+        <TextView
+            android:id="@+id/tv_usable_integral_val"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textColor="@color/color_ff8b00"
+            android:textStyle="bold"
+            android:text="30"/>
 
         <TextView
             android:id="@+id/tv_usable_integral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/tv_usable_integral_val"
             android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:textColor="@color/color_777777"
+            android:textStyle="bold"
             android:text="@string/available_integral"/>
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#f2f2f2"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

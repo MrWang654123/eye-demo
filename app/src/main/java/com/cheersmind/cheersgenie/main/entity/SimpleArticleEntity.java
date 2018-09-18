@@ -68,12 +68,12 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     private ArticleCategory category;
 
     //是否收藏
-    @InjectMap(name = "favorite")
-    private boolean favorite;
+    @InjectMap(name = "is_favorite")
+    private boolean isFavorite;
 
     //是否点赞
-    @InjectMap(name = "like")
-    private boolean like;
+    @InjectMap(name = "is_like")
+    private boolean isLike;
 
     public String getId() {
         return id;
@@ -188,18 +188,18 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     }
 
     public boolean isFavorite() {
-        return favorite;
+        return isFavorite;
     }
 
     public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
+        isFavorite = favorite;
     }
 
     public boolean isLike() {
-        return like;
+        return isLike;
     }
 
     public void setLike(boolean like) {
-        this.like = like;
+        isLike = like;
     }
 }

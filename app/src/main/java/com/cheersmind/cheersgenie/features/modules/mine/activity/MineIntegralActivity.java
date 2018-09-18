@@ -1,6 +1,8 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -40,10 +42,10 @@ public class MineIntegralActivity extends BaseActivity {
     ////总积分的布局
     @BindView(R.id.rl_total_integral)
     RelativeLayout rlTotalIntegral;
-    @BindView(R.id.tv_has_integral)
-    TextView tvHasIntegral;
-    @BindView(R.id.tv_usable_integral)
-    TextView tvUsableIntegral;
+    @BindView(R.id.tv_has_integral_val)
+    TextView tvHasIntegralVal;
+    @BindView(R.id.tv_usable_integral_val)
+    TextView tvUsableIntegralVal;
     //积分列表
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -111,8 +113,15 @@ public class MineIntegralActivity extends BaseActivity {
         recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(MineIntegralActivity.this));
         recycleView.setAdapter(recyclerAdapter);
+        //添加自定义分割线
+//        DividerItemDecoration divider = new DividerItemDecoration(MineIntegralActivity.this,DividerItemDecoration.VERTICAL);
+//        divider.setDrawable(ContextCompat.getDrawable(MineIntegralActivity.this,R.drawable.recycler_divider_line_f5f5f5));
+//        recycleView.addItemDecoration(divider);
+
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
+        //设置样式刷新显示的位置
+        swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
         emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
@@ -173,9 +182,9 @@ public class MineIntegralActivity extends BaseActivity {
         //总积分的布局
         rlTotalIntegral.setVisibility(View.VISIBLE);
         //总积分
-        tvHasIntegral.setText(getResources().getString(R.string.total_integral,totalIntegralEntity.getTotal() + ""));
+        tvHasIntegralVal.setText(totalIntegralEntity.getTotal() + "");
         //可用积分
-        tvUsableIntegral.setText(getResources().getString(R.string.available_integral, totalIntegralEntity.getConsumable() + ""));
+        tvUsableIntegralVal.setText(totalIntegralEntity.getConsumable() + "");
     }
 
     /**

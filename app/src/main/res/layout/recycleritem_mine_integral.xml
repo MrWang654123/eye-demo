@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardView"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginLeft="3dp"
-    android:layout_marginRight="3dp"
+    android:orientation="vertical">
 
-    card_view:cardBackgroundColor="@android:color/white"
-    card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="1dp"
-    card_view:cardUseCompatPadding="true">
-    <!--android:foreground="?android:attr/selectableItemBackground"-->
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:orientation="horizontal">
+
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:textColor="@color/color_777777"
+            android:textSize="14sp"
             android:text="首次发表主题"/>
 
         <TextView
             android:id="@+id/tv_integral_change"
-            android:layout_width="wrap_content"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/tv_title"
-            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:textColor="#ff8000"
             android:text="+5"/>
+
         <TextView
             android:id="@+id/tv_datetime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:textColor="@color/color_777777"
             android:text="2018-08-20 21:08"/>
-    </RelativeLayout>
 
+    </LinearLayout>
 
-</android.support.v7.widget.CardView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#f2f2f2"/>
+
+</LinearLayout>
+

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
+    android:background="@color/color_f5f5f5"
     android:orientation="vertical">
 
     <!--标题栏-->
@@ -12,8 +13,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:background="@color/white"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,7 +23,7 @@
             android:layout_centerVertical="true"
             android:text="声音"
             android:textSize="15sp"
-            android:textColor="@color/color_717171"/>
+            android:textColor="@color/color_333333"/>
 
         <Switch
             android:id="@+id/st_music"
@@ -39,7 +41,7 @@
         android:textSize="14sp"
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:background="#e7e7e7" />
+        android:background="@color/color_f5f5f5" />
 
     <RelativeLayout
         android:id="@+id/rl_account_bind"
@@ -51,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:gravity="center_vertical"
-            android:textColor="@color/color_717171"
+            android:textColor="@color/color_333333"
             android:textSize="14sp"
             android:text="账号绑定设置" />
 
@@ -67,7 +69,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
+        android:background="@color/color_f2f2f2"/>
 
     <RelativeLayout
         android:id="@+id/rl_about"
@@ -84,7 +86,7 @@
             android:ellipsize="end"
             android:textSize="14sp"
             android:text="关于我们"
-            android:textColor="@color/color_717171"/>
+            android:textColor="@color/color_333333"/>
 
         <ImageView
             android:layout_width="20dp"
@@ -99,14 +101,14 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
+        android:background="@color/color_f2f2f2"/>
 
     <RelativeLayout
         android:id="@+id/rl_update"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:background="@drawable/selector_mine_btn">
         <TextView
             android:layout_width="wrap_content"
@@ -114,7 +116,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/color_717171"
+            android:textColor="@color/color_333333"
             android:textSize="14sp"
             android:text="检查更新" />
 
@@ -134,7 +136,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
+        android:background="@color/color_f2f2f2"/>
 
     <RelativeLayout
         android:id="@+id/rl_license"
@@ -149,7 +151,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/color_717171"
+            android:textColor="@color/color_333333"
             android:textSize="14sp"
             android:text="用户许可协议" />
 
@@ -166,7 +168,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
+        android:background="@color/color_f2f2f2"/>
 
     <RelativeLayout
         android:id="@+id/rl_cache"
@@ -179,7 +181,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textColor="@color/color_717171"
+            android:textColor="@color/color_333333"
             android:textSize="14sp"
             android:text="清除缓存" />
 
@@ -203,7 +205,7 @@
         android:textSize="14sp"
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:background="#e7e7e7" />
+        android:background="@color/color_f5f5f5" />
 
     <RelativeLayout
         android:layout_width="match_parent"

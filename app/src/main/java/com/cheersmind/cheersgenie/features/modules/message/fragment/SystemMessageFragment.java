@@ -5,15 +5,19 @@ import android.content.DialogInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.SystemMessageRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -22,12 +26,14 @@ import com.cheersmind.cheersgenie.main.entity.MessageEntity;
 import com.cheersmind.cheersgenie.main.entity.MessageRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DataCleanCacheUtils;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -76,26 +82,14 @@ public class SystemMessageFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//            ToastUtil.showShort(getContext(), "点击了第" + (position +1) +"项");
             //显示消息对话框
             MessageEntity messageEntity = recyclerAdapter.getData().get(position);
-            new AlertDialog.Builder(getContext())
-                    .setTitle(messageEntity.getTitle())
-                    .setMessage(messageEntity.getMessage())
-                    .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    })
-//                    .setPositiveButton("返回", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                        }
-//                    })
-                    .create().show();
+            popupMessageWindows(messageEntity);
 
             //如果当前消息为未读，则请求标记为已读
-            doMarkRead(messageEntity.getId(), position);
+            if (messageEntity.getStatus() == Dictionary.MESSAGE_STATUS_UNREAD) {
+                doMarkRead(messageEntity.getId(), position);
+            }
         }
     };
 
@@ -336,6 +330,52 @@ public class SystemMessageFragment extends LazyLoadFragment {
         });
     }
 
+
+    /**
+     * 弹出消息对话框
+     */
+    private void popupMessageWindows(MessageEntity messageEntity) {
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.popup_window_message, null);
+//        .setTitle(messageEntity.getTitle())
+//                .setMessage(messageEntity.getMessage())
+        //标题
+        TextView tvTitle = view.findViewById(R.id.tv_title);
+        //内容
+        TextView tvContent = view.findViewById(R.id.tv_content);
+        tvTitle.setText(messageEntity.getTitle());
+        tvContent.setText(messageEntity.getMessage());
+
+        new android.support.v7.app.AlertDialog.Builder(getContext())
+                .setTitle(messageEntity.getTitle())
+                .setMessage(messageEntity.getMessage())
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                /*.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })*/
+                .create().show();
+        /*new AlertDialog.Builder(getContext())
+                .setView(view)
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+//                    .setPositiveButton("返回", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                        }
+//                    })
+                .create().show();*/
+
+    }
 
 }
 

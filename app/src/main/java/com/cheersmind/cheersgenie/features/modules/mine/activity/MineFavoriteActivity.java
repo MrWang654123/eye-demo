@@ -1,6 +1,8 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.MineFavoriteRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
@@ -47,7 +50,7 @@ public class MineFavoriteActivity extends BaseActivity {
     //适配器的数据列表
 //    List<SimpleArticleEntity> recyclerItem;
     //适配器
-    MineFavoriteRecyclerAdapter recyclerAdapter;
+    HomeRecyclerAdapter recyclerAdapter;
 
     //下拉刷新的监听
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
@@ -92,7 +95,7 @@ public class MineFavoriteActivity extends BaseActivity {
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
             switch (view.getId()) {
                 //收藏
-                case R.id.ibtn_favorite:{
+                case R.id.iv_favorite:{
                     SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     String articleId = simpleArticleEntity.getId();
                     doCancelFavorite(articleId, position);
@@ -117,7 +120,7 @@ public class MineFavoriteActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //适配器
-        recyclerAdapter = new MineFavoriteRecyclerAdapter(MineFavoriteActivity.this, R.layout.recycleritem_mine_favorite, null);
+        recyclerAdapter = new HomeRecyclerAdapter(MineFavoriteActivity.this, R.layout.recycleritem_home, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -129,6 +132,10 @@ public class MineFavoriteActivity extends BaseActivity {
         recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(MineFavoriteActivity.this));
         recycleView.setAdapter(recyclerAdapter);
+        //添加自定义分割线
+        DividerItemDecoration divider = new DividerItemDecoration(MineFavoriteActivity.this,DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(MineFavoriteActivity.this,R.drawable.recycler_divider_custom));
+        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
@@ -136,6 +143,8 @@ public class MineFavoriteActivity extends BaseActivity {
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
+        //设置样式刷新显示的位置
+        swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
         emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
@@ -337,13 +346,18 @@ public class MineFavoriteActivity extends BaseActivity {
 //                    simpleArticleEntity.setFavorite(favorite);
                     recyclerAdapter.getData().remove(position);
                     int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();
-                    //把header计算在内
+//                    //把header计算在内
                     recyclerAdapter.notifyItemRemoved(tempPosition);
 
                     //无数据处理
                     if (recyclerAdapter.getData().size() == 0) {
                         //空布局设置：没有数据
                         emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        //重置数据为空
+                        recyclerAdapter.setNewData(null);
+                    } else {
+                        //把header计算在内
+                        recyclerAdapter.notifyItemRemoved(tempPosition);
                     }
 
                 } catch (Exception e) {

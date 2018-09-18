@@ -78,6 +78,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:paddingLeft="20dp"
+                android:maxLength="24"
                 android:textColor="@color/color_333333"
                 android:imeOptions="actionDone"
                 android:textSize="15sp" />

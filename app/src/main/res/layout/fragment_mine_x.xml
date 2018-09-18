@@ -116,7 +116,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:text="我的积分"
                     />
 
@@ -140,7 +140,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#f2f2f2"/>
+                android:background="@color/color_f2f2f2"/>
 
             <LinearLayout
                 android:id="@+id/ll_mine_message"
@@ -170,7 +170,7 @@
                         android:maxLines="1"
                         android:ellipsize="end"
                         android:textColor="@color/color_333333"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:text="我的消息" />
 
                     <TextView
@@ -204,7 +204,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#f2f2f2" />
+                android:background="@color/color_f2f2f2" />
 
 
 
@@ -232,7 +232,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:text="我的收藏" />
 
                 <RelativeLayout
@@ -256,7 +256,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#f2f2f2"/>
+                android:background="@color/color_f2f2f2"/>
 
             <LinearLayout
                 android:id="@+id/ll_mine_report"
@@ -281,7 +281,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:text="我的智评" />
 
                 <RelativeLayout
@@ -335,7 +335,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:text="意见反馈" />
 
                 <RelativeLayout
@@ -358,7 +358,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#f2f2f2"/>
+                android:background="@color/color_f2f2f2"/>
 
             <LinearLayout
                 android:id="@+id/ll_setting"
@@ -384,7 +384,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:text="设置" />
 
                 <RelativeLayout

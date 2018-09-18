@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:lineSpacingMultiplier="1.3"
+        android:textColor="@color/color_333333"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:text="我是标题啊啊啊"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#fafafa"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:lineSpacingMultiplier="1.3"
+        android:textColor="@color/color_555555"
+        android:textSize="16sp"
+        android:text="我是内容那个时间的飞机喀什的房价快速搭建开发升级到封建士大夫精神的积分升级到封建时代反击数据的飞机喀什地方"/>
+
+</LinearLayout>
