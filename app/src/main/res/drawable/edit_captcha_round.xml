@@ -4,10 +4,10 @@
     <item android:state_focused="true">
         <shape>
             <gradient 
-	    		android:startColor="#fd914e"
-	    		android:endColor="#ea5a28"
+	    		android:startColor="#eaebe3"
+	    		android:endColor="#eaebe3"
                 android:angle="90"/>
-            <stroke android:width="1dip" android:color="#f27a38"/>
+            <stroke android:width="1dip" android:color="#eaebe3"/>
             <!-- <padding android:left="10dp" android:right="10dp"
                 	android:top="0dp" android:bottom="0dp"/> -->
             <corners android:radius="8dp"/>
@@ -17,10 +17,23 @@
     <item android:state_enabled="true">
         <shape>
             <gradient
-                android:startColor="#fd914e"
-                android:endColor="#ea5a28"
+                android:startColor="#eaebe3"
+                android:endColor="#eaebe3"
                 android:angle="90"/>
-            <stroke android:width="1dip" android:color="#f27a38"/>
+            <stroke android:width="1dip" android:color="#eaebe3"/>
+            <!-- <padding android:left="10dp" android:right="10dp"
+                	android:top="0dp" android:bottom="0dp"/> -->
+            <corners android:radius="8dp"/>
+        </shape>
+    </item>
+
+    <item android:state_enabled="false">
+        <shape>
+            <gradient
+                android:startColor="#f4f5ed"
+                android:endColor="#f4f5ed"
+                android:angle="90"/>
+            <stroke android:width="1dip" android:color="#f4f5ed"/>
             <!-- <padding android:left="10dp" android:right="10dp"
                 	android:top="0dp" android:bottom="0dp"/> -->
             <corners android:radius="8dp"/>
@@ -30,10 +43,10 @@
 	<item>
 	    <shape>
             <gradient 
-	    		android:startColor="#cccccc"
-	    		android:endColor="#dddddd"
+	    		android:startColor="#eaebe3"
+	    		android:endColor="#eaebe3"
                 android:angle="270"/>
-            <stroke android:width="1dip" android:color="#bbbbbb"/>
+            <stroke android:width="1dip" android:color="#eaebe3"/>
             <!-- <padding android:left="10dp" android:right="10dp"
                 	android:top="0dp" android:bottom="0dp"/> -->
             <corners android:radius="8dp"/>

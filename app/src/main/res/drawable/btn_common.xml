@@ -5,5 +5,5 @@
     <item android:state_enabled="true" android:state_pressed="true" android:drawable="@drawable/btn_common_normal" />
     <item android:state_focused="true" android:state_enabled="true" android:drawable="@drawable/btn_common_normal" />
     <item android:state_enabled="true" android:drawable="@drawable/btn_common_normal" />
-    <item android:drawable="@drawable/btn_common_normal"></item>
+    <item android:drawable="@drawable/btn_common_normal"/>
 </selector>

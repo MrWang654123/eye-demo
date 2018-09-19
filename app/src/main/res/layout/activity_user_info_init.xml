@@ -13,136 +13,53 @@
         <include layout="@layout/toolbar"/>
 
         <TextView
+            android:id="@+id/tv_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
             android:layout_gravity="center_horizontal"
-            android:text="更好为您提供数据服务，请输入真实的信息"
-            android:textColor="@color/colorAccent"/>
+            android:textSize="26sp"
+            android:textColor="@color/color_333333"
+            android:textStyle="bold"
+            android:text="个人信息"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="35dp"
+            android:layout_gravity="center_horizontal"
+            android:text="为了更好为您提供数据服务，请输入真实的信息"
+            android:textSize="13sp"
+            android:textColor="@color/color_ff8b00"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/ll_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:drawableLeft="@mipmap/register_star"
-                    android:drawablePadding="5dp"
-                    android:text="姓"
-                    android:textColor="@color/color_333333"
-                    android:textSize="14sp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="姓名"
-                    android:visibility="invisible"
-                    android:textColor="@color/color_333333"
-                    android:textSize="14sp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="名:"
-                    android:textColor="@color/color_333333"
-                    android:textSize="14sp"/>
-            </LinearLayout>
-
-
-
-            <EditText
-                android:id="@+id/et_username"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:background="@drawable/shape_corner_ececec"
-                android:singleLine="true"
-                android:hint=""
-                android:layout_toRightOf="@+id/ll_user_name"
-                android:textColor="@color/color_7b7b7b"
-                android:textSize="14sp"/>
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/tv_birthday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:drawableLeft="@mipmap/register_star"
-                android:drawablePadding="5dp"
-                android:text="出生日期:"
-                android:textColor="@color/color_333333"
-                android:textSize="14sp"/>
-
-            <EditText
-                android:id="@+id/et_birthday"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:focusable="false"
-                android:background="@drawable/shape_corner_ececec"
-                android:hint=""
-                android:layout_toRightOf="@+id/tv_birthday"
-                android:textColor="@color/color_7b7b7b"
-                android:textSize="14sp"/>
-
-            <ImageView
-                android:id="@+id/iv_time_select"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@mipmap/icon_ri_li"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="25dp"/>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="170dp"
             android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
+
             <TextView
-                android:id="@+id/tv_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:drawableLeft="@mipmap/register_star"
-                android:drawablePadding="5dp"
-                android:text="性        别:"
-                android:textColor="@color/color_333333"
-                android:textSize="14sp"/>
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/shape_corner_fe8c00_8dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="我是"/>
 
             <RadioGroup
                 android:id="@+id/rg_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -150,19 +67,101 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radio_btn_gender_male"
+                    android:background="@color/transpera"
+                    android:gravity="center_horizontal"
                     android:text="男"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
 
                 <RadioButton
                     android:id="@+id/rb_gender_female"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radio_btn_gender_female"
+                    android:background="@color/transpera"
+                    android:gravity="center_horizontal"
                     android:text="女"
                     android:textColor="@color/color_333333"
-                    android:textSize="14sp"/>
+                    android:textSize="16sp"/>
             </RadioGroup>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightBigWidget"
+            android:background="@drawable/shape_corner_f4f5ed_8dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:padding="8dp"
+                android:src="@drawable/user_name"/>
+
+            <EditText
+                android:id="@+id/et_username"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginRight="10dp"
+                android:singleLine="true"
+                android:background="@color/transpera"
+                android:hint="请输入姓名"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightBigWidget"
+            android:background="@drawable/shape_corner_f4f5ed_8dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:padding="8dp"
+                android:src="@drawable/user_name"/>
+
+            <EditText
+                android:id="@+id/et_birthday"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/transpera"
+                android:focusable="false"
+                android:hint="点击选择日期"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp"/>
+
+            <ImageView
+                android:id="@+id/iv_time_select"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="3dp"
+                android:src="@mipmap/icon_ri_li"
+                android:layout_marginRight="15dp"/>
 
         </LinearLayout>
 
@@ -176,12 +175,13 @@
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightDefaultWidget"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/btn_common_round"
+                android:layout_height="@dimen/heightBigWidget"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/btn_common"
                 android:enabled="true"
-                android:text="完   成"
-                android:textColor="@drawable/textcolor_common"
+                android:text="@string/complete"
+                android:textColor="@color/color_333333"
                 android:textSize="16sp" />
 
         </LinearLayout>

@@ -241,7 +241,7 @@ public class ClassNumActivity extends BaseActivity {
             }
             case R.id.tv_class_num_desc: {
                 //班级号QAQ对话框
-                popupClassNumDialog();
+//                popupClassNumDialog();
                 break;
             }
         }

@@ -12,11 +12,49 @@
         <!--标题栏-->
         <include layout="@layout/toolbar"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/captcha_has_send_to"/>
+
+            <TextView
+                android:id="@+id/tv_send_phonenum_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/color_333333"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:text="18065033862"/>
+
+            <Button
+                android:id="@+id/btn_send_again"
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="重新发送"
+                android:background="@drawable/btn_common_captcha"
+                android:textColor="@color/color_333333"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="2dp"
             android:gravity="center_horizontal">
             <EditText
                 android:id="@+id/et_captcha_num1"
@@ -48,8 +86,8 @@
         <RelativeLayout
             android:id="@+id/rl_image_captcha"
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="44dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
             android:layout_marginTop="15dp">
@@ -57,15 +95,16 @@
             <EditText
                 android:id="@+id/et_image_captcha"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/heightBigWidget"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:background="#00000000"
-                android:hint="请输入图形验证码"
+                android:background="@drawable/shape_corner_f4f5ed_8dp"
+                android:hint="图形验证码"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:maxLength="8"
+                android:paddingLeft="20dp"
                 android:textColor="@color/color_333333"
                 android:imeOptions="actionDone"
                 android:textSize="15sp" />
@@ -76,12 +115,93 @@
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_image_small"/>
 
-            <include layout="@layout/edittext_bottom_part_line"/>
         </RelativeLayout>
 
+        <!--密码输入-->
+        <RelativeLayout
+            android:id="@+id/rl_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp">
+
+            <EditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightBigWidget"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/shape_corner_f4f5ed_8dp"
+                android:hint="请输入密码"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingLeft="20dp"
+                android:maxLength="24"
+                android:textColor="@color/color_333333"
+                android:imeOptions="actionDone"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cbox_password"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:drawableLeft="@drawable/rbtn_password_view"/>
+
+        </RelativeLayout>
+
+        <!--确认密码输入-->
+        <RelativeLayout
+            android:id="@+id/rl_again_password"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp">
+
+            <EditText
+                android:id="@+id/et_again_password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightBigWidget"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/shape_corner_f4f5ed_8dp"
+                android:hint="请输入确认密码"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingLeft="20dp"
+                android:maxLength="24"
+                android:textColor="@color/color_333333"
+                android:imeOptions="actionDone"
+                android:textSize="15sp" />
+
+            <CheckBox
+                android:id="@+id/cbox_again_password"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:layout_centerVertical="true"
+                android:background="@android:color/transparent"
+                android:button="@null"
+                android:drawableLeft="@drawable/rbtn_password_view"/>
+
+        </RelativeLayout>
+
+        <!--确认按钮-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,35 +209,15 @@
             android:layout_marginRight="45dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_send_phonenum_tip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/color_ffa200"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/captcha_has_send_to"/>
-
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightDefaultWidget"
+                android:layout_height="@dimen/heightBigWidget"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/btn_common_round"
+                android:background="@drawable/btn_common"
                 android:enabled="true"
                 android:text="@string/next"
-                android:textColor="@drawable/textcolor_common"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/btn_send_again"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/heightDefaultWidget"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/btn_common_round"
-                android:enabled="true"
-                android:text="重新发送"
-                android:textColor="@drawable/textcolor_common"
+                android:textColor="@color/color_333333"
                 android:textSize="16sp" />
 
         </LinearLayout>

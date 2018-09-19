@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.bigkoo.pickerview.TimePickerView;
 import com.cheersmind.cheersgenie.R;
@@ -50,6 +51,9 @@ public class UserInfoInitActivity extends BaseActivity {
     //角色
     private static final String PARENT_ROLE = "PARENT_ROLE";
 
+    //子标题
+    @BindView(R.id.tv_sub_title)
+    TextView tvSubTitle;
     //用户名
     @BindView(R.id.et_username)
     EditText etUsername;
@@ -131,6 +135,13 @@ public class UserInfoInitActivity extends BaseActivity {
 
         //家长角色
         parentRole = getIntent().getIntExtra(PARENT_ROLE, Dictionary.PARENT_ROLE_MYSELF);
+
+        //初始化子标题
+        if (parentRole == Dictionary.PARENT_ROLE_MYSELF) {
+            tvSubTitle.setText("个人信息");
+        } else {
+            tvSubTitle.setText("孩子信息");
+        }
     }
 
 

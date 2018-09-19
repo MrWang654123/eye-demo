@@ -111,6 +111,13 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     protected abstract String settingTitle();
 
     /**
+     * 设置title
+     */
+    protected void settingTitle(String title) {
+        tvToolbarTitle.setText(title);
+    }
+
+    /**
      * 初始化视图控件
      */
     protected abstract void onInitView();

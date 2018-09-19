@@ -12,10 +12,20 @@
         <!--标题栏-->
         <include layout="@layout/toolbar"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="26sp"
+            android:textColor="@color/color_333333"
+            android:textStyle="bold"
+            android:text="班级群号"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="40dp"
             android:gravity="center_horizontal">
             <EditText
                 android:id="@+id/et_captcha_num1"
@@ -62,7 +72,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="45dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:orientation="vertical">
 
             <TextView
@@ -79,19 +90,63 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/color_ff8b00"
                 android:layout_gravity="center_horizontal"
+                android:textSize="17sp"
                 android:text="什么是班级群号？"/>
+
+            <!--班级群号解释-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:background="@drawable/shape_corner_f4f5ed_8dp"
+                android:layout_marginTop="10dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_ff8b00"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:text="@string/class_num_tip_title"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_444444"
+                    android:text="需要对班级群号进行验证，"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_444444"
+                    android:text="如果是初高中生，直接填写学生信息，"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/color_444444"
+                    android:text="如果是幼小，使用家长+学生信息"/>
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightDefaultWidget"
+                android:layout_height="@dimen/heightBigWidget"
                 android:layout_marginTop="30dp"
-                android:background="@drawable/btn_common_round"
+                android:background="@drawable/btn_common"
                 android:enabled="true"
                 android:text="@string/next"
-                android:textColor="@color/color_text_white"
+                android:textColor="@color/color_333333"
                 android:textSize="16sp" />
 
         </LinearLayout>

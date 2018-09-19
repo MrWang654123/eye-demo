@@ -109,10 +109,14 @@
 
     <!--注册-->
     <string name="captcha">验证码</string>
-    <string name="captcha_has_send_to">已发送验证码至%s</string>
+    <string name="captcha_has_send_to">验证码已发送至</string>
     <string name="next">下一步</string>
     <string name="register">注册</string>
     <string name="bind">绑定</string>
+
+    <!--用户信息完善-->
+    <string name="class_num_tip_title">F&#38;Q</string>
+    <string name="complete">完成</string>
 
     <!--文章-->
     <string name="search_edit_text_hint">搜索你想看到的内容</string>

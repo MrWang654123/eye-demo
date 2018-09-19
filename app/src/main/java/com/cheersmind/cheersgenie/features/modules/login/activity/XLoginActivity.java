@@ -19,6 +19,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ParentRoleActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
+import com.cheersmind.cheersgenie.features.modules.register.activity.UserInfoInitActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.SchemaActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.TextViewForHtmlImageActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
@@ -126,7 +127,7 @@ public class XLoginActivity extends BaseActivity {
      */
     @OnClick({R.id.btn_login, R.id.btn_register, R.id.iv_wx_login, R.id.iv_qq_login,
             R.id.btn_third_page, R.id.tv_license})
-    public void click(View view) {
+    public void onViewClick(View view) {
         switch (view.getId()) {
             //注册
             case R.id.btn_register: {
@@ -164,11 +165,15 @@ public class XLoginActivity extends BaseActivity {
 //                }
 
                 //TextView显示html文本带图片
-                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
+//                startActivity(intent);
 
                 //家长角色选择页面
-//                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+
+                //完善信息页面
+//                Intent intent = new Intent(XLoginActivity.this, UserInfoInitActivity.class);
+//                startActivity(intent);
 
                 break;
             }

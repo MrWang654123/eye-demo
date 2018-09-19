@@ -1,44 +1,63 @@
 package com.cheersmind.cheersgenie.features.modules.register.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.man.MANService;
+import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
+import com.cheersmind.cheersgenie.features.dto.RegisterDto;
+import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.ModifyPasswordActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
+import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.List;
 import java.util.Map;
@@ -91,6 +110,20 @@ public class RegisterCaptchaActivity extends BaseActivity {
     @BindViews({R.id.et_captcha_num1, R.id.et_captcha_num2, R.id.et_captcha_num3,
             R.id.et_captcha_num4, R.id.et_captcha_num5, R.id.et_captcha_num6})
     List<EditText> etCaptchaNumList;
+
+    //密码模块
+    @BindView(R.id.rl_password)
+    RelativeLayout rlPassword;
+    @BindView(R.id.rl_again_password)
+    RelativeLayout rlAgainPassword;
+    @BindView(R.id.et_password)
+    EditText etPassword;
+    @BindView(R.id.et_again_password)
+    EditText etAgainPassword;
+    @BindView(R.id.cbox_password)
+    CheckBox cboxPassword;
+    @BindView(R.id.cbox_again_password)
+    CheckBox cboxAgainPassword;
 
     //当前输入索引
     int position = 0;
@@ -149,6 +182,38 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //初始化计时器
         countTimer = new CountTimer(COUNT_DOWN, 1000);
         countTimer.start();
+
+        //密码显隐
+        cboxPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //如果选中，显示密码
+                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    //否则隐藏密码
+                    etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+                //光标置于末尾
+                etPassword.setSelection(etPassword.getText().length());
+            }
+        });
+
+        //确认密码显隐
+        cboxAgainPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    //如果选中，显示密码
+                    etAgainPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    //否则隐藏密码
+                    etAgainPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+                //光标置于末尾
+                etAgainPassword.setSelection(etAgainPassword.getText().length());
+            }
+        });
     }
 
     @Override
@@ -164,14 +229,52 @@ public class RegisterCaptchaActivity extends BaseActivity {
             ToastUtil.showShort(getApplicationContext(), "数据传递有误");
             return;
         }
+
         //发送号码提示
-        tvSendPhonenumTip.setText(getResources().getString(R.string.captcha_has_send_to, phoneNum));
+        tvSendPhonenumTip.setText(phoneNum);
+
+        //初始隐藏验证码模块
+        rlImageCaptcha.setVisibility(View.GONE);
+        //初始隐藏密码模块
+        rlPassword.setVisibility(View.GONE);
+        rlAgainPassword.setVisibility(View.GONE);
+
         //操作类型
         smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
-        //操作类型为绑定手机号
-        if (smsType == Dictionary.SmsType_Bind_Phone_Num) {
-            //修改按钮文字为“绑定”
-            btnConfirm.setText(getResources().getString(R.string.bind));
+        switch (smsType) {
+            //操作类型：绑定手机号
+            case Dictionary.SmsType_Bind_Phone_Num: {
+                //设置标题
+                settingTitle("绑定手机号");
+                //修改按钮文字为“绑定”
+                btnConfirm.setText(getResources().getString(R.string.bind));
+                break;
+            }
+            //操作类型：注册用户
+            case Dictionary.SmsType_Register: {
+                //设置标题
+                settingTitle("注册");
+                //修改按钮文字为“注册”
+                btnConfirm.setText(getResources().getString(R.string.register));
+                //密码编辑框默认提示文本
+                etPassword.setHint("请输入密码");
+                //显示密码模块
+                rlPassword.setVisibility(View.VISIBLE);
+                break;
+            }
+            //操作类型：找回密码
+            case Dictionary.SmsType_Retrieve_Password: {
+                //设置标题
+                settingTitle("找回密码");
+                //修改按钮文字为“登录”
+                btnConfirm.setText("登录");
+                //密码编辑框默认提示文本
+                etPassword.setHint("请输入新密码");
+                //显示密码模块
+                rlPassword.setVisibility(View.VISIBLE);
+                rlAgainPassword.setVisibility(View.VISIBLE);
+                break;
+            }
         }
 
         thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
@@ -262,13 +365,36 @@ public class RegisterCaptchaActivity extends BaseActivity {
     private void captchaInputComplete() {
 //        ToastUtil.showShort(RegisterCaptchaActivity.this, "验证码输入结束，请求服务器进行验证");
         //隐藏软键盘
-        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
+//        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
 
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 //自动操作下一步
-                doNextDept();
+//                doNextDept();
+                switch (smsType) {
+                    //操作类型：绑定手机号
+                    case Dictionary.SmsType_Bind_Phone_Num: {
+                        //自动操作下一步
+                        doNextDept();
+                        break;
+                    }
+                    //操作类型：注册用户
+                    case Dictionary.SmsType_Register:
+                    //操作类型：找回密码
+                    case Dictionary.SmsType_Retrieve_Password:{
+                        //如果图形验证码为显示状态则聚焦，否则聚焦密码输入
+                        if (rlImageCaptcha.getVisibility() == View.VISIBLE) {
+                            etImageCaptcha.requestFocus();
+                        } else {
+                            //聚焦密码输入
+                            etPassword.requestFocus();
+                            etPassword.setSelection(etPassword.getText().length());
+                        }
+
+                        break;
+                    }
+                }
             }
         }, 0);
     }
@@ -286,7 +412,9 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //操作类型：注册
         if (smsType == Dictionary.SmsType_Register) {
             //跳转到密码初始化页面
-            PasswordInitActivity.startPasswordInitActivity(RegisterCaptchaActivity.this, phoneNum, captcha, thirdLoginDto);
+//            PasswordInitActivity.startPasswordInitActivity(RegisterCaptchaActivity.this, phoneNum, captcha, thirdLoginDto);
+            //注册
+            doRegister();
 
         } else if (smsType == Dictionary.SmsType_Bind_Phone_Num) {//操作类型：绑定手机号
             //绑定手机号
@@ -294,7 +422,9 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
         } else if (smsType == Dictionary.SmsType_Retrieve_Password) {//操作类型：找回密码
             //跳转到重置密码页面
-            RetrievePasswordActivity.startRetrievePasswordActivity(RegisterCaptchaActivity.this, phoneNum, captcha);
+//            RetrievePasswordActivity.startRetrievePasswordActivity(RegisterCaptchaActivity.this, phoneNum, captcha);
+            //找回密码
+            doResetPassword();
         }
     }
 
@@ -391,7 +521,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
                         } else if (ErrorCode.AC_SMSCODE_ERROR_OVER_SUM.equals(errorCode)) {//您的今天短信验证码输入错误次数已超过上限
                             //禁用注册
-                            forbidRegister(errorCodeEntity.getMessage());
+                            forbidOperate(errorCodeEntity.getMessage());
                             //继续走默认提示
                             return false;
                         }
@@ -408,6 +538,279 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 doGetChildListWrap();
             }
         });
+    }
+
+
+    /**
+     * 重置密码验证数据格式
+     * @return true：验证通过，false：验证不通过
+     */
+    private boolean checkDataForResetPassword() {
+        if (!checkData()) {
+            return false;
+        }
+
+        //密码
+        String password = etPassword.getText().toString();
+        //确认密码
+        String passwordAgain = etAgainPassword.getText().toString();
+
+        //密码长度验证
+        if (password.length() < 6 || password.length() > 24) {
+            ToastUtil.showShort(getApplicationContext(), "新密码长度为6-24位");
+            return false;
+        }
+
+        //确认密码长度验证
+        //密码长度验证
+        if (passwordAgain.length() < 6 || passwordAgain.length() > 24) {
+            ToastUtil.showShort(getApplicationContext(), "确认密码长度为6-24位");
+            return false;
+        }
+
+        //两次密码是否一致
+        if (!password.equals(passwordAgain)) {
+            ToastUtil.showShort(getApplicationContext(), "确认密码不一致");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 重置密码
+     */
+    private void doResetPassword() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
+        //格式验证
+        if (!checkDataForResetPassword()) return;
+
+        //重置密码必须要有sessionId
+        if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+            //创建会话后直接重置密码
+            doPostAccountSessionForRetrievePassword();
+            return;
+        }
+
+        //获取完整的验证码字符串
+        String captcha = getFullCaptchaStr();
+
+        //请求重置密码
+        ResetPasswordDto dto = new ResetPasswordDto();
+        dto.setMobile(phoneNum);
+        dto.setMobile_code(captcha);
+        dto.setTenant(Dictionary.Tenant_CheersMind);
+        dto.setNew_password(etPassword.getText().toString());
+        dto.setArea_code(Dictionary.Area_Code_86);
+        dto.setSessionId(sessionCreateResult.getSessionId());
+        patchResetPassword(dto);
+    }
+
+
+    /**
+     * 请求重置密码
+     * @param dto
+     */
+    private void patchResetPassword(ResetPasswordDto dto) {
+        //通信等待提示
+        LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+        //重置密码
+        DataRequestService.getInstance().patchResetPassword(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                    @Override
+                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                        String errorCode = errorCodeEntity.getCode();
+                        if (ErrorCode.AC_SMS_INVALID.equals(errorCode)) {//短信验证码无效
+                            //不处理
+                            return false;
+
+                        } else if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {//Session 未创建或已过期、无效
+                            //重新获取会话
+                            sessionCreateResult = null;
+                            //创建会话后直接重置密码
+                            doPostAccountSessionForRetrievePassword();
+
+                            //标记已经处理了异常
+                            return true;
+
+                        } else if (ErrorCode.AC_SMSCODE_ERROR_OVER_SUM.equals(errorCode)) {//您的今天短信验证码输入错误次数已超过上限
+                            //禁用重置密码
+                            forbidOperate(errorCodeEntity.getMessage());
+                            //继续走默认提示
+                            return false;
+                        }
+
+                        //标记未处理异常，继续走默认处理流程
+                        return false;
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                LoadingView.getInstance().dismiss();
+
+                //重置密码成功后的处理
+                //清空密码缓存
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
+                SharedPreferences.Editor editor = pref.edit();
+                editor.remove("user_password");
+                editor.commit();
+
+                //弹出重置密码成功确认对话框
+                popupResetPasswordSuccessWindows();
+            }
+        });
+    }
+
+
+    /**
+     * 注册验证数据格式
+     * @return true：验证通过，false：验证不通过
+     */
+    private boolean checkDataForRegister() {
+        if (!checkData()) {
+            return false;
+        }
+
+        //密码
+        String password = etPassword.getText().toString();
+
+        //密码长度验证
+        if (password.length() < 6 || password.length() > 24) {
+            ToastUtil.showShort(getApplicationContext(), "密码长度为6-24位");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * 注册
+     */
+    private void doRegister() {
+        //隐藏软键盘
+        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
+        //格式验证
+        if (!checkDataForRegister()) return;
+
+        //账号注册必须要有sessionId
+        if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+            //创建会话后直接注册
+            doPostAccountSessionForRegister();
+            return;
+        }
+
+        //获取完整的验证码字符串
+        String captcha = getFullCaptchaStr();
+
+        //请求注册
+        RegisterDto dto = new RegisterDto();
+        dto.setMobile(phoneNum);
+        dto.setMobileCode(captcha);
+        dto.setPassword(etPassword.getText().toString());
+        dto.setAreaCode(Dictionary.Area_Code_86);
+        dto.setTenant(Dictionary.Tenant_CheersMind);
+        dto.setThirdLoginDto(thirdLoginDto);
+        dto.setSessionId(sessionCreateResult.getSessionId());
+        queryRegister(dto);
+        //跳转班级号输入页面
+//        gotoClassNumPage();
+    }
+
+
+    /**
+     * 请求手机短信账号注册
+     * @param dto
+     */
+    private void queryRegister(final RegisterDto dto) {
+        //关闭软键盘
+        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
+        //开启通信等待提示
+        LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+        //请求注册
+        DataRequestService.getInstance().postRegister(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                    @Override
+                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                        String errorCode = errorCodeEntity.getCode();
+                        if (ErrorCode.AC_SMS_INVALID.equals(errorCode)) {//短信验证码无效
+                            //不处理
+                            return false;
+
+                        } else if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {//Session 未创建或已过期、无效
+                            //重新获取会话
+                            sessionCreateResult = null;
+                            //创建会话后直接注册
+                            doPostAccountSessionForRegister();
+
+                            //标记已经处理了异常
+                            return true;
+
+                        } else if (ErrorCode.AC_SMSCODE_ERROR_OVER_SUM.equals(errorCode)) {//您的今天短信验证码输入错误次数已超过上限
+                            //禁用操作
+                            forbidOperate(errorCodeEntity.getMessage());
+                            //继续走默认提示
+                            return false;
+                        }
+
+                        //标记未处理异常，继续走默认处理流程
+                        return false;
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待提示
+                LoadingView.getInstance().dismiss();
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //解析用户数据
+                    final WXUserInfoEntity wxUserInfoEntity = InjectionWrapperUtil.injectMap(dataMap, WXUserInfoEntity.class);
+                    //临时缓存用户数据
+                    UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
+                    //保存用户数据到数据库
+                    DataSupport.deleteAll(WXUserInfoEntity.class);
+                    wxUserInfoEntity.save();
+                    //本地缓存用户名和密码（这边就以手机号作为用户名）
+                    saveUserAccount(phoneNum, dto.getPassword());
+
+                    // 统计：注册用户埋点("usernick")
+                    MANService manService = MANServiceProvider.getService();
+                    manService.getMANAnalytics().userRegister(wxUserInfoEntity.getUserId() +"");
+
+                    //跳转班级号输入页面
+                    gotoPerfectUserInfo(RegisterCaptchaActivity.this);
+                    finish();
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException("注册异常，请稍后再试"));
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * 本地缓存用户名和密码
+     *
+     * @param userName
+     * @param password
+     */
+    private void saveUserAccount(String userName, String password) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user_name", userName);
+        editor.putString("user_password", password);
+        editor.commit();
     }
 
 
@@ -881,6 +1284,46 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
 
     /**
+     * 创建会话后直接重置密码
+     */
+    private void doPostAccountSessionForRetrievePassword() {
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, true, new OnResultListener() {
+
+            @Override
+            public void onSuccess(Object... objects) {
+                //重置密码
+                doResetPassword();
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+
+            }
+        });
+    }
+
+
+    /**
+     * 创建会话后直接注册
+     */
+    private void doPostAccountSessionForRegister() {
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, true, new OnResultListener() {
+
+            @Override
+            public void onSuccess(Object... objects) {
+                //账号注册
+                doRegister();
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+
+            }
+        });
+    }
+
+
+    /**
      * 获取图形验证码
      * @param sessionId
      */
@@ -997,19 +1440,53 @@ public class RegisterCaptchaActivity extends BaseActivity {
     }
 
     /**
-     * 禁用注册
+     * 禁用操作
      * @param tip
      */
-    private void forbidRegister(String tip) {
-        //显示禁用登录的提示（目前用默认的文本）
+    private void forbidOperate(String tip) {
+        //显示禁用操作的提示（目前用默认的文本）
         tvForbidLogin.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(tip)) {
             tvForbidLogin.setText(tip);
         }
         //关闭短信发送按钮
         btnSendAgain.setEnabled(false);
-        //关闭登录按钮
+        //关闭确认按钮
         btnConfirm.setEnabled(false);
+    }
+
+
+    /**
+     * 弹出重置密码成功确认对话框
+     */
+    private void popupResetPasswordSuccessWindows() {
+        AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(RegisterCaptchaActivity.this)
+                .setTitle(getResources().getString(R.string.dialog_common_title))
+                .setMessage("重置密码成功，请重新登录")
+//                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        //跳转到登录主页面（作为根activity）
+                        Intent intent = new Intent(RegisterCaptchaActivity.this, XLoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .create();
+
+        //不能回退关闭
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
 }

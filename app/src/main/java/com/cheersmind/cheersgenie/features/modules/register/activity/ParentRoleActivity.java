@@ -71,7 +71,9 @@ public class ParentRoleActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
-
+        //初始角色为父亲
+        parentRole = Dictionary.PARENT_ROLE_FATHER;
+        ivRoleFather.setBackgroundResource(R.drawable.role_father_selected);
     }
 
     @Override
@@ -90,51 +92,51 @@ public class ParentRoleActivity extends BaseActivity {
             //父亲
             case R.id.iv_role_father: {
                 parentRole = Dictionary.PARENT_ROLE_FATHER;
-                ivRoleFather.setBackgroundResource(R.drawable.back_black);
-                ivRoleMother.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandpa.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandma.setBackgroundResource(R.drawable.recommend);
-                ivRoleOther.setBackgroundResource(R.drawable.recommend);
+                ivRoleFather.setBackgroundResource(R.drawable.role_father_selected);
+                ivRoleMother.setBackgroundResource(R.drawable.role_mother_normal);
+                ivRoleGrandpa.setBackgroundResource(R.drawable.role_grandpa_normal);
+                ivRoleGrandma.setBackgroundResource(R.drawable.role_grandma_normal);
+                ivRoleOther.setBackgroundResource(R.drawable.role_other_normal);
                 break;
             }
             //母亲
             case R.id.iv_role_mother: {
                 parentRole = Dictionary.PARENT_ROLE_MOTHER;
-                ivRoleFather.setBackgroundResource(R.drawable.recommend);
-                ivRoleMother.setBackgroundResource(R.drawable.back_black);
-                ivRoleGrandpa.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandma.setBackgroundResource(R.drawable.recommend);
-                ivRoleOther.setBackgroundResource(R.drawable.recommend);
+                ivRoleFather.setBackgroundResource(R.drawable.role_father_normal);
+                ivRoleMother.setBackgroundResource(R.drawable.role_mother_selected);
+                ivRoleGrandpa.setBackgroundResource(R.drawable.role_grandpa_normal);
+                ivRoleGrandma.setBackgroundResource(R.drawable.role_grandma_normal);
+                ivRoleOther.setBackgroundResource(R.drawable.role_other_normal);
                 break;
             }
             //爷爷/外公
             case R.id.iv_role_grandpa: {
                 parentRole = Dictionary.PARENT_ROLE_GRANDPA;
-                ivRoleFather.setBackgroundResource(R.drawable.recommend);
-                ivRoleMother.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandpa.setBackgroundResource(R.drawable.back_black);
-                ivRoleGrandma.setBackgroundResource(R.drawable.recommend);
-                ivRoleOther.setBackgroundResource(R.drawable.recommend);
+                ivRoleFather.setBackgroundResource(R.drawable.role_father_normal);
+                ivRoleMother.setBackgroundResource(R.drawable.role_mother_normal);
+                ivRoleGrandpa.setBackgroundResource(R.drawable.role_grandpa_selected);
+                ivRoleGrandma.setBackgroundResource(R.drawable.role_grandma_normal);
+                ivRoleOther.setBackgroundResource(R.drawable.role_other_normal);
                 break;
             }
             //奶奶/外婆
             case R.id.iv_role_grandma: {
                 parentRole = Dictionary.PARENT_ROLE_GRANDMA;
-                ivRoleFather.setBackgroundResource(R.drawable.recommend);
-                ivRoleMother.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandpa.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandma.setBackgroundResource(R.drawable.back_black);
-                ivRoleOther.setBackgroundResource(R.drawable.recommend);
+                ivRoleFather.setBackgroundResource(R.drawable.role_father_normal);
+                ivRoleMother.setBackgroundResource(R.drawable.role_mother_normal);
+                ivRoleGrandpa.setBackgroundResource(R.drawable.role_grandpa_normal);
+                ivRoleGrandma.setBackgroundResource(R.drawable.role_grandma_selected);
+                ivRoleOther.setBackgroundResource(R.drawable.role_other_normal);
                 break;
             }
             //其他
             case R.id.iv_role_other: {
                 parentRole = Dictionary.PARENT_ROLE_OTHER;
-                ivRoleFather.setBackgroundResource(R.drawable.recommend);
-                ivRoleMother.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandpa.setBackgroundResource(R.drawable.recommend);
-                ivRoleGrandma.setBackgroundResource(R.drawable.recommend);
-                ivRoleOther.setBackgroundResource(R.drawable.back_black);
+                ivRoleFather.setBackgroundResource(R.drawable.role_father_normal);
+                ivRoleMother.setBackgroundResource(R.drawable.role_mother_normal);
+                ivRoleGrandpa.setBackgroundResource(R.drawable.role_grandpa_normal);
+                ivRoleGrandma.setBackgroundResource(R.drawable.role_grandma_normal);
+                ivRoleOther.setBackgroundResource(R.drawable.role_other_selected);
                 break;
             }
             //下一步
