@@ -21,6 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:text="欢迎使用奇思火眼"
+                android:textColor="@color/color_333333"
                 android:textSize="25dp"/>
 
         </RelativeLayout>
@@ -35,38 +36,40 @@
             <EditText
                 android:id="@+id/et_phonenum"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:background="#00000000"
-                android:textSize="15sp"
-                android:textColor="@color/color_333333"
-                android:hint="请输入手机号码"
-                android:maxLines="1"
-                android:maxLength="11"
+                android:layout_height="@dimen/heightBigWidget"
+                android:background="@drawable/shape_corner_f4f5ed_8dp"
+                android:hint="请输入手机号"
                 android:inputType="phone"
-                android:singleLine="true"/>
-
-            <include layout="@layout/edittext_bottom_part_line"/>
+                android:maxLines="1"
+                android:singleLine="true"
+                android:maxLength="11"
+                android:paddingLeft="20dp"
+                android:textColor="@color/color_333333"
+                android:imeOptions="actionNext"
+                android:text=""
+                android:textSize="15sp" />
 
             <!--图形验证码-->
             <RelativeLayout
                 android:id="@+id/rl_image_captcha"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_height="44dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="11dp">
 
                 <EditText
                     android:id="@+id/et_image_captcha"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/heightBigWidget"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:background="#00000000"
-                    android:hint="请输入图形验证码"
+                    android:background="@drawable/shape_corner_f4f5ed_8dp"
+                    android:hint="图形验证码"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:maxLength="8"
+                    android:paddingLeft="20dp"
                     android:textColor="@color/color_333333"
                     android:imeOptions="actionDone"
                     android:textSize="15sp" />
@@ -77,21 +80,21 @@
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/default_image_small"/>
 
-                <include layout="@layout/edittext_bottom_part_line"/>
             </RelativeLayout>
 
             <Button
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightDefaultWidget"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/btn_common_round"
+                android:layout_height="@dimen/heightBigWidget"
+                android:layout_marginTop="45dp"
+                android:background="@drawable/btn_common"
                 android:enabled="true"
                 android:text="下一步"
-                android:textColor="@color/color_text_white"
+                android:textColor="@color/color_333333"
                 android:textSize="16sp" />
 
             <TextView

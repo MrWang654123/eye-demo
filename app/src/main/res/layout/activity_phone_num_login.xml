@@ -38,6 +38,7 @@
                     android:inputType="phone"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:maxLength="11"
                     android:paddingLeft="20dp"
                     android:textColor="@color/color_333333"
                     android:imeOptions="actionNext"
