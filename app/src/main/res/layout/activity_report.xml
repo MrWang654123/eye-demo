@@ -17,9 +17,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/white"
-        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabIndicatorColor="@color/colorAccent"
         app:tabIndicatorHeight="4dp"
-        app:tabSelectedTextColor="?attr/colorPrimaryDark"
+        app:tabTextAppearance="@style/TabLayoutTextStyle"
+        app:tabSelectedTextColor="@color/colorAccent"
         app:tabTextColor="@color/color_bar_gray" />
 
     <android.support.v4.view.ViewPager

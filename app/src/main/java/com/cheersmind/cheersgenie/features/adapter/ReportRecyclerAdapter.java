@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -64,7 +65,10 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
             //结论脚布局以及内容
             helper.getView(R.id.ll_result_footer).setVisibility(View.VISIBLE);
             //结论的长文本描述（评价）
-            helper.setText(R.id.tv_result_desc, reportResult.getContent());
+            helper.setText(R.id.tv_result_desc, Html.fromHtml(reportResult.getContent()));
+
+            //建议（目前隐藏）
+            helper.getView(R.id.ll_result_suggest).setVisibility(View.GONE);
 
         } else {
             //结论头布局

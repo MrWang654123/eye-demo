@@ -6,6 +6,7 @@
     tools:context=".features.modules.exam.fragment.LastReportFragment">
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -17,13 +18,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_00b8e9"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:text="【测评记录】"
-                android:layout_marginLeft="5dp"
+                android:background="@drawable/shape_corner_ffcc00_8dp"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="2dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"/>
+                android:layout_marginBottom="15dp"
+                android:text="测评记录"
+                android:textColor="@color/color_333333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycleView"
@@ -42,6 +49,6 @@
         android:id="@+id/emptyLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </FrameLayout>

@@ -24,7 +24,7 @@ public class ReportItemEntity implements Serializable {
 //            "chart_item_name": "我的学习习惯"
 
     //是否是topic
-    @InjectMap(name = "is_topic")
+    @InjectMap(name = "topic")
     private boolean topic;
 
     //报告结果

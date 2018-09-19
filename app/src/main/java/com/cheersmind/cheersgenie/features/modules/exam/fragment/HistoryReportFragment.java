@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,8 +49,11 @@ public class HistoryReportFragment extends LazyLoadFragment {
     //话题
     private TopicInfoEntity topicInfo;
 
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
+    //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
@@ -128,6 +132,8 @@ public class HistoryReportFragment extends LazyLoadFragment {
         divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_line));
         recycleView.addItemDecoration(divider);
 
+        //初始隐藏scrollView
+        scrollView.setVisibility(View.GONE);
     }
 
     @Override
@@ -173,6 +179,9 @@ public class HistoryReportFragment extends LazyLoadFragment {
                                 emptyLayout.setErrorType(XEmptyLayout.NODATA);
                                 return;
                             }
+
+                            //显示scrollView
+                            scrollView.setVisibility(View.VISIBLE);
 
                             //历史报告项集合
                             recyclerItem = data.getItems();

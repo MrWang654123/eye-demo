@@ -22,57 +22,76 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="标题"
+                android:textColor="@color/color_333333"
                 android:textSize="18sp"
-                android:layout_centerInParent="true"
-                android:textColor="@color/color_333333"/>
+                android:textStyle="bold"
+                android:layout_centerInParent="true" />
         </RelativeLayout>
 
         <!--量表的标题布局-->
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_dimension_title"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/white">
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:visibility="visible"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="4dp"
+                android:layout_height="20dp"
+                android:background="@color/colorAccent"
+                android:text=""/>
 
             <TextView
                 android:id="@+id/tv_dimension_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:text="学业兴趣测评："
-                android:textSize="16sp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/color_333333"/>
+                android:textColor="@color/color_333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:orientation="horizontal"
-                android:layout_alignParentRight="true"
                 android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VS"/>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="5dp"
+                    android:src="@drawable/vs"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="国"/>
+                <ImageView
+                    android:id="@+id/iv_compare_country"
+                    android:layout_width="30dp"
+                    android:layout_height="35dp"
+                    android:padding="3dp"
+                    android:src="@drawable/compare_country_selected"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="省"/>
+                <ImageView
+                    android:id="@+id/iv_compare_class"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="3dp"
+                    android:src="@drawable/compare_class_normal"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="市"/>
+                <ImageView
+                    android:id="@+id/iv_compare_grade"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:padding="3dp"
+                    android:src="@drawable/compare_grade_normal"/>
 
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -114,10 +133,13 @@
                         android:id="@+id/tv_result_simple"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
                         android:textColor="@color/colorAccent"
                         android:textSize="18sp"
+                        android:lineSpacingMultiplier="1.2"
                         android:layout_gravity="center_horizontal"
-                        android:text=""/>
+                        android:text="课程体验不佳"/>
                     <!--课程体验不佳-->
 
                 </LinearLayout>
@@ -140,29 +162,80 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="50dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/color_00b8e9"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:text="【评价】"/>
-
-                    <!--结论的长描述（评价）-->
-                    <TextView
-                        android:id="@+id/tv_result_desc"
+                    <!--结论描述（评价）-->
+                    <LinearLayout
+                        android:id="@+id/ll_result_desc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/color_333333"
-                        android:text=""/>
-                    <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/shape_corner_ffcc00_8dp"
+                            android:gravity="center"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="2dp"
+                            android:text="评 价"
+                            android:textColor="@color/color_333333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <!--结论的长描述（评价）-->
+                        <TextView
+                            android:id="@+id/tv_result_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingMultiplier="1.3"
+                            android:paddingTop="8dp"
+                            android:text="         相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极"
+                            android:textColor="@color/color_555555"
+                            android:textSize="16sp" />
+                        <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
+
+                    </LinearLayout>
+
+                    <!--建议-->
+                    <LinearLayout
+                        android:id="@+id/ll_result_suggest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/shape_corner_ffcc00_8dp"
+                            android:gravity="center"
+                            android:paddingBottom="2dp"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="2dp"
+                            android:text="建 议"
+                            android:textColor="@color/color_333333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <!--建议-->
+                        <TextView
+                            android:id="@+id/tv_result_suggest"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingMultiplier="1.3"
+                            android:paddingTop="8dp"
+                            android:text="         相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极"
+                            android:textColor="@color/color_555555"
+                            android:textSize="16sp" />
+                        <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

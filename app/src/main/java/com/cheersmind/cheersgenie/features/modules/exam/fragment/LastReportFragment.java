@@ -269,15 +269,20 @@ public class LastReportFragment extends LazyLoadFragment {
             //结果项
             for (int j = 0; j < reportResultEntities.size(); j++) {
                 ReportResultEntity reportResultEntity = reportResultEntities.get(j);
-                //判等：chart_item_id和relationId
-                if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
-                    //图表项中的reportResult为空才赋值
-                    if (reportItemEntity.getReportResult() == null) {
-                        reportItemEntity.setReportResult(reportResultEntity);
+                try {
+                    //判等：chart_item_id和relationId
+                    if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
+                        //图表项中的reportResult为空才赋值
+                        if (reportItemEntity.getReportResult() == null) {
+                            reportItemEntity.setReportResult(reportResultEntity);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
+
         return reportItemEntities;
     }
 

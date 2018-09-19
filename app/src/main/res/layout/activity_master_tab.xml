@@ -31,6 +31,15 @@
         app:itemTextColor="@drawable/text_color_tab"
         app:menu="@menu/navigation" />
 
+    <!--底部导航栏的顶部分割线-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/navigationBar"
+        android:background="#cecece"/>
+
     <com.ashokvarma.bottomnavigation.BottomNavigationBar
         android:id="@+id/navigationBar"
         android:layout_width="0dp"
