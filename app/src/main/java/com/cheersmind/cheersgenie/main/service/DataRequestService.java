@@ -1337,7 +1337,7 @@ public class DataRequestService {
      * 获取用户详情V2
      * @param callback
      */
-    public static void getUserInfoV2 (final BaseService.ServiceCallback callback){
+    public void getUserInfoV2 (final BaseService.ServiceCallback callback){
         String url = HttpConfig.URL_USER_INFO_V2;
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override

@@ -144,7 +144,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      * @param activity
      * @param colorStatus
      */
-    private static void setStatusBarColor(Activity activity, int colorStatus) {
+    protected void setStatusBarColor(Activity activity, int colorStatus) {
         //5.0及以上
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = activity.getWindow();

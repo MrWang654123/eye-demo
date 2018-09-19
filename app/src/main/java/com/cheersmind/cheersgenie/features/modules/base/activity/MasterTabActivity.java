@@ -187,15 +187,23 @@ public class MasterTabActivity extends BaseActivity {
             switch (position){
                 case 0:
                     index = 0;
+                    //修改状态栏颜色
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 1:
                     index = 1;
+                    //修改状态栏颜色
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.white));
                     break;
                 case 2:
                     index = 2;
+                    //修改状态栏颜色
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.white));
                     break;
                 case 3:
                     index = 3;
+                    //修改状态栏颜色
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
             }
 
