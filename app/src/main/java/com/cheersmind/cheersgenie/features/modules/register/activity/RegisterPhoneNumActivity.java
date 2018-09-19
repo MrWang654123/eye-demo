@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -86,6 +87,8 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     //Session创建结果
     SessionCreateResult sessionCreateResult;
 
+    //前往登录页面的提示文本
+    private String tvGotoLoginTip = "<font color='#333333'>检测到您的手机号已注册，</font><font color='#FF8A08'>请登录</font>";
 
     /**
      * * 开启手机号输入页面
@@ -135,6 +138,9 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                 return false;
             }
         });
+
+        //设置前往登录页面的提示文本
+        tvGotoLogin.setText(Html.fromHtml(tvGotoLoginTip));
     }
 
     @Override
