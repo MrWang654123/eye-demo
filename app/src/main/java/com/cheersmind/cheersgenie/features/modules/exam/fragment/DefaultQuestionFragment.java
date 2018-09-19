@@ -35,6 +35,7 @@ import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.fragment.questype.QuestionTypeBaseFragment;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 
 import java.util.List;
@@ -45,7 +46,6 @@ import java.util.List;
 public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
     private View contentView;
-    private TextView tvQuesTitle;
     private ListView lvQuestion;
 
     //当前选中选项，默认没选中
@@ -101,8 +101,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
 
     private void initView(){
-        tvQuesTitle = (TextView)contentView.findViewById(R.id.tv_ques_title);
-        lvQuestion = (ListView)contentView.findViewById(R.id.lv_question);
+        lvQuestion = contentView.findViewById(R.id.lv_question);
         lvQuestion.setAdapter(adapter);
     }
 
@@ -124,9 +123,6 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                 //第一次初始化
                 questionInfoEntity = (QuestionInfoEntity) bundle.getSerializable("question_content");
                 if (questionInfoEntity != null) {
-                    tvQuesTitle.setText(questionInfoEntity.getStem());
-
-
                     optionsList = questionInfoEntity.getOptions();
                     //如果之前回答过本题,更新对应选项选中状态
                     QuestionInfoChildEntity childQuestion = questionInfoEntity.getChildQuestion();
@@ -189,11 +185,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
             //选中索引
             if (curSelect == position) {
                 //选中图标
-                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_select);
+//                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_select);
+                viewHolder.ivIcon.setVisibility(View.VISIBLE);
                 //选中背景
-                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f5a400_12dp);
+//                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f5a400_12dp);
                 //选中选项标题
-                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#ffffff"));
+//                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#ffffff"));
                 //问题类型：手填
                 if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {
                     //显示填写答案文本
@@ -206,11 +203,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
             } else {
                 //未选中图标
-                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
+//                viewHolder.ivIcon.setBackgroundResource(R.mipmap.option_choice_nor);
+                viewHolder.ivIcon.setVisibility(View.INVISIBLE);
                 //未选中背景
-                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f4f3ee_12dp);
+//                viewHolder.llOption.setBackgroundResource(R.drawable.shape_corner_f4f3ee_12dp);
                 //未选中选项标题
-                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#7b7b7b"));
+//                viewHolder.tvOptionTitle.setTextColor(Color.parseColor("#7b7b7b"));
                 //问题类型：手填
                 if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {
                     //选中的填写答案
@@ -219,10 +217,10 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
             }
 
             //选项点击监听
-            viewHolder.llOption.setOnClickListener(new View.OnClickListener() {
+            viewHolder.llOption.setOnClickListener(new OnMultiClickListener() {
 
                 @Override
-                public void onClick(View v) {
+                public void onMultiClick(View view) {
                     int preSelect = curSelect;
                     curSelect = position;
                     //问题类型：只选
@@ -245,6 +243,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                         popupAnswerEditWindows(optionsList.get(curSelect).getContent(), initContent);
                     }
                 }
+
             });
 
             return convertView;

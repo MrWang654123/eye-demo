@@ -4,18 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:background="@drawable/shape_corner_f4f3ee_12dp">
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:background="@drawable/shape_corner_f4f5ed_8dp">
+    <!--android:background="@drawable/shape_corner_f4f3ee_12dp"-->
 
     <ImageView
         android:id="@+id/iv_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="15dp"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@mipmap/qs_answer_nor" />
+        android:src="@drawable/option_selected" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -25,11 +26,11 @@
 
         <TextView
             android:id="@+id/tv_option_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             android:text="这是选项，请填写说明："
-            android:textColor="@color/color_7b7b7b"
+            android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
         <TextView

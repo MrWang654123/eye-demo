@@ -1,4 +1,4 @@
-package com.cheersmind.cheersgenie.main.view.qsdialog;
+package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -16,9 +16,8 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
 
 /**
- * Created by Administrator on 2018/6/5.
+ * 答题退出对话框
  */
-
 public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
 
     public static final int QUIT_TYPE_STOP = 1234;
@@ -48,8 +47,8 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        setCanceledOnTouchOutside(false);
-        setCancelable(false);
+        setCanceledOnTouchOutside(true);
+        setCancelable(true);
 
         initView();
 
@@ -62,11 +61,6 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
         tvContinue = (TextView)findViewById(R.id.tv_continue);
         tvContinue.setOnClickListener(this);
 
-        if(type == QUIT_TYPE_TIMEOUT){
-            ivIcon.setImageResource(R.mipmap.qs_factor_timeout_icon);
-        }else{
-            ivIcon.setImageResource(R.mipmap.qs_ques_exit_icon);
-        }
     }
 
     public void setType(int type) {

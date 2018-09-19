@@ -27,6 +27,7 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.QuestionCompleteXDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
@@ -42,7 +43,7 @@ import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.cheersmind.cheersgenie.main.view.qsdialog.QuestionQuitDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -237,7 +238,7 @@ public class ReplyQuestionActivity extends BaseActivity {
             @Override
             public void onFailure(QSCustomException e) {
                 xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                onFailureDefault(e);
+//                onFailureDefault(e);
                 /*LoadingView.getInstance().dismiss();
 
                 Map dataMap = JsonUtil.fromJson(testQuestionStr,Map.class);
@@ -291,6 +292,9 @@ public class ReplyQuestionActivity extends BaseActivity {
         if (hasAnswer == questionList.size()) {
             //显示自动提交的按钮
             showAutoSubmitButton();
+
+            //显示提交对话框
+            showQuestionCompleteDialog();
         }
 
         //当前pageview索引为未答过的第一题，如何已经全部答完，则显示最后一题
@@ -530,8 +534,14 @@ public class ReplyQuestionActivity extends BaseActivity {
 
         } else if (curPageIndex == questionList.size() -1) {//最后一题
             //提交所有答案
-            ToastUtil.showShort(ReplyQuestionActivity.this, "提交答案中，请稍等……");
-            doPostSubmitQuestions();
+//            ToastUtil.showShort(ReplyQuestionActivity.this, "提交答案中，请稍等……");
+//            doPostSubmitQuestions();
+
+            //显示自动提交的按钮
+            showAutoSubmitButton();
+
+            //显示提交对话框
+            showQuestionCompleteDialog();
         }
     }
 
@@ -548,8 +558,6 @@ public class ReplyQuestionActivity extends BaseActivity {
                     @Override
                     public void onFailure(QSCustomException e) {
                         onFailureDefault(e);
-                        //显示自动提交的按钮
-                        showAutoSubmitButton();
                     }
 
                     @Override
@@ -604,7 +612,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
 
     /**
-     * 显示自动提交的按钮
+     * 显示提交的按钮
      */
     private void showAutoSubmitButton() {
         btnSubmit.setVisibility(View.VISIBLE);
@@ -816,27 +824,22 @@ public class ReplyQuestionActivity extends BaseActivity {
      * 显示提交对话框
      */
     public void showQuestionCompleteDialog(){
-//        if(timer!=null){
-//            timer.cancel();
-//        }
-//        final QuestionCompleteDialog questionCompleteDialog = new QuestionCompleteDialog(QsEvaluateQuestionActivity.this,
-//                factorInfoEntity, new QuestionCompleteDialog.FactorCompleteDialogCallback() {
-//            @Override
-//            public void onBackModify() {
-//                //返回修改
-//                startTimeTask();
-//            }
-//
-//            @Override
-//            public void onSureCommit() {
-//                //确定提交
-//                commitChildFactor(getConstTimeCount(),true);
-//            }
-//        });
-//        if(QsEvaluateQuestionActivity.this!=null){
-//            questionCompleteDialog.show();
-//        }
+        //释放计时器
+        releaseTimeTask();
 
+        new QuestionCompleteXDialog(ReplyQuestionActivity.this, new QuestionCompleteXDialog.OnOperationListener() {
+            @Override
+            public void onCancel() {
+                //继续答题，开启计时器
+                startTimeTask();
+            }
+
+            @Override
+            public void onConfirm() {
+                //提交所有答案
+                doPostSubmitQuestions();
+            }
+        }).show();
 
     }
 

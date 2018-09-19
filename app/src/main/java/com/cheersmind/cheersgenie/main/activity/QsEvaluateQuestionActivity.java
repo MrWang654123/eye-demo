@@ -44,7 +44,7 @@ import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.main.view.qsdialog.FactorReportDialog;
 import com.cheersmind.cheersgenie.main.view.qsdialog.QuestionCompleteDialog;
-import com.cheersmind.cheersgenie.main.view.qsdialog.QuestionQuitDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 import com.cheersmind.cheersgenie.main.view.qshorizon.ReportViewLayout;
 
 import org.greenrobot.eventbus.EventBus;
