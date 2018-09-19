@@ -70,6 +70,17 @@ public class DimensionInfoEntity implements Serializable{
     @InjectMap(name = "question_count")
     private int questionCount;
 
+    //预计耗时
+    @InjectMap(name = "estimated_time")
+    private int estimatedTime;
+
+    //背景图
+    @InjectMap(name = "background_image")
+    private String backgroundImage;
+
+    //对应的状态栏颜色
+    @InjectMap(name = "background_color")
+    private String backgroundColor;
 
     public String getDimensionId() {
         return dimensionId;
@@ -229,5 +240,29 @@ public class DimensionInfoEntity implements Serializable{
 
     public void setQuestionCount(int questionCount) {
         this.questionCount = questionCount;
+    }
+
+    public int getEstimatedTime() {
+        return estimatedTime;
+    }
+
+    public void setEstimatedTime(int estimatedTime) {
+        this.estimatedTime = estimatedTime;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

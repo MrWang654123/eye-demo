@@ -98,11 +98,13 @@
     <string name="exam_dimension_use_count">%s人测过</string>
     <string name="exam_dimension_status_complete">已完成</string>
     <string name="exam_question_count">题量：%s</string>
-    <string name="exam_need_to_know">-- 测评须知 --</string>
+    <string name="exam_need_to_know">测评须知</string>
     <string name="student">学生</string>
     <string name="parent">家长</string>
     <string name="lock_tip">请先完成%s场景下相关测评</string>
     <string name="look_report">查看报告</string>
+    <string name="cost_time">预计：%s</string>
+    
 
     <!--注册-->
     <string name="captcha">验证码</string>

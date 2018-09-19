@@ -2,9 +2,11 @@ package com.cheersmind.cheersgenie.features.modules.exam.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -63,10 +66,21 @@ public class DimensionDetailActivity extends BaseActivity {
     TextView tvQuestionCount;
     @BindView(R.id.tv_used_count)
     TextView tvUsedCount;
+    @BindView(R.id.tv_cost_time)
+    TextView tvCostTime;
+
+    //描述
+    @BindView(R.id.ll_dimension_desc)
+    LinearLayout llDimensionDesc;
     @BindView(R.id.tv_dimension_desc)
     TextView tvDimensionDesc;
-//    @BindView(R.id.tv_dimension_def)
-//    TextView tvDimensionDef;
+
+    //测评须知（定义）
+    @BindView(R.id.ll_dimension_definition)
+    LinearLayout llDimensionDefinition;
+    @BindView(R.id.tv_dimension_def)
+    TextView tvDimensionDef;
+
     @BindView(R.id.btn_start_exam)
     Button btnStartExam;
     @BindView(R.id.ll_recommend_content)
@@ -124,9 +138,17 @@ public class DimensionDetailActivity extends BaseActivity {
      * @param dimensionInfoEntity
      */
     private void refreshDimensionDetailView(DimensionInfoEntity dimensionInfoEntity) {
+        //修改状态栏颜色
+        if (!TextUtils.isEmpty(dimensionInfoEntity.getBackgroundColor())) {
+            try {
+                setStatusBarColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         //图片
         Glide.with(DimensionDetailActivity.this)
-                .load(dimensionInfoEntity.getIcon())
+                .load(dimensionInfoEntity.getBackgroundImage())
                 .thumbnail(0.5f)
                 .apply(QSApplication.getDefaultOptions())
                 .into(ivDimension);
@@ -153,25 +175,42 @@ public class DimensionDetailActivity extends BaseActivity {
         //使用人数
         String useCountStr = getResources().getString(R.string.exam_dimension_use_count, dimensionInfoEntity.getUseCount()+"");
         tvUsedCount.setText(useCountStr);
+        //预计时间
+        BigDecimal costTime =  new BigDecimal(dimensionInfoEntity.getEstimatedTime() / 60.0);
+        BigDecimal bigDecimal = costTime.setScale(1, BigDecimal.ROUND_HALF_UP);
+        tvCostTime.setText(getResources().getString(R.string.cost_time, bigDecimal.floatValue()+"min"));
 
         //测评介绍（测评中话题、量表的说明统一用description字段，definition暂不使用）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDescription())) {
-            tvDimensionDesc.setText("\u3000\u3000" + dimensionInfoEntity.getDescription());
+            tvDimensionDesc.setText("\u3000\u3000" + dimensionInfoEntity.getDescription().trim());
         } else {
-            tvDimensionDesc.setVisibility(View.GONE);
+            llDimensionDesc.setVisibility(View.GONE);
         }
-        //测评须知
-//        tvDimensionDef.setText(dimensionInfoEntity.getDefinition());
+
+        //测评须知（definition字段）
+        if (StringUtil.isNotBlank(dimensionInfoEntity.getDefinition())) {
+            tvDimensionDef.setText("\u3000\u3000" + dimensionInfoEntity.getDefinition().trim());
+        } else {
+            //隐藏布局
+            llDimensionDefinition.setVisibility(View.GONE);
+        }
+
     }
 
 
-    @OnClick(R.id.btn_start_exam)
-    public void click(View view) {
+    @OnClick({R.id.btn_start_exam, R.id.iv_back})
+    public void onViewClick(View view) {
         switch (view.getId()) {
             //开始测评
-            case R.id.btn_start_exam:
+            case R.id.btn_start_exam: {
                 startDimension(dimensionInfoEntity, topicInfoEntity);
                 break;
+            }
+            //回退
+            case R.id.iv_back: {
+                finish();
+                break;
+            }
         }
     }
 
