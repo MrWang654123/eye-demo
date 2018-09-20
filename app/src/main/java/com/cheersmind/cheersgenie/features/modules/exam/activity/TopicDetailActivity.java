@@ -8,6 +8,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
@@ -49,6 +50,9 @@ public class TopicDetailActivity extends BaseActivity {
     private static final String TOPIC_ID = "topic_id";
     //话题ID
     private String topicId;
+
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
     @BindView(R.id.tv_topic_name)
     TextView tvTopicName;
@@ -94,7 +98,8 @@ public class TopicDetailActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
-
+        //初始隐藏scrollView
+        scrollView.setVisibility(View.GONE);
     }
 
     @Override
@@ -150,17 +155,20 @@ public class TopicDetailActivity extends BaseActivity {
      * @param topicDetail
      */
     private void refreshTopicDetailView(TopicDetail topicDetail) {
+        //显示scrollView
+        scrollView.setVisibility(View.VISIBLE);
         tvTopicName.setText(topicDetail.getTopicName());
 //        tvContent.setText(Dictionary.Text_Indent + topicDetail.getDescription());
         tvContentBottom.setText(Dictionary.Text_Indent + topicDetail.getDescription());
         tvSuitableUser.setText("#适合对象：高中生");
         tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount()+""));
 
-        Glide.with(TopicDetailActivity.this)
-                .load(topicDetail.getIcon())
-                .thumbnail(0.5f)
-                .apply(QSApplication.getDefaultOptions())
-                .into(ivDesc);
+//        Glide.with(TopicDetailActivity.this)
+//                .load(topicDetail.getIcon())
+//                .thumbnail(0.5f)
+//                .apply(QSApplication.getDefaultOptions())
+//                .into(ivDesc);
+        ivDesc.setImageResource(R.drawable.default_image_round);
     }
 
 
