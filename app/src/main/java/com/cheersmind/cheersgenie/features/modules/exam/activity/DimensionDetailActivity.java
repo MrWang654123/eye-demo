@@ -177,8 +177,8 @@ public class DimensionDetailActivity extends BaseActivity {
         tvUsedCount.setText(useCountStr);
         //预计时间
         BigDecimal costTime =  new BigDecimal(dimensionInfoEntity.getEstimatedTime() / 60.0);
-        BigDecimal bigDecimal = costTime.setScale(1, BigDecimal.ROUND_HALF_UP);
-        tvCostTime.setText(getResources().getString(R.string.cost_time, bigDecimal.floatValue()+"min"));
+        BigDecimal bigDecimal = costTime.setScale(0, BigDecimal.ROUND_HALF_UP);
+        tvCostTime.setText(getResources().getString(R.string.cost_time, bigDecimal.intValue()+"min"));
 
         //测评介绍（测评中话题、量表的说明统一用description字段，definition暂不使用）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDescription())) {
@@ -243,7 +243,7 @@ public class DimensionDetailActivity extends BaseActivity {
                 //未完成状态，继续作答
                 if (entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                     //打开答题页面，传递分量表对象
-                    ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity);
+                    ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
 
                 } else {
                     //已完成状态，显示报告
@@ -272,8 +272,9 @@ public class DimensionDetailActivity extends BaseActivity {
     /**
      * 请求开启量表
      * @param dimensionInfoEntity
+     * @param topicInfoEntity
      */
-    private void doGetStartDimension(final DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
+    private void doGetStartDimension(final DimensionInfoEntity dimensionInfoEntity, final TopicInfoEntity topicInfoEntity) {
         //开启量表的dto
         OpenDimensionDto openDimensionDto = new OpenDimensionDto();
         try {
@@ -316,7 +317,7 @@ public class DimensionDetailActivity extends BaseActivity {
                         //设置孩子量表对象
                         dimensionInfoEntity.setChildDimension(startEntity);
                         //打开答题页面，传递分量表对象
-                        ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity);
+                        ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
 
                         //发送最新操作测评通知：更新操作
                         EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));

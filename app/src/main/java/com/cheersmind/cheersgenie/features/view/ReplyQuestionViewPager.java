@@ -10,12 +10,16 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
+
 import java.lang.reflect.Field;
 
 /**
  * 回答问题的ReplyQuestionViewpager（存在一个最后可左滑索引）
  */
 public class ReplyQuestionViewPager extends ViewPager {
+
+    private Context context;
 
     //最后可显示的页索引
     private int lastCanShowPageIndex;
@@ -31,12 +35,14 @@ public class ReplyQuestionViewPager extends ViewPager {
 
     public ReplyQuestionViewPager(Context context) {
         super(context);
+        this.context = context;
         //设置滚动器
         setMyScroller();
     }
 
     public ReplyQuestionViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         //设置滚动器
         setMyScroller();
     }
@@ -64,15 +70,17 @@ public class ReplyQuestionViewPager extends ViewPager {
                     mCurPosX = (int) event.getX();
                     mCurPosY = (int) event.getY();
 //                    System.out.println("ACTION_UP mCurPosX = " + mCurPosX + "    mPosX = " + mPosX);
-                    //左滑
-                    if (isLeftSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
-                        //左滑禁止时的监听
-                        if (leftSildeForbidListener != null) {
-                            leftSildeForbidListener.doingLeftSildeForbid();
-                        }
 
-                        return false;
-                    }
+                    //ACTION_UP也拦截的话会对子列表的子项的点击事件造成影响
+                    //左滑
+//                    if (isLeftSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
+//                        //左滑禁止时的监听
+//                        if (leftSildeForbidListener != null) {
+//                            leftSildeForbidListener.doingLeftSildeForbid();
+//                        }
+//
+//                        return false;
+//                    }
 
                     break;
             }
@@ -100,7 +108,10 @@ public class ReplyQuestionViewPager extends ViewPager {
      */
     private boolean isLeftSile(int oldPosX, int oldPosY, int curPosX, int curPosY) {
 //         && (Math.abs(curPosX - oldPosX) > 25)
-        if (curPosX < oldPosX) {
+        if (curPosX < oldPosX
+//                && Math.abs(curPosX - oldPosX) > DensityUtil.dip2px(context, 1)
+//                && Math.abs(curPosY - oldPosY) < DensityUtil.dip2px(context, 6)
+                ) {
 //            LogUtils.w("Pos ReplyQuestionViewpager", "左滑");
             return true;
         }
@@ -175,7 +186,8 @@ public class ReplyQuestionViewPager extends ViewPager {
         public void startScroll(int startX, int startY, int dx, int dy, int duration) {
             //200的时候就是setCurrentItem（dx是屏幕宽度），否则是手动滑动
             if (duration == 200) {
-                super.startScroll(startX, startY, dx, dy, 1000);
+//                super.startScroll(startX, startY, dx, dy, 1000);
+                super.startScroll(startX, startY, dx, dy, 200);
             } else {
                 super.startScroll(startX, startY, dx, dy, duration);
             }

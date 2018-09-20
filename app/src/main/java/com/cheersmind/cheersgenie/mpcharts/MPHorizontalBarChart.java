@@ -142,10 +142,10 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
 
-        int chartCounts = 1;
-        if(items.get(0).getCompareScore()>0){
-            chartCounts = 2;
-        }
+        int chartCounts = 2;
+//        if(items.get(0).getCompareScore()>0){
+//            chartCounts = 2;
+//        }
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         for(int j=0;j<chartCounts;j++) {
@@ -179,9 +179,12 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         data.setValueTextSize(10f);
         data.setValueTypeface(mTfLight);
 //        data.setBarWidth(0.5f);
+        if (dataSets.size() == 1) {
+            data.setBarWidth(0.5f);
+        } else {
 
 
-        //由堆积模式变为并排多列模式
+            //由堆积模式变为并排多列模式
 /**
  * float groupSpace = 0.3f;   //柱状图组之间的间距
  * float barSpace =  0.05f;  //每条柱状图之间的间距  一组两个柱状图
@@ -189,18 +192,20 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
  * (barWidth + barSpace) * barAmount + groupSpace = (0.3 + 0.05) * 2 + 0.3 = 1.00
  * 3个数值 加起来 必须等于 1 即100% 按照百分比来计算 组间距 柱状图间距 柱状图宽度
  */
-        int barAmount = dataSets.size(); //需要显示柱状图的类别 数量
+            int barAmount = dataSets.size(); //需要显示柱状图的类别 数量
 //设置组间距占比30% 每条柱状图宽度占比 70% /barAmount  柱状图间距占比 0%
-        float groupSpace = 0.3f; //柱状图组之间的间距
-        float barWidth = (1f - groupSpace) / barAmount;
-        float barSpace = 0f;
+            float groupSpace = 0.3f; //柱状图组之间的间距
+            float barWidth = (1f - groupSpace) / barAmount;
+            float barSpace = 0f;
 //设置柱状图宽度
-        data.setBarWidth(barWidth);
+            data.setBarWidth(barWidth);
 //(起始点、柱状图组间距、柱状图之间间距)
-        data.groupBars(0f, groupSpace, barSpace);
-
+            data.groupBars(0f, groupSpace, barSpace);
+        }
 
         mChart.setData(data);
+
+        mChart.animateX(500);
     }
 
     @Override

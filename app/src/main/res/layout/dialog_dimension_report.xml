@@ -1,163 +1,299 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="50dp"
+    android:background="@drawable/shape_corner_top_20dp"
     android:orientation="vertical">
 
     <!--标题栏-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white">
-        <TextView
-            android:id="@+id/tv_title"
+        android:layout_height="50dp">
+
+        <!--话题的标题布局-->
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/rl_topic_title"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:background="@color/white">-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_topic_title"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="标题"-->
+        <!--android:textColor="@color/color_333333"-->
+        <!--android:textSize="18sp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:layout_centerInParent="true" />-->
+        <!--</RelativeLayout>-->
+
+        <!--量表的标题布局-->
+        <LinearLayout
+            android:id="@+id/rl_dimension_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="报告"
-            android:textSize="18sp"
-            android:layout_centerVertical="true"
-            android:textColor="@color/color_333333"/>
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/qs_icon_close"/>
+            android:paddingLeft="10dp"
+            android:paddingRight="15dp"
+            android:visibility="visible"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="5dp"
+                android:src="@drawable/title_prefix"/>
+
+            <TextView
+                android:id="@+id/tv_dimension_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="0dp"
+                android:text="学业兴趣测评："
+                android:textColor="@color/color_333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/ll_compare"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="4dp"
+                    android:src="@drawable/vs"/>
+
+                <ImageView
+                    android:id="@+id/iv_compare_country"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="4dp"
+                    android:src="@drawable/compare_country_selected"/>
+
+                <ImageView
+                    android:id="@+id/iv_compare_class"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="4dp"
+                    android:src="@drawable/compare_class_normal"/>
+
+                <ImageView
+                    android:id="@+id/iv_compare_grade"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/compare_grade_normal"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </RelativeLayout>
+
     <!--分割线-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
+        android:background="#f7f7f7"/>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp">
+            android:layout_height="wrap_content">
 
-            <!--android:paddingTop="10dp"-->
-            <!--android:paddingBottom="10dp"-->
-
-            <ScrollView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rt_title"
-                android:scrollbars="none">
+                android:background="@color/white">
 
-                <LinearLayout
+                <!--报告内容布局-->
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/white"
-                    android:padding="0dp">
-                    <!--android:padding="10dp"-->
-
-                    <!--结论header布局-->
-                    <LinearLayout
-                        android:id="@+id/ll_result_header"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="vertical">
-
-                        <!--结论的简单文本-->
-                        <TextView
-                            android:id="@+id/tv_result_simple"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/colorAccent"
-                            android:textSize="18sp"
-                            android:layout_gravity="center_horizontal"
-                            android:text=""/>
-                        <!--课程体验不佳-->
-
-                    </LinearLayout>
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:id="@+id/ll_chart"
+                        android:id="@+id/ll_report_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="20dp"
-                        android:orientation="vertical">
-                    </LinearLayout>
+                        android:orientation="vertical"
+                        android:background="@color/white"
+                        android:visibility="visible"
+                        android:padding="0dp">
+                        <!--android:padding="10dp"-->
 
-                    <!--结论footer布局-->
-                    <LinearLayout
-                        android:id="@+id/ll_result_footer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="50dp"
-                        android:orientation="vertical">
-                        
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/color_00b8e9"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:text="【评价】"/>
-
-                        <!--结论的长描述（评价）-->
-                        <TextView
-                            android:id="@+id/tv_result_desc"
+                        <!--结论header布局-->
+                        <LinearLayout
+                            android:id="@+id/ll_result_header"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:lineSpacingMultiplier="1.3"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:paddingTop="5dp"
-                            android:textColor="@color/color_333333"
-                            android:text=""/>
-                        <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
-                        
+                            android:layout_marginTop="20dp"
+                            android:orientation="vertical">
+
+                            <!--结论的简单文本的前缀语-->
+                            <TextView
+                                android:id="@+id/tv_result_simple_prefix"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:lineSpacingMultiplier="1.2"
+                                android:layout_marginBottom="5dp"
+                                android:textSize="14sp"
+                                android:textColor="@color/color_777777"
+                                android:text=""/>
+                            <!--思考对方就是点击附件是的房价数据的福建省地方圣诞节放假时代峰峻-->
+
+                            <!--结论的简单文本-->
+                            <TextView
+                                android:id="@+id/tv_result_simple"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="18sp"
+                                android:lineSpacingMultiplier="1.2"
+                                android:layout_gravity="center_horizontal"
+                                android:text="课程体验不佳"/>
+                            <!--课程体验不佳-->
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="20dp"
+                            android:orientation="vertical">
+                        </LinearLayout>
+
+                        <!--结论footer布局-->
+                        <LinearLayout
+                            android:id="@+id/ll_result_footer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="50dp"
+                            android:orientation="vertical"
+                            android:paddingLeft="15dp"
+                            android:paddingRight="15dp">
+
+                            <!--结论描述（评价）-->
+                            <LinearLayout
+                                android:id="@+id/ll_result_desc"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/shape_corner_ffcc00_8dp"
+                                    android:gravity="center"
+                                    android:paddingBottom="2dp"
+                                    android:paddingLeft="15dp"
+                                    android:paddingRight="15dp"
+                                    android:paddingTop="2dp"
+                                    android:text="评 价"
+                                    android:textColor="@color/color_333333"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <!--结论的长描述（评价）-->
+                                <TextView
+                                    android:id="@+id/tv_result_desc"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingMultiplier="1.3"
+                                    android:paddingTop="8dp"
+                                    android:text="         相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极"
+                                    android:textColor="@color/color_555555"
+                                    android:textSize="16sp" />
+                                <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
+
+                            </LinearLayout>
+
+                            <!--建议-->
+                            <LinearLayout
+                                android:id="@+id/ll_result_suggest"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@drawable/shape_corner_ffcc00_8dp"
+                                    android:gravity="center"
+                                    android:paddingBottom="2dp"
+                                    android:paddingLeft="15dp"
+                                    android:paddingRight="15dp"
+                                    android:paddingTop="2dp"
+                                    android:text="建 议"
+                                    android:textColor="@color/color_333333"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <!--建议-->
+                                <TextView
+                                    android:id="@+id/tv_result_suggest"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingMultiplier="1.3"
+                                    android:paddingTop="8dp"
+                                    android:text="         相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极"
+                                    android:textColor="@color/color_555555"
+                                    android:textSize="16sp" />
+                                <!--相较于其他同学，我对各门功课的学习往往提不起很大的兴趣来， 觉得没有信心学好。 对很多课程的内容一知半解， 因此。对课程内容的重要性和相关性都没有足够的认识。 我觉得课程内容学习程度和作业完成的好坏与自己的努力并没有太大的关系， 我再努力也很难理解。 尤其在考试来临时，我总是觉得非常紧张， 老想着自己会考砸的。 总的来说， 我的课程学习体验比较消极-->
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
-                </LinearLayout>
+                    <!--不生产报告的提示-->
+                    <TextView
+                        android:id="@+id/tv_none"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:textSize="20sp"
+                        android:textColor="@color/color_ffa200"
+                        android:text="感谢您提交的信息，该信息将用于辅助其他报告的生成，谢谢支持！"/>
 
-            </ScrollView>
+                </RelativeLayout>
 
-            <TextView
-                android:id="@+id/tv_none"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:gravity="center"
-                android:visibility="gone"
-                android:textSize="20sp"
-                android:textColor="@color/color_ffa200"
-                android:text="感谢您提交的信息，该信息将用于辅助其他报告的生成，谢谢支持！"/>
+            </FrameLayout>
 
-        </RelativeLayout>
+        </android.support.v4.widget.NestedScrollView>
 
         <!--空布局-->
         <com.cheersmind.cheersgenie.features.view.XEmptyLayout
             android:id="@+id/emptyLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone">
+            android:visibility="gone"/>
 
-        </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
-
-    </FrameLayout>
+    </RelativeLayout>
 
 </LinearLayout>
+

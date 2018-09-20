@@ -28,13 +28,17 @@ import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionCompleteXDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionRootEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -61,7 +65,10 @@ import butterknife.OnClick;
  */
 public class ReplyQuestionActivity extends BaseActivity {
 
+    public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
+    //话题对象
+    private TopicInfoEntity topicInfoEntity;
     //量表对象
     private DimensionInfoEntity dimensionInfoEntity;
 
@@ -127,10 +134,11 @@ public class ReplyQuestionActivity extends BaseActivity {
      * @param context
      * @param dimensionInfoEntity
      */
-    public static void startReplyQuestionActivity(Context context, DimensionInfoEntity dimensionInfoEntity) {
+    public static void startReplyQuestionActivity(Context context, DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
         Intent intent = new Intent(context, ReplyQuestionActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(DIMENSION_INFO, dimensionInfoEntity);
+        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -183,6 +191,7 @@ public class ReplyQuestionActivity extends BaseActivity {
             return;
         }
 
+        topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
         dimensionInfoEntity = (DimensionInfoEntity) getIntent().getExtras().getSerializable(DIMENSION_INFO);
         if (dimensionInfoEntity == null
                 || dimensionInfoEntity.getChildDimension() == null
@@ -572,21 +581,74 @@ public class ReplyQuestionActivity extends BaseActivity {
                         try {
                             Map map = JsonUtil.fromJson(obj.toString(), Map.class);
                             DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
-
-                            //请求量表报告
+                            //设置孩子量表对象
                             dimensionInfoEntity.setChildDimension(dimensionChild);
-                            queryDimensionReport(dimensionInfoEntity);
 
-                            //发送问题提交成功的事件通知，附带量表对象
-                            EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
+                            //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示查看报告按钮的前提就是要有孩子话题对象）
+                            if (topicInfoEntity.getChildTopic() == null) {
+                                //发送问题提交成功的事件通知，附带量表对象
+                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(null));
+                            } else {
+                                //发送问题提交成功的事件通知，附带量表对象
+                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
+                            }
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
+
+                            if (dimensionChild.isTopicComplete()) {
+                                //确保话题对象有孩子话题对象，且孩子测评ID不为空
+                                if (topicInfoEntity.getChildTopic() == null) {
+                                    TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
+                                    topicInfoChild.setChildExamId(dimensionChild.getChildExamId());
+                                    topicInfoEntity.setChildTopic(topicInfoChild);
+                                }
+                                //请求话题报告
+                                queryTopicReport(topicInfoEntity);
+
+                            } else {
+                                //请求量表报告
+                                queryDimensionReport(dimensionInfoEntity);
+                            }
 
                         } catch (Exception e) {
                             onFailure(new QSCustomException("获取报告失败"));
                         }
                     }
                 });
+    }
+
+    /**
+     * 请求话题报告
+     * @param topicInfo 话题对象
+     */
+    private void queryTopicReport(TopicInfoEntity topicInfo) {
+        try {
+            new TopicReportDialog().setTopicInfo(topicInfo).setListener(new TopicReportDialog.OnOperationListener() {
+                @Override
+                public void onExit() {
+                    //返回主页面
+                    gotoMainPage();
+                }
+            }).show(getSupportFragmentManager(), "报告");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.showShort(ReplyQuestionActivity.this, e.getMessage());
+        }
+    }
+
+    /**
+     * 返回主页面
+     */
+    private void gotoMainPage() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //返回主页面
+                Intent intent = new Intent(ReplyQuestionActivity.this, MasterTabActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        }, 200);
     }
 
     /**
@@ -599,9 +661,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                 @Override
                 public void onExit() {
                     //返回主页面
-                    Intent intent = new Intent(ReplyQuestionActivity.this, MasterTabActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
+                    gotoMainPage();
                 }
             }).show();
         } catch (Exception e) {

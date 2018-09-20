@@ -325,8 +325,9 @@ public class ExamFragment extends LazyLoadFragment {
                     //存在一个未做完的量表，则视为不满足解锁条件
                     for (DimensionInfoEntity dimension : dimensions) {
                         if (dimensionSet.contains(dimension.getDimensionId())) {
-                            if (dimension.getChildDimension() != null
-                                    && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+                            //未做完的条件：1、孩子量表为空；2、孩子量表不为空，且状态为未完成
+                            if (dimension.getChildDimension() == null ||
+                                    dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                                 isMeetUnlockCondition = false;
                             }
                         }
@@ -353,7 +354,7 @@ public class ExamFragment extends LazyLoadFragment {
                 for (DimensionInfoEntity tempDimension : dimensions) {
                     //孩子量表对象为空或者状态为0，视为未完成
                     if (tempDimension.getChildDimension() == null
-                            || tempDimension.getChildDimension().getStatus() == 0) {
+                            || tempDimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                         isTopicComplete = false;
                         break;
                     }

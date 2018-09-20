@@ -2,9 +2,11 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
@@ -46,15 +49,27 @@ import butterknife.ButterKnife;
 public class DimensionReportDialog extends Dialog implements View.OnClickListener {
 
     //标题
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
+    @BindView(R.id.tv_dimension_title)
+    TextView tvDimensionTitle;
+
     //关闭按钮
     @BindView(R.id.iv_close)
     ImageView ivClose;
 
+    //比较范围模块
+    @BindView(R.id.ll_compare)
+    LinearLayout llCompare;
+
+    //报告内容布局
+    @BindView(R.id.ll_report_content)
+    LinearLayout llReportContent;
+
     //结论的头布局
     @BindView(R.id.ll_result_header)
     LinearLayout llResultHeader;
+    //结论的简单文本的前缀语
+    @BindView(R.id.tv_result_simple_prefix)
+    TextView tvResultSimplePrefix;
     //结论的简单文本
     @BindView(R.id.tv_result_simple)
     TextView tvResultSimple;
@@ -66,9 +81,15 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
     //结论的脚布局
     @BindView(R.id.ll_result_footer)
     LinearLayout llResultFooter;
-    //结论的长文本描述
+    //结论的长文本描述布局
+    @BindView(R.id.ll_result_desc)
+    LinearLayout llResultDesc;
+    //结论的长文本描述（评价）
     @BindView(R.id.tv_result_desc)
     TextView tvResultDesc;
+    //建议
+    @BindView(R.id.ll_result_suggest)
+    LinearLayout llResultSuggest;
 
     //后台不生成报告的提示
     @BindView(R.id.tv_none)
@@ -193,6 +214,15 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         }
 
         this.listener = listener;
+        if (this.listener != null) {
+            //设置对话框cancel监听
+            setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    DimensionReportDialog.this.listener.onExit();
+                }
+            });
+        }
     }
 
     @Override
@@ -203,8 +233,8 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         //ButterKnife绑定
         ButterKnife.bind(this);
 
-        setCanceledOnTouchOutside(false);
-        setCancelable(false);
+        setCanceledOnTouchOutside(true);
+        setCancelable(true);
 
         //初始化视图
         initView();
@@ -223,10 +253,7 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
      */
     private void initView() {
         //关闭按钮
-        ivClose = findViewById(R.id.iv_close);
         ivClose.setOnClickListener(this);
-        //标题
-        tvTitle = findViewById(R.id.tv_title);
 
         //空布局
         emptyLayout = findViewById(R.id.emptyLayout);
@@ -274,6 +301,10 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
                             if (data != null && data.getChartDatas() != null) {
 
                                 if (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0) {
+                                    //隐藏比较范围模块
+                                    llCompare.setVisibility(View.GONE);
+                                    //隐藏报告内容模块
+                                    llReportContent.setVisibility(View.GONE);
                                     //后台不生成报告的提示
                                     tvNone.setVisibility(View.VISIBLE);
                                     return;
@@ -284,13 +315,23 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
                                 //报告图表数据
                                 List<ReportItemEntity> dimensionReports = data.getChartDatas();
                                 //把报告结果置于报告图表对象中
-                                if (ArrayListUtil.isNotEmpty(dimensionReports)) {
+                                if (ArrayListUtil.isNotEmpty(dimensionReports)  && ArrayListUtil.isNotEmpty(reportResultEntities)) {
+                                    //图表项
                                     for (int i = 0; i < dimensionReports.size(); i++) {
-                                        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
-                                            //图表对象中的报告结果为空，且报告结果集合中对应索引的对象不为空，则赋值
-                                            if (dimensionReports.get(i).getReportResult() == null
-                                                    && reportResultEntities.get(i) != null) {
-                                                dimensionReports.get(i).setReportResult(reportResultEntities.get(i));
+                                        ReportItemEntity reportItemEntity = dimensionReports.get(i);
+                                        //结果项
+                                        for (int j = 0; j < reportResultEntities.size(); j++) {
+                                            ReportResultEntity reportResultEntity = reportResultEntities.get(j);
+                                            try {
+                                                //判等：chart_item_id和relationId
+                                                if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
+                                                    //图表项中的reportResult为空才赋值
+                                                    if (reportItemEntity.getReportResult() == null) {
+                                                        reportItemEntity.setReportResult(reportResultEntity);
+                                                    }
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
                                         }
                                     }
@@ -318,9 +359,9 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
             //标题
             String chartName = dimensionReports.get(0).getChartItemName();
             if (!TextUtils.isEmpty(chartName)) {
-                tvTitle.setText(chartName);
+                tvDimensionTitle.setText(chartName);
             } else {
-                tvTitle.setText(dimension.getDimensionName());
+                tvDimensionTitle.setText(dimension.getDimensionName());
             }
 
             //生成图表
@@ -331,13 +372,41 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
             if (reportResult != null) {
                 //结论头布局以及内容
                 llResultHeader.setVisibility(View.VISIBLE);
+                //结论的简单文本的前缀语
+                if (!TextUtils.isEmpty(reportResult.getHeader())) {
+                    tvResultSimplePrefix.setVisibility(View.VISIBLE);
+                    tvResultSimplePrefix.setText(reportResult.getHeader());
+                } else {
+                    tvResultSimplePrefix.setVisibility(View.GONE);
+                }
                 //结论的简单文本
-                tvResultSimple.setText(reportResult.getTitle());
+                if (!TextUtils.isEmpty(reportResult.getTitle())) {
+                    tvResultSimple.setText(Html.fromHtml(reportResult.getTitle()));
+                } else {
+                    tvResultSimple.setVisibility(View.GONE);
+                }
+                try {
+                    //使用服务端的返回的颜色
+                    if (!TextUtils.isEmpty(reportResult.getColor())) {
+                        tvResultSimple.setTextColor(Color.parseColor(reportResult.getColor()));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 //结论脚布局以及内容
                 llResultFooter.setVisibility(View.VISIBLE);
                 //结论的长文本描述（评价）
-                tvResultDesc.setText(reportResult.getContent());
+                if (!TextUtils.isEmpty(reportResult.getContent())) {
+                    tvResultDesc.setText(Html.fromHtml(reportResult.getContent()));
+                } else {
+                    //隐藏结论的长文本描述布局
+                    llResultDesc.setVisibility(View.GONE);
+                }
+
+                //建议（目前隐藏）
+                llResultSuggest.setVisibility(View.GONE);
+
 
             } else {
                 //结论头布局
@@ -349,6 +418,12 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         } else {
             throw new Exception();
         }
+    }
+
+
+    @Override
+    public void setOnDismissListener(@Nullable OnDismissListener listener) {
+        super.setOnDismissListener(listener);
     }
 
     @Override

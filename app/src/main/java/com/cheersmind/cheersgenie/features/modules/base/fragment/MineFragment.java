@@ -175,7 +175,7 @@ public class MineFragment extends LazyLoadFragment {
      * 查询签到状态
      */
     private void queryDailySignInStatus() {
-        LoadingView.getInstance().show(getActivity());
+//        LoadingView.getInstance().show(getActivity());
 
         DataRequestService.getInstance().getDailySignInStatus(new BaseService.ServiceCallback() {
             @Override

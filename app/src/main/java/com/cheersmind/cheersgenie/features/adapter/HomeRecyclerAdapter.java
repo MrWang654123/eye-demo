@@ -68,6 +68,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         helper.setText(R.id.tv_article_title, item.getArticleTitle());
         //简介
         if (!TextUtils.isEmpty(item.getSummary())) {
+            helper.getView(R.id.tv_article_desc).setVisibility(View.VISIBLE);
             helper.setText(R.id.tv_article_desc, item.getSummary());
         } else {
             helper.getView(R.id.tv_article_desc).setVisibility(View.GONE);
@@ -94,6 +95,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         //标签（目前用的是类型）
         if (item.getCategory() != null && !TextUtils.isEmpty(item.getCategory().getName())) {
 //            helper.setText(R.id.tv_tag, number+ "、" + item.getCategory().getName());
+            helper.getView(R.id.tv_tag).setVisibility(View.VISIBLE);
             helper.setText(R.id.tv_tag, item.getCategory().getName());
         } else {
             helper.getView(R.id.tv_tag).setVisibility(View.GONE);
@@ -101,6 +103,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
 
         //阅读数量
         if (item.getPageView() > 0) {
+            helper.getView(R.id.rl_read).setVisibility(View.VISIBLE);
             helper.setText(R.id.tv_read_count, item.getPageView() + "");
         } else {
             helper.getView(R.id.rl_read).setVisibility(View.GONE);
@@ -110,6 +113,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         if (item.getIsReferenceTest() == Dictionary.ARTICLE_IS_REFERENCE_EXAM_YES) {
             //测过人数大于0才显示
             if (item.getTestCount() > 0) {
+                helper.getView(R.id.rl_evaluation).setVisibility(View.VISIBLE);
                 //评测过的数量
                 helper.setText(R.id.tv_evaluation_count, item.getTestCount() + "");
             } else {

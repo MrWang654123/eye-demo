@@ -446,7 +446,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     }
 
                     //文章评论模块开启则加载评论信息
-                    if (!articleEntity.isCommentDisabled()) {
+                    if (articleEntity.isShowComment()) {
                         //加载评论
                         loadCommentData(articleId);
                     }

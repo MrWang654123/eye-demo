@@ -40,7 +40,7 @@
             android:textSize="14sp"
             android:layout_marginTop="5dp"
             android:visibility="visible"
-            android:textColor="@color/color_898989"
+            android:textColor="@color/color_444444"
             android:text="我是手动填写的说明啊"/>
 
     </LinearLayout>

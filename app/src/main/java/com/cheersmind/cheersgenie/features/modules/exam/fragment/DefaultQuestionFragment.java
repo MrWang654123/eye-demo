@@ -46,6 +46,9 @@ import java.util.List;
 public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
     private View contentView;
+    //题目文本
+    private TextView tvQuestionTitle;
+    //问题选项列表
     private ListView lvQuestion;
 
     //当前选中选项，默认没选中
@@ -101,11 +104,13 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
 
     private void initView(){
+        tvQuestionTitle = contentView.findViewById(R.id.tv_question_title);
         lvQuestion = contentView.findViewById(R.id.lv_question);
         lvQuestion.setAdapter(adapter);
     }
 
     private void initData(){
+        //初始化已经选中的项
         Bundle bundle = getArguments();
         if(bundle!=null){
 //            childFactorId = bundle.getString("child_factor_id");
@@ -144,6 +149,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                 }
             }
         }
+
+        //初始化题目
+        if (questionInfoEntity != null) {
+            tvQuestionTitle.setText(questionInfoEntity.getStem());
+        }
+
     }
 
     BaseAdapter adapter = new BaseAdapter() {
@@ -198,7 +209,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                     //设置填写的答案
                     viewHolder.tvOptionText.setText(optionText);
                     //选中的填写答案
-                    viewHolder.tvOptionText.setTextColor(Color.parseColor("#ffffff"));
+                    viewHolder.tvOptionText.setTextColor(Color.parseColor("#444444"));
                 }
 
             } else {

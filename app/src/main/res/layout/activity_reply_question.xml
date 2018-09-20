@@ -40,7 +40,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:padding="6dp"
-                        android:src="@drawable/clock" />
+                        android:src="@drawable/time" />
 
                     <TextView
                         android:id="@+id/tv_time"
@@ -102,6 +102,7 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <!--题目文本块-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,6 +112,7 @@
                 android:paddingRight="20dp"
                 android:layout_below="@+id/rt_time"
                 android:background="@color/white"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <ImageView

@@ -75,9 +75,9 @@ public class ArticleEntity extends DataSupport implements Serializable {
     @InjectMap(name = "user_data")
     private UserEntity userData;
 
-    //评论是否关闭，true关闭评论 false 打开评论
-    @InjectMap(name = "comment_disabled")
-    private boolean commentDisabled;
+    //是否显示评论
+    @InjectMap(name = "show_comment")
+    private boolean showComment;
 
     //发布时间
     @InjectMap(name = "publish_date")
@@ -228,12 +228,12 @@ public class ArticleEntity extends DataSupport implements Serializable {
         this.userData = userData;
     }
 
-    public boolean isCommentDisabled() {
-        return commentDisabled;
+    public boolean isShowComment() {
+        return showComment;
     }
 
-    public void setCommentDisabled(boolean commentDisabled) {
-        this.commentDisabled = commentDisabled;
+    public void setShowComment(boolean showComment) {
+        this.showComment = showComment;
     }
 
     public String getPublishDate() {

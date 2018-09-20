@@ -48,6 +48,10 @@ public class DimensionInfoChildEntity implements Serializable{
     @InjectMap(name = "cost_time")
     private int costTime;
 
+    //话题是否完成
+    @InjectMap(name = "is_topic_complete")
+    private boolean isTopicComplete;
+
 
     public String getChildDimensionId() {
         return childDimensionId;
@@ -153,4 +157,11 @@ public class DimensionInfoChildEntity implements Serializable{
         this.costTime = costTime;
     }
 
+    public boolean isTopicComplete() {
+        return isTopicComplete;
+    }
+
+    public void setTopicComplete(boolean topicComplete) {
+        isTopicComplete = topicComplete;
+    }
 }

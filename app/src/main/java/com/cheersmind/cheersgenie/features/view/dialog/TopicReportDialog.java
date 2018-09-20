@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -179,6 +180,28 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
 
         //退出操作
         void onExit();
+    }
+
+    /**
+     * 对话框cancel监听
+     * @param dialog
+     */
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+//        if (this.listener != null) {
+//            //设置对话框cancel监听
+//            getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                @Override
+//                public void onDismiss(DialogInterface dialog) {
+//                    listener.onExit();
+//                }
+//            });
+//        }
+        if (listener != null) {
+            listener.onExit();
+        }
     }
 
 }
