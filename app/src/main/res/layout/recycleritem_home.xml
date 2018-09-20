@@ -3,67 +3,76 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_main"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
-        android:scaleType="centerCrop" />
-    <!--android:scaleType="fitCenter"-->
-    <!--android:src="@drawable/home_sample"-->
+        android:layout_height="180dp">
+
+        <ImageView
+            android:id="@+id/iv_main"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="15dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY" />
+        <!--android:scaleType="centerCrop"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/home_sample"-->
+
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/play"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_article_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="@color/color_333333"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:textColor="@color/color_555555"
         android:layout_marginTop="15dp"
         android:lineSpacingMultiplier="1.2"
+        android:textStyle="bold"
         android:text="成功人士郑成功的7中成功的方法，你学到吗？第四条超管用"/>
 
     <TextView
         android:id="@+id/tv_article_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
         android:maxLines="2"
         android:ellipsize="end"
         android:text="中学生中因学习、生活而焦虑的心态普遍存在。而且在不同时期会有不同的焦虑表现。适度的焦虑对学生并无害处......"
-        android:textColor="@color/color_898989"
+        android:textColor="@color/color_7b7b7b"
         android:lineSpacingMultiplier="1.3"
-        android:textSize="14sp" />
+        android:textSize="15sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
-        android:layout_marginBottom="0dp">
+        android:layout_marginBottom="1dp">
 
         <TextView
             android:id="@+id/tv_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/color_444444"
-            android:background="@drawable/shape_rectangle"
+            android:textColor="@color/white"
+            android:background="@drawable/tag"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
+            android:textSize="14sp"
             android:text="学习策略" />
 
         <!--<CheckBox-->
@@ -75,9 +84,9 @@
             <!--android:text="收藏"/>-->
         <ImageView
             android:id="@+id/iv_favorite"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="4dp"
+            android:layout_width="39dp"
+            android:layout_height="39dp"
+            android:padding="9dp"
             android:clickable="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -93,17 +102,20 @@
 
             <ImageView
                 android:id="@+id/iv_read"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="3dp"
-                android:src="@drawable/read"/>
+                android:padding="4dp"
+                android:layout_marginRight="1dp"
+                android:src="@drawable/read_normal" />
             <TextView
                 android:id="@+id/tv_read_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/iv_read"
                 android:layout_centerVertical="true"
+                android:textColor="@color/color_a6a6a6"
+                android:textSize="14sp"
                 android:text="212"/>
         </RelativeLayout>
 
@@ -117,11 +129,11 @@
 
             <ImageView
                 android:id="@+id/iv_evaluation"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="3dp"
-                android:src="@drawable/evaluation"/>
+                android:src="@drawable/evaluation_normal"/>
 
             <TextView
                 android:id="@+id/tv_evaluation_count"
@@ -130,6 +142,8 @@
                 android:layout_marginBottom="-2dp"
                 android:layout_toRightOf="@+id/iv_evaluation"
                 android:layout_centerVertical="true"
+                android:textColor="@color/color_a6a6a6"
+                android:textSize="14sp"
                 android:text="123" />
         </RelativeLayout>
 

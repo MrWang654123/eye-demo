@@ -59,7 +59,7 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     @InjectMap(name = "publish_date")
     private String publishDate;
 
-    //文章类型，0 文章 1 视频
+    //文章类型：1-普通图文文章，2-视频文章，3-画册？
     @InjectMap(name = "content_type")
     private int contentType;
 

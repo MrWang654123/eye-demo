@@ -31,7 +31,7 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
 
         options = new RequestOptions();
         options.skipMemoryCache(false);//不忽略内存
-        options.placeholder(R.drawable.ic_username);//占位图
+        options.placeholder(R.drawable.ico_head);//占位图
         options.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         options.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
     }
@@ -50,6 +50,9 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
                         .thumbnail(0.5f)
                         .apply(options)
                         .into(imageView);
+            } else {
+                //占位图
+                imageView.setImageResource(R.drawable.ico_head);
             }
 
             //用户名

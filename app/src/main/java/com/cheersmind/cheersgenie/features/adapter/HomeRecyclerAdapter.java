@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,15 +10,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * 首页recycler适配器
@@ -25,10 +32,31 @@ import java.util.List;
 public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, BaseViewHolder> {
 
     private Context context;
+    //默认Glide处理参数
+    private static RequestOptions defaultOptions;
+
+    /**
+     * 初始化默认Glide处理参数
+     */
+    private void initRequestOptions() {
+        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
+                new CenterCrop(),
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 20), 0, RoundedCornersTransformation.CornerType.ALL));
+        //默认Glide处理参数
+        defaultOptions = new RequestOptions();
+        defaultOptions.skipMemoryCache(false);//不忽略内存
+        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
+        defaultOptions.transform(multi);
+    }
+
 
     public HomeRecyclerAdapter(Context context ,int layoutResId, @Nullable List<SimpleArticleEntity> data) {
         super(layoutResId, data);
         this.context = context;
+
+        initRequestOptions();
     }
 
     @Override
@@ -50,8 +78,15 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         Glide.with(context)
                 .load(url)
                 .thumbnail(0.5f)
-                .apply(QSApplication.getDefaultOptions())
+                .apply(defaultOptions)
                 .into(imageView);
+
+        //播放键
+        if (item.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
+            helper.getView(R.id.iv_play).setVisibility(View.VISIBLE);
+        } else {
+            helper.getView(R.id.iv_play).setVisibility(View.GONE);
+        }
 
         //测试编号
         String number = (position + 1 - headCount) +"";

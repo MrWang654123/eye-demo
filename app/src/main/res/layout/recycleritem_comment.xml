@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="10dp"
+        android:paddingLeft="15dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp">
@@ -23,21 +23,22 @@
             android:id="@+id/iv_profile"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ic_username"/>
+            android:src="@drawable/ico_head"/>
+        <!--android:src="@drawable/ic_username"-->
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="15dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_333333"
-                android:textSize="16sp"
+                android:textColor="@color/color_a6a6a6"
+                android:textSize="13sp"
                 android:text="感恩的心水电费"/>
 
             <TextView
@@ -45,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textColor="@color/color_717171"
+                android:textColor="@color/color_a6a6a6"
                 android:layout_marginTop="3dp"
                 android:text="2018-08-23 08:05"/>
 
@@ -53,9 +54,9 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/color_555555"
+                android:textColor="@color/color_333333"
                 android:lineSpacingMultiplier="1.2"
                 android:text="瑟夫解锁等时将对方斯蒂芬金三角的封建士大夫精神的风景使对方是否就开始减肥的"/>
 

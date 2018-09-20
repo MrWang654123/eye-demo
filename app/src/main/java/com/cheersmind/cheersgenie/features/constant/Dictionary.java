@@ -67,9 +67,9 @@ public class Dictionary {
     public static final int ARTICLE_IS_REFERENCE_EXAM_YES = 1;
 
     //文章类型：文章
-    public static final int ARTICLE_TYPE_SIMPLE = 0;
+    public static final int ARTICLE_TYPE_SIMPLE = 1;
     //文章类型：视频
-    public static final int ARTICLE_TYPE_VIDEO = 1;
+    public static final int ARTICLE_TYPE_VIDEO = 2;
 
     //消息状态：未读
     public static final int MESSAGE_STATUS_UNREAD = 0;

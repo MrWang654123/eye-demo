@@ -137,11 +137,11 @@ public class ArticleDetailActivity extends BaseActivity {
     @BindView(R.id.tv_comment_tip)
     TextView tvCommentTip;
     //收藏
-    @BindView(R.id.ibtn_favorite)
-    ImageButton ibtnFavorite;
+    @BindView(R.id.iv_favorite)
+    ImageView ivFavorite;
     //点赞
-    @BindView(R.id.ibtn_like)
-    ImageButton ibtnLike;
+    @BindView(R.id.iv_like)
+    ImageView ivLike;
     //点赞数
     @BindView(R.id.tv_like_count)
     TextView tvLikeCount;
@@ -239,29 +239,6 @@ public class ArticleDetailActivity extends BaseActivity {
                         recyclerAdapter.notifyLoadMoreToLoading();
                     }
                 }
-            }
-        });
-
-        //收藏按钮点击监听
-        ibtnFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(articleId)) {
-                    return;
-                }
-                doFavorite(articleId);
-            }
-        });
-
-        //点赞按钮监听
-        ibtnLike.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (TextUtils.isEmpty(articleId)) {
-                    return;
-                }
-                doLike(articleId);
             }
         });
 
@@ -522,11 +499,11 @@ public class ArticleDetailActivity extends BaseActivity {
     private void refreshLikeView(boolean isLike, int likeCount) {
         if (isLike) {
             //点赞状态
-            ibtnLike.setBackgroundResource(R.drawable.like_do);
+            ivLike.setImageResource(R.drawable.like_do);
 
         } else {
             //未点赞状态
-            ibtnLike.setBackgroundResource(R.drawable.like_not);
+            ivLike.setImageResource(R.drawable.like_not);
         }
 
         //点赞数量
@@ -571,10 +548,10 @@ public class ArticleDetailActivity extends BaseActivity {
     private void refreshFavoriteView(boolean isFavorite) {
         if (isFavorite) {
             //收藏状态
-            ibtnFavorite.setBackgroundResource(R.drawable.favorite_do);
+            ivFavorite.setImageResource(R.drawable.favorite_do);
         } else {
             //未收藏状态
-            ibtnFavorite.setBackgroundResource(R.drawable.favorite_not);
+            ivFavorite.setImageResource(R.drawable.favorite_not);
         }
     }
 
@@ -866,6 +843,9 @@ public class ArticleDetailActivity extends BaseActivity {
                         .thumbnail(0.5f)
                         .apply(options)
                         .into(imageView);
+            } else {
+                //占位图
+                imageView.setImageResource(R.drawable.ico_head);
             }
 
             //用户名
@@ -926,7 +906,7 @@ public class ArticleDetailActivity extends BaseActivity {
             "\t\t\t</div>";
 
 
-    @OnClick({R.id.btn_goto_evaluation, R.id.btn_comment_back, R.id.tv_comment_tip})
+    @OnClick({R.id.btn_goto_evaluation, R.id.btn_comment_back, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
@@ -944,7 +924,25 @@ public class ArticleDetailActivity extends BaseActivity {
                 popupCommentEditWindows();
                 break;
             }
+            //收藏
+            case R.id.iv_favorite: {
+                if (TextUtils.isEmpty(articleId)) {
+                    return;
+                }
+                doFavorite(articleId);
+                break;
+            }
+            //点赞
+            case R.id.iv_like: {
+                if (TextUtils.isEmpty(articleId)) {
+                    return;
+                }
+                doLike(articleId);
+                break;
+            }
         }
+
     }
+
 }
 
