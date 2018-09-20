@@ -341,7 +341,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //解析数据
 //                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新收藏视图
-//                    Boolean favorite = (Boolean) dataMap.get("favorite");
+//                    Boolean favorite = (Boolean) dataMap.get("is_favorite");
 //                    SimpleArticleEntity simpleArticleEntity = recyclerItem.get(position);
 //                    simpleArticleEntity.setFavorite(favorite);
                     recyclerAdapter.getData().remove(position);

@@ -3,7 +3,9 @@ package com.cheersmind.cheersgenie.features.modules.article.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -92,7 +94,7 @@ public class ArticleListActivity extends BaseActivity {
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
             switch (view.getId()) {
                 //收藏
-                case R.id.ibtn_favorite:{
+                case R.id.iv_favorite:{
                     SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     String articleId = simpleArticleEntity.getId();
                     doFavorite(articleId, position);
@@ -142,6 +144,10 @@ public class ArticleListActivity extends BaseActivity {
         recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(ArticleListActivity.this));
         recycleView.setAdapter(recyclerAdapter);
+        //添加自定义分割线
+        DividerItemDecoration divider = new DividerItemDecoration(ArticleListActivity.this,DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(ArticleListActivity.this,R.drawable.recycler_divider_custom));
+        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
@@ -149,6 +155,8 @@ public class ArticleListActivity extends BaseActivity {
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
+        //设置样式刷新显示的位置
+        swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
         emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
@@ -350,7 +358,7 @@ public class ArticleListActivity extends BaseActivity {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新收藏视图
-                    Boolean favorite = (Boolean) dataMap.get("favorite");
+                    Boolean favorite = (Boolean) dataMap.get("is_favorite");
                     SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
                     simpleArticleEntity.setFavorite(favorite);
                     int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();

@@ -2,9 +2,11 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -64,8 +66,8 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_category);
 
-        setCanceledOnTouchOutside(false);
-        setCancelable(false);
+        setCanceledOnTouchOutside(true);
+        setCancelable(true);
 
         //初始化视图
         initView();
@@ -124,12 +126,15 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                     //有数据情况处理
                     for (int i=0; i<categories.size(); i++) {
                         CategoryEntity categoryEntity = categories.get(i);
-                        TextView tv = new TextView(CategoryDialog.this.getContext());
+                        TextView tv = (TextView) LayoutInflater.from(CategoryDialog.this.getContext()).inflate(R.layout.dialog_category_item, null);
                         tv.setText(categoryEntity.getName());
-                        tv.setBackgroundResource(R.drawable.shape_corner);
-                        int hPaddingVal = DensityUtil.dip2px(getContext(), 15);
-                        int vPaddingVal = DensityUtil.dip2px(getContext(), 10);
-                        tv.setPadding(hPaddingVal,vPaddingVal,hPaddingVal,vPaddingVal);
+//                        TextView tv = new TextView(CategoryDialog.this.getContext());
+//                        tv.setText(categoryEntity.getName());
+//                        tv.setBackgroundResource(R.drawable.btn_category);
+//                        tv.setTextColor(getContext().getResources().getColor(R.color.white));
+//                        int hPaddingVal = DensityUtil.dip2px(getContext(), 15);
+//                        int vPaddingVal = DensityUtil.dip2px(getContext(), 10);
+//                        tv.setPadding(hPaddingVal,vPaddingVal,hPaddingVal,vPaddingVal);
                         tv.setTag(i);
                         tv.setOnClickListener(new OnMultiClickListener() {
                             @Override
