@@ -37,7 +37,7 @@ public class ArticleEntity extends DataSupport implements Serializable {
 
     //文章来源名称，当source_type=2时需要使用
     @InjectMap(name = "source_name")
-    private int sourceName;
+    private String sourceName;
 
     //文章来源的web地址，当source_type=2时需要使用
     @InjectMap(name = "source_web_url")
@@ -148,11 +148,11 @@ public class ArticleEntity extends DataSupport implements Serializable {
         this.sourceType = sourceType;
     }
 
-    public int getSourceName() {
+    public String getSourceName() {
         return sourceName;
     }
 
-    public void setSourceName(int sourceName) {
+    public void setSourceName(String sourceName) {
         this.sourceName = sourceName;
     }
 

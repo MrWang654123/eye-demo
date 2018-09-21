@@ -23,7 +23,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:textColor="@color/color_777777"
             android:text="正在加载…"/>
 
     </LinearLayout>
@@ -42,7 +43,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:textColor="@color/color_b5b5b5"
             android:text="已经到底了"/>
 
     </LinearLayout>
@@ -61,7 +63,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:textColor="@color/color_777777"
             android:text="加载失败，点击重载"/>
 
     </LinearLayout>

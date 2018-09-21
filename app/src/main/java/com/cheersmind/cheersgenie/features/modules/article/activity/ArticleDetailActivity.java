@@ -244,7 +244,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
         options = new RequestOptions();
         options.skipMemoryCache(false);//不忽略内存
-        options.placeholder(R.drawable.ic_username);//占位图
+        options.placeholder(R.drawable.ico_head);//占位图
         options.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         options.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
     }
@@ -580,13 +580,17 @@ public class ArticleDetailActivity extends BaseActivity {
         if (articleEntity == null) return;
         //标题
         tvArticleTitle.setText(articleEntity.getArticleTitle());
-        //作者
-        if (articleEntity.getUserData() != null && !TextUtils.isEmpty(articleEntity.getUserData().getUserName())) {
-            tvAuthor.setText(articleEntity.getUserData().getUserName());
+        //作者（来源）
+        if (!TextUtils.isEmpty(articleEntity.getSourceName())) {
+            tvAuthor.setText(articleEntity.getSourceName());
+        } else {
+            tvAuthor.setVisibility(View.GONE);
         }
         //发布日期
         if (!TextUtils.isEmpty(articleEntity.getPublishDate())) {
             tvDate.setText(articleEntity.getPublishDate());
+        } else {
+            tvDate.setVisibility(View.GONE);
         }
         //阅读数
         tvReadCount.setText(articleEntity.getPageView() + "");
