@@ -274,19 +274,28 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             String bodyStr = e.getMessage();
             Map map = JsonUtil.fromJson(bodyStr, Map.class);
             ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map, ErrorCodeEntity.class);
-            //ErrorCodeEntity对象回调
-            if (errorCodeEntity != null && errorCodeCallBack != null) {
-                //true：处理了异常，则直接return；false：未处理异常，则继续走默认流程
-                callBackHandleTheError = errorCodeCallBack.onErrorCodeCallBack(errorCodeEntity);
-                if (callBackHandleTheError) {
-                    return;
+
+            //token超时和被T的处理
+            if (errorCodeEntity != null && errorCodeEntity.getCode() == "---") {
+
+            } else if (errorCodeEntity != null && errorCodeEntity.getCode() == "====") {
+
+            } else {
+                //ErrorCodeEntity对象回调
+                if (errorCodeEntity != null && errorCodeCallBack != null) {
+                    //true：处理了异常，则直接return；false：未处理异常，则继续走默认流程
+                    callBackHandleTheError = errorCodeCallBack.onErrorCodeCallBack(errorCodeEntity);
+                    if (callBackHandleTheError) {
+                        return;
+                    }
+                }
+                //服务端返回的错误消息
+                String tempMessage = errorCodeEntity.getMessage();
+                if (!TextUtils.isEmpty(tempMessage)) {
+                    message = tempMessage;
                 }
             }
-            //服务端返回的错误消息
-            String tempMessage = errorCodeEntity.getMessage();
-            if (!TextUtils.isEmpty(tempMessage)) {
-                message = tempMessage;
-            }
+
         } catch (Exception err) {
             //异常处理（如何只处理自定义的异常信息，程序错误按默认信息提示？）
             String tempMessage = e.getMessage();
@@ -358,10 +367,20 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      * 获取当前用户的孩子列表
      */
     protected void doGetChildListWrap() {
+        doGetChildListWrap(true);
+    }
+
+    /**
+     * 获取当前用户的孩子列表
+     * @param showLoading
+     */
+    protected void doGetChildListWrap(final boolean showLoading) {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(BaseActivity.this);
-        //开启通信等待提示
-        LoadingView.getInstance().show(BaseActivity.this);
+        if (showLoading) {
+            //开启通信等待提示
+            LoadingView.getInstance().show(BaseActivity.this);
+        }
 
         DataRequestService.getInstance().getChildListV2(new BaseService.ServiceCallback() {
             @Override
@@ -373,8 +392,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
             @Override
             public void onResponse(Object obj) {
-                //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
+                if (showLoading) {
+                    //关闭通信等待提示
+                    LoadingView.getInstance().dismiss();
+                }
 
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
@@ -410,4 +431,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         });
     }
 
+
 }
+
+

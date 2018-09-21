@@ -31,6 +31,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
 import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -122,6 +123,14 @@ public class MasterTabActivity extends BaseActivity {
         SoundPlayUtils.init(this);
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+            VersionUpdateUtil.checkUpdate(this,false);
+        }
+    }
 
     /**
      * 底部tab选中监听

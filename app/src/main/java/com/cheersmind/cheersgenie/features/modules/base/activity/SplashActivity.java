@@ -1,19 +1,37 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
+import com.cheersmind.cheersgenie.main.entity.SystemTimeEntity;
+import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DateTimeUtils;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.Map;
 
 /**
  * 启动页面
  */
 public class SplashActivity extends BaseActivity {
+    //等待时间
+    private static final long WAIT_TIME = 2000;
 
     @Override
     protected int setContentView() {
@@ -42,35 +60,97 @@ public class SplashActivity extends BaseActivity {
      * 初始化操作
      */
     private void doInit() {
-        // 闪屏的核心代码
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Class cls = null;
-                //判断是否是第一次启动，是否可以自动登录
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
-                int featureVersion = pref.getInt("feature_version",0);
-                boolean showNewFeature = featureVersion < Constant.VERSION_FEATURE;
-                boolean conAutoLogin = false;
-                if (showNewFeature) {
+        //判断是否是第一次启动，是否可以自动登录
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
+        int featureVersion = pref.getInt("feature_version",0);
+        boolean showNewFeature = featureVersion < Constant.VERSION_FEATURE;
+        boolean conAutoLogin = true;
+        //是否显示信功能
+        if (showNewFeature) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     //引导页面
-                    cls = GuideActivity.class;
-                } else if (conAutoLogin) {
-                    //主页面
-//                    cls = MainActivity.class;
-                    cls = MasterTabActivity.class;
-                } else {
-                    //登陆页面
-                    cls = XLoginActivity.class;
+                    gotoActivity(GuideActivity.class);
                 }
+            }, WAIT_TIME);
 
-                // 从启动动画ui跳转到主ui
-                Intent intent = new Intent(SplashActivity.this, cls);
-                startActivity(intent);
+        } else if (conAutoLogin) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //处理自动登录
+                    doAutoLogin();
+                }
+            }, 1000);
 
-                SplashActivity.this.finish(); // 结束启动动画界面
+        } else {
+            //登陆页面
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //登录页面
+                    gotoActivity(XLoginActivity.class);
+                }
+            }, WAIT_TIME);
+        }
+
+    }
+
+
+    /**
+     * 自动登录处理
+     */
+    private void doAutoLogin() {
+        DataRequestService.getInstance().getServerTime(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+
+                //跳转到登录页面
+                gotoActivity(XLoginActivity.class);
             }
-        }, 2000); // 启动动画持续3秒钟
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map map = JsonUtil.fromJson(obj.toString(),Map.class);
+                    SystemTimeEntity systemTimeEntity = InjectionWrapperUtil.injectMap(map,SystemTimeEntity.class);
+
+                    if (systemTimeEntity == null) {
+                        throw new Exception("获取系统时间戳失败");
+                    }
+
+                    WXUserInfoEntity wxUserInfoEntity  = DataSupport.findFirst(WXUserInfoEntity.class);
+                    if (wxUserInfoEntity == null) {
+                        throw new Exception("本地无用户信息");
+                    }
+
+                    if(DateTimeUtils.tokenTimeValid(wxUserInfoEntity.getServerTime(),systemTimeEntity.getDatetime())){
+                        //缓存token有效,自动登录
+                        UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
+                        //获取孩子信息
+                        doGetChildListWrap(false);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //跳转到登录页面
+                    gotoActivity(XLoginActivity.class);
+                }
+            }
+        });
+    }
+
+    /**
+     * 跳转页面
+     * @param toActivity
+     */
+    private void gotoActivity(Class toActivity) {
+        //跳转到登录页面
+        Intent intent = new Intent(SplashActivity.this, toActivity);
+        startActivity(intent);
+        SplashActivity.this.finish(); // 结束启动动画界面
     }
 
 }

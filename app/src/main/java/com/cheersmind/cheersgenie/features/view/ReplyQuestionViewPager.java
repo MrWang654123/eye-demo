@@ -187,7 +187,7 @@ public class ReplyQuestionViewPager extends ViewPager {
             //200的时候就是setCurrentItem（dx是屏幕宽度），否则是手动滑动
             if (duration == 200) {
 //                super.startScroll(startX, startY, dx, dy, 1000);
-                super.startScroll(startX, startY, dx, dy, 200);
+                super.startScroll(startX, startY, dx, dy, 800);
             } else {
                 super.startScroll(startX, startY, dx, dy, duration);
             }

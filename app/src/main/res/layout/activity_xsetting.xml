@@ -219,10 +219,11 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/btn_login_selector"
+            android:background="@drawable/btn_common"
             android:text="退出"
             android:textSize="18sp"
-            android:textColor="@color/color_text_white"/>
+            android:gravity="center"
+            android:textColor="@color/color_333333"/>
 
     </RelativeLayout>
 

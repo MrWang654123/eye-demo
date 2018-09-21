@@ -8,7 +8,7 @@ import com.tencent.tauth.Tencent;
  */
 public class Constant {
 
-    public static int VERSION_FEATURE = 11;
+    public static int VERSION_FEATURE = 1;
 //    public static final String API_APP_ID = "b3575040-17ba-47a3-8bb9-357f2a928582";
     public static final String API_APP_ID = "3b8d2363-9ef0-11e8-b880-161768d3f948";
 
