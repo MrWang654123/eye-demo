@@ -45,10 +45,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginLeft="0dp"
-                    android:text="学业兴趣测评："
+                    android:text=""
                     android:textColor="@color/color_333333"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
+                <!--学业兴趣测评：-->
 
                 <LinearLayout
                     android:id="@+id/ll_compare"

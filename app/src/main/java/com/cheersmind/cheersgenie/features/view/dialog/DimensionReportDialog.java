@@ -305,6 +305,8 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
                             if (data != null && data.getChartDatas() != null) {
 
                                 if (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0) {
+                                    //标题设置
+                                    tvDimensionTitle.setText(dimension.getDimensionName());
                                     //隐藏比较范围模块
                                     llCompare.setVisibility(View.GONE);
                                     //隐藏报告内容模块

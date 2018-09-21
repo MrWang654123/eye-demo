@@ -479,7 +479,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新点赞视图
-                    refreshLikeView((Boolean) dataMap.get("like"), new Double(dataMap.get("page_like").toString()).intValue());
+                    refreshLikeView((Boolean) dataMap.get("is_like"), new Double(dataMap.get("page_like").toString()).intValue());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -528,7 +528,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新收藏视图
-                    refreshFavoriteView((Boolean) dataMap.get("favorite"));
+                    refreshFavoriteView((Boolean) dataMap.get("is_favorite"));
 
                 } catch (Exception e) {
                     e.printStackTrace();

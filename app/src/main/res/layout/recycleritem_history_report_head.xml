@@ -29,7 +29,7 @@
         android:gravity="center"
         android:textColor="@color/color_333333"
         android:textSize="16sp"
-        android:text="推荐课程"/>
+        android:text="测评结果"/>
 
     <TextView
         android:layout_width="1dp"

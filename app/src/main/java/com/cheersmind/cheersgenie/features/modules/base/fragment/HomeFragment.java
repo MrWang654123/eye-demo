@@ -71,9 +71,11 @@ import butterknife.Unbinder;
  */
 public class HomeFragment extends LazyLoadFragment {
 
+    @BindView(R.id.convenientBanner)
+    ConvenientBanner convenientBanner;
     //banner
-    @BindView(R.id.banner)
-    Banner banner;
+//    @BindView(R.id.banner)
+//    Banner banner;
     //最新测评模块
     @BindView(R.id.evaluation_block)
     View evaluationBlock;
@@ -230,7 +232,8 @@ public class HomeFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, contentView);
 
         //初始隐藏banner和最新评测模块
-        banner.setVisibility(View.GONE);
+//        banner.setVisibility(View.GONE);
+        convenientBanner.setVisibility(View.GONE);
         evaluationBlock.setVisibility(View.GONE);
 
         //适配器
@@ -310,7 +313,8 @@ public class HomeFragment extends LazyLoadFragment {
         //开始自动翻页
         if (!ArrayListUtil.isEmpty(bannerArticleList)) {
             //开始轮播
-            banner.startAutoPlay();
+//            banner.startAutoPlay();
+            convenientBanner.startTurning();
         }
     }
 
@@ -320,7 +324,8 @@ public class HomeFragment extends LazyLoadFragment {
         //停止翻页
         if (!ArrayListUtil.isEmpty(bannerArticleList)) {
             //结束轮播
-            banner.stopAutoPlay();
+//            banner.stopAutoPlay();
+            convenientBanner.stopTurning();
         }
         //取消toast
         ToastUtil.cancelToast();
@@ -360,7 +365,8 @@ public class HomeFragment extends LazyLoadFragment {
         DataRequestService.getInstance().getHotArticles(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                banner.setVisibility(View.GONE);
+//                banner.setVisibility(View.GONE);
+                convenientBanner.setVisibility(View.GONE);
                 //发送通信错误消息
                 mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
@@ -382,12 +388,16 @@ public class HomeFragment extends LazyLoadFragment {
                         }
 
                         //设置图片加载器
-                        banner.setImageLoader(new GlideImageLoader());
+                        /*banner.setImageLoader(new GlideImageLoader());
                         //设置图片集合
                         banner.setImages(images);
                         //banner设置方法全部调用完毕时最后调用
                         banner.start();
-                        /*ConvenientBanner convenientBanner = new ConvenientBanner();
+                        banner.setVisibility(View.VISIBLE);
+                        banner.startAnimation(mShowAction);
+                        */
+
+//                        ConvenientBanner convenientBanner = new ConvenientBanner();
                         convenientBanner.setPages(viewHolderCreator, bannerArticleList) //mList是图片地址的集合
                                 .setPointViewVisible(true)    //设置指示器是否可见
                                 //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
@@ -397,9 +407,9 @@ public class HomeFragment extends LazyLoadFragment {
                                 .setOnItemClickListener(bannerItemClickListener)//点击监听
                                 .startTurning(BANNER_AUTO_NEXT_PAGE_TIME);     //设置自动切换（同时设置了切换时间间隔）
 //                .setManualPageable(true)  //设置手动影响（设置了该项无法手动切换）
-//        ;*/
-                        banner.setVisibility(View.VISIBLE);
-                        banner.startAnimation(mShowAction);
+//        ;
+                        convenientBanner.setVisibility(View.VISIBLE);
+                        convenientBanner.startAnimation(mShowAction);
                         //空布局：隐藏
                         emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
@@ -410,7 +420,8 @@ public class HomeFragment extends LazyLoadFragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    banner.setVisibility(View.GONE);
+//                    banner.setVisibility(View.GONE);
+                    convenientBanner.setVisibility(View.GONE);
                 }
 
             }
@@ -720,7 +731,10 @@ public class HomeFragment extends LazyLoadFragment {
      * @param position
      */
     private void handlerBannerItemClick(int position) {
-        ToastUtil.showShort(getContext(), "点击了第" + (position + 1) + "页");
+        SimpleArticleEntity simpleArticle = bannerArticleList.get(position);
+        String articleId = simpleArticle.getId();
+        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+//        ToastUtil.showShort(getContext(), "点击了第" + (position + 1) + "页");
     }
 
 
