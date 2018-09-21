@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
@@ -42,13 +43,21 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     //默认Glide处理参数
     private static RequestOptions defaultOptions;
 
+    private static RequestOptions blurOptions;
+
     /**
      * 初始化默认Glide处理参数
      */
     private void initRequestOptions() {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 10), 0, RoundedCornersTransformation.CornerType.ALL));
+                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL));
+
+        MultiTransformation<Bitmap> multiBlur = new MultiTransformation<>(
+                new CenterCrop(),
+                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL),
+                new BlurTransformation(8));
+
         //默认Glide处理参数
         defaultOptions = new RequestOptions();
         defaultOptions.skipMemoryCache(false);//不忽略内存
@@ -56,6 +65,13 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
         defaultOptions.transform(multi);
+
+        blurOptions = new RequestOptions();
+        blurOptions.skipMemoryCache(false);//不忽略内存
+//        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        blurOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
+        blurOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
+        blurOptions.transform(multiBlur);
     }
 
     /**
@@ -181,18 +197,41 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
 //        //加载图片
 //        draweeView.setImageURI(uri);
 
+        //加载图片
         String url = dimensionInfo.getIcon();
 //        String url = testImageUrl;
         ImageView imageView = helper.getView(R.id.iv_icon);
-
-        if(!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))){
-            Glide.with(fragment)
-                    .load(R.drawable.default_image_round)
+        //加载图片，区分是否被锁
+        if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
+            //被锁情况
+            if (!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))) {
+                Glide.with(fragment)
+                        .load(R.drawable.default_image_round)
 //                    .load(url)
-                    .thumbnail(0.5f)
-                    .apply(defaultOptions)
-                    .into(imageView);
-            imageView.setTag(R.id.iv_icon,url);
+                        .thumbnail(0.5f)
+                        .apply(defaultOptions)
+                        .into(imageView);
+                imageView.setTag(R.id.iv_icon, url);
+            }
+
+        } else {
+            //未被锁：正常显示图片
+            if (!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))) {
+                Glide.with(fragment)
+                        .load(R.drawable.default_image_round)
+//                    .load(url)
+                        .thumbnail(0.5f)
+                        .apply(defaultOptions)
+                        .into(imageView);
+                imageView.setTag(R.id.iv_icon, url);
+            }
+        }
+
+        //是否被锁，显隐锁图标
+        if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
+            (helper.getView(R.id.iv_lock)).setVisibility(View.VISIBLE);
+        } else {
+            (helper.getView(R.id.iv_lock)).setVisibility(View.GONE);
         }
 
     }
