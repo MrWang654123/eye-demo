@@ -3,98 +3,100 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="50dp"
-    android:background="@drawable/shape_corner_top_20dp"
+    android:layout_marginTop="25dp"
     android:orientation="vertical">
 
-    <!--标题栏-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="83dp">
 
-        <!--话题的标题布局-->
-        <!--<RelativeLayout-->
-        <!--android:id="@+id/rl_topic_title"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:background="@color/white">-->
-
-        <!--<TextView-->
-        <!--android:id="@+id/tv_topic_title"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="标题"-->
-        <!--android:textColor="@color/color_333333"-->
-        <!--android:textSize="18sp"-->
-        <!--android:textStyle="bold"-->
-        <!--android:layout_centerInParent="true" />-->
-        <!--</RelativeLayout>-->
-
-        <!--量表的标题布局-->
-        <LinearLayout
-            android:id="@+id/rl_dimension_title"
+        <!--标题栏-->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="15dp"
-            android:visibility="visible"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="65dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/shape_corner_top_12dp">
 
-            <ImageView
-                android:id="@+id/iv_close"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:padding="5dp"
-                android:src="@drawable/title_prefix"/>
-
-            <TextView
-                android:id="@+id/tv_dimension_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="0dp"
-                android:text="学业兴趣测评："
-                android:textColor="@color/color_333333"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
+            <!--量表的标题布局-->
             <LinearLayout
-                android:id="@+id/ll_compare"
-                android:layout_width="wrap_content"
+                android:id="@+id/rl_dimension_title"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:paddingLeft="0dp"
+                android:paddingRight="15dp"
+                android:visibility="visible"
+                android:gravity="center_vertical"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="4dp"
-                    android:src="@drawable/vs"/>
+                    android:id="@+id/iv_close"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="7dp"
+                    android:src="@drawable/title_prefix"/>
 
-                <ImageView
-                    android:id="@+id/iv_compare_country"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="4dp"
-                    android:src="@drawable/compare_country_selected"/>
+                <TextView
+                    android:id="@+id/tv_dimension_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="0dp"
+                    android:text="学业兴趣测评："
+                    android:textColor="@color/color_333333"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/iv_compare_class"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="4dp"
-                    android:src="@drawable/compare_class_normal"/>
+                <LinearLayout
+                    android:id="@+id/ll_compare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <ImageView
-                    android:id="@+id/iv_compare_grade"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/compare_grade_normal"/>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="4dp"
+                        android:src="@drawable/vs"/>
+
+                    <ImageView
+                        android:id="@+id/iv_compare_country"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="4dp"
+                        android:src="@drawable/compare_country_selected"/>
+
+                    <ImageView
+                        android:id="@+id/iv_compare_class"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="4dp"
+                        android:src="@drawable/compare_class_normal"/>
+
+                    <ImageView
+                        android:id="@+id/iv_compare_grade"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/compare_grade_normal"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_close_right"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/close"
+            android:background="@drawable/shape_corner_aaffffff_20dp"/>
 
     </RelativeLayout>
 
@@ -106,7 +108,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"

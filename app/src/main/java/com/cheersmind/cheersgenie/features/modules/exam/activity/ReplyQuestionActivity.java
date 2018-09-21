@@ -201,7 +201,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         }
 
         //初始化开页动画，动画结束后加载问题列表
-        initViewGo();
+//        initViewGo();
         //加载问题
         loadChildQuestions(dimensionInfoEntity.getChildDimension().getChildDimensionId());
 

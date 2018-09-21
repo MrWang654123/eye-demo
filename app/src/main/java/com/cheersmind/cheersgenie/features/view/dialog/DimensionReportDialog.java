@@ -55,6 +55,8 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
     //关闭按钮
     @BindView(R.id.iv_close)
     ImageView ivClose;
+    @BindView(R.id.iv_close_right)
+    ImageView ivCloseRight;
 
     //比较范围模块
     @BindView(R.id.ll_compare)
@@ -254,6 +256,8 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
     private void initView() {
         //关闭按钮
         ivClose.setOnClickListener(this);
+        //关闭按钮
+        ivCloseRight.setOnClickListener(this);
 
         //空布局
         emptyLayout = findViewById(R.id.emptyLayout);
@@ -431,7 +435,7 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         if (!RepetitionClickUtil.isFastClick()) {
             return;
         }
-        if (v == ivClose) {
+        if (v == ivClose || v == ivCloseRight) {
             if (listener != null) {
                 listener.onExit();
             }
