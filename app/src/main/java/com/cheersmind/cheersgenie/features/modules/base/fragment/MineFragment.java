@@ -15,6 +15,7 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
@@ -252,7 +253,9 @@ public class MineFragment extends LazyLoadFragment {
             //我的智评（目前就是报告页面）
             case R.id.ll_mine_report: {
                 //切换到报告页面
-                ((MasterTabActivity) getActivity()).switchToReportPage();
+//                ((MasterTabActivity) getActivity()).switchToReportPage();
+                Intent intent = new Intent(getContext(), MineExamActivity.class);
+                startActivity(intent);
                 break;
             }
             //反馈

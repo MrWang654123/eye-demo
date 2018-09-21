@@ -28,6 +28,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.MessageFragment
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
+import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamCompletedFragment;
 import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -82,7 +83,9 @@ public class MasterTabActivity extends BaseActivity {
         listFragment.add(new HomeFragment());
         listFragment.add(new ExamFragment());
 //        listFragment.add(new MessageFragment());
-        listFragment.add(new ReportFragment());
+//        listFragment.add(new ReportFragment());
+        //由于不需要标题栏，又需要懒加载，所以直接使用它，用ReportFragment嵌套懒加载会失效
+        listFragment.add(new ExamCompletedFragment());
         listFragment.add(new MineFragment());
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);

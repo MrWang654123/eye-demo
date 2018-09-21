@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.man.MANService;
@@ -38,6 +39,7 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
@@ -48,6 +50,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 基础页面
@@ -60,6 +63,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     //标题
     @BindView(R.id.tv_toolbar_title)
     protected @Nullable TextView tvToolbarTitle;
+    //左侧按钮
+    @BindView(R.id.iv_left)
+    @Nullable ImageView ivLeft;
 
     //消息处理器
     protected Handler mHandler = new Handler() {
@@ -103,6 +109,16 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         //设置状态栏文字颜色及图标为浅色
 //        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+        //设置自定义左侧键点击监听
+        if (ivLeft != null) {
+            ivLeft.setOnClickListener(new OnMultiClickListener() {
+                @Override
+                public void onMultiClick(View view) {
+                    onToolbarLeftButtonClick();
+                }
+            });
+        }
 
         //初始化视图控件
         onInitView();
@@ -247,12 +263,14 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         return super.onOptionsItemSelected(item);
     }
 
+
     /**
      * toolbar左侧键点击处理
      */
     protected void onToolbarLeftButtonClick() {
         finish();
     }
+
 
     /**
      * 默认的通信失败处理

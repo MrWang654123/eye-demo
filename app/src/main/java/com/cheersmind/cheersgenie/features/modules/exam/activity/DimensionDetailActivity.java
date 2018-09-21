@@ -142,11 +142,16 @@ public class DimensionDetailActivity extends BaseActivity {
         //修改状态栏颜色
         if (!TextUtils.isEmpty(dimensionInfoEntity.getBackgroundColor())) {
             try {
+                //使用后端返回的颜色
                 setStatusBarColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            //默认绿色？
+            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
         }
+
         //图片
         Glide.with(DimensionDetailActivity.this)
                 .load(dimensionInfoEntity.getBackgroundImage())

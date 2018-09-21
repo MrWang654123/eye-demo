@@ -24,15 +24,6 @@ import butterknife.Unbinder;
  * 报告主页面
  */
 public class ReportFragment extends LazyLoadFragment {
-    //标签布局
-    @BindView(R.id.tabs)
-    TabLayout tabs;
-    //内容viewpager
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
-    //ButterKnife解绑对象
-    Unbinder unbinder;
-
 
     @Override
     protected int setContentView() {
@@ -41,34 +32,11 @@ public class ReportFragment extends LazyLoadFragment {
 
     @Override
     protected void onInitView(View contentView) {
-        //ButterKnife绑定
-        unbinder = ButterKnife.bind(this, contentView);
-
-        List<Pair<String, Fragment>> items = new ArrayList<>();
-        items.add(new Pair<String, Fragment>("正在测评", new ExamDoingFragment()));
-        items.add(new Pair<String, Fragment>("已完成", new ExamCompletedFragment()));
-        viewPager.setAdapter(new TabViewPagerAdapter(getChildFragmentManager(), items));
-        //标签绑定viewpager
-        tabs.setupWithViewPager(viewPager);
     }
 
     @Override
     protected void lazyLoad() {
 
-    }
-
-    /**
-     * 视图是否已经对用户可见，系统的方法
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
 }

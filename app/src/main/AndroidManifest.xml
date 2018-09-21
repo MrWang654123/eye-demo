@@ -264,7 +264,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".features.modules.article.activity.ArticleListActivity" />
         <activity android:name=".features.modules.article.activity.SearchArticleActivity" />
-        <activity android:name=".features.modules.register.activity.ParentRoleActivity"></activity>
+        <activity android:name=".features.modules.register.activity.ParentRoleActivity"/>
+        <activity android:name=".features.modules.mine.activity.MineExamActivity"/>
     </application>
 
 </manifest>

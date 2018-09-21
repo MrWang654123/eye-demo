@@ -48,24 +48,12 @@
                 android:clickable="true"
                 app:srcCompat="@drawable/question" />
 
-            <TextView
-                android:id="@+id/tv_nav_to_report"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_common_small"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/color_333333"
-                android:textSize="14sp"
-                android:gravity="center"
-                android:textStyle=""
-                android:text="@string/look_report"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp">
+            android:paddingBottom="0dp">
             <!--适合人群-->
             <TextView
                 android:id="@+id/tv_suitable_user"
@@ -87,7 +75,21 @@
                 android:textSize="13sp"
                 android:textColor="@color/color_666666"
                 android:text="@string/placeholder_for_item"/>
+
+            <TextView
+                android:id="@+id/tv_nav_to_report"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/btn_common_small"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/color_333333"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:text="@string/look_report"/>
+
         </RelativeLayout>
+
     </LinearLayout>
 
 </LinearLayout>
