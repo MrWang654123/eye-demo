@@ -99,6 +99,11 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //设置状态栏颜色
         setStatusBarColor(this, getStatusBarColor());
 
+        //设置状态栏文字颜色及图标为深色
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        //设置状态栏文字颜色及图标为浅色
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
         //初始化视图控件
         onInitView();
         //初始化数据

@@ -36,8 +36,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -1071,7 +1073,13 @@ public class DataRequestService {
         }
         //搜索文本
         if (!TextUtils.isEmpty(dto.getFilter())) {
-            params.put("filter", dto.getFilter());
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getFilter(), "utf-8");
+                params.put("filter", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
 
         //拼接参数
