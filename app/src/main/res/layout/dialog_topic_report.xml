@@ -12,27 +12,42 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white">
-        <TextView
-            android:id="@+id/tv_title"
+        android:layout_height="66dp">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="报告"
-            android:textSize="18sp"
-            android:layout_centerVertical="true"
-            android:textColor="@color/color_333333"/>
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/shape_corner_top_12dp">
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="报告"
+                android:textSize="18sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/color_333333"/>
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_close"-->
+                <!--android:layout_width="50dp"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:scaleType="centerInside"-->
+                <!--android:src="@mipmap/qs_icon_close"/>-->
+        </RelativeLayout>
         <ImageView
             android:id="@+id/iv_close"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@mipmap/qs_icon_close"/>
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/close"
+            android:background="@drawable/shape_corner_aaffffff_20dp"/>
+
     </RelativeLayout>
 
     <TextView
@@ -45,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/color_eeeeee">
+        android:background="@color/white">
 
         <!--<fragment
             android:id="@+id/fragment_topic_report"
