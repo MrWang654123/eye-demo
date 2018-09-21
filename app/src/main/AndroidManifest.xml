@@ -117,7 +117,7 @@
         <!-- 完善用户信息页面 -->
         <activity
             android:name=".features.modules.register.activity.UserInfoInitActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <!-- 手机号快捷登录页面 -->
         <activity
             android:name=".features.modules.login.activity.PhoneNumLoginActivity"
