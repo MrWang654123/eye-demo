@@ -584,7 +584,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                             //设置孩子量表对象
                             dimensionInfoEntity.setChildDimension(dimensionChild);
 
-                            //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示查看报告按钮的前提就是要有孩子话题对象）
+                            //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示“查看报告”按钮的前提就是要有孩子话题对象）
                             if (topicInfoEntity.getChildTopic() == null) {
                                 //发送问题提交成功的事件通知，附带量表对象
                                 EventBus.getDefault().post(new QuestionSubmitSuccessEvent(null));

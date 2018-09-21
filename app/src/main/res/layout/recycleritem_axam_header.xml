@@ -33,7 +33,7 @@
                 android:layout_centerVertical="true"
                 android:textColor="@color/color_333333"
                 android:textStyle="bold"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:text="我是置评士大夫精" />
             <!--@string/placeholder_for_item-->
 

@@ -4,14 +4,14 @@ import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 
 
 /**
- * 问题提交成功事件
+ * 量表开启成功事件
  */
-public class QuestionSubmitSuccessEvent {
+public class DimensionOpenSuccessEvent {
 
-    //分量表（带孩子分量表）
+    //分量表
     private DimensionInfoEntity dimension;
 
-    public QuestionSubmitSuccessEvent(DimensionInfoEntity dimension) {
+    public DimensionOpenSuccessEvent(DimensionInfoEntity dimension) {
         this.dimension = dimension;
     }
 

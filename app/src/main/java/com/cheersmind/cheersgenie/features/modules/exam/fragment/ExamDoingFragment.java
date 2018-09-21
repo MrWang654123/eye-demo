@@ -12,6 +12,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
+import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
@@ -222,6 +223,60 @@ public class ExamDoingFragment extends LazyLoadFragment {
         //注销事件
         EventBus.getDefault().unregister(this);
     }
+
+
+    /**
+     * 量表开启成功的通知事件
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDimensionOpenSuccessNotice(DimensionOpenSuccessEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            //量表
+            DimensionInfoEntity dimension = event.getDimension();
+            if (dimension == null) {
+                //重置为第一页
+                resetPageInfo();
+                //刷新孩子话题
+                refreshChildTopList();
+
+            } else {
+                //局部刷新量表对应的视图项
+                List<RecyclerCommonSection<DimensionInfoEntity>> data = recyclerAdapter.getData();
+                if (ArrayListUtil.isNotEmpty(data)) {
+                    //header模型位置
+                    int headerPosition = 0;
+
+                    for (int i = 0; i < data.size(); i++) {
+                        RecyclerCommonSection<DimensionInfoEntity> item = data.get(i);
+                        TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
+                        DimensionInfoEntity t = (DimensionInfoEntity) item.t;
+
+                        //t不为空
+                        if (t != null ) {
+                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                            if (t.getTopicId().equals(dimension.getTopicId())
+                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+                                //刷新对应量表的列表项
+                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+
+                                break;
+                            }
+
+                        } else {
+                            //t为空则代表是header模型
+                            headerPosition = i;
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * 问题提交成功的通知事件

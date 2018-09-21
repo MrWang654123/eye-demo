@@ -2,9 +2,11 @@ package com.cheersmind.cheersgenie.features.adapter;
 
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
@@ -150,15 +152,27 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         //使用人数
         String useCount = "• " + fragment.getResources().getString(R.string.exam_dimension_use_count, dimensionInfo.getUseCount() + "");
         helper.setText(R.id.tv_used_count, useCount);
-        //状态：是否完成
+        //状态
         DimensionInfoChildEntity childDimension = dimensionInfo.getChildDimension();
-        if (childDimension == null || childDimension.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
-            //未完成状态
+        if (childDimension == null) {
+            //未开始
             helper.getView(R.id.tv_status).setVisibility(View.GONE);
+            ((TextView)helper.getView(R.id.tv_status)).setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            helper.setText(R.id.tv_status, "未开始");
+
+        } else if (childDimension.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+            //进行中
+            helper.getView(R.id.tv_status).setVisibility(View.VISIBLE);
+            ((TextView)helper.getView(R.id.tv_status)).setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(fragment.getContext(), R.drawable.doing), null, null, null);
+            helper.setText(R.id.tv_status, "进行中");
 
         } else if (childDimension.getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
-            //个人报告（已完成）
+            //已完成
             helper.getView(R.id.tv_status).setVisibility(View.VISIBLE);
+            ((TextView)helper.getView(R.id.tv_status)).setCompoundDrawablesWithIntrinsicBounds(
+                    ContextCompat.getDrawable(fragment.getContext(), R.drawable.complete), null, null, null);
+            helper.setText(R.id.tv_status, "已完成");
         }
 
 //        Uri uri = Uri.parse(dimensionInfo.getIcon());

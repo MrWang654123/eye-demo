@@ -106,7 +106,7 @@ public class MasterTabActivity extends BaseActivity {
                 .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"首页")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
 //                        .setBadgeItem(mShapeBadgeItem))
-                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"测评")
+                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
                 .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
@@ -127,9 +127,9 @@ public class MasterTabActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
-            VersionUpdateUtil.checkUpdate(this,false);
-        }
+//        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+//            VersionUpdateUtil.checkUpdate(this,false);
+//        }
     }
 
     /**

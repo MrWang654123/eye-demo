@@ -202,14 +202,15 @@
                 <Button
                     android:id="@+id/btn_start_exam"
                     android:layout_width="match_parent"
+                    android:layout_height="@dimen/heightBigWidget"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="20dp"
                     android:layout_marginLeft="45dp"
                     android:layout_marginRight="45dp"
-                    android:layout_height="@dimen/heightBigWidget"
                     android:background="@drawable/btn_common"
                     android:textColor="@color/color_333333"
                     android:layout_gravity="center_horizontal"
+                    android:textSize="16sp"
                     android:text="开始评测"/>
 
 

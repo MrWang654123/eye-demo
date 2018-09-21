@@ -18,6 +18,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
+import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
@@ -195,6 +196,15 @@ public class DimensionDetailActivity extends BaseActivity {
             llDimensionDefinition.setVisibility(View.GONE);
         }
 
+        //根据量表状态改变按钮文字
+        //未开始
+        if (dimensionInfoEntity.getChildDimension() == null) {
+            btnStartExam.setText("开始测评");
+        } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+            btnStartExam.setText("继续测评");
+        } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+            btnStartExam.setText("查看报告");
+        }
     }
 
 
@@ -259,14 +269,14 @@ public class DimensionDetailActivity extends BaseActivity {
      * 显示量表报告
      */
     private void showDimensionReport() {
-        ToastUtil.showShort(getApplicationContext(), "查看该量表报告");
+        ToastUtil.showShort(getApplicationContext(), "请返回查看该量表报告");
     }
 
     /**
      * 量表被锁定的提示
      */
     private void lockedDimensionTip() {
-        ToastUtil.showShort(getApplicationContext(), "带测评被锁定，请先完成其他测评");
+        ToastUtil.showShort(getApplicationContext(), "该测评被锁定，请先完成其他测评");
     }
 
     /**
@@ -316,11 +326,16 @@ public class DimensionDetailActivity extends BaseActivity {
                     if (startEntity != null) {
                         //设置孩子量表对象
                         dimensionInfoEntity.setChildDimension(startEntity);
+                        //修改按钮文字
+                        btnStartExam.setText("继续测评");
+
                         //打开答题页面，传递分量表对象
                         ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
 
                         //发送最新操作测评通知：更新操作
                         EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
+                        //发送量表开启成功通知
+                        EventBus.getDefault().post(new DimensionOpenSuccessEvent(dimensionInfoEntity));
                     }
 
                 } catch (Exception e) {
