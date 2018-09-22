@@ -52,6 +52,9 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
 
         //生成图表
         LinearLayout llChart = helper.getView(R.id.ll_chart);
+        if (llChart.getChildCount() > 0 ) {
+            llChart.removeAllViews();
+        }
         if (llChart.getChildCount() == 0) {
 //            llChart.removeAllViews();
             MPChartViewHelper.addMpChartView(context, llChart, item);
