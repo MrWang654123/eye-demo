@@ -87,12 +87,12 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         xl.setDrawGridLines(false);
         xl.setLabelRotationAngle(-20);
         xl.setGranularity(1f);
-        //上侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
-        xl.setAxisMinimum(0f);
+//        //上侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
+//        xl.setAxisMinimum(0f);
         //放到setData之后
 //        xAxis.setAxisMaximum(xValues.size());
-        //将X轴的值显示在中央
-        xl.setCenterAxisLabels(true);
+//        //将X轴的值显示在中央
+//        xl.setCenterAxisLabels(true);
 
         YAxis yl = mChart.getAxisLeft();
         yl.setTypeface(mTfLight);
@@ -114,7 +114,7 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
 
         setData();
 
-        xl.setAxisMaximum(xLabels.size());
+//        xl.setAxisMaximum(xLabels.size());
 
         MyMarkerView mv = new MyMarkerView(context, R.layout.custom_marker_view);
         mv.setChartView(mChart);
@@ -142,10 +142,10 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
 
-        int chartCounts = 2;
-//        if(items.get(0).getCompareScore()>0){
-//            chartCounts = 2;
-//        }
+        int chartCounts = 1;
+        if(items.get(0).getCompareScore()>0){
+            chartCounts = 2;
+        }
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         for(int j=0;j<chartCounts;j++) {
@@ -182,7 +182,11 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         if (dataSets.size() == 1) {
             data.setBarWidth(0.5f);
         } else {
-
+            //上侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
+            mChart.getXAxis().setAxisMinimum(0f);
+            mChart.getXAxis().setAxisMaximum(xLabels.size());
+            //将X轴的值显示在中央
+            mChart.getXAxis().setCenterAxisLabels(true);
 
             //由堆积模式变为并排多列模式
 /**

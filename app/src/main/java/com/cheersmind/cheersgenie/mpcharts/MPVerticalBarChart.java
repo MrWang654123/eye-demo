@@ -89,11 +89,11 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
         xAxis.setGranularity(1f); // only intervals of 1 day
 //        xAxis.setLabelCount(7);
         //右侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
-        xAxis.setAxisMinimum(0f);
+//        xAxis.setAxisMinimum(0f);
         //放到setData之后
 //        xAxis.setAxisMaximum(xValues.size());
-        //将X轴的值显示在中央
-        xAxis.setCenterAxisLabels(true);
+//        //将X轴的值显示在中央
+//        xAxis.setCenterAxisLabels(true);
 
         //X轴文本
 //        xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
@@ -136,7 +136,7 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
 
         setData();
 
-        xAxis.setAxisMaximum(xLabels.size());
+//        xAxis.setAxisMaximum(xLabels.size());
 
         leftAxis.setAxisMinimum(reportData.getMinScore());
         MyMarkerView mv = new MyMarkerView(context, R.layout.custom_marker_view);
@@ -153,10 +153,10 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();
 
-        int chartCounts = 2;
-//        if(items.get(0).getCompareScore()>0){
-//            chartCounts = 2;
-//        }
+        int chartCounts = 1;
+        if(items.get(0).getCompareScore()>0){
+            chartCounts = 2;
+        }
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
         for(int j=0;j<chartCounts;j++) {
@@ -192,6 +192,11 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
         if (dataSets.size() == 1) {
             data.setBarWidth(0.5f);
         } else {
+            //右侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
+            mChart.getXAxis().setAxisMinimum(0f);
+            mChart.getXAxis().setAxisMaximum(xLabels.size());
+            //将X轴的值显示在中央
+            mChart.getXAxis().setCenterAxisLabels(true);
 
             //由堆积柱状图变为并排多列柱状图
 /**

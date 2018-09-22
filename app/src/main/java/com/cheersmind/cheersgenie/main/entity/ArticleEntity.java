@@ -88,11 +88,11 @@ public class ArticleEntity extends DataSupport implements Serializable {
     private TopicInfo topicInfo;
 
     //是否收藏
-    @InjectMap(name = "favorite")
+    @InjectMap(name = "is_favorite")
     private boolean favorite;
 
     //是否点赞
-    @InjectMap(name = "like")
+    @InjectMap(name = "is_like")
     private boolean like;
 
     //内容类型（0 文章 1 视频,）

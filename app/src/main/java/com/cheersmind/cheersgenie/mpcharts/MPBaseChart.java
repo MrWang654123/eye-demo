@@ -141,4 +141,44 @@ public class MPBaseChart extends LinearLayout {
         return values;
     }*/
 
+    /**
+     * 自定义格式化x轴文本：
+     * 1、文本都置于同样长度，左边补空格
+     * 2、在最大文本长度基础上额外加1个空格
+     * @param xLabels
+     * @return
+     */
+    /*protected List<String> customFormatXLabels(List<String> xLabels) {
+        List<String> formatXLabels = new ArrayList<>();
+        if (xLabels == null) {
+            return formatXLabels;
+        }
+
+        String blank = "\u3000";
+        //额外的空格符数量
+        int extraBlankCount = 2;
+        //最大长度
+        int maxLen = 0;
+        for (String label : xLabels) {
+            if (label.length() > maxLen) {
+                maxLen = label.length();
+            }
+        }
+
+        //需要补充的空格数量
+        int needBlankCount = 0;
+        for (String label : xLabels) {
+            needBlankCount = maxLen - label.length() + extraBlankCount;
+
+            StringBuffer blankStr = new StringBuffer();
+            for (int i=0; i<needBlankCount; i++) {
+                blankStr.append(blank);
+            }
+
+            formatXLabels.add(blankStr.append(label).toString());
+        }
+
+        return formatXLabels;
+    }*/
+
 }
