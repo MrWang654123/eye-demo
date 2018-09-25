@@ -431,6 +431,15 @@ public class XLoginAccountActivity extends BaseActivity {
 //                            sessionCreateResult = null;
 //                            doPostAccountSessionForImageCaptcha(false);
 
+                            //如果当前状态为不正常，则重置图形验证码
+                            if (sessionCreateResult != null && !sessionCreateResult.getNormal()) {
+                                //请求图形验证码
+                                getImageCaptcha(sessionCreateResult.getSessionId(), null);
+                                //清空图形验证码，并聚焦图形验证码
+                                etImageCaptcha.setText("");
+//                                etImageCaptcha.requestFocus();
+                            }
+
                             //标记已经处理了异常
                             return true;
 
@@ -454,6 +463,10 @@ public class XLoginAccountActivity extends BaseActivity {
                                 public void onSuccess(Object... objects) {
                                     //关闭通信等待
                                     LoadingView.getInstance().dismiss();
+                                    //如果当前状态为正常，则置为不正常
+                                    if (sessionCreateResult.getNormal()) {
+                                        sessionCreateResult.setNormal(false);
+                                    }
                                     //需要图形验证码，才能登录的提示处理
                                     requiredImageCaptchaForSendError();
                                 }
