@@ -2,24 +2,33 @@ package com.cheersmind.cheersgenie.features.modules.article.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
+import com.cheersmind.cheersgenie.main.entity.CategoryEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -27,21 +36,35 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class ArticleListActivity extends BaseActivity {
-
+    //类型
+    private static final String  CATEGORY = "category";
     //文章查询Dto
     private static final String  ARTICLE_DTO = "articleDto";
     private ArticleDto articleDto;
+    private CategoryEntity category;
+
 
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
+
+    @BindView(R.id.appbar_layout)
+    AppBarLayout appBarLayout;
+    //主图
+    @BindView(R.id.iv_main)
+    ImageView ivMain;
+    //类型名称
+    @BindView(R.id.tv_category_name)
+    TextView tvCategoryName;
 
     //空布局模块
     @BindView(R.id.emptyLayout)
@@ -110,10 +133,11 @@ public class ArticleListActivity extends BaseActivity {
      * @param context
      * @param articleDto
      */
-    public static void startArticleListActivity(Context context, ArticleDto articleDto) {
+    public static void startArticleListActivity(Context context, ArticleDto articleDto, CategoryEntity category) {
         Intent intent = new Intent(context, ArticleListActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(ARTICLE_DTO, articleDto);
+        extras.putSerializable(CATEGORY, category);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -158,6 +182,19 @@ public class ArticleListActivity extends BaseActivity {
         //设置样式刷新显示的位置
         swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
+        //监听 AppBarLayout Offset 变化，动态设置 SwipeRefreshLayout 是否可用
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (verticalOffset >= 0) {
+                    swipeRefreshLayout.setEnabled(true);
+                } else {
+                    swipeRefreshLayout.setEnabled(false);
+                }
+            }
+        });
+
         emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
@@ -170,6 +207,7 @@ public class ArticleListActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         try {
+            category = (CategoryEntity) getIntent().getSerializableExtra(CATEGORY);
             articleDto = (ArticleDto) getIntent().getExtras().getSerializable(ARTICLE_DTO);
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,6 +220,32 @@ public class ArticleListActivity extends BaseActivity {
             articleDto.setSize(PAGE_SIZE);
         }
 
+        if (category != null) {
+            //类型名称
+            if (!TextUtils.isEmpty(category.getName())) {
+                tvCategoryName.setText(category.getName());
+            }
+
+            //修改状态栏颜色
+            if (!TextUtils.isEmpty(category.getBackgroundColor())) {
+                try {
+                    //使用后端返回的颜色
+                    setStatusBarColor(ArticleListActivity.this, Color.parseColor(category.getBackgroundColor()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                //默认绿色？
+//                setStatusBarColor(ArticleListActivity.this, Color.parseColor("#87c1b7"));
+            }
+
+            //主图
+            Glide.with(ArticleListActivity.this)
+                    .load(category.getBackgroundImg())
+                    .thumbnail(0.5f)
+                    .apply(QSApplication.getDefaultOptions())
+                    .into(ivMain);
+        }
 
         //加载更多文章数据
         loadMoreArticleData();
@@ -373,5 +437,18 @@ public class ArticleListActivity extends BaseActivity {
             }
         });
     }
+
+
+    @OnClick({R.id.iv_back})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //回退
+            case R.id.iv_back: {
+                finish();
+                break;
+            }
+        }
+    }
+
 
 }

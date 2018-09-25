@@ -125,7 +125,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
 
                     //有数据情况处理
                     for (int i=0; i<categories.size(); i++) {
-                        CategoryEntity categoryEntity = categories.get(i);
+                        final CategoryEntity categoryEntity = categories.get(i);
                         TextView tv = (TextView) LayoutInflater.from(CategoryDialog.this.getContext()).inflate(R.layout.dialog_category_item, null);
                         tv.setText(categoryEntity.getName());
 //                        TextView tv = new TextView(CategoryDialog.this.getContext());
@@ -142,7 +142,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                                 ArticleDto articleDto = new ArticleDto();
                                 CategoryEntity tempCategory = categories.get((int) view.getTag());
                                 articleDto.setCategoryId(tempCategory.getId());
-                                ArticleListActivity.startArticleListActivity(getContext(), articleDto);
+                                ArticleListActivity.startArticleListActivity(getContext(), articleDto, categoryEntity);
                             }
                         });
                         warpLinearLayout.addView(tv);
