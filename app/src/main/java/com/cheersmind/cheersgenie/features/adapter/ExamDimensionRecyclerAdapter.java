@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +45,11 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     private static RequestOptions defaultOptions;
 
     private static RequestOptions blurOptions;
+
+    //获取屏幕宽高
+    DisplayMetrics metrics;
+    //标题最大宽度
+    int titleMaxWidth;
 
     /**
      * 初始化默认Glide处理参数
@@ -95,8 +101,11 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     public ExamDimensionRecyclerAdapter(Fragment fragment, int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) {
         super(layoutResId, sectionHeadResId, data);
         this.fragment = fragment;
-
+        //初始化Glide处理参数
         initRequestOptions();
+        //获取屏幕宽高
+        metrics = this.fragment.getContext().getResources().getDisplayMetrics();
+        titleMaxWidth = metrics.widthPixels - DensityUtil.dip2px(fragment.getContext(), 60);
     }
 
     @Override
@@ -116,6 +125,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
         //标题
         helper.setText(R.id.tv_title, item.header);
+        //设置标题的最大宽度
+        ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
 
         //适合人群
         String suitableUser = "";
