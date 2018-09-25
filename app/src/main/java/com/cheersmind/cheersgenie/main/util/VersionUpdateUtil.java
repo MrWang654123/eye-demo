@@ -41,8 +41,18 @@ public class VersionUpdateUtil {
      * 检查更新
      */
     public static void checkUpdate(final Activity context,final boolean fromUser) {
+        checkUpdate(context, fromUser, true);
+    }
+
+
+    /**
+     * 检查更新
+     */
+    public static void checkUpdate(final Activity context,final boolean fromUser,final boolean showLoading) {
         String url = HttpConfig.URL_VERSION_UPDATE.replace("{app_id}", Constant.API_APP_ID);
-        LoadingView.getInstance().show(context);
+        if (showLoading) {
+            LoadingView.getInstance().show(context);
+        }
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -52,7 +62,9 @@ public class VersionUpdateUtil {
 
             @Override
             public void onResponse(Object obj) {
-                LoadingView.getInstance().dismiss();
+                if (showLoading) {
+                    LoadingView.getInstance().dismiss();
+                }
                 if(obj!=null){
                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                     final VersionEntity versionObj = InjectionWrapperUtil.injectMap(dataMap,VersionEntity.class);
@@ -132,6 +144,7 @@ public class VersionUpdateUtil {
             }
         });
     }
+
 
     /**
      * 获取当前本地apk的版本

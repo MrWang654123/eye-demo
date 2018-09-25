@@ -58,6 +58,10 @@ public class MasterTabActivity extends BaseActivity {
     ViewPager viewPager;
     List<Fragment> listFragment;//存储页面对象
 
+    //是否能够退出的标志
+    private boolean canExit = false;
+
+
     @Override
     protected int setContentView() {
         return R.layout.activity_master_tab;
@@ -124,16 +128,24 @@ public class MasterTabActivity extends BaseActivity {
     protected void onInitData() {
         //初始化声音
         SoundPlayUtils.init(this);
+
+        //检查更新
+//        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+//            VersionUpdateUtil.checkUpdate(this,false, false);
+//        }
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-//        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
-//            VersionUpdateUtil.checkUpdate(this,false);
-//        }
+
+        //检查更新
+        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+            VersionUpdateUtil.checkUpdate(this,false, false);
+        }
     }
+
 
     /**
      * 底部tab选中监听
@@ -297,12 +309,6 @@ public class MasterTabActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 切换到报告页面
-     */
-    public void switchToReportPage() {
-        viewPager.setCurrentItem(2, true);
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -311,4 +317,33 @@ public class MasterTabActivity extends BaseActivity {
 //        ToastUtil.showShort(getApplicationContext(), "主页面");
     }
 
+
+    @Override
+    public void onBackPressed() {
+
+        if (!canExit) {
+            canExit = true;
+            ToastUtil.showShort(MasterTabActivity.this, "连按两次退出");
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    canExit = false;
+                }
+            }, 1000);
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //清空toast
+        ToastUtil.cancelToast();
+    }
+
 }
+
+

@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -11,9 +12,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,8 @@ import android.widget.TextView;
 import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
@@ -35,6 +40,7 @@ import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
+import com.cheersmind.cheersgenie.main.entity.MessageEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -299,9 +305,8 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map, ErrorCodeEntity.class);
 
             //token超时和被T的处理
-            if (errorCodeEntity != null && errorCodeEntity.getCode() == "---") {
-
-            } else if (errorCodeEntity != null && errorCodeEntity.getCode() == "====") {
+            if (errorCodeEntity != null && ErrorCode.AC_AUTH_INVALID_TOKEN.equals(errorCodeEntity.getCode())) {
+                popupInvalidTokenWindows();
 
             } else {
                 //ErrorCodeEntity对象回调
@@ -452,6 +457,28 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             }
 
         });
+    }
+
+
+    /**
+     * 弹出无效的token的对话框
+     */
+    private void popupInvalidTokenWindows() {
+        AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(BaseActivity.this)
+                .setTitle(getResources().getString(R.string.dialog_common_title))
+                .setMessage(getResources().getString(R.string.invalid_token_tip))
+                .setNegativeButton("前往登录", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //前往登录主页面
+                        gotoLoginPage(BaseActivity.this);
+                    }
+                })
+                .create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
 

@@ -2,7 +2,6 @@ package com.cheersmind.cheersgenie.features.holder;
 
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,11 +13,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
@@ -28,9 +26,13 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
 
     private Fragment fragment;
     //主图
-    private ImageView imageView;
+    private ImageView ivMain;
+    //播放键
+    private ImageView ivPlay;
     //标题
     private TextView tvTitle;
+    //类型
+    private TextView tvType;
 
 
     //默认Glide处理参数
@@ -64,8 +66,10 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
 
     @Override
     protected void initView(View itemView) {
-        imageView = itemView.findViewById(R.id.ivPost);
+        ivMain = itemView.findViewById(R.id.iv_main);
+        ivPlay = itemView.findViewById(R.id.iv_play);
         tvTitle = itemView.findViewById(R.id.tv_title);
+        tvType = itemView.findViewById(R.id.tv_type);
     }
 
     @Override
@@ -75,10 +79,24 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
                 .load(entity.getArticleImg())
                 .thumbnail(0.5f)//缩略图
                 .apply(defaultOptions)
-                .into(imageView);
+                .into(ivMain);
+
+        //播放键
+        if (entity.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
+            ivPlay.setVisibility(View.VISIBLE);
+        } else {
+            ivPlay.setVisibility(View.GONE);
+        }
 
         //标题
         tvTitle.setText(entity.getArticleTitle());
+
+        //类型
+        if (entity.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
+            tvType.setText("视频");
+        } else {
+            tvType.setText("文章");
+        }
 
     }
 

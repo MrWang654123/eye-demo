@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.util.Log;
@@ -49,6 +51,10 @@ public class QSApplication extends LitePalApplication {
      */
     public static boolean sNetWorkIsWifi = false;
 
+    //当前顶层activity
+    private static Activity topActivity = null;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -89,6 +95,9 @@ public class QSApplication extends LitePalApplication {
         defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
 
+
+        //初始化全局的Activity
+        initGlobeActivity();
     }
 
     @Override
@@ -193,4 +202,58 @@ public class QSApplication extends LitePalApplication {
     public static RequestOptions getDefaultOptions() {
         return defaultOptions;
     }
+
+
+    private void initGlobeActivity() {
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                topActivity = activity;
+                LogUtils.w("onActivityCreated===", topActivity + "");
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+//                topActivity = activity;
+                LogUtils.w("onActivityDestroyed===", topActivity + "");
+            }
+
+            /** Unused implementation **/
+            @Override
+            public void onActivityStarted(Activity activity) {
+                topActivity = activity;
+                LogUtils.w("onActivityStarted===", topActivity + "");
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                topActivity = activity;
+                LogUtils.w("onActivityResumed===", topActivity + "");
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+//                topActivity = activity;
+                LogUtils.w("onActivityPaused===", topActivity + "");
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+//                topActivity = activity;
+                LogUtils.w("onActivityStopped===", topActivity + "");
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+            }
+        });
+    }
+
+    /**
+     * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到当前最上层的activity
+     */
+    public static Activity getCurrentActivity() {
+        return topActivity;
+    }
+
 }

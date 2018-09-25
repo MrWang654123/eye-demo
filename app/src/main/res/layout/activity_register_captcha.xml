@@ -59,26 +59,32 @@
             <EditText
                 android:id="@+id/et_captcha_num1"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num2"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num3"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num4"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num5"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
             <EditText
                 android:id="@+id/et_captcha_num6"
                 style="@style/captcha_edit"
+                android:inputType="number"
                 android:hint="@string/blank" />
         </LinearLayout>
 

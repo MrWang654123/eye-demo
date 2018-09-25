@@ -93,10 +93,10 @@
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
         <item name="android:maxLength">2</item>
-        <item name="android:inputType">number</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/edit_captcha_round</item>
         <!--<item name="android:hint">@string/blank</item>-->
+        <!--<item name="android:inputType">number</item>-->
     </style>
 
     <!--可换行布局的默认风格-->

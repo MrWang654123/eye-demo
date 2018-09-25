@@ -1,13 +1,26 @@
 package com.cheersmind.cheersgenie.main.service;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
+import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.request.BaseRequest;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.main.view.TokenTimeOutView;
 import com.google.gson.JsonObject;
 
 import org.json.JSONException;
@@ -161,6 +174,11 @@ public class BaseService {
                                 }
                                 callback.onResponse(respObj);
                             } else {
+                                //无效的权限令牌
+                                if(!TextUtils.isEmpty(bodyStr) && bodyStr.contains(ErrorCode.AC_AUTH_INVALID_TOKEN)){
+                                    TokenTimeOutView.getInstance().show(QSApplication.getCurrentActivity());
+                                }
+
                                 callback.onFailure(new QSCustomException(bodyStr));
                             }
                         } catch (JSONException e) {
@@ -206,5 +224,6 @@ public class BaseService {
 
         return result;
     }
+
 
 }

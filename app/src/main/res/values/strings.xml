@@ -145,6 +145,7 @@
     <string name="dialog_common_title">温馨提示</string>
     <!--短信验证码错误次数已超过上限-->
     <string name="forbid_phone_num_login">您今天的短信验证码输入错误次数已超过上限，请明天再试。给您造成的不便，敬请谅解，谢谢！</string>
+    <string name="invalid_token_tip">您的登录信息已失效，请重新登录</string>
 
     <!--登录-->
     <string name="bind_phone_num_tip">绑定手机号：%s</string>

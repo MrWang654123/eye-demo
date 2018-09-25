@@ -74,6 +74,7 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
             }
             //结论的简单文本
             if (!TextUtils.isEmpty(reportResult.getTitle())) {
+                helper.getView(R.id.tv_result_simple).setVisibility(View.VISIBLE);
                 helper.setText(R.id.tv_result_simple, Html.fromHtml(reportResult.getTitle()));
             } else {
                 helper.getView(R.id.tv_result_simple).setVisibility(View.GONE);
@@ -91,6 +92,8 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
             helper.getView(R.id.ll_result_footer).setVisibility(View.VISIBLE);
             //结论的长文本描述（评价）
             if (!TextUtils.isEmpty(reportResult.getContent())) {
+                //显示布局
+                helper.getView(R.id.ll_result_desc).setVisibility(View.VISIBLE);
                 helper.setText(R.id.tv_result_desc, Html.fromHtml(reportResult.getContent()));
             } else {
                 //隐藏结论的长文本描述（评价）

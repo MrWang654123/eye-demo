@@ -5,6 +5,9 @@ package com.cheersmind.cheersgenie.features.constant;
  */
 public class ErrorCode {
 
+    //无效的授权令牌
+    public static final String AC_AUTH_INVALID_TOKEN ="AC_AUTH_INVALID_TOKEN";
+
     //账号不存在（账号登录）
     public static final String AC_ACCOUNT_NOT_EXIST  = "AC_ACCOUNT_NOT_EXIST";
     //账号不存在（第三方平台登录）
