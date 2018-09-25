@@ -57,7 +57,9 @@ public class VersionUpdateUtil {
             @Override
             public void onFailure(QSCustomException e) {
                 LoadingView.getInstance().dismiss();
-                Toast.makeText(context,"获取版本信息失败",Toast.LENGTH_SHORT).show();
+                if (fromUser) {
+                    Toast.makeText(context, "获取版本信息失败", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
