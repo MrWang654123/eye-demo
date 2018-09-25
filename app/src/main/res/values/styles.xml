@@ -99,6 +99,12 @@
         <!--<item name="android:inputType">number</item>-->
     </style>
 
+    <style name="class_num" parent="captcha_edit">
+        <item name="android:digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
+        <item name="android:inputType">text</item>
+        <!--android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"-->
+    </style>
+
     <!--可换行布局的默认风格-->
     <style name="WarpLinearLayoutDefault">
         <item name="grivate">left</item>

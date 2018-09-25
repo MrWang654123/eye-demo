@@ -323,7 +323,7 @@ public class MasterTabActivity extends BaseActivity {
 
         if (!canExit) {
             canExit = true;
-            ToastUtil.showShort(MasterTabActivity.this, "连按两次退出");
+            ToastUtil.showShort(MasterTabActivity.this, "再按一次退出");
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
