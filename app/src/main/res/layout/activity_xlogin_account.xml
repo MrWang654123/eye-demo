@@ -53,7 +53,7 @@
                 android:paddingLeft="20dp"
                 android:textColor="@color/color_333333"
                 android:imeOptions="actionNext"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
 
         </RelativeLayout>
 
@@ -81,7 +81,7 @@
                 android:maxLength="24"
                 android:textColor="@color/color_333333"
                 android:imeOptions="actionDone"
-                android:textSize="15sp" />
+                android:textSize="16sp" />
 
             <CheckBox
                 android:id="@+id/cbox_password"

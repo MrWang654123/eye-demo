@@ -215,10 +215,11 @@ public class MineFragment extends LazyLoadFragment {
 
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
-            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in})
+            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //我的资料
+            case R.id.tv_user_name:
             case R.id.tv_user_info: {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
                 startActivity(intent);

@@ -163,7 +163,7 @@
                                     android:textColor="@color/color_fff100"
                                     android:textSize="12sp"
                                     android:layout_marginBottom="3dp"
-                                    android:text="324939人测过" />
+                                    android:text="@string/exam_dimension_use_count" />
 
                                 <TextView
                                     android:id="@+id/tv_dimension_name"
@@ -180,7 +180,7 @@
                                 android:id="@+id/btn_goto_evaluation"
                                 android:layout_width="wrap_content"
                                 android:layout_height="35dp"
-                                android:background="@drawable/btn_common"
+                                android:background="@drawable/btn_common_small"
                                 android:textColor="@color/color_333333"
                                 android:layout_marginRight="10dp"
                                 android:text="我要测" />

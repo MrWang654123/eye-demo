@@ -1386,6 +1386,34 @@ public class DataRequestService {
         });
     }
 
+
+    /**
+     * 获取孩子的量表对象
+     * @param callback
+     */
+    public void getChildDimension(String childId, String topicId, String dimensionId, final BaseService.ServiceCallback callback) {
+        String url = HttpConfig.URL_CHILD_DIMENSION
+                .replace("{children}", childId)
+                .replace("{topics}", topicId)
+                .replace("{dimensions}", dimensionId);
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
+            }
+        });
+    }
+
+
     /**
      * 修改密码
      * @param passwordOld

@@ -255,6 +255,9 @@ public class HttpConfig {
     //获取话题的历史报告
     public static String URL_HISTORY_REPORT = API_HOST + "/v2/exams/{topic_id}/history?child_id={child_id}";
 
+    //获取孩子的量表对象（某个话题下的量表对象，其中嵌套孩子量表）
+    public static String URL_CHILD_DIMENSION = API_HOST + "/v2/api/children/{children}/topics/{topics}/dimensions/{dimensions}";
+
 
     /*----------------文章相关------------------*/
 

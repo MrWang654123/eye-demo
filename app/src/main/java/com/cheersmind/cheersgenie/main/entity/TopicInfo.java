@@ -11,20 +11,29 @@ import java.io.Serializable;
  */
 public class TopicInfo extends DataSupport implements Serializable {
 
-    //id
+    //话题id
     @InjectMap(name = "topic_id")
-    private String topic_id;
+    private String topicId;
 
-    //名称
+    //话题名称
     @InjectMap(name = "topic_name")
     private String topicName;
 
-    public String getTopic_id() {
-        return topic_id;
+    //量表id
+    @InjectMap(name = "dimension_id")
+    private String dimensionId;
+
+    //量表名称
+    @InjectMap(name = "dimension_name")
+    private String dimensionName;
+
+
+    public String getTopicId() {
+        return topicId;
     }
 
-    public void setTopic_id(String topic_id) {
-        this.topic_id = topic_id;
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
 
     public String getTopicName() {
@@ -34,4 +43,21 @@ public class TopicInfo extends DataSupport implements Serializable {
     public void setTopicName(String topicName) {
         this.topicName = topicName;
     }
+
+    public String getDimensionId() {
+        return dimensionId;
+    }
+
+    public void setDimensionId(String dimensionId) {
+        this.dimensionId = dimensionId;
+    }
+
+    public String getDimensionName() {
+        return dimensionName;
+    }
+
+    public void setDimensionName(String dimensionName) {
+        this.dimensionName = dimensionName;
+    }
+
 }

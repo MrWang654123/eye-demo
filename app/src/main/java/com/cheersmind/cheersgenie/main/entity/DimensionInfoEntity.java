@@ -82,6 +82,11 @@ public class DimensionInfoEntity implements Serializable{
     @InjectMap(name = "background_color")
     private String backgroundColor;
 
+    //测评ID（目前只有文章详细中的量表对象有返回该字段）
+    @InjectMap(name = "exam_id")
+    private String examId;
+
+
     public String getDimensionId() {
         return dimensionId;
     }
@@ -264,5 +269,13 @@ public class DimensionInfoEntity implements Serializable{
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public String getExamId() {
+        return examId;
+    }
+
+    public void setExamId(String examId) {
+        this.examId = examId;
     }
 }

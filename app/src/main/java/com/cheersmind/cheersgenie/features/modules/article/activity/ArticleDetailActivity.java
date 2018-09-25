@@ -23,7 +23,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,6 +37,7 @@ import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.htmlImageGetter.URLImageParser;
@@ -46,6 +46,9 @@ import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ArticleEntity;
 import com.cheersmind.cheersgenie.main.entity.CommentEntity;
 import com.cheersmind.cheersgenie.main.entity.CommentRootEntity;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfo;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
@@ -53,6 +56,7 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,6 +178,11 @@ public class ArticleDetailActivity extends BaseActivity {
     //默认Glide配置
     RequestOptions options;
 
+    //话题信息
+    TopicInfo topicInfo;
+    //关联的测评
+    DimensionInfoEntity dimension;
+
 
     /**
      * 开启文章详情页面
@@ -215,6 +224,8 @@ public class ArticleDetailActivity extends BaseActivity {
 
         //隐藏评论模块
         hideCommentBlock();
+        //隐藏关联测评模块
+        hideRelativeExamView();
 
         recyclerAdapter = new CommentAdapter(ArticleDetailActivity.this, R.layout.recycleritem_comment, recyclerItem);
         //加载更多的监听
@@ -438,8 +449,11 @@ public class ArticleDetailActivity extends BaseActivity {
                     refreshLikeView(articleEntity.isLike(), articleEntity.getPageLike());
 
                     //有关联的测评，则刷新关联测评的视图
-                    if (articleEntity.getIsReferenceTest() == Dictionary.ARTICLE_IS_REFERENCE_EXAM_YES) {
-                        refreshRelativeExamView(articleEntity);
+                    if (articleEntity.getTopicInfo() != null) {
+                        //refreshRelativeExamView(articleEntity);
+                        topicInfo = articleEntity.getTopicInfo();
+                        //请求关联测评
+                        getReferenceExam(topicInfo);
                     } else {
                         //隐藏关联测评视图
                         hideRelativeExamView();
@@ -455,6 +469,43 @@ public class ArticleDetailActivity extends BaseActivity {
                     e.printStackTrace();
                     //视为找不到文章数据
                     xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 请求关联测评
+     * @param topicInfo
+     */
+    private void getReferenceExam(final TopicInfo topicInfo) {
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getChildDimension(childId, topicInfo.getTopicId(), topicInfo.getDimensionId(), new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //隐藏关联量表模块
+                hideRelativeExamView();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
+
+                    if (dimension == null) {
+                        throw new Exception("量表数据为空");
+                    }
+
+                    ArticleDetailActivity.this.dimension = dimension;
+
+                    //刷新关联评测视图
+                    refreshRelativeExamView(dimension);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -558,10 +609,30 @@ public class ArticleDetailActivity extends BaseActivity {
     /**
      * 刷新关联测评的视图
      *
-     * @param articleEntity
+     * @param dimension
      */
-    private void refreshRelativeExamView(ArticleEntity articleEntity) {
+    private void refreshRelativeExamView(DimensionInfoEntity dimension) {
+        //显示布局
+        rlEvaluation.setVisibility(View.VISIBLE);
+        //标题
+        tvDimensionName.setText(dimension.getDimensionName());
+        //使用人数
+        if (dimension.getUseCount() > 0) {
+            tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, dimension.getUseCount() +""));
+        } else {
+            tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, "0"));
+            tvUsedCount.setVisibility(View.GONE);
+        }
 
+        //根据量表状态改变按钮文字
+        //未开始
+        if (dimension.getChildDimension() == null) {
+            btnGotoEvaluation.setText("开始测评");
+        } else if (dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+            btnGotoEvaluation.setText("继续测评");
+        } else if (dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+            btnGotoEvaluation.setText("查看报告");
+        }
     }
 
     /**
@@ -915,6 +986,27 @@ public class ArticleDetailActivity extends BaseActivity {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
             case R.id.btn_goto_evaluation: {
+                //未锁定
+                if (dimension.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_NO) {
+                    if (dimension != null && dimension.getChildDimension() != null
+                            && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+                        //查看报告
+                        //……
+
+                    } else {
+                        //进入量表详情页面
+                        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
+                        //话题ID
+                        topicInfoEntity.setTopicId(topicInfo.getTopicId());
+                        //测评ID
+                        topicInfoEntity.setExamId(dimension.getExamId());
+                        DimensionDetailActivity.startDimensionDetailActivity(ArticleDetailActivity.this, dimension, topicInfoEntity);
+                    }
+                } else {
+                    //已锁定
+                    ToastUtil.showShort(ArticleDetailActivity.this, "该测评被锁定");
+                }
+
                 break;
             }
             //评论编辑模块的返回按钮
