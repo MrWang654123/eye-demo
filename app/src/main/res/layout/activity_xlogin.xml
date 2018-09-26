@@ -47,7 +47,7 @@
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/heightBigWidget"
+            android:layout_height="@dimen/heightXBigWidget"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="50dp"
@@ -61,7 +61,7 @@
         <Button
             android:id="@+id/btn_register"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/heightBigWidget"
+            android:layout_height="@dimen/heightXBigWidget"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="50dp"
