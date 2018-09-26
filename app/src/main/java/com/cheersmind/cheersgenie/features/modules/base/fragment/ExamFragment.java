@@ -27,6 +27,7 @@ import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -96,9 +97,9 @@ public class ExamFragment extends LazyLoadFragment {
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
                 //跳转到话题详情页面
-                TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId());
+                TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId(), topicInfoEntity);
 
-            } else if (view.getId() == R.id.tv_nav_to_report) {
+            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
                 RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
@@ -255,6 +256,14 @@ public class ExamFragment extends LazyLoadFragment {
                             //找出同一个量表，设置孩子量表，然后局部刷新列表项
                             if (t.getTopicId().equals(dimension.getTopicId())
                                     && t.getDimensionId().equals(dimension.getDimensionId())) {
+                                //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+                                if (childTopic == null) {
+                                    childTopic = new TopicInfoChildEntity();
+                                    childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+                                    topicInfo.setChildTopic(childTopic);
+                                }
+
                                 //刷新对应量表的列表项
                                 t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
                                 int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();

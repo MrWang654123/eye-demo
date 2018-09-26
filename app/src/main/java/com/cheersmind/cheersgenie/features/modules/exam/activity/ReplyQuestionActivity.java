@@ -583,12 +583,14 @@ public class ReplyQuestionActivity extends BaseActivity {
                             //提交分量表返回添加了topic_id和topic_dimension_id
                             Map map = JsonUtil.fromJson(obj.toString(), Map.class);
                             DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
+
                             //设置孩子量表对象
                             dimensionInfoEntity.setChildDimension(dimensionChild);
                             //设置话题量表ID
                             if (!TextUtils.isEmpty(dimensionChild.getTopicDimensionId())) {
                                 dimensionInfoEntity.setTopicDimensionId(dimensionChild.getTopicDimensionId());
                             }
+
                             //设置话题ID
                             if (topicInfoEntity == null) {
                                 topicInfoEntity = new TopicInfoEntity();
@@ -600,7 +602,9 @@ public class ReplyQuestionActivity extends BaseActivity {
                             }
 
                             //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示“查看报告”按钮的前提就是要有孩子话题对象）
-                            if (topicInfoEntity.getChildTopic() == null) {
+                            //孩子话题不为空，但是孩子话题对象的ID为空，说明这个孩子话题对象是本地创建的，必须让测评页面刷新数据（刷新后孩子话题对象中才会有孩子测评ID，用于查看话题报告）
+                            if (topicInfoEntity.getChildTopic() == null
+                                    || TextUtils.isEmpty(topicInfoEntity.getChildTopic().getChildTopicId())) {
                                 //发送问题提交成功的事件通知，附带量表对象
                                 EventBus.getDefault().post(new QuestionSubmitSuccessEvent(null));
                             } else {
@@ -615,10 +619,12 @@ public class ReplyQuestionActivity extends BaseActivity {
                                 //确保话题对象有孩子话题对象，且孩子测评ID不为空
                                 if (topicInfoEntity.getChildTopic() == null) {
                                     TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
-                                    topicInfoChild.setChildExamId(dimensionChild.getChildExamId());
                                     topicInfoEntity.setChildTopic(topicInfoChild);
                                 }
-                                //请求话题报告
+                                //设置孩子测评ID
+                                topicInfoEntity.getChildTopic().setChildExamId(dimensionChild.getChildExamId());
+
+                                //请求话题报告（需要TopicId和ChildExamId）
                                 queryTopicReport(topicInfoEntity);
 
                             } else {

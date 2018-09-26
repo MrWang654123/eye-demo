@@ -6,6 +6,7 @@
     <dimen name="heightDefaultWidget">46dp</dimen> <!-- 默认控件高度 -->
     <dimen name="heightSmalltWidget">44dp</dimen> <!-- 默认控件高度 -->
     <dimen name="heightBigWidget">48dp</dimen> <!-- 默认控件高度 -->
+    <dimen name="heightXBigWidget">52dp</dimen> <!-- 默认控件高度 -->
 
     <dimen name="button_fullscreen_corner_radius">4dp</dimen><!-- 按钮圆角数值 -->
     <dimen name="button_fullscreen_padding">10dp</dimen><!-- 按钮内间距 -->

@@ -95,9 +95,9 @@ public class ExamCompletedFragment extends LazyLoadFragment {
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
                 //跳转到话题详情页面
-                TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId());
+                TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId(), topicInfoEntity);
 
-            } else if (view.getId() == R.id.tv_nav_to_report) {
+            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
                 RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();

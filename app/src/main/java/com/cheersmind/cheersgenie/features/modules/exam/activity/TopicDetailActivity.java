@@ -15,6 +15,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,9 +26,13 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicDetail;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -37,17 +42,23 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 场景（话题）详情页面
  */
 public class TopicDetailActivity extends BaseActivity {
 
+    public static final String TOPIC_INFO = "topic_info";
     private static final String TOPIC_ID = "topic_id";
+
+    //话题对象
+    private TopicInfoEntity topicInfoEntity;
     //话题ID
     private String topicId;
 
@@ -66,6 +77,9 @@ public class TopicDetailActivity extends BaseActivity {
     ImageView ivDesc;
     @BindView(R.id.tv_content_bottom)
     TextView tvContentBottom;
+    //测评按钮
+    @BindView(R.id.btn_start_exam)
+    Button btnStartExam;
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
@@ -77,10 +91,11 @@ public class TopicDetailActivity extends BaseActivity {
      * @param context
      * @param topicId 话题ID
      */
-    public static void startTopicDetailActivity(Context context, String topicId) {
+    public static void startTopicDetailActivity(Context context, String topicId, TopicInfoEntity topicInfoEntity) {
         Intent intent = new Intent(context, TopicDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(TOPIC_ID, topicId);
+        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -114,6 +129,8 @@ public class TopicDetailActivity extends BaseActivity {
             ToastUtil.showShort(getApplicationContext(), "话题ID不能为空");
             return;
         }
+
+        topicInfoEntity = (TopicInfoEntity)getIntent().getSerializableExtra(TOPIC_INFO);
 
         //加载话题详情
         loadTopicDetail(topicId);
@@ -157,10 +174,11 @@ public class TopicDetailActivity extends BaseActivity {
     private void refreshTopicDetailView(TopicDetail topicDetail) {
         //显示scrollView
         scrollView.setVisibility(View.VISIBLE);
+        //话题名称
         tvTopicName.setText(topicDetail.getTopicName());
 //        tvContent.setText(Dictionary.Text_Indent + topicDetail.getDescription());
         tvContentBottom.setText(Dictionary.Text_Indent + topicDetail.getDescription());
-        tvSuitableUser.setText("#适合对象：高中生");
+        tvSuitableUser.setText("#适合对象：学生");
         tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount()+""));
 
 //        Glide.with(TopicDetailActivity.this)
@@ -169,6 +187,109 @@ public class TopicDetailActivity extends BaseActivity {
 //                .apply(QSApplication.getDefaultOptions())
 //                .into(ivDesc);
         ivDesc.setImageResource(R.drawable.default_image_round);
+
+        //测评按钮
+        if (topicInfoEntity != null) {
+            //孩子话题为空：未开始
+            if (topicInfoEntity.getChildTopic() == null) {
+                btnStartExam.setText("进入测评");
+            } else {
+                //孩子话题的状态为已完成：查看报告
+                if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    btnStartExam.setText("查看报告");
+                } else {
+                    btnStartExam.setText("继续测评");
+                }
+            }
+        }
+    }
+
+
+    @OnClick({R.id.btn_start_exam})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //测评按钮
+            case R.id.btn_start_exam: {
+                startDimension(topicInfoEntity);
+//                startDimension(dimensionInfoEntity, topicInfoEntity);
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * 响应开启测评按钮
+     * @param topicInfoEntity 话题对象
+     */
+    private void startDimension(TopicInfoEntity topicInfoEntity) {
+        if (topicInfoEntity != null) {
+            //孩子话题为空：未开始
+            if (topicInfoEntity.getChildTopic() == null) {
+                //进入第一个量表
+                List<DimensionInfoEntity> dimensions = topicInfoEntity.getDimensions();
+                if (!ArrayListUtil.isEmpty(dimensions)) {
+                    DimensionInfoEntity dimensionInfoEntity = dimensions.get(0);
+                    //跳转到量表详细页面，传递量表对象和话题对象
+                    DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+
+                } else {
+                    doOpenFailedTip();
+                }
+
+            } else {
+                //孩子话题的状态为已完成：查看报告
+                if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    //查看话题报告
+                    ReportActivity.startReportActivity(TopicDetailActivity.this, topicInfoEntity);
+
+                } else {
+                    //继续测评
+                    List<DimensionInfoEntity> dimensions = topicInfoEntity.getDimensions();
+                    if (!ArrayListUtil.isEmpty(dimensions)) {
+                        DimensionInfoEntity dimensionInfoEntity = null;
+                        //选取第一个有孩子量表对象，状态为未完成的量表
+                        for (DimensionInfoEntity dimension : dimensions) {
+                            if (dimension.getChildDimension() != null
+                                    && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+                                dimensionInfoEntity = dimension;
+                                break;
+                            }
+                        }
+
+                        //如果以上选取的量表为空，说明有操作过的量表都是完成的，则选取第一个未操作过的量表
+                        if (dimensionInfoEntity == null) {
+                            //选取第一个未操作过的量表
+                            for (DimensionInfoEntity dimension : dimensions) {
+                                if (dimension.getChildDimension() == null) {
+                                    dimensionInfoEntity = dimension;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (dimensionInfoEntity != null) {
+                            //跳转到量表详细页面，传递量表对象和话题对象
+                            DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+                        } else {
+                            doOpenFailedTip();
+                        }
+
+                    } else {
+                        doOpenFailedTip();
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    /**
+     * 开启量表失败的提示
+     */
+    private void doOpenFailedTip() {
+        ToastUtil.showShort(getApplicationContext(),"开启测评失败");
     }
 
 
