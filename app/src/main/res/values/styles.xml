@@ -101,7 +101,7 @@
 
     <style name="class_num" parent="captcha_edit">
         <item name="android:digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
-        <item name="android:inputType">text</item>
+        <item name="android:inputType">textEmailAddress</item>
         <!--android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"-->
     </style>
 
