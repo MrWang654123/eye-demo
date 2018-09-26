@@ -118,8 +118,7 @@
                     android:layout_marginLeft="5dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/color_333333"
-                    android:textSize="15sp"
+                    style="@style/common_option_text"
                     android:text="我的积分"
                     />
 
@@ -172,8 +171,7 @@
                         android:layout_gravity="center_vertical"
                         android:maxLines="1"
                         android:ellipsize="end"
-                        android:textColor="@color/color_333333"
-                        android:textSize="15sp"
+                        style="@style/common_option_text"
                         android:text="我的消息" />
 
                     <TextView
@@ -234,8 +232,7 @@
                     android:layout_marginLeft="5dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/color_333333"
-                    android:textSize="15sp"
+                    style="@style/common_option_text"
                     android:text="我的收藏" />
 
                 <RelativeLayout
@@ -283,8 +280,7 @@
                     android:layout_marginLeft="5dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/color_333333"
-                    android:textSize="15sp"
+                    style="@style/common_option_text"
                     android:text="我的智评" />
 
                 <RelativeLayout
@@ -337,8 +333,7 @@
                     android:layout_marginLeft="5dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/color_333333"
-                    android:textSize="15sp"
+                    style="@style/common_option_text"
                     android:text="意见反馈" />
 
                 <RelativeLayout
@@ -386,8 +381,7 @@
                     android:layout_marginLeft="5dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textColor="@color/color_333333"
-                    android:textSize="15sp"
+                    style="@style/common_option_text"
                     android:text="设置" />
 
                 <RelativeLayout

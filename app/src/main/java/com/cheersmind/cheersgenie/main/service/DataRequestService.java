@@ -1936,4 +1936,24 @@ public class DataRequestService {
     }
 
 
+    /**
+     * 获取用户的手机号
+     * @param callback
+     */
+    public void getUserPhoneNum (final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_USER_PHONE_NUM;
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
+
 }

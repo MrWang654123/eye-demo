@@ -42,9 +42,8 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="14sp"
-            android:text="修改密码"
-            android:textColor="@color/color_333333"/>
+            style="@style/common_option_text"
+            android:text="修改密码" />
 
         <ImageView
             android:layout_width="20dp"
@@ -77,9 +76,8 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="14sp"
-            android:text="微信登录"
-            android:textColor="@color/color_333333"/>
+            style="@style/common_option_text"
+            android:text="微信登录" />
 
         <TextView
             android:id="@+id/tv_weixin_bind_tip"
@@ -117,9 +115,8 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="14sp"
-            android:text="QQ登录"
-            android:textColor="@color/color_333333"/>
+            style="@style/common_option_text"
+            android:text="QQ登录" />
 
         <TextView
             android:id="@+id/tv_qq_bind_tip"

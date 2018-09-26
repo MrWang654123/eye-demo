@@ -22,8 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="声音"
-            android:textSize="15sp"
-            android:textColor="@color/color_333333"/>
+            style="@style/common_option_text"/>
 
         <Switch
             android:id="@+id/st_music"
@@ -53,8 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:gravity="center_vertical"
-            android:textColor="@color/color_333333"
-            android:textSize="14sp"
+            style="@style/common_option_text"
             android:text="账号绑定设置" />
 
         <ImageView
@@ -84,9 +82,8 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textSize="14sp"
-            android:text="关于我们"
-            android:textColor="@color/color_333333"/>
+            style="@style/common_option_text"
+            android:text="关于我们" />
 
         <ImageView
             android:layout_width="20dp"
@@ -116,8 +113,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/color_333333"
-            android:textSize="14sp"
+            style="@style/common_option_text"
             android:text="检查更新" />
 
         <TextView
@@ -151,8 +147,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="@color/color_333333"
-            android:textSize="14sp"
+            style="@style/common_option_text"
             android:text="用户许可协议" />
 
         <ImageView
@@ -181,8 +176,7 @@
             android:gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:textColor="@color/color_333333"
-            android:textSize="14sp"
+            style="@style/common_option_text"
             android:text="清除缓存" />
 
         <TextView

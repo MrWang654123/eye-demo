@@ -579,6 +579,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                         releaseTimeTask();
 
                         try {
+                            //提交分量表返回添加了topic_id和topic_dimension_id
                             Map map = JsonUtil.fromJson(obj.toString(), Map.class);
                             DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
                             //设置孩子量表对象

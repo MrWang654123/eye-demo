@@ -20,6 +20,9 @@ public class UCManager {
     private String nickName;
     private String realName;
 
+    //手机号
+    private String phoneNum;
+
     //默认孩子
     private ChildInfoEntity defaultChild;
     //用户信息
@@ -128,6 +131,7 @@ public class UCManager {
         this.realName = "";
         this.defaultChild = null;
         this.userInfo = null;
+        this.phoneNum = "";
     }
 
     /**
@@ -151,5 +155,13 @@ public class UCManager {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
+    }
+
+    public String getPhoneNum() {
+        return phoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        this.phoneNum = phoneNum;
     }
 }

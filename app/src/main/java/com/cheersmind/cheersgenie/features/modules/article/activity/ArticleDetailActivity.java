@@ -871,7 +871,7 @@ public class ArticleDetailActivity extends BaseActivity {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
-                ToastUtil.showShort(getApplicationContext(), "评论失败");
+//                ToastUtil.showShort(getApplicationContext(), "评论失败");
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -190,18 +191,13 @@ public class MineFragment extends LazyLoadFragment {
 
                 try {
                     boolean isSignIn = ((JSONObject) obj).getBoolean("is_sign_in");
-                    if (isSignIn) {
-                        btnSignIn.setText("已签到");
-                        btnSignIn.setEnabled(false);
-                    } else {
-                        btnSignIn.setText("签到");
-                        btnSignIn.setEnabled(true);
-                    }
+                    //设置签到状态
+                    settingSignInStatus(isSignIn);
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    btnSignIn.setText("签到");
-                    btnSignIn.setEnabled(true);
+                    //设置签到状态：未签
+                    settingSignInStatus(false);
                 }
             }
         });
@@ -287,11 +283,25 @@ public class MineFragment extends LazyLoadFragment {
             @Override
             public void onResponse(Object obj) {
                 LoadingView.getInstance().dismiss();
-
-                btnSignIn.setText("已签到");
-                btnSignIn.setEnabled(false);
+                //设置签到状态：已签
+                settingSignInStatus(true);
             }
         });
+    }
+
+    /**
+     * 设置签到状态
+     * @param has
+     */
+    private void settingSignInStatus(boolean has) {
+        if (has) {
+            btnSignIn.setText("已签到");
+            btnSignIn.setEnabled(false);
+            btnSignIn.setTextColor(Color.parseColor("#ffffff"));
+        } else {
+            btnSignIn.setText("签到");
+            btnSignIn.setEnabled(true);
+        }
     }
 
 
@@ -333,7 +343,7 @@ public class MineFragment extends LazyLoadFragment {
      */
     private void refreshPersonalInfo(String userName, int gender) {
         tvUserName.setVisibility(View.VISIBLE);
-        tvGender.setVisibility(View.VISIBLE);
+//        tvGender.setVisibility(View.VISIBLE);
         //姓名
         tvUserName.setText(userName);
         //性别

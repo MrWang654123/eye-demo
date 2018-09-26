@@ -98,12 +98,13 @@ public class AccountBindActivity extends BaseActivity {
         //查询绑定平台
         queryBindPlatform();
 
-        if (UCManager.getInstance().getUserInfo() != null) {
-            UserInfo userInfo = UCManager.getInstance().getUserInfo();
-            tvPhonenum.setText(userInfo.getUserName());
+        //手机号
+        String phoneNum = UCManager.getInstance().getPhoneNum();
+        if (TextUtils.isEmpty(phoneNum)) {
+            //获取用户手机号
+            getUserPhoneNum();
         } else {
-            //获取用户信息
-            getUserInfo();
+            tvPhonenum.setText(phoneNum);
         }
     }
 
@@ -571,12 +572,12 @@ public class AccountBindActivity extends BaseActivity {
 
 
     /**
-     * 获取用户信息
+     * 获取用户的手机号
      */
-    private void getUserInfo () {
+    private void getUserPhoneNum () {
         LoadingView.getInstance().show(this);
 
-        DataRequestService.getInstance().getUserInfoV2(new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getUserPhoneNum(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
@@ -587,10 +588,12 @@ public class AccountBindActivity extends BaseActivity {
                 LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    UserInfo userInfo = InjectionWrapperUtil.injectMap(dataMap, UserInfo.class);
-                    tvPhonenum.setText(userInfo.getUserName());
-                    //设置用户信息
-                    UCManager.getInstance().setUserInfo(userInfo);
+                    String phoneNum = (String) dataMap.get("mobile");
+                    if (!TextUtils.isEmpty(phoneNum)) {
+                        tvPhonenum.setText(phoneNum);
+                        //设置手机号
+                        UCManager.getInstance().setPhoneNum(phoneNum);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

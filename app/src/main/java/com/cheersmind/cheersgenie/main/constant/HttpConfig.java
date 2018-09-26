@@ -119,6 +119,9 @@ public class HttpConfig {
     //获取图形验证码
     public static final String URL_IMAGE_CAPTCHA = API_HOST + "/v2/accounts/sessions/{session_id}/verification_code";
 
+    //获取用户的手机号
+    public static final String URL_USER_PHONE_NUM = UC_HOST+"/v2/accounts/mobile";
+
 
     /**-----------------------------------------------------------------------
      *---------------------------业务相关-----------------------------------
