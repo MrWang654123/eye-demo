@@ -105,10 +105,10 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
         l.setTextSize(11f);
         l.setFormSize(9f);
         l.setTextColor(Color.parseColor("#666666"));
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
+        l.setDrawInside(false);
 //        l.setYOffset(5f);
         l.setXEntrySpace(10f);
 

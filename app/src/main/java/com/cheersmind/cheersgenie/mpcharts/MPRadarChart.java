@@ -87,10 +87,10 @@ public class MPRadarChart extends MPBaseChart {
         yAxis.setDrawLabels(false);
 
         Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
+        l.setDrawInside(false);
         l.setTypeface(mTfLight);
         l.setXEntrySpace(7f);
         l.setYEntrySpace(5f);

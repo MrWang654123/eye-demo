@@ -1108,6 +1108,10 @@ public class RegisterCaptchaActivity extends BaseActivity {
                                 return true;
 
                             } else if (ErrorCode.AC_IDENTIFY_CODE_REQUIRED.equals(errorCode)) {//需要图形验证码
+                                //如果当前状态为正常，则置为不正常
+                                if (sessionCreateResult.getNormal()) {
+                                    sessionCreateResult.setNormal(false);
+                                }
                                 //开启通信等待
                                 LoadingView.getInstance().show(RegisterCaptchaActivity.this);
                                 //请求图形验证码

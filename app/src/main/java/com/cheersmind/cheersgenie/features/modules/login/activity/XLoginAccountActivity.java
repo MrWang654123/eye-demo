@@ -454,6 +454,10 @@ public class XLoginAccountActivity extends BaseActivity {
                             return true;
 
                         } else if (ErrorCode.AC_IDENTIFY_CODE_REQUIRED.equals(errorCode)) {//需要图形验证码
+                            //如果当前状态为正常，则置为不正常
+                            if (sessionCreateResult.getNormal()) {
+                                sessionCreateResult.setNormal(false);
+                            }
                             //开启通信等待
                             LoadingView.getInstance().show(XLoginAccountActivity.this);
                             //请求图形验证码
@@ -463,10 +467,6 @@ public class XLoginAccountActivity extends BaseActivity {
                                 public void onSuccess(Object... objects) {
                                     //关闭通信等待
                                     LoadingView.getInstance().dismiss();
-                                    //如果当前状态为正常，则置为不正常
-                                    if (sessionCreateResult.getNormal()) {
-                                        sessionCreateResult.setNormal(false);
-                                    }
                                     //需要图形验证码，才能登录的提示处理
                                     requiredImageCaptchaForSendError();
                                 }

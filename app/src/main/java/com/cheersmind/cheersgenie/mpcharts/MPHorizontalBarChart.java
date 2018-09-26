@@ -95,21 +95,25 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
 //        xl.setCenterAxisLabels(true);
 
         YAxis yl = mChart.getAxisLeft();
+        yl.setTextColor(Color.parseColor("#f7f7f7"));
         yl.setTypeface(mTfLight);
-        yl.setDrawAxisLine(true);
-        yl.setDrawGridLines(true);
+        yl.setDrawAxisLine(false);
+        yl.setDrawGridLines(false);
         yl.setAxisMinimum(getMaxAndMinValue().get(1));
         //设置X Y轴网格线为虚线（实体线长度、间隔距离、偏移量：通常使用 0）
-        yl.enableGridDashedLine(10f, 10f, 0f);
+//        yl.enableGridDashedLine(10f, 10f, 0f);
 //        yl.setInverted(true);
 
         YAxis yr = mChart.getAxisRight();
-        yr.setTextColor(Color.parseColor("#f7f7f7"));
+//        yr.setTextColor(Color.parseColor("#f7f7f7"));
         yr.setTypeface(mTfLight);
         yr.setDrawAxisLine(true);
-        yr.setDrawGridLines(false);
-        yr.setAxisLineColor(Color.parseColor("#f7f7f7"));
-        yr.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        yr.setDrawGridLines(true);
+//        yr.setAxisLineColor(Color.parseColor("#f7f7f7"));
+//        yr.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+        yr.setAxisMinimum(getMaxAndMinValue().get(1));
+        //设置X Y轴网格线为虚线（实体线长度、间隔距离、偏移量：通常使用 0）
+        yr.enableGridDashedLine(10f, 10f, 0f);
 //        yr.setInverted(true);
 
         setData();
@@ -128,7 +132,7 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
+        l.setDrawInside(false);
         l.setFormSize(8f);
         l.setXEntrySpace(4f);
     }
