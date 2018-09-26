@@ -38,8 +38,10 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features.view.htmlImageGetter.URLImageParser;
 import com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -991,7 +993,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     if (dimension != null && dimension.getChildDimension() != null
                             && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
                         //查看报告
-                        //……
+                        queryDimensionReport(dimension);
 
                     } else {
                         //进入量表详情页面
@@ -1039,6 +1041,26 @@ public class ArticleDetailActivity extends BaseActivity {
         }
 
     }
+
+
+    /**
+     * 请求量表报告
+     * @param dimensionInfo 分量表对象，一定得带孩子量表对象
+     */
+    private void queryDimensionReport(DimensionInfoEntity dimensionInfo) {
+        try {
+            new DimensionReportDialog(ArticleDetailActivity.this, dimensionInfo, new DimensionReportDialog.OnOperationListener() {
+                @Override
+                public void onExit() {
+
+                }
+            }).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+        }
+    }
+
 
 }
 

@@ -9,8 +9,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:src="@mipmap/launcher_image_bg"/>
+        android:src="@drawable/launcher_image_bg" />
 
     <!--<ImageView-->
         <!--android:id="@+id/iv_icon"-->

@@ -52,6 +52,14 @@ public class DimensionInfoChildEntity implements Serializable{
     @InjectMap(name = "is_topic_complete")
     private boolean isTopicComplete;
 
+    //话题量表ID
+    @InjectMap(name = "topic_dimension_id")
+    private String topicDimensionId;
+
+    //话题ID
+    @InjectMap(name = "topic_id")
+    private String topicId;
+
 
     public String getChildDimensionId() {
         return childDimensionId;
@@ -163,5 +171,21 @@ public class DimensionInfoChildEntity implements Serializable{
 
     public void setTopicComplete(boolean topicComplete) {
         isTopicComplete = topicComplete;
+    }
+
+    public String getTopicDimensionId() {
+        return topicDimensionId;
+    }
+
+    public void setTopicDimensionId(String topicDimensionId) {
+        this.topicDimensionId = topicDimensionId;
+    }
+
+    public String getTopicId() {
+        return topicId;
+    }
+
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
     }
 }

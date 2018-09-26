@@ -50,6 +50,7 @@ import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -584,6 +585,19 @@ public class ReplyQuestionActivity extends BaseActivity {
                             DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
                             //设置孩子量表对象
                             dimensionInfoEntity.setChildDimension(dimensionChild);
+                            //设置话题量表ID
+                            if (!TextUtils.isEmpty(dimensionChild.getTopicDimensionId())) {
+                                dimensionInfoEntity.setTopicDimensionId(dimensionChild.getTopicDimensionId());
+                            }
+                            //设置话题ID
+                            if (topicInfoEntity == null) {
+                                topicInfoEntity = new TopicInfoEntity();
+                            }
+                            //话题对象的ID为空，才进行设置
+                            if (TextUtils.isEmpty(topicInfoEntity.getTopicId())
+                                    && !TextUtils.isEmpty(dimensionChild.getTopicId())) {
+                                topicInfoEntity.setTopicId(dimensionChild.getTopicId());
+                            }
 
                             //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示“查看报告”按钮的前提就是要有孩子话题对象）
                             if (topicInfoEntity.getChildTopic() == null) {
@@ -596,6 +610,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
+                            //判断话题是否已完成
                             if (dimensionChild.isTopicComplete()) {
                                 //确保话题对象有孩子话题对象，且孩子测评ID不为空
                                 if (topicInfoEntity.getChildTopic() == null) {
