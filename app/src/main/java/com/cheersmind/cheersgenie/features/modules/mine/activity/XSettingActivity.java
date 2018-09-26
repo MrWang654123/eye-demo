@@ -18,6 +18,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.activity.MainActivity;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.util.DataCleanCacheUtils;
 import com.cheersmind.cheersgenie.main.util.SharedPreferencesUtils;
@@ -135,9 +136,11 @@ public class XSettingActivity extends BaseActivity {
                 SharedPreferences.Editor editor = pref.edit();
                 editor.remove("user_name");
                 editor.remove("user_password");
-                editor.commit();
+                editor.apply();
                 //删除数据库中的用户对象
                 DataSupport.deleteAll(WXUserInfoEntity.class);
+                //删除数据库中的孩子对象
+                DataSupport.deleteAll(ChildInfoEntity.class);
                 //清空登录信息的临时缓存
                 UCManager.getInstance().clearToken();
 //                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);

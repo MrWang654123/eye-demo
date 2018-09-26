@@ -43,7 +43,7 @@ public class ChildInfoEntity extends DataSupport implements Serializable{
     @InjectMap(name = "class_id")
     private String classId;
     @InjectMap(name = "class_name")
-    private String className;
+    private String class_name;
     @InjectMap(name = "school_id")
     private String schoolId;
     @InjectMap(name = "grade")
@@ -123,13 +123,12 @@ public class ChildInfoEntity extends DataSupport implements Serializable{
         this.classId = classId;
     }
 
-    @Override
-    public String getClassName() {
-        return className;
+    public String getClass_name() {
+        return class_name;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClass_name(String class_name) {
+        this.class_name = class_name;
     }
 
     public String getSchoolId() {

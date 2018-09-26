@@ -306,7 +306,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
             //token超时和被T的处理
             if (errorCodeEntity != null && ErrorCode.AC_AUTH_INVALID_TOKEN.equals(errorCodeEntity.getCode())) {
-                popupInvalidTokenWindows();
+                message = getResources().getString(R.string.invalid_token_tip);
 
             } else {
                 //ErrorCodeEntity对象回调
@@ -374,8 +374,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     /**
      * 跳转到登录主页面
      */
-    protected void gotoLoginPage(BaseActivity baseActivity) {
-        Intent intent = new Intent(baseActivity, XLoginActivity.class);
+    protected void gotoLoginPage(BaseActivity from) {
+        //如果是欢迎页面，则关闭欢迎页
+        if (from instanceof SplashActivity) {
+            from.finish();
+        }
+        Intent intent = new Intent(from, XLoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//FLAG_ACTIVITY_SINGLE_TOP
         startActivity(intent);
     }
@@ -385,6 +389,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      * @param from
      */
     protected void gotoPerfectUserInfo(BaseActivity from) {
+        //如果是欢迎页面，则关闭欢迎页
+        if (from instanceof SplashActivity) {
+            from.finish();
+        }
         //目前完善用户信息环节是从班级号输入页面开始
         Intent intent = new Intent(from, ClassNumActivity.class);
         startActivity(intent);
@@ -457,28 +465,6 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             }
 
         });
-    }
-
-
-    /**
-     * 弹出无效的token的对话框
-     */
-    private void popupInvalidTokenWindows() {
-        AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(BaseActivity.this)
-                .setTitle(getResources().getString(R.string.dialog_common_title))
-                .setMessage(getResources().getString(R.string.invalid_token_tip))
-                .setNegativeButton("前往登录", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //前往登录主页面
-                        gotoLoginPage(BaseActivity.this);
-                    }
-                })
-                .create();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.show();
     }
 
 

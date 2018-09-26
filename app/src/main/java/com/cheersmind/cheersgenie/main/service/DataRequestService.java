@@ -1367,7 +1367,7 @@ public class DataRequestService {
      * 获取孩子列表V2
      * @param callback
      */
-    public static void getChildListV2(final BaseService.ServiceCallback callback) {
+    public void getChildListV2(final BaseService.ServiceCallback callback) {
         String url = HttpConfig.URL_CHILD_LIST_V2;
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override

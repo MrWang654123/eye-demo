@@ -129,7 +129,7 @@ public class UserInfoActivity extends BaseActivity {
                     //年级
                     tvGrade.setText(defaultChild.getGrade());
                     //班级
-                    tvClass.setText(defaultChild.getClassName());
+                    tvClass.setText(defaultChild.getClass_name());
 
                     //角色
                     int parentRole = defaultChild.getParentRole();
@@ -178,7 +178,7 @@ public class UserInfoActivity extends BaseActivity {
         //年级
         tvGrade.setText(defaultChild.getGrade());
         //班级
-        tvClass.setText(defaultChild.getClassName());
+        tvClass.setText(defaultChild.getClass_name());
 
         //角色
         int parentRole = defaultChild.getParentRole();

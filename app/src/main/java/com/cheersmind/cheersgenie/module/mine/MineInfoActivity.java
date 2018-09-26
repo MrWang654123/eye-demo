@@ -138,8 +138,8 @@ public class MineInfoActivity extends BaseActivity {
                     viewHolder.tvContent.setText("未知");
                 }
             }else if(position == 6){
-                if(!TextUtils.isEmpty(defaultChild.getClassName())){
-                    viewHolder.tvContent.setText(defaultChild.getClassName());
+                if(!TextUtils.isEmpty(defaultChild.getClass_name())){
+                    viewHolder.tvContent.setText(defaultChild.getClass_name());
                 }else{
                     viewHolder.tvContent.setText("未知");
                 }

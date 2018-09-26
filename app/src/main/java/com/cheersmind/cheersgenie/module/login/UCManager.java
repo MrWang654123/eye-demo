@@ -116,6 +116,9 @@ public class UCManager {
         return this.macKey;
     }
 
+    /**
+     * 清空登录信息的临时缓存
+     */
     public void clearToken(){
         this.acccessToken = "";
         this.refreshToken = "";

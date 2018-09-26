@@ -34,8 +34,9 @@ public class TokenTimeOutView {
         try {
             //如果是欢迎页，则直接跳转到登录主页面
             if (context instanceof SplashActivity) {
+                //目前获取服务端时间戳失败、本地不存在用户信息、token已失效、获取孩子列表失败都会跳转到登录主页面
                 //前往登录主页面
-                gotoLoginPage(context);
+//                gotoLoginPage(context);
             } else {
                 //显示对话框
                 dlg = new android.support.v7.app.AlertDialog.Builder(context)

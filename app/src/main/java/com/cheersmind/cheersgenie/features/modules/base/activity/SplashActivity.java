@@ -13,6 +13,8 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
+import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SystemTimeEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -102,12 +104,13 @@ public class SplashActivity extends BaseActivity {
      * 自动登录处理
      */
     private void doAutoLogin() {
+        //获取服务端时间戳
         DataRequestService.getInstance().getServerTime(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
 
-                //跳转到登录页面
+                //跳转到登录主页面
                 gotoActivity(XLoginActivity.class);
             }
 
@@ -117,8 +120,8 @@ public class SplashActivity extends BaseActivity {
                     Map map = JsonUtil.fromJson(obj.toString(),Map.class);
                     SystemTimeEntity systemTimeEntity = InjectionWrapperUtil.injectMap(map,SystemTimeEntity.class);
 
-                    if (systemTimeEntity == null) {
-                        throw new Exception("获取系统时间戳失败");
+                    if (systemTimeEntity == null || TextUtils.isEmpty(systemTimeEntity.getDatetime())) {
+                        throw new Exception("获取服务端时间戳失败");
                     }
 
                     WXUserInfoEntity wxUserInfoEntity  = DataSupport.findFirst(WXUserInfoEntity.class);
@@ -126,16 +129,31 @@ public class SplashActivity extends BaseActivity {
                         throw new Exception("本地无用户信息");
                     }
 
+                    //判断token是否有效
                     if(DateTimeUtils.tokenTimeValid(wxUserInfoEntity.getServerTime(),systemTimeEntity.getDatetime())){
                         //缓存token有效,自动登录
                         UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
-                        //获取孩子信息
-                        doGetChildListWrap(false);
+                        //判断是否有孩子
+                        ChildInfoEntity defaultChild = ChildInfoDao.getDefaultChildFromDataBase();
+                        if (defaultChild == null) {
+                            //无孩子
+                            throw new Exception("无孩子");
+
+                        } else {
+                            //设置默认孩子到缓存中
+                            UCManager.getInstance().setDefaultChild(defaultChild);
+                            //跳转到主页面
+                            gotoMainPage(SplashActivity.this);
+                        }
+
+                    } else {
+                        //无效情况
+                        throw new Exception("token已失效");
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    //跳转到登录页面
+                    //跳转到登录主页面
                     gotoActivity(XLoginActivity.class);
                 }
             }

@@ -30,6 +30,25 @@ public class ChildInfoDao {
         return mList.get(0);
     }
 
+
+    /**
+     * 从数据库中获取默认孩子
+     * @return
+     */
+    public static ChildInfoEntity getDefaultChildFromDataBase(){
+        List<ChildInfoEntity> mList = DataSupport.findAll(ChildInfoEntity.class);
+        if(mList==null || mList.size()==0){
+            return null;
+        }
+        for(int i=0;i<mList.size();i++){
+            if(mList.get(i).isDefaultChild()){
+                return mList.get(i);
+            }
+        }
+        return mList.get(0);
+    }
+
+
     /**
      * 获取所有孩子
      * @return
