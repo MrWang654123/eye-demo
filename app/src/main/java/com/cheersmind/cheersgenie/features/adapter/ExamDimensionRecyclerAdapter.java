@@ -221,7 +221,7 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
                         .load(R.drawable.default_image_round)
 //                    .load(url)
 //                        .thumbnail(0.5f)
-                        .apply(blurOptions)
+                        .apply(defaultOptions)
                         .into(imageView);
                 imageView.setTag(R.id.iv_icon, url);
             }
