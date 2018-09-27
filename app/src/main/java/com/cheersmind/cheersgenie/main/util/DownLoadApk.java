@@ -2,6 +2,8 @@ package com.cheersmind.cheersgenie.main.util;
 
 import android.content.pm.PackageInfo;
 import android.os.Environment;
+
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.main.QSApplication;
 
 import java.io.File;
@@ -34,7 +36,8 @@ public class DownLoadApk {
         }
         File cacheDir = QSApplication.getContext().getExternalCacheDir();
 
-        mFile = String.format(Locale.CHINA, "%s/"+appVersion.packageName+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+//        mFile = String.format(Locale.CHINA, "%s/"+appVersion.packageName+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+        mFile = String.format(Locale.CHINA, "%s/"+ BuildConfig.APPLICATION_ID+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
 
         if(loader!=null){
             loader.cancel();
