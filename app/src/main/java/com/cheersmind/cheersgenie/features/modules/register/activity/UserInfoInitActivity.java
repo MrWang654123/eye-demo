@@ -290,7 +290,7 @@ public class UserInfoInitActivity extends BaseActivity {
 
             @Override
             public void onResponse(Object obj) {
-                LoadingView.getInstance().dismiss();
+//                LoadingView.getInstance().dismiss();
                 //提交完善信息成功后，获取孩子列表
                 doGetChildListWrap();
             }

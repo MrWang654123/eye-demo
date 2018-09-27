@@ -81,9 +81,6 @@ public class PhoneNumLoginActivity extends BaseActivity {
     //倒计时的时间（s）
     private static final int COUNT_DOWN = 65000;
 
-    //Session创建结果
-    SessionCreateResult sessionCreateResult;
-
 
     @Override
     protected int setContentView() {
@@ -179,7 +176,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //账号登录必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话后直接登录
-            doPostAccountSessionForPhoneNumLogin();
+            LoadingView.getInstance().show(this);
+            doPostAccountSessionForPhoneNumLogin(false);
             return;
         }
 
@@ -269,7 +267,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接登录
-                            doPostAccountSessionForPhoneNumLogin();
+                            LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+                            doPostAccountSessionForPhoneNumLogin(false);
 
                             //标记已经处理了异常
                             return true;
@@ -291,7 +290,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //关闭通信等待提示
-                LoadingView.getInstance().dismiss();
+//                LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //解析用户数据
@@ -379,7 +378,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //发送短信验证码必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后发送短信验证码
-            doPostAccountSessionForSendMessageCaptcha();
+            LoadingView.getInstance().show(this);
+            doPostAccountSessionForSendMessageCaptcha(false);
             return;
         }
 
@@ -468,7 +468,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
                                 //重新获取会话
                                 sessionCreateResult = null;
                                 //创建会话然后发送短信验证码
-                                doPostAccountSessionForSendMessageCaptcha();
+                                LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+                                doPostAccountSessionForSendMessageCaptcha(false);
 
                                 //标记已经处理了异常
                                 return true;
@@ -526,6 +527,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
 
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
+
                     //清空并聚焦短信验证码
                     etCaptcha.setText("");
                     etCaptcha.requestFocus();
@@ -537,55 +539,6 @@ public class PhoneNumLoginActivity extends BaseActivity {
         }
     }
 
-
-    /**
-     * 创建会话（目前只用打*的两种类型）
-     *
-     * @param type 类型：会话类型，0：注册(手机)， *1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)， *4:下发短信验证码
-     * @param showLoading 是否显示通信等待
-     * @param listener 监听
-     */
-    private void doPostAccountSession(int type, boolean showLoading, final OnResultListener listener) {
-        if (showLoading) {
-            LoadingView.getInstance().show(PhoneNumLoginActivity.this);
-        }
-
-        CreateSessionDto dto = new CreateSessionDto();
-        dto.setSessionType(type);//类型
-        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
-        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
-        //请求创建会话
-        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                onFailureDefault(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-                    LoadingView.getInstance().dismiss();
-
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
-                    //非空
-                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
-                        throw new Exception();
-                    }
-
-                    //成功加载
-                    if (listener != null) {
-                        listener.onSuccess();
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
-                }
-            }
-        });
-    }
 
     /**
      * 创建会话后处理是否得输入图形验证码
@@ -617,8 +570,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
     /**
      * 创建会话然后发送短信验证码
      */
-    private void doPostAccountSessionForSendMessageCaptcha() {
-        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, true, new OnResultListener() {
+    private void doPostAccountSessionForSendMessageCaptcha(boolean showLoading) {
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, showLoading, new OnResultListener() {
 
             @Override
             public void onSuccess(Object... objects) {
@@ -637,8 +590,8 @@ public class PhoneNumLoginActivity extends BaseActivity {
     /**
      * 创建会话后直接登录
      */
-    private void doPostAccountSessionForPhoneNumLogin() {
-        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, true, new OnResultListener() {
+    private void doPostAccountSessionForPhoneNumLogin(boolean showLoading) {
+        doPostAccountSession(Dictionary.CREATE_SESSION_MESSAGE_CAPTCHA, showLoading, new OnResultListener() {
 
             @Override
             public void onSuccess(Object... objects) {
@@ -711,7 +664,13 @@ public class PhoneNumLoginActivity extends BaseActivity {
             Bitmap bitmap = BitmapFactory.decodeByteArray(captcha, 0, captcha.length);
             ivImageCaptcha.setImageBitmap(bitmap);
 
+            //清空图形验证码
+            etImageCaptcha.setText("");
+
         } else if (msg.what == MSG_REQUIRED_IMAGE_CAPTCHA) {//需要图形验证码
+            //关闭通信等待
+            LoadingView.getInstance().dismiss();
+
             //如果当前图形验证码的布局还没显示，则显示并且请求图形验证码
             if (rlImageCaptcha.getVisibility() == View.GONE) {
                 //显示图形验证码布局

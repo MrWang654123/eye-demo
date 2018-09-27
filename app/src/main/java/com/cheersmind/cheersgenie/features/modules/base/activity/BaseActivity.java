@@ -30,10 +30,15 @@ import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
+import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
+import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
+import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
+import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
@@ -72,6 +77,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     //左侧按钮
     @BindView(R.id.iv_left)
     @Nullable ImageView ivLeft;
+
+    //Session创建结果
+    protected SessionCreateResult sessionCreateResult;
 
     //消息处理器
     protected Handler mHandler = new Handler() {
@@ -464,6 +472,62 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
                 }
             }
 
+        });
+    }
+
+
+    /**
+     * 创建会话（目前只用打*的两种类型）
+     *
+     * @param type 类型：会话类型，0：注册(手机)， *1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)， *4:下发短信验证码
+     * @param showLoading 是否显示通信等待
+     * @param listener 结果监听
+     */
+    protected void doPostAccountSession(int type, final boolean showLoading, final OnResultListener listener) {
+        if (showLoading) {
+            LoadingView.getInstance().show(BaseActivity.this);
+        }
+
+        CreateSessionDto dto = new CreateSessionDto();
+        dto.setSessionType(type);//类型
+        dto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        dto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        //请求创建会话
+        DataRequestService.getInstance().postAccountsSessions(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                onFailureDefault(e);
+
+                if (listener != null) {
+                    listener.onFailed(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    if (showLoading) {
+                        LoadingView.getInstance().dismiss();
+                    }
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    sessionCreateResult = InjectionWrapperUtil.injectMap(dataMap, SessionCreateResult.class);
+                    //非空
+                    if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
+                        throw new Exception();
+                    }
+
+                    //成功加载
+                    if (listener != null) {
+                        listener.onSuccess();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
+            }
         });
     }
 

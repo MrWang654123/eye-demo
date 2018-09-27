@@ -100,7 +100,7 @@ public class HttpConfig {
     public static final String URL_INTEGRALS = API_HOST + "/v2/api/integrals?page={page}&size={size}";
 
     //重置密码
-    public static final String URL_RESET_PASSWORD = API_HOST + "/v2/account/password/actions/reset";
+    public static final String URL_RESET_PASSWORD = API_HOST + "/v2/accounts/password/actions/reset";
 
     //获取用户消息列表
     //?page={page}&size={size}
