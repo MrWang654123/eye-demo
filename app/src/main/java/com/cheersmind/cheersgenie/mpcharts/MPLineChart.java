@@ -9,17 +9,16 @@ import android.widget.LinearLayout;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
+import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.mpcharts.Formmart.MyMarkerView;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
@@ -109,13 +108,18 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
         l.setDrawInside(false);
-//        l.setYOffset(5f);
+//        l.setYOffset(-10f);
         l.setXEntrySpace(10f);
 
         XAxis xAxis = mChart.getXAxis();
         xAxis.setTypeface(mTfLight);
         xAxis.setTextSize(11f);
-        xAxis.setTextColor(Color.parseColor("#333333"));
+        //x轴文本颜色
+        xAxis.setTextColor(Color.parseColor(axisTextColor));
+        //x轴颜色
+        xAxis.setAxisLineColor(Color.parseColor(xAxisColor));
+        //x轴宽度
+        xAxis.setAxisLineWidth(axisLineWidth);
         //网格线
         xAxis.setDrawGridLines(false);
         //轴线
@@ -123,7 +127,7 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
         //X轴标签文本
         xAxis.setDrawLabels(true);
         //X轴文本旋转角度
-        xAxis.setLabelRotationAngle(-20);
+//        xAxis.setLabelRotationAngle(-20);
         //设置x轴的显示位置（显示在底部）
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
@@ -131,7 +135,12 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTypeface(mTfLight);
-        leftAxis.setTextColor(Color.parseColor("#333333"));
+        //y轴颜色
+        leftAxis.setTextColor(Color.parseColor(axisTextColor));
+        //y轴颜色
+        leftAxis.setAxisLineColor(Color.parseColor(yAxisColor));
+        //y轴宽度
+        leftAxis.setAxisLineWidth(axisLineWidth);
         List<Float> maxAndMinValue = getMaxAndMinValue();
         //最大值
 //        leftAxis.setAxisMaximum(reportData.getMaxScore());
@@ -199,46 +208,74 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
             if(j == 0){
                 set1 = new LineDataSet(yValues, "我");
                 set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-                set1.setColor(ColorTemplate.getHoloBlue());
-                set1.setCircleColor(ColorTemplate.getHoloBlue());
-                set1.setLineWidth(3f);
-                set1.setCircleRadius(4f);
+                set1.setColor(Color.parseColor(dataSetColor_1));
+                set1.setCircleColor(Color.parseColor(dataSetColor_1));
+                set1.setCircleColorHole(Color.parseColor(holeColor));
+                set1.setLineWidth(1.5f);
+                set1.setCircleRadius(3.5f);
+                set1.setCircleHoleRadius(2f);
                 set1.setFillAlpha(65);
-                set1.setFillColor(ColorTemplate.getHoloBlue());
-                set1.setHighLightColor(Color.rgb(244, 117, 117));
-                set1.setDrawCircleHole(false);
+//                set1.setFillColor(ColorTemplate.getHoloBlue());
+                set1.setHighLightColor(Color.parseColor(dataSetColor_1));
+                set1.setDrawCircleHole(true);
             }else{
                 set1 = new LineDataSet(yValues, "全国");
                 set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-                set1.setColor(Color.parseColor("#ffa400"));
-                set1.setCircleColor(Color.parseColor("#ffa400"));
-                set1.setLineWidth(3f);
-                set1.setCircleRadius(4f);
+                set1.setColor(Color.parseColor(dataSetColor_2));
+                set1.setCircleColor(Color.parseColor(dataSetColor_2));
+                set1.setCircleColorHole(Color.parseColor(holeColor));
+                set1.setLineWidth(1.5f);
+                set1.setCircleRadius(3.5f);
+                set1.setCircleHoleRadius(2f);
                 set1.setFillAlpha(65);
-                set1.setFillColor(ColorTemplate.getHoloBlue());
-                set1.setHighLightColor(Color.parseColor("#ffa400"));
-                set1.setDrawCircleHole(false);
+//                set1.setFillColor(ColorTemplate.getHoloBlue());
+                set1.setHighLightColor(Color.parseColor(dataSetColor_2));
+                set1.setDrawCircleHole(true);
             }
             dataSets.add(set1);
 
 
         }
 
-        mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
-        //X轴坐标数量大于5，且最大文本长度大于7，则X轴文本旋转30度
-        if (xLabels.size() > 5 ) {
-            //最大长度
-            int maxLen = getXLabelsMaxLength(xLabels);
-            if (maxLen > 11) {
-                //X轴文本旋转角度
-                mChart.getXAxis().setLabelRotationAngle(-90);
+        //调整x轴文本旋转角度begin
 
-            } else if (maxLen > 7) {
+        boolean hasSetRotationAngle = false;
+        //最大长度
+        int maxLen = getXLabelsMaxLength(xLabels);
+        if (xLabels.size() == MPChartViewHelper.ADJUST_SIZE_1) {
+            //X轴文本旋转角度
+            mChart.getXAxis().setLabelRotationAngle(0);
+            hasSetRotationAngle = true;
+
+        } else if (xLabels.size() == MPChartViewHelper.ADJUST_SIZE_2) {
+            if (maxLen < MPChartViewHelper.ADJUST_MAX_LENGTH_2) {
                 //X轴文本旋转角度
-                mChart.getXAxis().setLabelRotationAngle(-30);
+                mChart.getXAxis().setLabelRotationAngle(0);
+                hasSetRotationAngle = true;
+            }
+
+        } else if (xLabels.size() >= MPChartViewHelper.ADJUST_SIZE_3) {//X轴坐标数量大于5，且最大文本长度大于7，则X轴文本旋转30度
+            if (maxLen >= MPChartViewHelper.ADJUST_MAX_LENGTH_2) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-35);
+                hasSetRotationAngle = true;
+
+            } else if (maxLen >= MPChartViewHelper.ADJUST_MAX_LENGTH_1) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-25);
+                hasSetRotationAngle = true;
             }
         }
+
+        if (!hasSetRotationAngle) {
+            //X轴文本旋转角度
+            mChart.getXAxis().setLabelRotationAngle(-20);
+        }
+
+        //调整x轴文本旋转角度end
+
+        mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
         // create a data object with the datasets
         LineData data = new LineData(dataSets);

@@ -128,8 +128,8 @@ public class MPRadarChart extends MPBaseChart {
             RadarDataSet set1;
             if(j == 0){
                 set1 = new RadarDataSet(yValues, "我");
-                set1.setColor(Color.parseColor("#12b2f4"));
-                set1.setFillColor(Color.parseColor("#12b2f4"));
+                set1.setColor(Color.parseColor(dataSetColor_1));
+                set1.setFillColor(Color.parseColor(dataSetColor_1));
                 set1.setDrawFilled(true);
                 set1.setFillAlpha(30);
                 set1.setLineWidth(2f);
@@ -139,8 +139,8 @@ public class MPRadarChart extends MPBaseChart {
                 set1.setDrawValues(true);
             }else{
                 set1 = new RadarDataSet(yValues, "全国");
-                set1.setColor(Color.parseColor("#ffa400"));
-                set1.setFillColor(Color.parseColor("#ffa400"));
+                set1.setColor(Color.parseColor(dataSetColor_2));
+                set1.setFillColor(Color.parseColor(dataSetColor_2));
                 set1.setDrawFilled(true);
                 set1.setFillAlpha(50);
                 set1.setLineWidth(2f);

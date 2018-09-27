@@ -80,13 +80,19 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
 
         mChart.setDrawGridBackground(false);
 
-        XAxis xl = mChart.getXAxis();
-        xl.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xl.setTypeface(mTfLight);
-        xl.setDrawAxisLine(true);
-        xl.setDrawGridLines(false);
-        xl.setLabelRotationAngle(-20);
-        xl.setGranularity(1f);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTypeface(mTfLight);
+        //x轴文本颜色
+        xAxis.setTextColor(Color.parseColor(axisTextColor));
+        //x轴颜色
+        xAxis.setAxisLineColor(Color.parseColor(xAxisColor));
+        //x轴宽度
+        xAxis.setAxisLineWidth(axisLineWidth);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(false);
+        xAxis.setLabelRotationAngle(-20);
+        xAxis.setGranularity(1f);
 //        //上侧还有部分图表未展示出来，此时还需要对X轴进行相应的设置
 //        xl.setAxisMinimum(0f);
         //放到setData之后
@@ -94,12 +100,12 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
 //        //将X轴的值显示在中央
 //        xl.setCenterAxisLabels(true);
 
-        YAxis yl = mChart.getAxisLeft();
-        yl.setTextColor(Color.parseColor("#f7f7f7"));
-        yl.setTypeface(mTfLight);
-        yl.setDrawAxisLine(false);
-        yl.setDrawGridLines(false);
-        yl.setAxisMinimum(getMaxAndMinValue().get(1));
+        YAxis leftAxis = mChart.getAxisLeft();
+        leftAxis.setTextColor(Color.parseColor("#f7f7f7"));
+        leftAxis.setTypeface(mTfLight);
+        leftAxis.setDrawAxisLine(false);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setAxisMinimum(getMaxAndMinValue().get(1));
         //设置X Y轴网格线为虚线（实体线长度、间隔距离、偏移量：通常使用 0）
 //        yl.enableGridDashedLine(10f, 10f, 0f);
 //        yl.setInverted(true);
@@ -107,6 +113,12 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
         YAxis yr = mChart.getAxisRight();
 //        yr.setTextColor(Color.parseColor("#f7f7f7"));
         yr.setTypeface(mTfLight);
+        //y轴颜色
+        yr.setTextColor(Color.parseColor(axisTextColor));
+        //y轴颜色
+        yr.setAxisLineColor(Color.parseColor(yAxisColor));
+        //y轴宽度
+        yr.setAxisLineWidth(axisLineWidth);
         yr.setDrawAxisLine(true);
         yr.setDrawGridLines(true);
 //        yr.setAxisLineColor(Color.parseColor("#f7f7f7"));
@@ -168,11 +180,11 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
             if(j == 0){
                 set1 = new BarDataSet(yValues, "我");
                 set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor("#12b2f4"));
+                set1.setColors(Color.parseColor(dataSetColor_1));
             }else{
                 set1 = new BarDataSet(yValues, "全国");
                 set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor("#ffa400"));
+                set1.setColors(Color.parseColor(dataSetColor_2));
             }
             dataSets.add(set1);
         }

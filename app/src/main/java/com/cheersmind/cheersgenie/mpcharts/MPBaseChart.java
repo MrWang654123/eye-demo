@@ -35,6 +35,22 @@ public class MPBaseChart extends LinearLayout {
     protected Typeface mTfRegular;
     protected Typeface mTfLight;
 
+    //轴宽度
+    protected float axisLineWidth = 1.7f;
+    //x轴颜色
+    protected String xAxisColor = "#289bd3";
+    //y轴颜色
+    protected String yAxisColor = "#3ca5d8";
+    //轴文本颜色
+    protected String axisTextColor = "#333333";
+    //数据集合1的颜色
+    protected String dataSetColor_1 = "#2ec8c9";
+    //数据集合2的颜色
+    protected String dataSetColor_2 = "#cbbfe6";
+    //孔的颜色
+    protected String holeColor = "#ffffff";
+
+
     public MPBaseChart(Context context,ReportItemEntity reportData) {
         super(context);
         this.context = context;

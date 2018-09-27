@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
+import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.mpcharts.Formmart.MyMarkerView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -83,6 +84,12 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
         XAxis xAxis = mChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTypeface(mTfLight);
+        //x轴文本颜色
+        xAxis.setTextColor(Color.parseColor(axisTextColor));
+        //x轴颜色
+        xAxis.setAxisLineColor(Color.parseColor(xAxisColor));
+        //x轴宽度
+        xAxis.setAxisLineWidth(axisLineWidth);
         xAxis.setDrawGridLines(false);
         //X轴文本旋转角度
         xAxis.setLabelRotationAngle(-20);
@@ -103,6 +110,12 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
 
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setTypeface(mTfLight);
+        //y轴颜色
+        leftAxis.setTextColor(Color.parseColor(axisTextColor));
+        //y轴颜色
+        leftAxis.setAxisLineColor(Color.parseColor(yAxisColor));
+        //y轴宽度
+        leftAxis.setAxisLineWidth(axisLineWidth);
         leftAxis.setLabelCount(8, false);
 //        leftAxis.setValueFormatter(custom);
         leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
@@ -175,14 +188,52 @@ public class MPVerticalBarChart extends MPBaseChart implements OnChartValueSelec
             if(j == 0){
                 set1 = new BarDataSet(yValues, "我");
                 set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor("#12b2f4"));
+                set1.setColors(Color.parseColor(dataSetColor_1));
             }else{
                 set1 = new BarDataSet(yValues, "全国");
                 set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor("#ffa400"));
+                set1.setColors(Color.parseColor(dataSetColor_2));
             }
             dataSets.add(set1);
         }
+
+
+        //调整x轴文本旋转角度begin
+
+        boolean hasSetRotationAngle = false;
+        //最大长度
+        int maxLen = getXLabelsMaxLength(xLabels);
+        if (xLabels.size() == MPChartViewHelper.ADJUST_SIZE_1) {
+            //X轴文本旋转角度
+            mChart.getXAxis().setLabelRotationAngle(0);
+            hasSetRotationAngle = true;
+
+        } else if (xLabels.size() == MPChartViewHelper.ADJUST_SIZE_2) {
+            if (maxLen < MPChartViewHelper.ADJUST_MAX_LENGTH_2) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(0);
+                hasSetRotationAngle = true;
+            }
+
+        } else if (xLabels.size() >= MPChartViewHelper.ADJUST_SIZE_3) {//X轴坐标数量大于5，且最大文本长度大于7，则X轴文本旋转30度
+            if (maxLen >= MPChartViewHelper.ADJUST_MAX_LENGTH_2) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-35);
+                hasSetRotationAngle = true;
+
+            } else if (maxLen >= MPChartViewHelper.ADJUST_MAX_LENGTH_1) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-25);
+                hasSetRotationAngle = true;
+            }
+        }
+
+        if (!hasSetRotationAngle) {
+            //X轴文本旋转角度
+            mChart.getXAxis().setLabelRotationAngle(-20);
+        }
+
+        //调整x轴文本旋转角度end
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
