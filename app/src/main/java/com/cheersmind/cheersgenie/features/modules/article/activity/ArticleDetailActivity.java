@@ -821,6 +821,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
         //发送按钮
         final Button btnSend = view.findViewById(R.id.btn_send);
+        btnSend.setEnabled(false);//初始设置为未激活状态
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

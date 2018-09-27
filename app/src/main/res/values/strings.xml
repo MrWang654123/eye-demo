@@ -124,6 +124,7 @@
     <!--评论-->
     <string name="comment_count">评论（%s）</string>
     <string name="comment_mine">我的评论</string>
+    <string name="edit_comment">写评论</string>
 
     <!--密码修改-->
     <string name="password_tip">密码长度6&#8211;24位，可以是数字、字母等任意字符</string>

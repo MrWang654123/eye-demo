@@ -335,7 +335,7 @@
                         android:paddingLeft="15dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
-                        android:hint="写评论" />
+                        android:hint="@string/edit_comment" />
 
                     <ImageView
                         android:id="@+id/iv_favorite"
