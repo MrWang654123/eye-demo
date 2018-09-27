@@ -35,5 +35,8 @@ public class ErrorCode {
     //您的今天短信验证码输入错误次数已超过上限
     public static final String AC_SMSCODE_ERROR_OVER_SUM = "AC_SMSCODE_ERROR_OVER_SUM";
 
+    //班级群号不存在
+    public static final String PSY_CLASS_NOT_EXIST = "PSY_CLASS_NOT_EXIST";
+
 
 }

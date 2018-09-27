@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
@@ -337,7 +338,20 @@ public class ClassNumActivity extends BaseActivity {
         DataRequestService.getInstance().getClassInfoByClassNum(classNum, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
+                onFailureDefault(e, new FailureDefaultErrorCodeCallBack() {
+                    @Override
+                    public boolean onErrorCodeCallBack(ErrorCodeEntity errorCodeEntity) {
+                        String errorCode = errorCodeEntity.getCode();
+
+                        if (ErrorCode.PSY_CLASS_NOT_EXIST.equals(errorCode)) {
+                            //置空班级号
+                            ClassNumActivity.this.classNum = null;
+                            //清空班级信息
+                            tvClassInfo.setText("");
+                        }
+                        return false;
+                    }
+                });
             }
 
             @Override
@@ -373,7 +387,8 @@ public class ClassNumActivity extends BaseActivity {
      * 刷新页面的班级信息
      */
     private void refreshClassInfoView(ClassInfoEntity classInfo) {
-        String classInfoStr = classInfo.getSchoolName() + "-" + getPeriodName(classInfo.getPeriod()) + "-" + classInfo.getClassName();
+//        getPeriodName(classInfo.getPeriod())
+        String classInfoStr = classInfo.getSchoolName() + "-" + classInfo.getGradeName() + "-" + classInfo.getClassName();
         tvClassInfo.setText(classInfoStr);
     }
 

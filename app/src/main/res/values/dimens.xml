@@ -11,7 +11,8 @@
     <dimen name="button_fullscreen_corner_radius">4dp</dimen><!-- 按钮圆角数值 -->
     <dimen name="button_fullscreen_padding">10dp</dimen><!-- 按钮内间距 -->
 
-    <dimen name="captcha_edit_width">35dp</dimen><!--验证码编辑框宽度-->
+    <dimen name="class_num_edit_width">35dp</dimen><!--验证码编辑框宽度-->
+    <dimen name="class_num_edit_height">38dp</dimen><!--验证码编辑框宽度-->
 
     <dimen name="fixed_height_bottom_padding">5dp</dimen><!--BottomNavigationBar 图标和文字的间距（默认是10dp，值越小，间距越大。适合的模式是BottomNavigationBar.MODE_FIXED）-->
 

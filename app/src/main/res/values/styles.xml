@@ -90,8 +90,8 @@
     <style name="captcha_edit">
         <item name="android:layout_width">@dimen/heightDefaultWidget</item>
         <item name="android:layout_height">@dimen/heightDefaultWidget</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginRight">3dp</item>
         <item name="android:maxLength">2</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/edit_captcha_round</item>
@@ -101,9 +101,12 @@
 
     <!--班级号-->
     <style name="class_num" parent="captcha_edit">
+        <item name="android:layout_width">@dimen/class_num_edit_width</item>
+        <item name="android:layout_height">@dimen/class_num_edit_height</item>
         <item name="android:digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
         <item name="android:inputType">textEmailAddress</item><!--英文输入键盘-->
-        <!--android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"-->
+        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <!--可换行布局的默认风格-->
