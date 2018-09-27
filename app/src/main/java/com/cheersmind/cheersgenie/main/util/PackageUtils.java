@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.StatFs;
 
+import com.cheersmind.cheersgenie.BuildConfig;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,9 @@ import java.util.List;
  */
 public class PackageUtils {
 
-    public final static String CURRENT_APP_PACKAGE_NAME = "com.cheersmind.cheersgenie";
+//    public final static String CURRENT_APP_PACKAGE_NAME = "com.cheersmind.cheersgenie";
+    //当前应用的包名
+    public final static String CURRENT_APP_PACKAGE_NAME = BuildConfig.APPLICATION_ID;
 
     private final static String SDCARD_STORAGE = Environment.getExternalStorageDirectory()+ "/" + CURRENT_APP_PACKAGE_NAME;
 
