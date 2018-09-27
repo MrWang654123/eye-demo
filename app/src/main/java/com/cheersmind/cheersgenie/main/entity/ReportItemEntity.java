@@ -23,8 +23,8 @@ public class ReportItemEntity implements Serializable {
 //            "chart_description": "原始分雷达图",
 //            "chart_item_name": "我的学习习惯"
 
-    //是否是topic
-    @InjectMap(name = "topic")
+    //是否是话题报告
+    @InjectMap(name = "is_topic")
     private boolean topic;
 
     //报告结果

@@ -177,8 +177,19 @@ public class TopicDetailActivity extends BaseActivity {
         //话题名称
         tvTopicName.setText(topicDetail.getTopicName());
 //        tvContent.setText(Dictionary.Text_Indent + topicDetail.getDescription());
-        tvContentBottom.setText(Dictionary.Text_Indent + topicDetail.getDescription());
+        //场景描述（位于底部的）
+        if (!TextUtils.isEmpty(topicDetail.getDescription())) {
+            //显示布局
+            tvContentBottom.setVisibility(View.VISIBLE);
+            tvContentBottom.setText(Html.fromHtml(topicDetail.getDescription()));
+
+        } else {
+            tvContentBottom.setVisibility(View.GONE);
+        }
+
+        //适用对象
         tvSuitableUser.setText("#适合对象：学生");
+        //使用人数
         tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount()+""));
 
 //        Glide.with(TopicDetailActivity.this)
@@ -202,6 +213,7 @@ public class TopicDetailActivity extends BaseActivity {
                 }
             }
         }
+
     }
 
 
