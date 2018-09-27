@@ -77,7 +77,7 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
         //主图
         Glide.with(fragment)
                 .load(entity.getArticleImg())
-                .thumbnail(0.5f)//缩略图
+//                .thumbnail(0.5f)//缩略图
                 .apply(defaultOptions)
                 .into(ivMain);
 

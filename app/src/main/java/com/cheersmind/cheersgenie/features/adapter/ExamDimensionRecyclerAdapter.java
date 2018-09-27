@@ -61,20 +61,21 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
 
         MultiTransformation<Bitmap> multiBlur = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL),
-                new BlurTransformation(8));
+                new BlurTransformation(12),
+                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL)
+                );
 
         //默认Glide处理参数
         defaultOptions = new RequestOptions();
         defaultOptions.skipMemoryCache(false);//不忽略内存
-//        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
         defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
         defaultOptions.transform(multi);
 
         blurOptions = new RequestOptions();
         blurOptions.skipMemoryCache(false);//不忽略内存
-//        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
+        blurOptions.placeholder(R.drawable.default_image_round);//占位图
         blurOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
         blurOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
         blurOptions.transform(multiBlur);
@@ -215,12 +216,12 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         //加载图片，区分是否被锁
         if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
             //被锁情况
-            if (!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))) {
+            if (!url.equals(imageView.getTag(R.id.iv_icon))) {
                 Glide.with(fragment)
                         .load(R.drawable.default_image_round)
 //                    .load(url)
-                        .thumbnail(0.5f)
-                        .apply(defaultOptions)
+//                        .thumbnail(0.5f)
+                        .apply(blurOptions)
                         .into(imageView);
                 imageView.setTag(R.id.iv_icon, url);
             }
@@ -231,7 +232,7 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
                 Glide.with(fragment)
                         .load(R.drawable.default_image_round)
 //                    .load(url)
-                        .thumbnail(0.5f)
+//                        .thumbnail(0.5f)
                         .apply(defaultOptions)
                         .into(imageView);
                 imageView.setTag(R.id.iv_icon, url);

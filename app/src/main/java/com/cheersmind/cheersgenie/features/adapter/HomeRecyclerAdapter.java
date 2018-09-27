@@ -41,7 +41,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
     private void initRequestOptions() {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(context, 20), 0, RoundedCornersTransformation.CornerType.ALL));
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
         //默认Glide处理参数
         defaultOptions = new RequestOptions();
         defaultOptions.skipMemoryCache(false);//不忽略内存
@@ -76,11 +76,14 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         //主图
         String url = item.getArticleImg();
         ImageView imageView = helper.getView(R.id.iv_main);
-        Glide.with(context)
-                .load(url)
-                .thumbnail(0.5f)
-                .apply(defaultOptions)
-                .into(imageView);
+        if (!url.equals(imageView.getTag(R.id.iv_main))) {
+            Glide.with(context)
+                    .load(url)
+//                        .thumbnail(0.5f)
+                    .apply(defaultOptions)
+                    .into(imageView);
+            imageView.setTag(R.id.iv_main, url);
+        }
 
         //播放键
         if (item.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {

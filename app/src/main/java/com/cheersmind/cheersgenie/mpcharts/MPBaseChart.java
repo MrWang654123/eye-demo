@@ -181,4 +181,25 @@ public class MPBaseChart extends LinearLayout {
         return formatXLabels;
     }*/
 
+    /**
+     * 获取x轴文本的最大长度
+     * @param xLabels
+     * @return
+     */
+    protected int getXLabelsMaxLength(List<String> xLabels) {
+        if (xLabels == null) {
+            return 0;
+        }
+
+        //最大长度
+        int maxLen = 0;
+        for (String label : xLabels) {
+            if (label.length() > maxLen) {
+                maxLen = label.length();
+            }
+        }
+
+        return maxLen;
+    }
+
 }

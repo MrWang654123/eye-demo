@@ -226,6 +226,20 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
 
         mChart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xLabels));
 
+        //X轴坐标数量大于5，且最大文本长度大于7，则X轴文本旋转30度
+        if (xLabels.size() > 5 ) {
+            //最大长度
+            int maxLen = getXLabelsMaxLength(xLabels);
+            if (maxLen > 11) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-90);
+
+            } else if (maxLen > 7) {
+                //X轴文本旋转角度
+                mChart.getXAxis().setLabelRotationAngle(-30);
+            }
+        }
+
         // create a data object with the datasets
         LineData data = new LineData(dataSets);
 //        data.setValueTextColor(Color.parseColor("#333333"));

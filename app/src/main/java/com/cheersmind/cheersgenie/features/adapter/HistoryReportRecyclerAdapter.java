@@ -1,17 +1,12 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
-import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
-import com.cheersmind.cheersgenie.main.entity.IntegralEntity;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +33,11 @@ public class HistoryReportRecyclerAdapter extends BaseMultiItemQuickAdapter<Hist
             //表格body
             case HistoryReportItemEntity.ITEM: {
                 helper.setText(R.id.tv_patch, item.getBatch());
-                helper.setText(R.id.tv_result_simple, "--");
+                String result = "--";
+                if (!TextUtils.isEmpty(item.getResult())) {
+                    result = item.getResult();
+                }
+                helper.setText(R.id.tv_result_simple, result);
                 helper.setText(R.id.tv_goto_detail, "查看");
                 //查看点击监听
                 helper.addOnClickListener(R.id.tv_goto_detail);
