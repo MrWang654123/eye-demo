@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 import org.devio.takephoto.app.TakePhoto;
 import org.devio.takephoto.app.TakePhotoImpl;
@@ -40,10 +42,16 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
     private InvokeParam invokeParam;
     private TakePhoto takePhoto;
 
+    //图片裁剪宽度（px）
+    private int cropWidth = 500;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         getTakePhoto().onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        cropWidth = metrics.widthPixels - DensityUtil.dip2px(getContext(), 30);
     }
 
     @Override
@@ -234,8 +242,8 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
         //最大体积
         int maxSize = 1024000;//B
         //宽高
-        int width = 800;
-        int height = 800;
+        int width = cropWidth;
+        int height = cropWidth;
         //显示压缩进度条
         boolean showProgressBar = false;
         //拍照后保存原图
@@ -278,8 +286,8 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
      */
     protected CropOptions getCropOptions() {
 
-        int height = 800;
-        int width = 800;
+        int height = cropWidth;
+        int width = cropWidth;
         //是否使用TakePhoto自带裁剪工具
         boolean withWonCrop = true;
 
