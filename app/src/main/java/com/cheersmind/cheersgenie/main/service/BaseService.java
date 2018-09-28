@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -77,6 +78,22 @@ public class BaseService {
     }
 
     public static void post(final String url, JSONObject params, final ServiceCallback callback) {
+
+        BaseRequest.post(url, params, new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                onFailureDefault(e, callback);
+            }
+
+            @Override
+            public void onResponse(final Call call, final Response response) throws IOException {
+                onResponseDefault(response, callback);
+            }
+        });
+    }
+
+
+    public static void post(final String url, Map<String,File> params, final ServiceCallback callback) {
 
         BaseRequest.post(url, params, new Callback() {
             @Override

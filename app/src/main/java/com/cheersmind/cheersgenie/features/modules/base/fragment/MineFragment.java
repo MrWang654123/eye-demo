@@ -4,17 +4,23 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
+import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
@@ -24,6 +30,7 @@ import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivit
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -58,12 +65,24 @@ public class MineFragment extends LazyLoadFragment {
     @BindView(R.id.btn_sign_in)
     Button btnSignIn;
 
+    //新消息数量
     @BindView(R.id.tv_new_message_count)
     TextView tvNewMessageCount;
+    //用户名
     @BindView(R.id.tv_user_name)
     TextView tvUserName;
+    //性别
     @BindView(R.id.tv_gender)
     TextView tvGender;
+    //头像
+    @BindView(R.id.iv_profile)
+    ImageView ivProfile;
+    //修改头像的提示图
+    @BindView(R.id.tv_modify_profile_tip)
+    ImageView tvModifyProfileTip;
+
+    //默认Glide配置
+    RequestOptions options;
 
 
     @Override
@@ -71,6 +90,13 @@ public class MineFragment extends LazyLoadFragment {
         super.onCreate(savedInstanceState);
         //注册事件
         EventBus.getDefault().register(this);
+
+        options = new RequestOptions()
+                .circleCrop()//圆形
+                .skipMemoryCache(true)//忽略内存
+                .placeholder(R.drawable.ico_head)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
     }
 
     @Override
@@ -95,15 +121,14 @@ public class MineFragment extends LazyLoadFragment {
         queryNewMessageCount();
 
         //获取用户个人资料
-        ChildInfoEntity defaultChild = UCManager.getInstance().getDefaultChild();
-        //自己
-        if (defaultChild.getParentRole() == Dictionary.PARENT_ROLE_MYSELF) {
+        if (UCManager.getInstance().getUserInfo() != null) {
             //刷新个人资料视图
-            refreshPersonalInfo(defaultChild.getChildName(), defaultChild.getSex());
+            refreshPersonalInfo(UCManager.getInstance().getUserInfo());
         } else {
             //请求个人资料
             getUserInfo();
         }
+
     }
 
     @Override
@@ -123,12 +148,22 @@ public class MineFragment extends LazyLoadFragment {
             //获取最新消息条数
             queryNewMessageCount();
         }
+
+        //获取用户个人资料
+        if (UCManager.getInstance().getUserInfo() == null) {
+            //请求个人资料
+            getUserInfo();
+        }
     }
 
 
+    /**
+     * 消息被置为已读的通知
+     * @param event
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
-    public void onLastExamNotice(MessageReadEvent event) {
+    public void onMessageReadNotice(MessageReadEvent event) {
         if (event == null) {
             return;
         }
@@ -142,6 +177,33 @@ public class MineFragment extends LazyLoadFragment {
         //数量为0就隐藏
         if (newMessageCount == 0) {
             tvNewMessageCount.setVisibility(View.GONE);
+        }
+
+    }
+
+
+    /**
+     *
+     * 修改头像的通知
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+//    @Subscribe
+    public void onModifyProfileNotice(ModifyProfileEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        //非空
+        String profileUrl = event.getProfileUrl();
+        if (!TextUtils.isEmpty(profileUrl)) {
+            //重置本地缓存中的头像url
+            if (UCManager.getInstance().getUserInfo() != null) {
+                UCManager.getInstance().getUserInfo().setAvatar(profileUrl);
+            }
+
+            //刷新头像
+            refreshProfile(profileUrl);
         }
 
     }
@@ -211,10 +273,11 @@ public class MineFragment extends LazyLoadFragment {
 
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
-            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name})
+            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name, R.id.iv_profile})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //我的资料
+            case R.id.iv_profile:
             case R.id.tv_user_name:
             case R.id.tv_user_info: {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
@@ -327,7 +390,7 @@ public class MineFragment extends LazyLoadFragment {
                     UCManager.getInstance().setUserInfo(userInfo);
 
                     //刷新个人资料视图
-                    refreshPersonalInfo(userInfo.getUserName(), userInfo.getSex());
+                    refreshPersonalInfo(userInfo);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -338,16 +401,38 @@ public class MineFragment extends LazyLoadFragment {
 
     /**
      * 刷新个人资料视图
-     * @param userName
-     * @param gender
+     * @param userInfo 用户信息
      */
-    private void refreshPersonalInfo(String userName, int gender) {
+    private void refreshPersonalInfo(UserInfo userInfo) {
         tvUserName.setVisibility(View.VISIBLE);
 //        tvGender.setVisibility(View.VISIBLE);
         //姓名
-        tvUserName.setText(userName);
+        tvUserName.setText(userInfo.getUserName());
         //性别
-        tvGender.setText(gender == 1 ? "男": "女");
+        tvGender.setText(userInfo.getSex() == 1 ? "男": "女");
+
+        //刷新头像
+        refreshProfile(userInfo.getAvatar());
+    }
+
+    /**
+     * 刷新头像
+     * @param profileUrl
+     */
+    private void refreshProfile(String profileUrl) {
+        if (TextUtils.isEmpty(profileUrl)) {
+            return;
+        }
+
+        //图片
+        Glide.with(this)
+                .load(profileUrl)
+//                .thumbnail(0.5f)
+                .apply(options)
+                .into(ivProfile);
+
+        //隐藏修改头像提示图
+        tvModifyProfileTip.setVisibility(View.GONE);
     }
 
 }

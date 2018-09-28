@@ -105,7 +105,7 @@
     <string name="look_report">查看报告</string>
     <string name="cost_time">预计：%s</string>
     <string name="question_submit_tip">恭喜你，完成所有问题，是否提交结果？</string>
-    
+
 
     <!--注册-->
     <string name="captcha">验证码</string>
@@ -155,5 +155,6 @@
 
     <!--用户信息-->
     <string name="child_info">孩子信息：</string>
+    <string name="profile">头像</string>
 
 </resources>

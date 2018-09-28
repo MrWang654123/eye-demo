@@ -10,6 +10,7 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +19,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -32,6 +34,8 @@ public class BaseRequest {
 //    private BaseRequest (){}
 
     public static final MediaType MediaType_JSON = MediaType.parse("application/json; charset=utf-8");
+
+    public static final MediaType MediaType_Image_Type = MediaType.parse("image/png");
 
 //    public static BaseRequest getInstance() {
 //        if (instance == null) {
@@ -177,6 +181,12 @@ public class BaseRequest {
         });
     }
 
+    /**
+     * POST请求，外部直接传入Json对象作为参数
+     * @param url
+     * @param params
+     * @param callback
+     */
     public static void post (String url, JSONObject params, final Callback callback) {
         //创建okHttpClient对象
         OkHttpClient mOkHttpClient = new OkHttpClient();
@@ -216,6 +226,61 @@ public class BaseRequest {
             }
         });
     }
+
+
+    /**
+     * POST请求，上传图片
+     * @param url
+     * @param params
+     * @param callback
+     */
+    public static void post (String url, Map<String,File> params, final Callback callback) {
+        //创建okHttpClient对象
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS).build();
+
+        //builder.add("xwdoor","xwdoor");
+        RequestBody requestBody;
+
+        MultipartBody.Builder builder=  new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (Map.Entry<String, File> entry : params.entrySet()) {
+            File file = entry.getValue();
+            RequestBody fileBody = RequestBody.create(MediaType_Image_Type, file);
+            builder.addFormDataPart(entry.getKey(), file.getName(), fileBody);
+        }
+        requestBody = builder.build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","multipart/form-data")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
+                .addHeader("Authorization",getHeader(url,"POST"))
+                .post(requestBody)
+                .build();
+        //new call
+        Call call = mOkHttpClient.newCall(request);
+        //请求加入调度
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                if (callback != null) {
+                    callback.onFailure(call,e);
+                }
+            }
+
+            @Override
+            public void onResponse(final Call call, final Response response) throws IOException {
+                if (callback != null) {
+                    callback.onResponse(call, response);
+                }
+            }
+        });
+    }
+
 
     public static void patch (String url, Map<String,Object> params,final Callback callback) {
         //创建okHttpClient对象

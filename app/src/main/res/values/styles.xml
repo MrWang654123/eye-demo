@@ -50,8 +50,8 @@
         <item name="android:backgroundDimAmount">0.8</item>
     </style>
 
-    <!-- 底部对话框样式（默认弹出软键盘） -->
-    <style name="dialog_bottom_full" parent="android:style/Theme.Dialog">
+    <!-- 底部对话框样式 -->
+    <style name="base_dialog_bottom_full" parent="android:style/Theme.Dialog">
         <!--无标题 -->
         <item name="android:windowNoTitle">true</item>
         <!-- 背景透明 -->
@@ -59,6 +59,10 @@
         <!-- 是否浮现在activity之上 -->
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- 底部对话框样式（默认弹出软键盘） -->
+    <style name="dialog_bottom_full" parent="base_dialog_bottom_full">
         <!--默认打开软键盘-->
         <item name="android:windowSoftInputMode">stateVisible</item>
     </style>

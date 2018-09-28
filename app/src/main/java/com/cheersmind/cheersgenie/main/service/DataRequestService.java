@@ -37,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -1943,6 +1944,36 @@ public class DataRequestService {
     public void getUserPhoneNum (final BaseService.ServiceCallback callback){
         String url = HttpConfig.URL_USER_PHONE_NUM;
         BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
+
+    /**
+     * 修改用户头像
+     * @param file 图片文件
+     * @param callback
+     */
+    public void postModifyProfile(File file, final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_MODIFY_PROFILE;
+
+//        （multipart/form-data）
+//        {
+//            "image"：图片文件
+//        }
+
+        Map<String, File> map = new HashMap<String, File>();
+        map.put("image", file);
+
+        BaseService.post(url,map, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 callback.onFailure(e);

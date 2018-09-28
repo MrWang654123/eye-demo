@@ -122,6 +122,9 @@ public class HttpConfig {
     //获取用户的手机号
     public static final String URL_USER_PHONE_NUM = UC_HOST+"/v2/accounts/mobile";
 
+    //修改用户头像（图片支持格式为.png .gif .jpg格式，文件大小不能超过1M）
+    public static final String URL_MODIFY_PROFILE = UC_HOST+"/v2/api/users/avatar/upload";
+
 
     /**-----------------------------------------------------------------------
      *---------------------------业务相关-----------------------------------
