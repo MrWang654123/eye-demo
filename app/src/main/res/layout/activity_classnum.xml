@@ -20,7 +20,7 @@
             android:textSize="26sp"
             android:textColor="@color/color_333333"
             android:textStyle="bold"
-            android:text="班级群号"/>
+            android:text="邀请码"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,9 +66,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:textSize="15sp"
-                android:textColor="@color/color_555555"
+                android:textColor="@color/color_ff8b00"
                 android:text=""/>
             <!--XXXX学校 XXXX班级 XXX学段-->
 
@@ -80,6 +80,7 @@
                 android:textColor="@color/color_ff8b00"
                 android:layout_gravity="center_horizontal"
                 android:textSize="17sp"
+                android:visibility="gone"
                 android:text="什么是班级群号？"/>
 
             <!--班级群号解释-->
@@ -105,23 +106,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/color_444444"
-                    android:text="需要对班级群号进行验证，"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/color_444444"
-                    android:text="如果是初高中生，直接填写学生信息，"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/color_444444"
-                    android:text="如果是幼小，使用家长+学生信息"/>
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="邀请码是由班主任或者学校其他负责人下发的8位数字码，每个班级的邀请码均不相同。
+如果忘记，请询问你的班主任或者同学。"/>
 
             </LinearLayout>
 

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cheersmind.cheersgenie">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -113,7 +112,8 @@
             android:name=".features.modules.register.activity.PasswordInitActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <!-- 班级群号输入页面（注册） -->
-        <activity android:name=".features.modules.register.activity.ClassNumActivity" />
+        <activity android:name=".features.modules.register.activity.ClassNumActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <!-- 完善用户信息页面 -->
         <activity
             android:name=".features.modules.register.activity.UserInfoInitActivity"

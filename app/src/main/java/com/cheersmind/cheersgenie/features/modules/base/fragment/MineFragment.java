@@ -28,6 +28,8 @@ import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralAct
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
+import com.cheersmind.cheersgenie.features.utils.FileUtil;
+import com.cheersmind.cheersgenie.features.utils.ImageUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
@@ -44,6 +46,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -417,19 +420,31 @@ public class MineFragment extends LazyLoadFragment {
 
     /**
      * 刷新头像
-     * @param profileUrl
+     * @param profileUrl 头像url
      */
     private void refreshProfile(String profileUrl) {
         if (TextUtils.isEmpty(profileUrl)) {
             return;
         }
 
-        //图片
-        Glide.with(this)
-                .load(profileUrl)
+        //解析出图片名称
+        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
+        if (fileImage.exists()) {
+            //加载本地图片
+            Glide.with(this)
+                    .load(fileImage)
 //                .thumbnail(0.5f)
-                .apply(options)
-                .into(ivProfile);
+                    .apply(options)
+                    .into(ivProfile);
+        } else {
+            //加载网络图片
+            Glide.with(this)
+                    .load(profileUrl)
+//                .thumbnail(0.5f)
+                    .apply(options)
+                    .into(ivProfile);
+        }
 
         //隐藏修改头像提示图
         tvModifyProfileTip.setVisibility(View.GONE);

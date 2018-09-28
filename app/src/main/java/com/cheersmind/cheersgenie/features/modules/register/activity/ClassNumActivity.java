@@ -75,7 +75,7 @@ public class ClassNumActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "班级号输入";
+        return "邀请码输入";
     }
 
     @Override

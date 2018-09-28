@@ -14,6 +14,8 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.TakePhotoFragment;
+import com.cheersmind.cheersgenie.features.utils.FileUtil;
+import com.cheersmind.cheersgenie.features.utils.ImageUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
@@ -154,7 +156,7 @@ public class UserInfoFragment extends TakePhotoFragment {
     /**
      * 提交头像
      */
-    private void doPostModifyProfile(File file) {
+    private void doPostModifyProfile(final File file) {
         //通信等待提示
         LoadingView.getInstance().show(getContext());
         DataRequestService.getInstance().postModifyProfile(file, new BaseService.ServiceCallback() {
@@ -172,17 +174,26 @@ public class UserInfoFragment extends TakePhotoFragment {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //头像url
-                    String profileUrl = (String) dataMap.get("file_path");
+                    final String profileUrl = (String) dataMap.get("file_path");
 
-                    //图片
-                    Glide.with(getContext())
-                            .load(profileUrl)
+                    //解析出图片名称
+                    final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //保存文件
+                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
+                            //发送修改头像的通知
+                            EventBus.getDefault().post(new ModifyProfileEvent(profileUrl));
+                        }
+                    }).start();
+
+                    //直接加载临时图片文件
+                    Glide.with(UserInfoFragment.this)
+                            .load(file)
 //                .thumbnail(0.5f)
                             .apply(options)
                             .into(ivProfile);
-
-                    //发送修改头像的通知
-                    EventBus.getDefault().post(new ModifyProfileEvent(profileUrl));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -293,19 +304,31 @@ public class UserInfoFragment extends TakePhotoFragment {
 
     /**
      * 刷新头像
-     * @param profileUrl
+     * @param profileUrl 头像url
      */
     private void refreshProfile(String profileUrl) {
         if (TextUtils.isEmpty(profileUrl)) {
             return;
         }
 
-        //图片
-        Glide.with(this)
-                .load(profileUrl)
+        //解析出图片名称
+        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
+        if (fileImage.exists()) {
+            //加载本地图片
+            Glide.with(this)
+                    .load(fileImage)
 //                .thumbnail(0.5f)
-                .apply(options)
-                .into(ivProfile);
+                    .apply(options)
+                    .into(ivProfile);
+        } else {
+            //加载网络图片
+            Glide.with(this)
+                    .load(profileUrl)
+//                .thumbnail(0.5f)
+                    .apply(options)
+                    .into(ivProfile);
+        }
 
         //隐藏修改头像提示图
         tvModifyProfileTip.setVisibility(View.GONE);
@@ -326,10 +349,10 @@ public class UserInfoFragment extends TakePhotoFragment {
     public void takeSuccess(TResult result) {
         super.takeSuccess(result);
 
-//        file = new File(result.getImages().get(0).getCompressPath());
+        file = new File(result.getImages().get(0).getCompressPath());
 //        Glide.with(this).load(file).into(ivProfile);
         //上传头像
-        doPostModifyProfile(new File(result.getImages().get(0).getCompressPath()));
+        doPostModifyProfile(file);
     }
 
 
