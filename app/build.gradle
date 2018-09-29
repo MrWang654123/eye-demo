@@ -67,6 +67,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String", "HOST_TYPE", "\"" + HOST_TYPE + "\""
+
+//            manifestPlaceholders = [ applicationId:defaultConfig.applicationId ]
         }
         debug {
             signingConfig signingConfigs.debug
@@ -74,6 +76,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
             buildConfigField "String", "HOST_TYPE", "\"" + HOST_TYPE + "\""
+
+//            manifestPlaceholders = [ applicationId:defaultConfig.applicationId ]
         }
     }
     applicationVariants.all { variant ->        

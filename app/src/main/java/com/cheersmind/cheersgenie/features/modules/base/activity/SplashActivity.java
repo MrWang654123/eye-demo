@@ -66,7 +66,7 @@ public class SplashActivity extends BaseActivity {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(SplashActivity.this);
         int featureVersion = pref.getInt("feature_version",0);
         boolean showNewFeature = featureVersion < Constant.VERSION_FEATURE;
-        boolean conAutoLogin = true;
+        boolean conAutoLogin = false;
         //是否显示信功能
         if (showNewFeature) {
             mHandler.postDelayed(new Runnable() {
@@ -87,7 +87,7 @@ public class SplashActivity extends BaseActivity {
             }, 1000);
 
         } else {
-            //登陆页面
+            //登录主页面
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {

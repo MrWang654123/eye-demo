@@ -675,15 +675,23 @@ public class ArticleDetailActivity extends BaseActivity {
             tvDate.setVisibility(View.GONE);
         }
         //阅读数
-        tvReadCount.setText(articleEntity.getPageView() + "");
+        tvReadCount.setText(String.valueOf(articleEntity.getPageView()));
 
         //文章内容（富文本）
         //处理图片宽高
 //        String tempContent = testArticleContent;
         String tempContent = articleEntity.getArticleContent();
-        tempContent = tempContent.replaceAll("\t", "");
-        tempContent = tempContent.replaceAll("\n", "");
-        tvArticleContent.setText(Html.fromHtml(tempContent, new URLImageParser(ArticleDetailActivity.this, tvArticleContent), null));
+        if (!TextUtils.isEmpty(tempContent)) {
+            tempContent = tempContent.replaceAll("\t", "");
+            tempContent = tempContent.replaceAll("\n", "");
+            if (!TextUtils.isEmpty(tempContent)) {
+                tvArticleContent.setText(Html.fromHtml(tempContent, new URLImageParser(ArticleDetailActivity.this, tvArticleContent), null));
+            } else {
+                tvArticleContent.setVisibility(View.GONE);
+            }
+        } else {
+            tvArticleContent.setVisibility(View.GONE);
+        }
 
 //        tempContent = HtmlUtil.getNewContentByHandleImage(tempContent);
 //        webArticleContent.loadDataWithBaseURL(null, tempContent, "text/html","utf-8",null);

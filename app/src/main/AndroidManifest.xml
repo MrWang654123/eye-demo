@@ -266,6 +266,20 @@
         <activity android:name=".features.modules.article.activity.SearchArticleActivity" />
         <activity android:name=".features.modules.register.activity.ParentRoleActivity"/>
         <activity android:name=".features.modules.mine.activity.MineExamActivity"/>
+
+        <!--7.0用content://Uri来替代file://Uri-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource"/>
+        </provider>
+
     </application>
 
 </manifest>

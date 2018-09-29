@@ -7,10 +7,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.v4.content.FileProvider;
 
 import com.cheersmind.cheersgenie.BuildConfig;
+import com.cheersmind.cheersgenie.main.QSApplication;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,8 +45,15 @@ public class PackageUtils {
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file),
-                "application/vnd.android.package-archive");
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            uri = FileProvider.getUriForFile(context,BuildConfig.APPLICATION_ID + ".fileprovider",file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+
+        intent.setDataAndType(uri, "application/vnd.android.package-archive");
         context.startActivity(intent);
     }
 
