@@ -80,7 +80,8 @@
              </intent-filter>
         </activity>
         <!-- 主页面 -->
-        <activity android:name=".features.modules.base.activity.MasterTabActivity">
+        <activity android:name=".features.modules.base.activity.MasterTabActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -205,7 +206,8 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".features.modules.mine.activity.UserInfoActivity" />
+        <activity android:name=".features.modules.mine.activity.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
 
         <!-- 阿里服务推送 begin -->
         <meta-data

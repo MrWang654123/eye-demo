@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -293,10 +294,12 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
 
         CropOptions.Builder builder = new CropOptions.Builder();
         //宽和高
-        builder.setAspectX(width).setAspectY(height);
+//        builder.setAspectX(width).setAspectY(height);
         //宽或者高
-//        builder.setOutputX(width).setOutputY(height);
-        builder.setWithOwnCrop(withWonCrop);
+        builder.setOutputX(width).setOutputY(height);
+//        builder.setWithOwnCrop(withWonCrop);
+        //三星用自带裁剪工具，其他的都用本框架默认裁剪工具
+        builder.setWithOwnCrop(!"samsung".equals(Build.BRAND));
         return builder.create();
     }
 

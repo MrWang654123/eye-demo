@@ -27,6 +27,7 @@ import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
@@ -42,6 +43,7 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.LogUtils;
+import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
@@ -60,6 +62,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -169,11 +172,15 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //家长角色选择页面
-                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+//                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
 
                 //完善信息页面
 //                Intent intent = new Intent(XLoginActivity.this, UserInfoInitActivity.class);
 //                startActivity(intent);
+
+                //重新安装Apk
+                String mFile = "/storage/emulated/0/Android/data/com.cheersmind.cheersgenie.debug/cache/com.cheersmind.cheersgenie.debug.apk";
+                PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
 
                 break;
             }

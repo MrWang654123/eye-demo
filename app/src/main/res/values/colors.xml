@@ -63,6 +63,7 @@
 
     <color name="white">#ffffff</color>
 
-
+    <!--拍照后的裁剪页面状态栏颜色-->
+    <color name="multiple_image_select_primaryDark">#212121</color>
 
 </resources>
