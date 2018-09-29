@@ -30,8 +30,8 @@
 
                 <ImageView
                     android:id="@+id/tv_modify_profile_tip"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:contentDescription="@string/profile"
@@ -42,9 +42,13 @@
         </RelativeLayout>
 
         <LinearLayout
+            android:id="@+id/ll_user_info"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
             android:gravity="center_vertical"
             android:orientation="vertical">
             <LinearLayout
@@ -108,7 +112,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -122,7 +126,7 @@
                     android:id="@+id/tv_test"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="12dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
@@ -157,7 +161,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -170,7 +174,7 @@
                 <FrameLayout
                     android:layout_width="80dp"
                     android:layout_height="40dp"
-                    android:layout_marginLeft="5dp">
+                    android:layout_marginLeft="12dp">
                     <TextView
                         android:id="@+id/tv_message"
                         android:layout_width="wrap_content"
@@ -228,7 +232,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -242,7 +246,7 @@
                     android:id="@+id/tv_appraise"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="12dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
@@ -277,7 +281,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -290,7 +294,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="12dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
@@ -329,7 +333,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -343,7 +347,7 @@
                     android:id="@+id/tv_feedback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="12dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
@@ -377,7 +381,7 @@
                 android:layout_height="50dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingLeft="10dp"
+                android:paddingLeft="16dp"
                 android:background="@drawable/selector_mine_btn">
 
                 <ImageView
@@ -391,7 +395,7 @@
                     android:id="@+id/tv_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="12dp"
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"

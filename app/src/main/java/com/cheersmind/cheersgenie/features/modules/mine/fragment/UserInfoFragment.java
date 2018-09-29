@@ -79,6 +79,9 @@ public class UserInfoFragment extends TakePhotoFragment {
     //默认Glide配置
     RequestOptions options;
 
+    //头像图片文件
+    private File file;
+
 
     @Override
     protected int setContentView() {
@@ -136,7 +139,6 @@ public class UserInfoFragment extends TakePhotoFragment {
             case R.id.iv_profile: {
                 //弹出选择修改头像方式的对话框
                 popupModifyProfileWindows(getContext());
-
                 break;
             }
 
@@ -150,11 +152,9 @@ public class UserInfoFragment extends TakePhotoFragment {
         }
     }
 
-    private File file;
-
 
     /**
-     * 提交头像
+     * 上传头像
      */
     private void doPostModifyProfile(final File file) {
         //通信等待提示
@@ -187,6 +187,11 @@ public class UserInfoFragment extends TakePhotoFragment {
                             EventBus.getDefault().post(new ModifyProfileEvent(profileUrl));
                         }
                     }).start();
+
+                    //重置本地缓存中的头像url
+                    if (UCManager.getInstance().getUserInfo() != null) {
+                        UCManager.getInstance().getUserInfo().setAvatar(profileUrl);
+                    }
 
                     //直接加载临时图片文件
                     Glide.with(UserInfoFragment.this)

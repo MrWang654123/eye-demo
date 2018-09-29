@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -28,6 +29,7 @@ import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralAct
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.fragment.UserInfoFragment;
 import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -41,6 +43,7 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
+import org.devio.takephoto.model.TResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -60,7 +63,7 @@ import butterknife.Unbinder;
 /**
  * “我的”页面（个人资料等）
  */
-public class MineFragment extends LazyLoadFragment {
+public class MineFragment extends TakePhotoFragment {
 
     Unbinder unbinder;
 
@@ -71,6 +74,7 @@ public class MineFragment extends LazyLoadFragment {
     //新消息数量
     @BindView(R.id.tv_new_message_count)
     TextView tvNewMessageCount;
+
     //用户名
     @BindView(R.id.tv_user_name)
     TextView tvUserName;
@@ -86,6 +90,9 @@ public class MineFragment extends LazyLoadFragment {
 
     //默认Glide配置
     RequestOptions options;
+
+    //头像图片文件
+    private File file;
 
 
     @Override
@@ -200,11 +207,6 @@ public class MineFragment extends LazyLoadFragment {
         //非空
         String profileUrl = event.getProfileUrl();
         if (!TextUtils.isEmpty(profileUrl)) {
-            //重置本地缓存中的头像url
-            if (UCManager.getInstance().getUserInfo() != null) {
-                UCManager.getInstance().getUserInfo().setAvatar(profileUrl);
-            }
-
             //刷新头像
             refreshProfile(profileUrl);
         }
@@ -276,16 +278,25 @@ public class MineFragment extends LazyLoadFragment {
 
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
-            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name, R.id.iv_profile})
+            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name, R.id.iv_profile,
+            R.id.ll_user_info})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //我的资料
-            case R.id.iv_profile:
             case R.id.tv_user_name:
-            case R.id.tv_user_info: {
+                //个人资料提示文本
+            case R.id.tv_user_info:
+                //用户信息布局
+            case R.id.ll_user_info: {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
                 startActivity(intent);
 
+                break;
+            }
+            //头像
+            case R.id.iv_profile: {
+                //弹出选择修改头像方式的对话框
+                popupModifyProfileWindows(getContext());
                 break;
             }
             //签到
@@ -447,8 +458,84 @@ public class MineFragment extends LazyLoadFragment {
         }
 
         //隐藏修改头像提示图
-        tvModifyProfileTip.setVisibility(View.GONE);
+//        tvModifyProfileTip.setVisibility(View.GONE);
     }
+
+
+    @Override
+    public void takeCancel() {
+        super.takeCancel();
+    }
+
+    @Override
+    public void takeFail(TResult result, String msg) {
+        super.takeFail(result, msg);
+    }
+
+    @Override
+    public void takeSuccess(TResult result) {
+        super.takeSuccess(result);
+
+        file = new File(result.getImages().get(0).getCompressPath());
+//        Glide.with(this).load(file).into(ivProfile);
+        //上传头像
+        doPostModifyProfile(file);
+    }
+
+
+    /**
+     * 上传头像
+     */
+    private void doPostModifyProfile(final File file) {
+        //通信等待提示
+        LoadingView.getInstance().show(getContext());
+        DataRequestService.getInstance().postModifyProfile(file, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待提示
+                LoadingView.getInstance().dismiss();
+
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //头像url
+                    final String profileUrl = (String) dataMap.get("file_path");
+
+                    //解析出图片名称
+                    final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //保存文件
+                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
+                        }
+                    }).start();
+
+                    //重置本地缓存中的头像url
+                    if (UCManager.getInstance().getUserInfo() != null) {
+                        UCManager.getInstance().getUserInfo().setAvatar(profileUrl);
+                    }
+
+                    //直接加载临时图片文件
+                    Glide.with(MineFragment.this)
+                            .load(file)
+//                .thumbnail(0.5f)
+                            .apply(options)
+                            .into(ivProfile);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
+            }
+        });
+    }
+
 
 }
 

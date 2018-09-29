@@ -255,11 +255,12 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         });
 
-        options = new RequestOptions();
-        options.skipMemoryCache(false);//不忽略内存
-        options.placeholder(R.drawable.ico_head);//占位图
-        options.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
-        options.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
+        options = new RequestOptions()
+                .circleCrop()//圆形
+                .skipMemoryCache(true)//忽略内存
+                .placeholder(R.drawable.ico_head)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
     }
 
 
@@ -915,16 +916,11 @@ public class ArticleDetailActivity extends BaseActivity {
             //头像
             String avatar = item.getUserData().getAvatar();
             ImageView imageView = commentItemView.findViewById(R.id.iv_profile);
-            if (!TextUtils.isEmpty(avatar)) {
-                Glide.with(ArticleDetailActivity.this)
-                        .load(avatar)
-                        .thumbnail(0.5f)
-                        .apply(options)
-                        .into(imageView);
-            } else {
-                //占位图
-                imageView.setImageResource(R.drawable.ico_head);
-            }
+            Glide.with(ArticleDetailActivity.this)
+                    .load(avatar)
+                    .thumbnail(0.5f)
+                    .apply(options)
+                    .into(imageView);
 
             //用户名
             String userName = item.getUserData().getUserName();
