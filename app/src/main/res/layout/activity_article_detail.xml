@@ -316,14 +316,14 @@
                     android:visibility="visible">
 
                     <ImageView
-                        android:id="@+id/btn_comment_back"
+                        android:id="@+id/iv_comment_edit_tip"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:padding="5dp"
-                        android:src="@drawable/back_normal"
+                        android:padding="7dp"
+                        android:src="@drawable/comment_edit"
                         android:scaleType="centerInside"
-                        android:layout_marginLeft="10dp"
-                        android:text="返回" />
+                        android:layout_marginLeft="10dp" />
+                    <!--android:src="@drawable/back_normal"-->
 
                     <TextView
                         android:id="@+id/tv_comment_tip"
@@ -333,7 +333,7 @@
                         android:gravity="center_vertical"
                         android:background="@drawable/shape_corner_f3f3f3"
                         android:paddingLeft="15dp"
-                        android:layout_marginLeft="15dp"
+                        android:layout_marginLeft="5dp"
                         android:layout_marginRight="15dp"
                         android:hint="@string/edit_comment" />
 
@@ -347,7 +347,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginRight="10dp"
                         android:orientation="horizontal">
 
@@ -361,7 +361,7 @@
 
                         <TextView
                             android:id="@+id/tv_like_count"
-                            android:layout_toRightOf="@+id/cb_like"
+                            android:layout_marginTop="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="9000" />

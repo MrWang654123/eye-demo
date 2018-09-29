@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="10dp"
+    android:paddingTop="20dp"
     android:paddingBottom="10dp"
     android:background="@color/white"
     android:orientation="vertical">
@@ -17,21 +17,30 @@
         android:hint="@string/edit_comment"
         android:enabled="true"
         android:gravity="top"
+        android:lineSpacingMultiplier="1.2"
         android:inputType="textMultiLine"
-        android:minLines="3"
-        android:lines="3"
-        android:maxLines="3"
-        android:scrollbars="vertical"
-        android:padding="5dp"
+        android:minLines="4"
+        android:lines="4"
+        android:maxLines="4"
+        android:scrollbars="none"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textSize="15sp"
+        android:textColor="@color/color_333333"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:background="@drawable/shape_all_corner_comment_edit">
+        android:background="@drawable/shape_all_corner_comment_edit"
+        android:text="">
+        <!--就是觉得房价数据东方技术的附件是京东方四季度房价是多久发斯蒂芬圣诞节放假时代峰峻时代峰峻四季度房价是打飞机手机打发时间对方水电费-->
         <requestFocus/>
     </EditText>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 

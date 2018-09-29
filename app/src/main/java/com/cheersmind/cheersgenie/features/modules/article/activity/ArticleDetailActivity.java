@@ -139,6 +139,9 @@ public class ArticleDetailActivity extends BaseActivity {
     //评论编辑模块
 //    @BindView(R.id.ll_comment_edit)
 //    LinearLayout llCommentEdit;
+    //评论编辑提示图标
+    @BindView(R.id.iv_comment_edit_tip)
+    ImageView ivCommentEditTip;
     //触发评论对话框的提示文本
     @BindView(R.id.tv_comment_tip)
     TextView tvCommentTip;
@@ -561,7 +564,12 @@ public class ArticleDetailActivity extends BaseActivity {
         }
 
         //点赞数量
-        tvLikeCount.setText(likeCount + "");
+        if (likeCount > 0) {
+            tvLikeCount.setVisibility(View.VISIBLE);
+            tvLikeCount.setText(String.valueOf(likeCount));
+        }else {
+            tvLikeCount.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -769,6 +777,7 @@ public class ArticleDetailActivity extends BaseActivity {
      */
     private void hideCommentBlock() {
         llCommentContent.setVisibility(View.GONE);
+        ivCommentEditTip.setVisibility(View.INVISIBLE);
         tvCommentTip.setVisibility(View.INVISIBLE);
     }
 
@@ -777,6 +786,7 @@ public class ArticleDetailActivity extends BaseActivity {
      */
     private void showCommentBlock() {
         llCommentContent.setVisibility(View.VISIBLE);
+        ivCommentEditTip.setVisibility(View.VISIBLE);
         tvCommentTip.setVisibility(View.VISIBLE);
     }
 
@@ -980,7 +990,7 @@ public class ArticleDetailActivity extends BaseActivity {
             "\t\t\t</div>";
 
 
-    @OnClick({R.id.btn_goto_evaluation, R.id.btn_comment_back, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like})
+    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
@@ -1006,11 +1016,6 @@ public class ArticleDetailActivity extends BaseActivity {
                     ToastUtil.showShort(ArticleDetailActivity.this, "该测评被锁定");
                 }
 
-                break;
-            }
-            //评论编辑模块的返回按钮
-            case R.id.btn_comment_back: {
-                finish();
                 break;
             }
             //触发评论对话框的提示文本
