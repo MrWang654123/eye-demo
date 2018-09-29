@@ -49,8 +49,6 @@ public class HistoryReportFragment extends LazyLoadFragment {
     //话题
     private TopicInfoEntity topicInfo;
 
-    @BindView(R.id.scrollView)
-    NestedScrollView scrollView;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
     //空布局
@@ -128,12 +126,10 @@ public class HistoryReportFragment extends LazyLoadFragment {
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_line));
-        recycleView.addItemDecoration(divider);
+//        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+//        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_line));
+//        recycleView.addItemDecoration(divider);
 
-        //初始隐藏scrollView
-        scrollView.setVisibility(View.GONE);
     }
 
     @Override
@@ -180,13 +176,14 @@ public class HistoryReportFragment extends LazyLoadFragment {
                                 return;
                             }
 
-                            //显示scrollView
-                            scrollView.setVisibility(View.VISIBLE);
-
                             //历史报告项集合
                             recyclerItem = data.getItems();
                             recyclerItem.add(0, new HistoryReportItemEntity(HistoryReportItemEntity.HEAD));
+//                            for (int i=0; i< 15; i++) {
+//                                recyclerItem.add(recyclerItem.get(1));
+//                            }
                             recyclerAdapter.setNewData(recyclerItem);
+
 //                            recyclerAdapter.notifyDataSetChanged();
 
                         } catch (Exception e) {

@@ -39,13 +39,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_555555"
-                        android:textSize="18sp"
+                        android:textSize="19sp"
                         android:textStyle="bold"
                         android:layout_marginTop="15dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
                         android:layout_marginBottom="10dp"
-                        android:text="如何培养学生的学习习惯" />
+                        android:lineSpacingMultiplier="1.2"
+                        android:text="如何培养学生的学习习惯水电费水电费快速的开发" />
 
                     <!--作者、日期、阅读数-->
                     <LinearLayout
