@@ -53,14 +53,17 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="12dp"
-            android:paddingBottom="10dp"
+            android:background="@drawable/shape_corner_bottom_00000000_12dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="10dp"
+            android:text="为你的心情放个假开始的法律考试肯定发深度开发开始大幅速度飞快"
             android:textColor="@color/white"
-            android:textSize="18sp"
-            android:text="为你的心情放个假"/>
+            android:textSize="18sp" />
 
     </RelativeLayout>
 
