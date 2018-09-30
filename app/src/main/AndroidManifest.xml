@@ -270,16 +270,15 @@
         <activity android:name=".features.modules.mine.activity.MineExamActivity"/>
 
         <!--7.0用content://Uri来替代file://Uri-->
+        <!--目前使用的是和TakePhoto相同的权限名称和路径名称，如果不相同，则三星等一些型号的手机拍照后裁剪页面中图片被旋转90度-->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="android:authorities">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"
-                tools:replace="android:resource"/>
+                android:resource="@xml/file_paths" />
         </provider>
 
     </application>
