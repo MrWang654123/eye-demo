@@ -2,11 +2,12 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
@@ -49,6 +50,10 @@ public class LastReportFragment extends LazyLoadFragment {
 
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    //报告列表header
+    View headerReportView;
+    TextView tvTopicReportTitle;
 
     Unbinder unbinder;
 
@@ -96,9 +101,15 @@ public class LastReportFragment extends LazyLoadFragment {
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-        recycleView.addItemDecoration(divider);
+//        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+//        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
+//        recycleView.addItemDecoration(divider);
+
+        //报告列表header
+        headerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_header_topic_report, null);
+        tvTopicReportTitle = headerReportView.findViewById(R.id.tv_topic_report_title);
+        recyclerAdapter.addHeaderView(headerReportView);
+        headerReportView.setVisibility(View.GONE);//初始隐藏header
 
     }
 
@@ -157,6 +168,15 @@ public class LastReportFragment extends LazyLoadFragment {
                             reportItems = settingResultToReportItem(reportItems, reportResultEntities);
                             //把reportItems分组，每个量表可能不只一个图表
                             recyclerItem = groupReportItem(reportItems);
+
+                            //报告标题
+                            tvTopicReportTitle.setText(data.getTopicName());
+                            //不存在话题报告时，显示报告header
+                            if (!hasTopicReport(reportItems)) {
+                                headerReportView.setVisibility(View.VISIBLE);
+                            } else {
+                                headerReportView.setVisibility(View.GONE);
+                            }
 
                             //目前每次都是重置列表数据
                             recyclerAdapter.setNewData(recyclerItem);
@@ -284,6 +304,26 @@ public class LastReportFragment extends LazyLoadFragment {
         }
 
         return reportItemEntities;
+    }
+
+    /**
+     * 是否存在话题报告
+     * @param reportItems
+     * @return
+     */
+    private boolean hasTopicReport(List<ReportItemEntity> reportItems) {
+        boolean res = false;
+
+        if (reportItems != null) {
+            for (ReportItemEntity reportItem : reportItems) {
+                if (reportItem.getTopic()) {
+                    res = true;
+                    break;
+                }
+            }
+        }
+
+        return res;
     }
 
 

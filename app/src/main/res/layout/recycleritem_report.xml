@@ -253,6 +253,12 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tv_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/color_f5f5f5"/>
+
             </LinearLayout>
 
             <!--不生产报告的提示-->

@@ -33,6 +33,17 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
 
     @Override
     protected void convert(BaseViewHolder helper, List<ReportItemEntity> item) {
+
+        //最后一个Header的分割线布局隐藏
+        int position = helper.getLayoutPosition();
+        int itemCount = getItemCount();
+        boolean isLast = position == itemCount - 1;
+        if (isLast) {
+            helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+        } else {
+            helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+        }
+
         //标题布局
         ReportItemEntity reportItem = item.get(0);
         //话题

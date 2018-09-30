@@ -11,14 +11,19 @@ import java.util.List;
 
 public class ReportRootEntity implements Serializable {
 
+    //图表数据
     @InjectMap(name = "chart_datas")
     private List<ReportItemEntity> chartDatas;
 
+    //对比范围名称
     @InjectMap(name = "compare_name")
     private String compareName;
 
     @InjectMap(name = "report_results")
     private List<ReportResultEntity> reportResults;
+
+    @InjectMap(name = "topic_name")
+    private String topicName;
 
     public List<ReportItemEntity> getChartDatas() {
         return chartDatas;
@@ -42,5 +47,13 @@ public class ReportRootEntity implements Serializable {
 
     public void setReportResults(List<ReportResultEntity> reportResults) {
         this.reportResults = reportResults;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
+    public void setTopicName(String topicName) {
+        this.topicName = topicName;
     }
 }

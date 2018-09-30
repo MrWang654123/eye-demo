@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ReportItemEntity implements Serializable {
 
-//    "topic": true,
+//    "isTopic": true,
 //            "report_result": null,
 //            "score_type": 0,
 //            "items": [],
@@ -25,7 +25,7 @@ public class ReportItemEntity implements Serializable {
 
     //是否是话题报告
     @InjectMap(name = "is_topic")
-    private boolean topic;
+    private boolean isTopic;
 
     //报告结果
     @InjectMap(name = "report_result")
@@ -66,11 +66,11 @@ public class ReportItemEntity implements Serializable {
     private String chartItemName;
 
     public boolean getTopic() {
-        return topic;
+        return isTopic;
     }
 
     public void setTopic(boolean topic) {
-        this.topic = topic;
+        this.isTopic = topic;
     }
 
     public ReportResultEntity getReportResult() {
