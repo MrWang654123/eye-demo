@@ -248,7 +248,7 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
         //显示压缩进度条
         boolean showProgressBar = false;
         //拍照后保存原图
-        boolean enableRawFile = true;
+        boolean enableRawFile = false;
         CompressConfig config;
         //使用TakePhoto自带压缩工具
         boolean userDefault = true;
@@ -297,9 +297,9 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
 //        builder.setAspectX(width).setAspectY(height);
         //宽或者高
         builder.setOutputX(width).setOutputY(height);
-//        builder.setWithOwnCrop(withWonCrop);
+        builder.setWithOwnCrop(withWonCrop);
         //三星用自带裁剪工具，其他的都用本框架默认裁剪工具
-        builder.setWithOwnCrop(!"samsung".equals(Build.BRAND));
+//        builder.setWithOwnCrop(!"samsung".equals(Build.BRAND));
         return builder.create();
     }
 
