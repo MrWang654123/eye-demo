@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.util;
 
+import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.os.Environment;
 
@@ -60,9 +61,10 @@ public class DownLoadApk {
 
     }
 
-    public void installApk(){
+    public void installApk(Activity activity){
 
-        PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
+//        PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
+        PackageUtils.checkIsAndroidO(activity, new File(mFile));
     }
 
 }

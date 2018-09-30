@@ -2,7 +2,9 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -30,6 +32,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamCompletedFragment;
 import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
+import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
@@ -343,6 +346,41 @@ public class MasterTabActivity extends BaseActivity {
         //清空toast
         ToastUtil.cancelToast();
     }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PackageUtils.INSTALL_PACKAGES_REQUESTCODE:
+                //获得了安装未知来源的应用权限
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    PackageUtils.installPackage(MasterTabActivity.this);
+                } else {
+                    //将用户引导至安装未知应用界面
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    startActivityForResult(intent, PackageUtils.GET_UNKNOWN_APP_SOURCES);
+                }
+                break;
+
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            //用户允许该来源之后
+            case PackageUtils.GET_UNKNOWN_APP_SOURCES:
+                PackageUtils.checkIsAndroidO(MasterTabActivity.this);
+                break;
+
+            default:
+                break;
+        }
+    }
+
 
 }
 

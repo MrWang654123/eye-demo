@@ -1,5 +1,7 @@
 package com.cheersmind.cheersgenie.main.util;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -10,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 
 import com.cheersmind.cheersgenie.BuildConfig;
@@ -18,6 +21,7 @@ import com.cheersmind.cheersgenie.main.QSApplication;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 版本更新相关
@@ -35,6 +39,52 @@ public class PackageUtils {
     public static String getSdcardStorage() {
         return SDCARD_STORAGE;
     }
+
+
+    //请求安装未知来源的应用
+    public static final int INSTALL_PACKAGES_REQUESTCODE = 930;
+    //将用户引导至安装未知应用界面
+    public static final int GET_UNKNOWN_APP_SOURCES = 931;
+
+    /**
+     * 判断是否是8.0,8.0需要处理未知应用来源权限问题,否则直接安装
+     */
+    public static void checkIsAndroidO(Activity activity, File file) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean b = activity.getPackageManager().canRequestPackageInstalls();
+            if (b) {
+                installPackage(activity, file);//安装应用的逻辑(写自己的就可以)
+            } else {
+                //请求安装未知应用来源的权限
+                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES}, INSTALL_PACKAGES_REQUESTCODE);
+            }
+        } else {
+            installPackage(activity, file);
+        }
+
+    }
+
+
+    /**
+     * 判断是否是8.0,8.0需要处理未知应用来源权限问题,否则直接安装
+     */
+    public static void checkIsAndroidO(Activity activity) {
+        PackageInfo appVersion = PackageUtils.getPackage(QSApplication.getContext(), PackageUtils.CURRENT_APP_PACKAGE_NAME);
+        if(appVersion==null){
+            return;
+        }
+        File cacheDir = QSApplication.getContext().getExternalCacheDir();
+
+//        mFile = String.format(Locale.CHINA, "%s/"+appVersion.packageName+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+        String mFile = String.format(Locale.CHINA, "%s/"+ BuildConfig.APPLICATION_ID+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+        File file = new File(mFile);
+        if(!file.exists()){
+            return;
+        }
+
+        checkIsAndroidO(activity, file);
+    }
+
 
     /**
      * 安装apk
@@ -56,6 +106,30 @@ public class PackageUtils {
         intent.setDataAndType(uri, "application/vnd.android.package-archive");
         context.startActivity(intent);
     }
+
+
+    /**
+     * 安装apk
+     * @param context
+     */
+    public static void installPackage(Context context)
+    {
+        PackageInfo appVersion = PackageUtils.getPackage(QSApplication.getContext(), PackageUtils.CURRENT_APP_PACKAGE_NAME);
+        if(appVersion==null){
+            return;
+        }
+        File cacheDir = QSApplication.getContext().getExternalCacheDir();
+
+//        mFile = String.format(Locale.CHINA, "%s/"+appVersion.packageName+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+        String mFile = String.format(Locale.CHINA, "%s/"+ BuildConfig.APPLICATION_ID+".apk",cacheDir!=null?cacheDir: Environment.getExternalStorageDirectory().getAbsolutePath());
+        File file = new File(mFile);
+        if(!file.exists()){
+            return;
+        }
+
+        installPackage(context, file);
+    }
+
 
     /**
      * 获取安装包信息

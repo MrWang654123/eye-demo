@@ -116,7 +116,7 @@ public class VersionUpdateUtil {
                                                     if(appUpdateDialog!=null){
                                                         appUpdateDialog.dismiss();
                                                     }
-                                                    downLoadApk.installApk();
+                                                    downLoadApk.installApk(context);
                                                 }
 
                                                 @Override
