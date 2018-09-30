@@ -23,6 +23,10 @@ public class ClassInfoEntity extends DataSupport implements Serializable {
     @InjectMap(name = "school_name")
     private String schoolName;
 
+    //学段名称
+    @InjectMap(name = "period_name")
+    private String periodName;
+
     //学段：1-幼儿园，2-小学，3-初中，4-高中
     @InjectMap(name = "period")
     private int period;
@@ -60,5 +64,12 @@ public class ClassInfoEntity extends DataSupport implements Serializable {
         this.gradeName = gradeName;
     }
 
+    public String getPeriodName() {
+        return periodName;
+    }
+
+    public void setPeriodName(String periodName) {
+        this.periodName = periodName;
+    }
 }
 

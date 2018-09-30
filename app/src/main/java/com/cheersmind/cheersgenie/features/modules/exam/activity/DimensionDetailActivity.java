@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
+import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -338,7 +339,9 @@ public class DimensionDetailActivity extends BaseActivity {
                         ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
 
                         //发送最新操作测评通知：更新操作
-                        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
+//                        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
+                        //发送等待最新操作量表在服务端刷新的事件
+                        EventBus.getDefault().postSticky(new WaitingLastHandleRefreshEvent());
                         //发送量表开启成功通知
                         EventBus.getDefault().post(new DimensionOpenSuccessEvent(dimensionInfoEntity));
                     }

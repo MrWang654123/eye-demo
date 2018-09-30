@@ -111,7 +111,7 @@
                     android:textSize="16sp"
                     android:textColor="@color/color_444444"
                     android:lineSpacingMultiplier="1.2"
-                    android:text="邀请码是由班主任或者学校其他负责人下发的8位数字码，每个班级的邀请码均不相同。
+                    android:text="邀请码是由班主任或者学校其他负责人下发的8位数字及英文码，每个班级的邀请码均不相同。
 如果忘记，请询问你的班主任或者同学。"/>
 
             </LinearLayout>

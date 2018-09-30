@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
@@ -50,6 +51,8 @@ import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
@@ -231,9 +234,36 @@ public class ReplyQuestionActivity extends BaseActivity {
     /*@Override
     protected void onDestroy() {
         super.onDestroy();
+
+    }*/
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         //释放计时器
         releaseTimeTask();
-    }*/
+
+        try {
+            //注销事件
+            EventBus.getDefault().removeStickyEvent(WaitingLastHandleRefreshEvent.class);
+            EventBus.getDefault().unregister(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    /**
+     * 等待最新操作测评在服务端刷新的消息
+     * @param event
+     */
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(sticky = true)
+    public void onWaitingLastHandleRefreshNotice(WaitingLastHandleRefreshEvent event) {
+        //发送最新操作测评通知：更新操作
+        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
+    }
 
     /**
      * 加载问题集合
@@ -279,6 +309,9 @@ public class ReplyQuestionActivity extends BaseActivity {
                     gotoFirstShowQuestion();
                     //开启计时
                     startTimeTask();
+
+                    //注册粘性事件（等待最新操作量表在服务端刷新的事件）接收器
+                    EventBus.getDefault().register(ReplyQuestionActivity.this);
 
                 } catch (Exception e) {
 //                    onFailure(new QSCustomException("加载问题失败"));
