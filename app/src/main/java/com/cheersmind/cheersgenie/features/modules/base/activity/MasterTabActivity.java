@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -64,6 +65,16 @@ public class MasterTabActivity extends BaseActivity {
     //是否能够退出的标志
     private boolean canExit = false;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //检查更新
+        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+            VersionUpdateUtil.checkUpdate(this,false, false);
+        }
+    }
 
     @Override
     protected int setContentView() {
@@ -143,10 +154,10 @@ public class MasterTabActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        //检查更新
-        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
-            VersionUpdateUtil.checkUpdate(this,false, false);
-        }
+//        //检查更新
+//        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+//            VersionUpdateUtil.checkUpdate(this,false, false);
+//        }
     }
 
 
@@ -352,15 +363,9 @@ public class MasterTabActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
+            //请求安装未知来源的应用的结果
             case PackageUtils.INSTALL_PACKAGES_REQUESTCODE:
-                //获得了安装未知来源的应用权限
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    PackageUtils.installPackage(MasterTabActivity.this);
-                } else {
-                    //将用户引导至安装未知应用界面
-                    Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                    startActivityForResult(intent, PackageUtils.GET_UNKNOWN_APP_SOURCES);
-                }
+                VersionUpdateUtil.handleBackFromRequestInstallPackages(this, grantResults);
                 break;
 
         }
@@ -371,13 +376,11 @@ public class MasterTabActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            //用户允许该来源之后
-            case PackageUtils.GET_UNKNOWN_APP_SOURCES:
-                PackageUtils.checkIsAndroidO(MasterTabActivity.this);
+            //用户被引导至安装未知应用界面返回之后
+            case PackageUtils.GET_UNKNOWN_APP_SOURCES: {
+                VersionUpdateUtil.handleBackFromUnknownAppSource(this);
                 break;
-
-            default:
-                break;
+            }
         }
     }
 

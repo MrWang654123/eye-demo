@@ -2,11 +2,19 @@ package com.cheersmind.cheersgenie.main.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
@@ -182,4 +190,56 @@ public class VersionUpdateUtil {
         }
         return verName;
     }
+
+    /**
+     * 处理请求安装未知来源的应用权限的结果
+     * @param activity
+     * @param grantResults
+     */
+    public static void handleBackFromRequestInstallPackages(Activity activity, @NonNull int[] grantResults) {
+        //获得了安装未知来源的应用权限
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            PackageUtils.installPackage(activity);
+        } else {
+            //将用户引导至安装未知应用界面
+            Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+            activity.startActivityForResult(intent, PackageUtils.GET_UNKNOWN_APP_SOURCES);
+        }
+    }
+
+
+    /**
+     * 处理用户被引导至安装未知应用界面返回之后的结果
+     * @param activity
+     */
+    public static void handleBackFromUnknownAppSource(final Activity  activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean b = activity.getPackageManager().canRequestPackageInstalls();
+            if (b) {
+                PackageUtils.checkIsAndroidO(activity);
+            } else {
+                ToastUtil.showShort(activity, "用户拒绝了安装授权");
+
+                //清除缓存
+                new AlertDialog.Builder(activity)
+                        .setTitle("温馨提示")
+                        .setMessage("为了让您有更好的体验，请授权安装新版本")
+                        .setNegativeButton("残忍拒绝", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("前往授权", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                PackageUtils.checkIsAndroidO(activity);
+                            }
+                        })
+                        .create().show();
+            }
+        }
+    }
+
 }
