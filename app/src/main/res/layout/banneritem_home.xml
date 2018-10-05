@@ -33,6 +33,7 @@
             android:background="@color/color_ffcc00"
             android:paddingLeft="3dp"
             android:paddingRight="8dp"
+            android:visibility="gone"
             android:gravity="center_vertical">
 
             <ImageView

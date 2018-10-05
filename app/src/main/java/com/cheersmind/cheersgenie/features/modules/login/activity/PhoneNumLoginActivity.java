@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.login.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -89,7 +90,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "手机快捷登录";
+        return "验证码登录";
     }
 
 
@@ -135,7 +136,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_captcha, R.id.btn_confirm, R.id.iv_image_captcha})
+    @OnClick({R.id.btn_captcha, R.id.btn_confirm, R.id.iv_image_captcha, R.id.tv_account_login})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //发送短信验证码
@@ -156,6 +157,13 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 if (sessionCreateResult != null) {
                     getImageCaptcha(sessionCreateResult.getSessionId(), null);
                 }
+                break;
+            }
+            //账号登录
+            case R.id.tv_account_login: {
+                Intent intent = new Intent(this, XLoginAccountActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);//FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent);
                 break;
             }
         }

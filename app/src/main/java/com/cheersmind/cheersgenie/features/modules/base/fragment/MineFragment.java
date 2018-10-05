@@ -81,6 +81,9 @@ public class MineFragment extends TakePhotoFragment {
     //性别
     @BindView(R.id.tv_gender)
     TextView tvGender;
+    //用户信息（目前是学校信息）
+    @BindView(R.id.tv_user_info)
+    TextView tvUserInfo;
     //头像
     @BindView(R.id.iv_profile)
     ImageView ivProfile;
@@ -121,6 +124,7 @@ public class MineFragment extends TakePhotoFragment {
         //初始隐藏个人信息
         tvUserName.setVisibility(View.GONE);
         tvGender.setVisibility(View.GONE);
+        tvUserInfo.setVisibility(View.GONE);
         //初始隐藏最新消息条数
         tvNewMessageCount.setVisibility(View.GONE);
 
@@ -278,14 +282,10 @@ public class MineFragment extends TakePhotoFragment {
 
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
-            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.tv_user_info, R.id.btn_sign_in, R.id.tv_user_name, R.id.iv_profile,
+            R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.btn_sign_in, R.id.iv_profile,
             R.id.ll_user_info})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            //我的资料
-            case R.id.tv_user_name:
-                //个人资料提示文本
-            case R.id.tv_user_info:
                 //用户信息布局
             case R.id.ll_user_info: {
                 Intent intent = new Intent(getContext(), UserInfoActivity.class);
@@ -424,6 +424,13 @@ public class MineFragment extends TakePhotoFragment {
         tvUserName.setText(userInfo.getUserName());
         //性别
         tvGender.setText(userInfo.getSex() == 1 ? "男": "女");
+
+        ChildInfoEntity defaultChild = UCManager.getInstance().getDefaultChild();
+        if (defaultChild != null) {
+            tvUserInfo.setVisibility(View.VISIBLE);
+            //学校信息
+            tvUserInfo.setText(defaultChild.getSchoolName());
+        }
 
         //刷新头像
         refreshProfile(userInfo.getAvatar());

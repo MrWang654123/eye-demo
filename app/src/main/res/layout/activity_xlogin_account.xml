@@ -2,12 +2,72 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
     <!--标题栏-->
-    <include
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:minHeight="55dp"
+        android:background="@color/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:contentInsetStart="0dp"
+        app:title=" ">
+        <!--左侧系统按钮-->
+        <!--app:navigationIcon="?attr/homeAsUpIndicator"-->
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_left"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="14dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/close"/>
+
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:text="@string/app_name"/>
+
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="4.5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/shape_corner_fe8c00_8dp"/>
+
+            <TextView
+                android:id="@+id/tv_phonenum_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:layout_alignBaseline="@+id/tv_toolbar_title"
+                android:layout_marginRight="15dp"
+                android:text="验证码登录"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
 
 
     <!--账号输入登录模块-->
@@ -155,19 +215,6 @@
                 android:drawablePadding="6dp"
                 android:text="忘记密码"
                 android:textColor="@color/color_555555"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tv_phonenum_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:text="手机号快捷登录"
-                android:textColor="@color/color_333333"
                 android:textSize="14sp" />
 
         </RelativeLayout>
