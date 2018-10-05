@@ -87,7 +87,7 @@
             android:id="@+id/iv_favorite"
             android:layout_width="39dp"
             android:layout_height="39dp"
-            android:padding="9dp"
+            android:padding="4dp"
             android:clickable="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

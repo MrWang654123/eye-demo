@@ -340,9 +340,9 @@
 
                     <ImageView
                         android:id="@+id/iv_favorite"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:padding="5dp"
+                        android:layout_width="37dp"
+                        android:layout_height="37dp"
+                        android:padding="0dp"
                         android:src="@drawable/favorite_not" />
 
                     <LinearLayout
@@ -356,7 +356,10 @@
                             android:id="@+id/iv_like"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
-                            android:padding="4dp"
+                            android:paddingTop="6dp"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:paddingBottom="2dp"
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/like_not"/>
 
