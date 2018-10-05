@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,7 +64,7 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
-        for(int i=0; i<3; i++) {
+        for(int i=0; i<4; i++) {
             RelativeLayout rlChildView = new RelativeLayout(this);
             rlChildView.setLayoutParams(mParams);
             views.add(rlChildView);
@@ -74,23 +76,24 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
             rlChildView.addView(iv);
             switch (i) {
                 case 0:
-                    iv.setImageResource(R.mipmap.new_feature_0);
+                    iv.setImageResource(R.drawable.new_feature_0);
                     break;
                 case 1:
-                    iv.setImageResource(R.mipmap.new_feature_1);
+                    iv.setImageResource(R.drawable.new_feature_1);
                     break;
                 case 2:
-                    iv.setImageResource(R.mipmap.new_feature_2);
+                    iv.setImageResource(R.drawable.new_feature_2);
+                    break;
+                case 3:
+                    iv.setImageResource(R.drawable.new_feature_3);
 
-                    btnGo = new Button(this);
-                    btnGo.setTextSize(14);
+                    View view = LayoutInflater.from(GuideActivity.this).inflate(R.layout.button_guide_last_item, null);
+                    btnGo = view.findViewById(R.id.btn_guide_late_item);
 
                     btnGo.setOnClickListener(this);
                     rlChildView.addView(btnGo);
 //                    btnGo.setBackgroundResource(R.drawable.shape_corner_13b2f4);
-                    btnGo.setBackgroundResource(R.mipmap.btn_start_app);
                     //btnGo.setTextColor(getResources().getColor(R.color.color_43c8f6));
-                    btnGo.setTextColor(Color.WHITE);
                     WindowManager wm = this.getWindowManager();
                     int width = wm.getDefaultDisplay().getWidth();
                     int height = wm.getDefaultDisplay().getHeight();
@@ -120,12 +123,6 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
 
         viewPager.setCurrentItem(0);
 
-        //保存启动页的状态
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = pref.edit();
-        //editor.putBoolean("is_first_start",false);
-        editor.putInt("feature_version", Constant.VERSION_FEATURE);
-        editor.commit();
     }
 
     @Override
@@ -151,6 +148,13 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onClick(View view) {
         if (view == btnGo) {
+            //保存启动页的状态
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = pref.edit();
+            //editor.putBoolean("is_first_start",false);
+            editor.putInt("feature_version", Constant.VERSION_FEATURE);
+            editor.apply();
+
             Intent intent = new Intent(this, XLoginActivity.class); // 从启动动画ui跳转到主ui
             startActivity(intent);
             finish();

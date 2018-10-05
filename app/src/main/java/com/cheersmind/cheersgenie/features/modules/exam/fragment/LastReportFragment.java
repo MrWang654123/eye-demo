@@ -1,8 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -87,7 +85,7 @@ public class LastReportFragment extends LazyLoadFragment {
         }
 
         //重载监听
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载报告
@@ -156,7 +154,7 @@ public class LastReportFragment extends LazyLoadFragment {
 
                             if (data == null || (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0)) {
                                 //空布局：无数据
-                                emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                                 return;
                             }
 
@@ -184,7 +182,7 @@ public class LastReportFragment extends LazyLoadFragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                             //空布局：加载失败
-                            emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
                 });

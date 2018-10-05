@@ -7,10 +7,10 @@
     android:paddingRight="18dp"
     android:paddingTop="7dp"
     android:paddingBottom="7dp"
-    android:background="@drawable/btn_category"
+    android:background="@drawable/shape_corner_555555_5dp"
     android:text="@string/placeholder_for_item"
-    android:textColor="@drawable/textcolor_common"
-    android:textSize="16sp"
-    android:textStyle="bold">
+    android:textColor="@color/color_333333"
+    android:textSize="15sp"
+    android:textStyle="normal">
 
 </TextView>

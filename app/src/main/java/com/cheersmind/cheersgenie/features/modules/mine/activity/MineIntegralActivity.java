@@ -1,12 +1,9 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -18,10 +15,8 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.IntegralEntity;
 import com.cheersmind.cheersgenie.main.entity.IntegralRootEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
 import com.cheersmind.cheersgenie.main.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -29,7 +24,6 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -123,7 +117,9 @@ public class MineIntegralActivity extends BaseActivity {
         //设置样式刷新显示的位置
         swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_integral));
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载总积分
@@ -227,7 +223,7 @@ public class MineIntegralActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -248,7 +244,7 @@ public class MineIntegralActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
-                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
                 }
@@ -300,7 +296,7 @@ public class MineIntegralActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -328,7 +324,7 @@ public class MineIntegralActivity extends BaseActivity {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();

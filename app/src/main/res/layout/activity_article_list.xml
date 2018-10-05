@@ -33,7 +33,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="130dp">
+                        android:layout_height="130dp"
+                        app:layout_scrollFlags="scroll" >
 
                         <ImageView
                             android:id="@+id/iv_main"
@@ -60,7 +61,8 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:background="@color/white">
+                        android:background="@color/white"
+                        app:layout_scrollFlags="scroll" >
 
                         <ImageView
                             android:id="@+id/iv_left"

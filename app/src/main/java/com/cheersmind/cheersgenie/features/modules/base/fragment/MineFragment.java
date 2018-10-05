@@ -386,7 +386,7 @@ public class MineFragment extends TakePhotoFragment {
      * 获取用户信息
      */
     private void getUserInfo () {
-        LoadingView.getInstance().show(getActivity());
+//        LoadingView.getInstance().show(getActivity());
 
         DataRequestService.getInstance().getUserInfoV2(new BaseService.ServiceCallback() {
             @Override

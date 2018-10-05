@@ -1,13 +1,11 @@
 package com.cheersmind.cheersgenie.features.modules.message.fragment;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -15,9 +13,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.SystemMessageRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -26,14 +22,11 @@ import com.cheersmind.cheersgenie.main.entity.MessageEntity;
 import com.cheersmind.cheersgenie.main.entity.MessageRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DataCleanCacheUtils;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
-import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -128,7 +121,9 @@ public class SystemMessageFragment extends LazyLoadFragment {
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_message));
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载更多消息数据
@@ -189,7 +184,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -210,7 +205,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
-                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
                 }
@@ -263,7 +258,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -291,7 +286,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();

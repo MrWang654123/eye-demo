@@ -30,28 +30,21 @@ import com.cheersmind.cheersgenie.features.holder.BannerHomeHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.banner.loader.loader.GlideImageLoader;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
-import com.cheersmind.cheersgenie.main.event.WXLoginEvent;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
-import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -288,7 +281,7 @@ public class HomeFragment extends LazyLoadFragment {
         });
 
         //重载监听
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //还原通信错误数量
@@ -710,7 +703,7 @@ public class HomeFragment extends LazyLoadFragment {
                 } else {
                     //设置空布局：当前列表还没有数据的情况，提示：没有数据
 //                    if (ArrayListUtil.isEmpty(recyclerItem)) {
-//                        xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+//                        xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
 //                    }
                 }
 

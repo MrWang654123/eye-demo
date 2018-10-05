@@ -21,7 +21,6 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -36,7 +35,6 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -195,7 +193,9 @@ public class ArticleListActivity extends BaseActivity {
             }
         });
 
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_article_on_category));
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载更多文章数据
@@ -291,7 +291,7 @@ public class ArticleListActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -312,7 +312,7 @@ public class ArticleListActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
-                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
                 }
@@ -364,7 +364,7 @@ public class ArticleListActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -392,7 +392,7 @@ public class ArticleListActivity extends BaseActivity {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();

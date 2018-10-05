@@ -2,9 +2,6 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -12,17 +9,12 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HistoryReportRecyclerAdapter;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.HistoryReportRootEntity;
-import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
-import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
-import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
-import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -111,7 +103,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
         }
 
         //重载监听
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载报告
@@ -172,7 +164,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
 
                             if (data == null || data.getItems().size() == 0) {
                                 //空布局：无数据
-                                emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                                 return;
                             }
 
@@ -189,7 +181,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                             //空布局：加载失败
-                            emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
                 });

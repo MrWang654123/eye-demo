@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
@@ -262,7 +261,7 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         //空布局
         emptyLayout = findViewById(R.id.emptyLayout);
         //点击重载监听
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载分类
@@ -349,7 +348,7 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
                         } catch (Exception e) {
                             e.printStackTrace();
                             //加载失败
-                            emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
                 });
@@ -515,7 +514,7 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         } catch (Exception e) {
             e.printStackTrace();
             //加载失败
-            emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
         }
     }
 

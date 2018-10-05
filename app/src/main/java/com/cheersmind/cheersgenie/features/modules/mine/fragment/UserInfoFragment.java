@@ -111,7 +111,7 @@ public class UserInfoFragment extends TakePhotoFragment {
             refreshUserInfoView(userInfo, defaultChild);
         }
 
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 getUserInfo();
@@ -240,7 +240,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //空布局提示：无数据，可重试
-                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
         });

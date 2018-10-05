@@ -66,14 +66,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:textColor="@color/white"
-            android:background="@drawable/tag"
+            android:background="@drawable/shape_corner_555555_5dp"
+            android:paddingBottom="5dp"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:textSize="14sp"
-            android:text="学习策略" />
+            android:text="学习策略"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp" />
+        <!--android:background="@drawable/tag"-->
 
         <!--<CheckBox-->
             <!--android:id="@+id/cboxCollect"-->

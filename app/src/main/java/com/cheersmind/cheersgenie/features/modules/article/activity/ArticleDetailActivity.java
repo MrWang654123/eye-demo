@@ -38,7 +38,6 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
@@ -218,7 +217,7 @@ public class ArticleDetailActivity extends BaseActivity {
         //正在加载提示
         xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         //重载点击监听
-        xemptyLayout.setOnLayoutClickListener(new View.OnClickListener() {
+        xemptyLayout.setOnReloadListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -474,7 +473,7 @@ public class ArticleDetailActivity extends BaseActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //视为找不到文章数据
-                    xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
         });

@@ -49,6 +49,10 @@ import butterknife.ButterKnife;
  * 主页面（底部Tab页面）
  */
 public class MasterTabActivity extends BaseActivity {
+
+    //viewpager的索引位置
+    public static final String VIEWPAGER_POSITION = "viewpager_position";
+
 //    @BindView(R.id.message)
 //    TextView message;
     //底部导航
@@ -328,6 +332,10 @@ public class MasterTabActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        int position = intent.getIntExtra(VIEWPAGER_POSITION, -1);
+        if (position >= 0) {
+            viewPager.setCurrentItem(position);
+        }
 //        ToastUtil.showShort(getApplicationContext(), "主页面");
     }
 

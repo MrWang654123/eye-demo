@@ -33,7 +33,6 @@ import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
@@ -52,8 +51,6 @@ import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +158,7 @@ public class ReplyQuestionActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //重载点击监听
-        xemptyLayout.setOnLayoutClickListener(new View.OnClickListener() {
+        xemptyLayout.setOnReloadListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -316,7 +313,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                 } catch (Exception e) {
 //                    onFailure(new QSCustomException("加载问题失败"));
                     //视为找不到文章数据
-                    xemptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
         });

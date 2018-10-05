@@ -2,7 +2,6 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
@@ -22,20 +21,15 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.CategoryEntity;
 import com.cheersmind.cheersgenie.main.entity.CategoryRootEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import java.util.List;
 import java.util.Map;
-
-import butterknife.BindView;
 
 
 /**
@@ -84,8 +78,11 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
 
         warpLinearLayout = findViewById(R.id.warpLinearLayout);
         emptyLayout = findViewById(R.id.emptyLayout);
+
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getContext().getResources().getString(R.string.empty_tip_category));
         //点击重载监听
-        emptyLayout.setOnLayoutClickListener(new OnMultiClickListener() {
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
                 //加载分类
@@ -119,7 +116,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                     //空的情况
                     if (ArrayListUtil.isEmpty(categories)) {
                         //无数据
-                        emptyLayout.setErrorType(XEmptyLayout.NODATA);
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                         return;
                     }
 
@@ -151,7 +148,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //加载失败
-                    emptyLayout.setErrorType(XEmptyLayout.NODATA_ENABLE_CLICK);
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
         });
