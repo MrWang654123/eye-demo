@@ -59,6 +59,9 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onInitView() {
 
+        //修改状态栏颜色
+        setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+
         views = new ArrayList<View>();
 
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -115,7 +118,7 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
         vpAdapter = new GuideViewPagerAdapter(views);
         viewPager.setAdapter(vpAdapter);
         //绑定回调
-        viewPager.setOnPageChangeListener(this);
+        viewPager.addOnPageChangeListener(this);
 
         viewPager.setAdapter(vpAdapter);
         indicator.setViewPager(viewPager);
@@ -137,7 +140,24 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onPageSelected(int position) {
-
+        switch (position){
+            case 0:
+                //修改状态栏颜色
+                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+                break;
+            case 1:
+                //修改状态栏颜色
+                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_2));
+                break;
+            case 2:
+                //修改状态栏颜色
+                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_3));
+                break;
+            case 3:
+                //修改状态栏颜色
+                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_4));
+                break;
+        }
     }
 
     @Override

@@ -66,4 +66,10 @@
     <!--拍照后的裁剪页面状态栏颜色-->
     <color name="multiple_image_select_primaryDark">#212121</color>
 
+    <!--引导页面状态栏颜色-->
+    <color name="guide_activity_status_bar_color_1">#ffd02d</color>
+    <color name="guide_activity_status_bar_color_2">#00ccf0</color>
+    <color name="guide_activity_status_bar_color_3">#fc8979</color>
+    <color name="guide_activity_status_bar_color_4">#fff000</color>
+
 </resources>
