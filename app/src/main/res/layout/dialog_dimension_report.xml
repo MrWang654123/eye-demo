@@ -13,9 +13,10 @@
         <!--标题栏-->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="83dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/shape_corner_top_12dp">
+            <!--android:layout_height="65dp"-->
 
             <!--量表的标题布局-->
             <LinearLayout
@@ -74,6 +75,7 @@
 
                     <ImageView
                         android:id="@+id/iv_compare_class"
+                        android:visibility="gone"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginRight="4dp"

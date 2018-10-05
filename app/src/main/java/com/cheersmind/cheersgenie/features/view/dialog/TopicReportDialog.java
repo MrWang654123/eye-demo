@@ -167,9 +167,9 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
             return;
         }
         if (v == ivClose) {
-            if (listener != null) {
-                listener.onExit();
-            }
+//            if (listener != null) {
+//                listener.onExit();
+//            }
             dismiss();
         }
     }

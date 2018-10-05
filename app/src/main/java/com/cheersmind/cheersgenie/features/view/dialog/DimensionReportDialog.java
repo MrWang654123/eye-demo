@@ -437,9 +437,9 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
             return;
         }
         if (v == ivClose || v == ivCloseRight) {
-            if (listener != null) {
-                listener.onExit();
-            }
+//            if (listener != null) {
+//                listener.onExit();
+//            }
             dismiss();
         }
     }
