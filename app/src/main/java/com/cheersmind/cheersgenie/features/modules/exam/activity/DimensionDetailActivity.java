@@ -112,7 +112,7 @@ public class DimensionDetailActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "量表详情";
+        return "测评介绍";
     }
 
     @Override
@@ -141,22 +141,25 @@ public class DimensionDetailActivity extends BaseActivity {
      */
     private void refreshDimensionDetailView(DimensionInfoEntity dimensionInfoEntity) {
         //修改状态栏颜色
-        if (!TextUtils.isEmpty(dimensionInfoEntity.getBackgroundColor())) {
-            try {
-                //使用后端返回的颜色
-                setStatusBarColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            //默认绿色？
-            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
-        }
+//        if (!TextUtils.isEmpty(dimensionInfoEntity.getBackgroundColor())) {
+//            try {
+//                //使用后端返回的颜色
+//                setStatusBarColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            //默认绿色？
+//            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
+//        }
+
+        //默认绿色？
+        setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#ffffff"));
 
         //图片
         Glide.with(DimensionDetailActivity.this)
                 .load(dimensionInfoEntity.getBackgroundImage())
-                .thumbnail(0.5f)
+//                .thumbnail(0.5f)
                 .apply(QSApplication.getDefaultOptions())
                 .into(ivDimension);
         //名称
@@ -185,18 +188,18 @@ public class DimensionDetailActivity extends BaseActivity {
         //预计时间
         BigDecimal costTime =  new BigDecimal(dimensionInfoEntity.getEstimatedTime() / 60.0);
         BigDecimal bigDecimal = costTime.setScale(0, BigDecimal.ROUND_HALF_UP);
-        tvCostTime.setText(getResources().getString(R.string.cost_time, bigDecimal.intValue()+"min"));
+        tvCostTime.setText(getResources().getString(R.string.cost_time, String.valueOf(bigDecimal.intValue())));
 
         //测评介绍（测评中话题、量表的说明统一用description字段，definition暂不使用）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDescription())) {
-            tvDimensionDesc.setText("\u3000\u3000" + dimensionInfoEntity.getDescription().trim());
+            tvDimensionDesc.setText(dimensionInfoEntity.getDescription().trim());
         } else {
             llDimensionDesc.setVisibility(View.GONE);
         }
 
         //测评须知（definition字段）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDefinition())) {
-            tvDimensionDef.setText("\u3000\u3000" + dimensionInfoEntity.getDefinition().trim());
+            tvDimensionDef.setText(dimensionInfoEntity.getDefinition().trim());
         } else {
             //隐藏布局
             llDimensionDefinition.setVisibility(View.GONE);

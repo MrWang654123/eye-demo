@@ -99,13 +99,13 @@
     <string name="exam_topic_navigate_to_report">测评结果 >></string>
     <string name="exam_dimension_use_count">%s人测过</string>
     <string name="exam_dimension_status_complete">已完成</string>
-    <string name="exam_question_count">题量：%s</string>
+    <string name="exam_question_count">%s个问题</string>
     <string name="exam_need_to_know">测评须知</string>
     <string name="student">学生</string>
     <string name="parent">家长</string>
     <string name="lock_tip">请先完成%s场景下相关测评</string>
     <string name="look_report">查看报告</string>
-    <string name="cost_time">预计：%s</string>
+    <string name="cost_time">%s分钟</string>
     <string name="question_submit_tip">恭喜你，完成所有问题，是否提交结果？</string>
 
 
