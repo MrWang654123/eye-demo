@@ -1,67 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="46dp"
-    android:background="#eeffffff"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <View
+        android:id="@+id/viewSimulateOutSite"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="分类"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:textColor="@color/color_333333"
-            android:textStyle="bold"/>
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="13dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/close"/>
-    </RelativeLayout>
+        android:layout_height="50dp"
+        android:background="#00000000"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/color_e7e7e7"/>
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="#eeffffff"
+        android:orientation="vertical">
 
-        <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
-            android:id="@+id/warpLinearLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="20dp"
-            app:grivate="left"
-            app:horizontal_Space="10dp"
-            app:isFull="false"
-            app:vertical_Space="15dp"/>
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="分类"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/color_333333"
+                android:textStyle="bold"/>
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="13dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/close"/>
+        </RelativeLayout>
 
-        <!--空布局-->
-        <com.cheersmind.cheersgenie.features.view.XEmptyLayout
-            android:id="@+id/emptyLayout"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+            android:layout_height="0.5dp"
+            android:background="@color/color_e7e7e7"/>
 
-        </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-    </FrameLayout>
+            <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+                android:id="@+id/warpLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                app:grivate="left"
+                app:horizontal_Space="10dp"
+                app:isFull="false"
+                app:vertical_Space="15dp"/>
+
+            <!--空布局-->
+            <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+                android:id="@+id/emptyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+            </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

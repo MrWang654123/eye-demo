@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
@@ -43,6 +44,8 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
     private XEmptyLayout emptyLayout;
     //关闭按钮
     private ImageView ivClose;
+    //模拟边界视图
+    private View viewSimulateOutSite;
 
     //分类集合数据
     private List<CategoryEntity> categories;
@@ -52,7 +55,17 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
 
     public CategoryDialog(@NonNull Context context, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
+
         this.listener = listener;
+        if (this.listener != null) {
+            //设置对话框cancel监听
+            setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    CategoryDialog.this.listener.onExit();
+                }
+            });
+        }
     }
 
     @Override
@@ -75,6 +88,8 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
     private void initView() {
         ivClose = findViewById(R.id.iv_close);
         ivClose.setOnClickListener(this);
+        viewSimulateOutSite = findViewById(R.id.viewSimulateOutSite);
+        viewSimulateOutSite.setOnClickListener(this);
 
         warpLinearLayout = findViewById(R.id.warpLinearLayout);
         emptyLayout = findViewById(R.id.emptyLayout);
@@ -159,7 +174,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
         if (!RepetitionClickUtil.isFastClick()) {
             return;
         }
-        if (v == ivClose) {
+        if (v == ivClose || v == viewSimulateOutSite) {
             if (listener != null) {
                 listener.onExit();
             }
