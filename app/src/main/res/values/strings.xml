@@ -80,7 +80,7 @@
 
     <!--主页面（底部Tab页面）-->
     <string name="title_home">首页</string>
-    <string name="title_exam">测评</string>
+    <string name="title_exam">智评</string>
     <string name="title_report">报告</string>
     <string name="title_message">消息</string>
     <string name="title_mine">我的</string>

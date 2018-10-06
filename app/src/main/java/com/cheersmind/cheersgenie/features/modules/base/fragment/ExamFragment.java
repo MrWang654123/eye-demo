@@ -1,10 +1,13 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
@@ -52,6 +55,15 @@ import butterknife.Unbinder;
  * 测评主页面
  */
 public class ExamFragment extends LazyLoadFragment {
+    //标题
+    @BindView(R.id.tv_toolbar_title)
+    protected @Nullable
+    TextView tvToolbarTitle;
+    //左侧按钮
+    @BindView(R.id.iv_left)
+    @Nullable
+    ImageView ivLeft;
+
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
     Unbinder unbinder;
@@ -150,6 +162,15 @@ public class ExamFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, contentView);
         //注册事件
         EventBus.getDefault().register(this);
+
+        //标题
+        if (tvToolbarTitle != null) {
+            tvToolbarTitle.setText(R.string.title_exam);
+        }
+        //隐藏回退按钮
+        if (ivLeft != null) {
+            ivLeft.setVisibility(View.GONE);
+        }
 
 //        recyclerItem = new ArrayList<>();
         recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);

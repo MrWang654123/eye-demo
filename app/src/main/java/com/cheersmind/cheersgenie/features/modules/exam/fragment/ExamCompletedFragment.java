@@ -48,7 +48,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * 正在进行的测评
+ * 已完成的测评
  */
 public class ExamCompletedFragment extends LazyLoadFragment {
     @BindView(R.id.recycleView)
@@ -131,7 +131,7 @@ public class ExamCompletedFragment extends LazyLoadFragment {
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_exam;
+        return R.layout.fragment_report_completed;
     }
 
     @Override

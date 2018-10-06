@@ -105,9 +105,9 @@ public class MasterTabActivity extends BaseActivity {
         listFragment.add(new HomeFragment());
         listFragment.add(new ExamFragment());
 //        listFragment.add(new MessageFragment());
-//        listFragment.add(new ReportFragment());
+        listFragment.add(new ReportFragment());
         //由于不需要标题栏，又需要懒加载，所以直接使用它，用ReportFragment嵌套懒加载会失效
-        listFragment.add(new ExamCompletedFragment());
+//        listFragment.add(new ExamCompletedFragment());
         listFragment.add(new MineFragment());
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);
@@ -235,12 +235,12 @@ public class MasterTabActivity extends BaseActivity {
                 case 1:
                     index = 1;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.white));
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 2:
                     index = 2;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.white));
+                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 3:
                     index = 3;

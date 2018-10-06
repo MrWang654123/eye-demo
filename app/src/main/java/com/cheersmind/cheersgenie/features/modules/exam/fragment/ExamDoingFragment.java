@@ -133,7 +133,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_exam;
+        return R.layout.fragment_report_doing;
     }
 
     @Override
