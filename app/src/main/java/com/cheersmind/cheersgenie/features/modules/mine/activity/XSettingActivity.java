@@ -84,7 +84,7 @@ public class XSettingActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.rl_about, R.id.rl_license, R.id.btn_exit, R.id.rl_update, R.id.rl_cache, R.id.rl_account_bind})
+    @OnClick({R.id.rl_about, R.id.rl_license, R.id.btn_exit, R.id.rl_update, R.id.rl_cache, R.id.rl_account_bind,R.id.rl_exit})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //关于我们
@@ -130,25 +130,27 @@ public class XSettingActivity extends BaseActivity {
                 break;
             }
             //退出
+            case R.id.rl_exit:
             case R.id.btn_exit: {
-                //清空用户名、密码
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
-                SharedPreferences.Editor editor = pref.edit();
-                editor.remove("user_name");
-                editor.remove("user_password");
-                editor.apply();
-                //删除数据库中的用户对象
-                DataSupport.deleteAll(WXUserInfoEntity.class);
-                //删除数据库中的孩子对象
-                DataSupport.deleteAll(ChildInfoEntity.class);
-                //清空登录信息的临时缓存
-                UCManager.getInstance().clearToken();
-//                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);
-                //跳转到登录主页面（作为根activity）
-                Intent intent = new Intent(XSettingActivity.this, XLoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
+                //清除缓存
+                new AlertDialog.Builder(this)
+                        .setTitle("温馨提示")
+                        .setMessage("确定要退出吗？")
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                //退出操作
+                                doExit();
+                            }
+                        })
+                        .create().show();
                 break;
             }
             //账号绑定设置
@@ -157,6 +159,31 @@ public class XSettingActivity extends BaseActivity {
                 break;
             }
         }
+    }
+
+
+    /**
+     * 退出操作
+     */
+    private void doExit() {
+        //清空用户名、密码
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove("user_name");
+        editor.remove("user_password");
+        editor.apply();
+        //删除数据库中的用户对象
+        DataSupport.deleteAll(WXUserInfoEntity.class);
+        //删除数据库中的孩子对象
+        DataSupport.deleteAll(ChildInfoEntity.class);
+        //清空登录信息的临时缓存
+        UCManager.getInstance().clearToken();
+//                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);
+        //跳转到登录主页面（作为根activity）
+        Intent intent = new Intent(XSettingActivity.this, XLoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
 }
