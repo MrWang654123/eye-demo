@@ -112,7 +112,7 @@ public class DimensionDetailActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "测评介绍";
+        return "详情";
     }
 
     @Override
@@ -153,8 +153,6 @@ public class DimensionDetailActivity extends BaseActivity {
 //            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
 //        }
 
-        //默认绿色？
-        setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#ffffff"));
 
         //图片
         Glide.with(DimensionDetailActivity.this)
