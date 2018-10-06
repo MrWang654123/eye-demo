@@ -17,21 +17,24 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/ll_user"
         app:layout_constraintVertical_chainStyle="spread_inside" >
-        <!--<ImageView-->
-            <!--android:id="@+id/ic_title"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="35dp"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:src="@mipmap/login_new_title" />-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+
+        <ImageView
+            android:id="@+id/ic_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:textSize="35dp"
-            android:textColor="@color/color_333333"
-            android:text="奇 思 火 眼"/>
+            android:src="@drawable/login_title" />
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:textSize="35dp"-->
+            <!--android:textColor="@color/color_333333"-->
+            <!--android:text="奇 思 火 眼"/>-->
     </RelativeLayout>
 
     <LinearLayout
@@ -99,6 +102,16 @@
         app:layout_constraintTop_toBottomOf="@+id/ll_user"
         app:layout_constraintBottom_toTopOf="@+id/rl_logo"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:text="其他登录方式"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,9 +122,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingLeft="40dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
+                <!--android:paddingLeft="40dp"-->
 
                 <ImageView
                     android:id="@+id/iv_wx_login"
@@ -135,6 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingRight="40dp"
+                android:visibility="gone"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
