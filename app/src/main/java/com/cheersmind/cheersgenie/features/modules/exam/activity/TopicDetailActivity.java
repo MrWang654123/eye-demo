@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicDetail;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
@@ -175,12 +177,12 @@ public class TopicDetailActivity extends BaseActivity {
         //使用人数
         tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount()+""));
 
-//        Glide.with(TopicDetailActivity.this)
-//                .load(topicDetail.getIcon())
+        Glide.with(TopicDetailActivity.this)
+                .load(topicDetail.getIcon())
 //                .thumbnail(0.5f)
-//                .apply(QSApplication.getDefaultOptions())
-//                .into(ivDesc);
-        ivDesc.setImageResource(R.drawable.default_image_round);
+                .apply(QSApplication.getDefaultOptions())
+                .into(ivDesc);
+//        ivDesc.setImageResource(R.drawable.default_image_round);
 
         //测评按钮
         if (topicInfoEntity != null) {
