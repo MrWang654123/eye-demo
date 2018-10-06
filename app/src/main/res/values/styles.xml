@@ -73,6 +73,12 @@
         <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
     </style>
 
+    <!--对话框左侧进、出动画-->
+    <style name="LeftDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/anim_left_to_center</item>
+        <item name="android:windowExitAnimation">@anim/anim_center_to_left</item>
+    </style>
+
 
     <style name="proj_popwindow">
         <!-- 指定显示的动画xml -->

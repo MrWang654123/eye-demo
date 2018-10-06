@@ -178,7 +178,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
     @Override
     public void show() {
         //动画
-        getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+        getWindow().setWindowAnimations(R.style.LeftDialog_Animation);
         super.show();
         //设置宽度全屏，要设置在show的后面
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
