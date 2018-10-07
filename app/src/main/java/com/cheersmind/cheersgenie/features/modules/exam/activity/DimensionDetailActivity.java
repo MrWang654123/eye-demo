@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -190,14 +191,16 @@ public class DimensionDetailActivity extends BaseActivity {
 
         //测评介绍（测评中话题、量表的说明统一用description字段，definition暂不使用）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDescription())) {
-            tvDimensionDesc.setText(dimensionInfoEntity.getDescription().trim());
+//            tvDimensionDesc.setText(dimensionInfoEntity.getDescription().trim());
+            tvDimensionDesc.setText(Html.fromHtml(dimensionInfoEntity.getDescription()));
         } else {
             llDimensionDesc.setVisibility(View.GONE);
         }
 
         //测评须知（definition字段）
         if (StringUtil.isNotBlank(dimensionInfoEntity.getDefinition())) {
-            tvDimensionDef.setText(dimensionInfoEntity.getDefinition().trim());
+//            tvDimensionDef.setText(dimensionInfoEntity.getDefinition().trim());
+            tvDimensionDef.setText(Html.fromHtml(dimensionInfoEntity.getDefinition()));
         } else {
             //隐藏布局
             llDimensionDefinition.setVisibility(View.GONE);
