@@ -6,12 +6,19 @@ import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
@@ -24,6 +31,7 @@ import com.cheersmind.cheersgenie.main.entity.TopicDetail;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -52,10 +60,17 @@ public class TopicDetailActivity extends BaseActivity {
 
     @BindView(R.id.tv_topic_name)
     TextView tvTopicName;
+
+    //测过人数的父布局
+    @BindView(R.id.rl_used_count)
+    RelativeLayout rlUsedCount;
+    //适合对象
     @BindView(R.id.tv_suitable_user)
     TextView tvSuitableUser;
+    //测过人数
     @BindView(R.id.tv_used_count)
     TextView tvUsedCount;
+
     @BindView(R.id.tv_content)
     TextView tvContent;
     @BindView(R.id.iv_desc)
@@ -69,6 +84,8 @@ public class TopicDetailActivity extends BaseActivity {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
+    //默认Glide处理参数
+    private RequestOptions defaultOptions;
 
     /**
      * 启动话题详情页面
@@ -104,6 +121,13 @@ public class TopicDetailActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
+        //默认Glide处理参数
+        defaultOptions = new RequestOptions()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_exam)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
+
         if (getIntent() == null || getIntent().getExtras() == null) {
             ToastUtil.showShort(getApplicationContext(), "数据传递有误");
             return;
@@ -119,6 +143,7 @@ public class TopicDetailActivity extends BaseActivity {
 
         //加载话题详情
         loadTopicDetail(topicId);
+
     }
 
     /**
@@ -126,7 +151,7 @@ public class TopicDetailActivity extends BaseActivity {
      * @param topicId
      */
     private void loadTopicDetail(String topicId) {
-        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         DataRequestService.getInstance().getTopicDetail(topicId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -175,12 +200,35 @@ public class TopicDetailActivity extends BaseActivity {
         //适用对象
         tvSuitableUser.setText("#适合对象：学生");
         //使用人数
-        tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount()+""));
+        if (topicDetail.getUseCount() > 0) {
+            rlUsedCount.setVisibility(View.VISIBLE);
+            tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicDetail.getUseCount() + ""));
+        } else {
+            rlUsedCount.setVisibility(View.GONE);
+        }
+
+        //获取全屏大小
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        ViewTreeObserver vto = ivDesc.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ivDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width = ivDesc.getWidth();
+                final int resHeight = (int)(width * (310.0f / 398));
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ivDesc.getLayoutParams();
+                params.width = width;
+                params.height = resHeight;
+                ivDesc.setLayoutParams(params);
+            }
+        });
+
 
         Glide.with(TopicDetailActivity.this)
                 .load(topicDetail.getIcon())
 //                .thumbnail(0.5f)
-                .apply(QSApplication.getDefaultOptions())
+                .apply(defaultOptions)
                 .into(ivDesc);
 //        ivDesc.setImageResource(R.drawable.default_image_round);
 

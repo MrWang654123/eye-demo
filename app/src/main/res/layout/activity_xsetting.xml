@@ -211,7 +211,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             style="@style/common_option_text"
-            android:text="退出" />
+            android:text="退出登录" />
 
         <ImageView
             android:layout_width="20dp"
