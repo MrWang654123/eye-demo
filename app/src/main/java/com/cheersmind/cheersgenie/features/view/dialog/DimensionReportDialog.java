@@ -40,22 +40,17 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
  * 量表报告的对话框
  */
-public class DimensionReportDialog extends Dialog implements View.OnClickListener {
+public class DimensionReportDialog extends Dialog {
 
     //标题
     @BindView(R.id.tv_dimension_title)
     TextView tvDimensionTitle;
-
-    //关闭按钮
-    @BindView(R.id.iv_close)
-    ImageView ivClose;
-    @BindView(R.id.iv_close_right)
-    ImageView ivCloseRight;
 
     //比较范围模块
     @BindView(R.id.ll_compare)
@@ -253,11 +248,6 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
      * 初始化视图
      */
     private void initView() {
-        //关闭按钮
-        ivClose.setOnClickListener(this);
-        //关闭按钮
-        ivCloseRight.setOnClickListener(this);
-
         //空布局
         emptyLayout = findViewById(R.id.emptyLayout);
         //点击重载监听
@@ -431,16 +421,24 @@ public class DimensionReportDialog extends Dialog implements View.OnClickListene
         super.setOnDismissListener(listener);
     }
 
-    @Override
-    public void onClick(View v) {
+    @OnClick({R.id.iv_close, R.id.iv_close_right, R.id.viewSimulateOutSite})
+    public void onViewClick(View v) {
         if (!RepetitionClickUtil.isFastClick()) {
             return;
         }
-        if (v == ivClose || v == ivCloseRight) {
-//            if (listener != null) {
-//                listener.onExit();
-//            }
-            dismiss();
+
+        switch (v.getId()) {
+            //关闭按钮
+            case R.id.iv_close:
+            //右侧关闭按钮
+            case R.id.iv_close_right:
+            //模拟边界视图
+            case R.id.viewSimulateOutSite: {
+//                if (listener != null) {
+//                    listener.onExit();
+//                }
+                dismiss();
+            }
         }
     }
 

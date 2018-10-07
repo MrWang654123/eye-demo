@@ -56,6 +56,8 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
 
     //关闭按钮
     private ImageView ivClose;
+    //模拟边界视图
+    private View viewSimulateOutSite;
 
     //操作监听
     private OnOperationListener listener;
@@ -158,6 +160,8 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
     private void initView(View rootView) {
         ivClose = rootView.findViewById(R.id.iv_close);
         ivClose.setOnClickListener(this);
+        viewSimulateOutSite = rootView.findViewById(R.id.viewSimulateOutSite);
+        viewSimulateOutSite.setOnClickListener(this);
     }
 
 
@@ -166,7 +170,7 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
         if (!RepetitionClickUtil.isFastClick()) {
             return;
         }
-        if (v == ivClose) {
+        if (v == ivClose || v == viewSimulateOutSite) {
 //            if (listener != null) {
 //                listener.onExit();
 //            }
