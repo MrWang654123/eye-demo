@@ -3,8 +3,11 @@ package com.cheersmind.cheersgenie.features.modules.mine.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -67,6 +70,12 @@ public class XSettingActivity extends BaseActivity {
                 SoundPlayUtils.setSoundStatus(isChecked);
             }
         });
+
+//        ColorStateList colorStateList = ColorStateList.valueOf(ActivityCompat.getColor(XSettingActivity.this, R.color.colorAccent));
+        //5.0以下
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            stMusic.setThumbResource(R.color.colorAccent);
+        }
 
         //当前版本号
         tvCurVersion.setText("当前版本：" + VersionUpdateUtil.getVerName(this));
