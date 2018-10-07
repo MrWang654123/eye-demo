@@ -1,9 +1,11 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFeedBackActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
@@ -54,6 +57,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -334,7 +338,18 @@ public class MineFragment extends TakePhotoFragment {
             }
             //反馈
             case R.id.ll_feedback: {
+                FeedbackAPI.setTranslucent(true);
                 FeedbackAPI.openFeedbackActivity();
+//                startActivity(new Intent(getActivity(), MineFeedBackActivity.class));
+//                FeedbackAPI.setTranslucent(true);
+//                FeedbackAPI.openFeedbackActivity(new Callable() {
+//                    @Override
+//                    public Object call() throws Exception {
+//                        FragmentActivity activity = getActivity();
+//                        ActionBar actionBar = activity.getActionBar();
+//                        return null;
+//                    }
+//                }/*success callback*/, null/*fail callback*/);
                 break;
             }
             //我的设置

@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumAct
 import com.cheersmind.cheersgenie.features.modules.register.activity.ParentRoleActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.UserInfoInitActivity;
+import com.cheersmind.cheersgenie.features.modules.test.activity.GifActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.SchemaActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.TextViewForHtmlImageActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
@@ -179,8 +180,12 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //重新安装Apk
-                String mFile = "/storage/emulated/0/Android/data/com.cheersmind.cheersgenie.debug/cache/com.cheersmind.cheersgenie.debug.apk";
-                PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
+//                String mFile = "/storage/emulated/0/Android/data/com.cheersmind.cheersgenie.debug/cache/com.cheersmind.cheersgenie.debug.apk";
+//                PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
+
+                //Gif测试页面
+                Intent intent = new Intent(XLoginActivity.this, GifActivity.class);
+                startActivity(intent);
 
                 break;
             }

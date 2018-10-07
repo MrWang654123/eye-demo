@@ -164,6 +164,8 @@ public class ArticleListActivity extends BaseActivity {
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
+        //添加一个空HeaderView，用于显示顶部分割线
+        recyclerAdapter.addHeaderView(new View(this));
         recycleView.setLayoutManager(new LinearLayoutManager(ArticleListActivity.this));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线

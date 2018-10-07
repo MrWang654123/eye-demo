@@ -17,8 +17,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_SETTINGS" />
-    <!--请求安装未知来源的包-->
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <!-- 请求安装未知来源的包 -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name=".main.QSApplication"
@@ -74,13 +74,15 @@
 
         <!-- 启动页面 -->
         <activity android:name=".features.modules.base.activity.SplashActivity">
-             <intent-filter>
-                 <action android:name="android.intent.action.MAIN" />
-                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <!-- 主页面 -->
-        <activity android:name=".features.modules.base.activity.MasterTabActivity"
+        <activity
+            android:name=".features.modules.base.activity.MasterTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
 
             <!-- <intent-filter> -->
@@ -92,10 +94,11 @@
         <activity android:name=".features.modules.base.activity.GuideActivity" />
         <!-- 登录主页面 -->
         <activity android:name=".features.modules.login.activity.XLoginActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <!-- 账号登录 -->
         <activity
@@ -106,14 +109,16 @@
             android:name=".features.modules.register.activity.RegisterPhoneNumActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <!-- 验证码输入页面（注册） -->
-        <activity android:name=".features.modules.register.activity.RegisterCaptchaActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+        <activity
+            android:name=".features.modules.register.activity.RegisterCaptchaActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <!-- 密码初始化页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.PasswordInitActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <!-- 班级群号输入页面（注册） -->
-        <activity android:name=".features.modules.register.activity.ClassNumActivity"
+        <activity
+            android:name=".features.modules.register.activity.ClassNumActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <!-- 完善用户信息页面 -->
         <activity
@@ -149,8 +154,7 @@
         <activity
             android:name=".features.modules.article.activity.ArticleDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
         <!-- webview测试页面 -->
         <activity
             android:name=".features.modules.test.activity.WebviewTestActivity"
@@ -191,7 +195,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <!-- QQ相关页面 end -->
 
-
         <activity android:name=".features.modules.test.activity.TextViewForHtmlImageActivity">
 
             <!-- <intent-filter> -->
@@ -201,10 +204,10 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <!--用户资料页面-->
-        <activity android:name=".features.modules.mine.activity.UserInfoActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
-
+        <!-- 用户资料页面 -->
+        <activity
+            android:name=".features.modules.mine.activity.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
 
         <!-- 阿里服务推送 begin -->
         <meta-data
@@ -213,6 +216,7 @@
         <meta-data
             android:name="com.alibaba.app.appsecret"
             android:value="1b1b8a41c7f29936fd735ac8bf0cc8d2" /> <!-- 请填写你自己的appSecret -->
+
 
         <!-- 消息接收监听器 （用户可自主扩展） -->
         <receiver
@@ -255,28 +259,29 @@
         <activity android:name=".features.modules.mine.activity.XSettingActivity" />
         <!-- 账号绑定 -->
         <activity android:name=".features.modules.mine.activity.AccountBindActivity" />
-        <!--修改密码-->
+        <!-- 修改密码 -->
         <activity android:name=".features.modules.mine.activity.ModifyPasswordActivity" />
-        <!--重置密码-->
+        <!-- 重置密码 -->
         <activity android:name=".features.modules.register.activity.RetrievePasswordActivity" />
-        <!--报告页面-->
+        <!-- 报告页面 -->
         <activity android:name=".features.modules.exam.activity.ReportActivity" />
         <activity
             android:name=".features.modules.article.activity.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
-        <!--文章列表页面-->
+        <!-- 文章列表页面 -->
         <activity android:name=".features.modules.article.activity.ArticleListActivity" />
-        <!--文章搜索页面-->
-        <activity android:name=".features.modules.article.activity.SearchArticleActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-        <!--监护人角色选择页面-->
-        <activity android:name=".features.modules.register.activity.ParentRoleActivity"/>
-        <!--我的智评-->
-        <activity android:name=".features.modules.mine.activity.MineExamActivity"/>
+        <!-- 文章搜索页面 -->
+        <activity
+            android:name=".features.modules.article.activity.SearchArticleActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <!-- 监护人角色选择页面 -->
+        <activity android:name=".features.modules.register.activity.ParentRoleActivity" />
+        <!-- 我的智评 -->
+        <activity android:name=".features.modules.mine.activity.MineExamActivity" />
 
-        <!--7.0用content://Uri来替代file://Uri-->
-        <!--目前使用的是和TakePhoto相同的权限名称和路径名称，如果不相同，则三星等一些型号的手机拍照后裁剪页面中图片被旋转90度-->
+        <!-- 7.0用content://Uri来替代file://Uri -->
+        <!-- 目前使用的是和TakePhoto相同的权限名称和路径名称，如果不相同，则三星等一些型号的手机拍照后裁剪页面中图片被旋转90度 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -287,6 +292,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity android:name=".features.modules.mine.activity.MineFeedBackActivity" />
+        <activity android:name=".features.modules.test.activity.GifActivity"></activity>
     </application>
 
 </manifest>

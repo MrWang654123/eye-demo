@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.features.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -13,6 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.cheersmind.cheersgenie.R;
 
 /**
@@ -40,8 +50,10 @@ public class XEmptyLayout extends LinearLayout {
     //无数据情况提示文本
     private String noDataTip = "";
 
+    //加载图片
+    private TextView ivLoading;
     //提示图标
-    public ImageView ivErrorIcon;
+    private ImageView ivErrorIcon;
     //提示文字
     private TextView tvErrorTip;
     //重新加载
@@ -64,6 +76,7 @@ public class XEmptyLayout extends LinearLayout {
     private void init() {
         View view = View.inflate(context, R.layout.layout_xempty, null);
 
+        ivLoading = view.findViewById(R.id.iv_loading);
         ivErrorIcon = view.findViewById(R.id.iv_error_icon);
         tvErrorTip = view.findViewById(R.id.tv_error_tip);
         animProgress = view.findViewById(R.id.animProgress);
@@ -73,6 +86,7 @@ public class XEmptyLayout extends LinearLayout {
         setBackgroundColor(-1);
         addView(view);
         changeErrorLayoutBgMode(context);
+
     }
 
     public void changeErrorLayoutBgMode(Context context1) {
@@ -165,6 +179,7 @@ public class XEmptyLayout extends LinearLayout {
      */
     public void setErrorType(int i) {
         setVisibility(View.VISIBLE);
+        ivLoading.setVisibility(GONE);
         switch (i) {
             //网络错误
             case NETWORK_ERROR: {
@@ -194,7 +209,9 @@ public class XEmptyLayout extends LinearLayout {
                 //修改提示文本
                 setErrorTip(R.string.error_view_loading);
                 //显示通信等待
-                animProgress.setVisibility(View.VISIBLE);
+                animProgress.setVisibility(View.GONE);
+                ivLoading.setVisibility(VISIBLE);
+
                 //隐藏重载按钮
                 btnReload.setVisibility(GONE);
                 //隐藏跳转相关按钮
