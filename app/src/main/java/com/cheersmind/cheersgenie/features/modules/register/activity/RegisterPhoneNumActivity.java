@@ -236,7 +236,8 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                         tvGotoLogin.setVisibility(View.VISIBLE);
 
                                         //直接进入绑定环节
-                                        XLoginAccountActivity.startXLoginAccountActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
+                                        PhoneNumLoginActivity.startPhoneNumLoginActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
+//                                        XLoginAccountActivity.startXLoginAccountActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
 //                                        ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
                                     }
                                 }

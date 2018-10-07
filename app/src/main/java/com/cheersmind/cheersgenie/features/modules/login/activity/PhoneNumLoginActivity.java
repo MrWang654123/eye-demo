@@ -1,9 +1,11 @@
 package com.cheersmind.cheersgenie.features.modules.login.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
 import android.text.TextUtils;
@@ -24,6 +26,8 @@ import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
+import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
@@ -32,6 +36,7 @@ import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -59,6 +64,12 @@ public class PhoneNumLoginActivity extends BaseActivity {
     //需要图形验证码
     private static final int MSG_REQUIRED_IMAGE_CAPTCHA = 2;
 
+    //绑定的手机号提示
+    @BindView(R.id.tv_bind_phone_num_tip)
+    TextView tvBindPhoneNumTip;
+    //手机号布局
+    @BindView(R.id.rl_phone_num)
+    RelativeLayout rlPhoneNum;
 
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -77,10 +88,43 @@ public class PhoneNumLoginActivity extends BaseActivity {
     @BindView(R.id.tv_forbid_login)
     TextView tvForbidLogin;
 
+    //账号登录
+    @BindView(R.id.tv_account_login)
+    TextView tvAccountLogin;
+
     //计时器
     private CountTimer countTimer;
     //倒计时的时间（s）
     private static final int COUNT_DOWN = 65000;
+
+
+    //手机号
+    private static final String PHONE_NUM = "phone_num";
+    //第三方平台登录信息Dto
+    private static final String THIRD_LOGIN_DTO = "thirdLoginDto";
+    //第三方平台登录信息
+    private ThirdLoginDto thirdLoginDto;
+    //手机号
+    private String phoneNum;
+    //是否已经绑定成功
+    private boolean hasBindSuccess;
+
+
+    /**
+     * 打开手机快捷登录页面（无第三方登录信息就是正常登录操作，有则是绑定账号操作）
+     * @param context
+     * @param thirdLoginDto 第三方平台登录信息
+     * @param phoneNum 手机号
+     */
+    public static void startPhoneNumLoginActivity(Context context, ThirdLoginDto thirdLoginDto, String phoneNum) {
+        Intent intent = new Intent(context, PhoneNumLoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Bundle extras = new Bundle();
+        extras.putSerializable(THIRD_LOGIN_DTO, thirdLoginDto);
+        extras.putString(PHONE_NUM, phoneNum);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
 
 
     @Override
@@ -120,9 +164,49 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //初始化计时器
         countTimer = new CountTimer(COUNT_DOWN, 1000);
 
+        //第三方登录信息
+        if (getIntent() != null || getIntent().getExtras() != null) {
+            thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
+            phoneNum = getIntent().getStringExtra(PHONE_NUM);
+
+            if (thirdLoginDto != null) {
+                if (TextUtils.isEmpty(phoneNum)) {
+                    ToastUtil.showShort(getApplicationContext(), "绑定操作，手机号不能为空");
+                    finish();
+                    return;
+                }
+                //改变正常登录为绑定操作的视图
+                changeViewForBind();
+            }
+        }
+
         //创建会话后处理是否得输入图形验证码
 //        doPostAccountSessionForImageCaptcha(false);
     }
+
+
+    /**
+     * 改变正常登录为绑定操作的视图
+     */
+    private void changeViewForBind() {
+        //设置title
+        if (tvToolbarTitle != null) {
+            tvToolbarTitle.setText("绑定手机号");
+        }
+        //显示绑定的手机号提示
+        tvBindPhoneNumTip.setVisibility(View.VISIBLE);
+        tvBindPhoneNumTip.setText(getResources().getString(R.string.bind_phone_num_tip, phoneNum));
+        //按钮显示为绑定
+        btnConfirm.setText(getResources().getString(R.string.bind_phone_num));
+
+        //隐藏手机号布局
+        rlPhoneNum.setVisibility(View.GONE);
+        //设置手机号（此时是隐藏的）
+        etPhonenum.setText(phoneNum);
+        //隐藏账号登录
+        tvAccountLogin.setVisibility(View.GONE);
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -309,12 +393,39 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
+                    //登录统计
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
 
                     //获取孩子信息
-                    doGetChildListWrap();
+//                    doGetChildListWrap();
+
+                    //正常的登录
+                    if (thirdLoginDto == null) {
+                        //获取孩子信息
+                        doGetChildListWrap();
+
+                    } else {//绑定操作
+                        //已经绑定成功则进入正常登录成功后的流程
+                        if (hasBindSuccess) {
+                            //获取孩子信息
+                            doGetChildListWrap();
+
+                        } else {//未绑定则进行绑定操作
+                            ThirdPlatBindDto dto = new ThirdPlatBindDto();
+                            dto.setOpenId(thirdLoginDto.getOpenId());//openId
+                            dto.setPlatSource(thirdLoginDto.getPlatSource());//平台名称
+                            //QQ平台需要传APP_ID
+                            if (Dictionary.Plat_Source_QQ.equals(thirdLoginDto.getPlatSource())) {
+                                dto.setAppId(Constant.QQ_APP_ID);
+                            }
+                            dto.setThirdAccessToken(thirdLoginDto.getThirdAccessToken());//访问token
+                            dto.setTenant(thirdLoginDto.getTenant());//租户名
+                            //请求绑定
+                            doThirdPlatBind(dto);
+                        }
+                    }
 
                 } catch (Exception e) {
                     onFailure(new QSCustomException("登录失败"));
@@ -322,6 +433,37 @@ public class PhoneNumLoginActivity extends BaseActivity {
             }
         });
     }
+
+
+    /**
+     * 请求第三方平台账号绑定
+     * @param bindDto
+     */
+    private void doThirdPlatBind(final ThirdPlatBindDto bindDto) {
+        LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+        //绑定第三方平台账号
+        DataRequestService.getInstance().postThirdPlatBind(bindDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待
+//                LoadingView.getInstance().dismiss();
+                ToastUtil.showShort(getApplicationContext(), "绑定成功");
+                //标记已经绑定成功
+                hasBindSuccess = true;
+                //按钮显示为登录
+                btnConfirm.setText(getResources().getString(R.string.login));
+
+                //获取孩子信息
+                doGetChildListWrap();
+            }
+        });
+    }
+
 
     /**
      * 禁用登录

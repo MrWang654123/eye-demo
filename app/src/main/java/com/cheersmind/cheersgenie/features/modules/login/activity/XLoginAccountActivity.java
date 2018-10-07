@@ -271,7 +271,7 @@ public class XLoginAccountActivity extends BaseActivity {
         //用户名设置为手机号（用户名此时是隐藏的）
         etUsername.setText(phoneNum);
         //隐藏手机短信快捷登录
-//        tvPhonenumLogin.setVisibility(View.GONE);
+        tvPhonenumLogin.setVisibility(View.GONE);
         //隐藏第三方登录
         llThirdLogin.setVisibility(View.GONE);
     }

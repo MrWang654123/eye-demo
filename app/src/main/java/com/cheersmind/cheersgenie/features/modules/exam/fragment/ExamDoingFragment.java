@@ -154,7 +154,7 @@ public class ExamDoingFragment extends LazyLoadFragment {
 
 //        recyclerItem = new ArrayList<>();
         recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamDoingFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_LEFT);
+        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
