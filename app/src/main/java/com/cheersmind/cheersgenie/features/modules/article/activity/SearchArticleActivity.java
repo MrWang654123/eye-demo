@@ -157,6 +157,8 @@ public class SearchArticleActivity extends BaseActivity {
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
+        //添加一个空HeaderView，用于显示顶部分割线
+        recyclerAdapter.addHeaderView(new View(this));
         recycleView.setLayoutManager(new LinearLayoutManager(SearchArticleActivity.this));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
@@ -250,6 +252,11 @@ public class SearchArticleActivity extends BaseActivity {
         //确保显示下拉刷新
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
+        }
+
+        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
+        if (emptyLayout.getVisibility() == View.VISIBLE) {
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
         DataRequestService.getInstance().getArticles(articleDto, new BaseService.ServiceCallback() {

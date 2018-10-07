@@ -118,7 +118,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
      */
     public static void startPhoneNumLoginActivity(Context context, ThirdLoginDto thirdLoginDto, String phoneNum) {
         Intent intent = new Intent(context, PhoneNumLoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         Bundle extras = new Bundle();
         extras.putSerializable(THIRD_LOGIN_DTO, thirdLoginDto);
         extras.putString(PHONE_NUM, phoneNum);
