@@ -388,7 +388,7 @@ public class ClassNumActivity extends BaseActivity {
      */
     private void refreshClassInfoView(ClassInfoEntity classInfo) {
 //        getPeriodName(classInfo.getPeriod())
-        String classInfoStr = classInfo.getSchoolName() + "-" + classInfo.getPeriodName() + "-" + classInfo.getGradeName() + "-" + classInfo.getClassName();
+        String classInfoStr = classInfo.getSchoolName() + " " + classInfo.getPeriodName() + " " + classInfo.getGradeName() + " " + classInfo.getClassName();
         tvClassInfo.setText(classInfoStr);
     }
 

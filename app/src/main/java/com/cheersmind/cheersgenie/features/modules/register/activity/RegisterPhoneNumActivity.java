@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Message;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -75,6 +77,9 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     Button btnConfirm;
     @BindView(R.id.et_phonenum)
     EditText etPhonenum;
+    //手机号的清空按钮
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
     @BindView(R.id.tv_goto_login)
     TextView tvGotoLogin;
     @BindView(R.id.et_image_captcha)
@@ -119,6 +124,30 @@ public class RegisterPhoneNumActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+        etPhonenum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.INVISIBLE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
         //监听确认密码输入框的软键盘回车键
         etPhonenum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -147,7 +176,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
             ToastUtil.showShort(getApplicationContext(), "数据传递有误");
             return;
         }
-        smsType = getIntent().getExtras().getInt(SMS_TYPE);
+
         thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
         phoneNum = getIntent().getExtras().getString(PHONE_NUM);
 
@@ -156,10 +185,33 @@ public class RegisterPhoneNumActivity extends BaseActivity {
             etPhonenum.setText(phoneNum);
             etPhonenum.setSelection(phoneNum.length());
         }
+
+        //操作类型
+        smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
+        switch (smsType) {
+            //操作类型：绑定手机号
+            case Dictionary.SmsType_Bind_Phone_Num: {
+                //设置标题
+                settingTitle("绑定手机号");
+                break;
+            }
+            //操作类型：注册用户
+            case Dictionary.SmsType_Register: {
+                //设置标题
+                settingTitle("账号注册");
+                break;
+            }
+            //操作类型：找回密码
+            case Dictionary.SmsType_Retrieve_Password: {
+                //设置标题
+                settingTitle("重置密码");
+                break;
+            }
+        }
     }
 
 
-    @OnClick({R.id.btn_confirm,R.id.tv_goto_login, R.id.iv_image_captcha})
+    @OnClick({R.id.btn_confirm,R.id.tv_goto_login, R.id.iv_image_captcha,R.id.iv_clear})
     public void onViewClick(View view) {
         super.onClick(view);
         switch (view.getId()) {
@@ -180,6 +232,12 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                 if (sessionCreateResult != null) {
                     getImageCaptcha(sessionCreateResult.getSessionId(), null);
                 }
+                break;
+            }
+            //手机号的清空按钮
+            case R.id.iv_clear: {
+                etPhonenum.setText("");
+                etPhonenum.requestFocus();
                 break;
             }
         }

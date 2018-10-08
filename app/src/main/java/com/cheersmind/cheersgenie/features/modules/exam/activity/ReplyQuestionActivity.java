@@ -172,7 +172,9 @@ public class ReplyQuestionActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //手动提交答案（默认会自动提交，失败的时候才显示手动提交按钮）
-                doPostSubmitQuestions();
+//                doPostSubmitQuestions();
+                //显示提交对话框
+                showQuestionCompleteDialog();
             }
         });
 
@@ -522,7 +524,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
 
     @OnClick(R.id.btn_pre)
-    public void click(View view) {
+    public void onViewClick(View view) {
         switch (view.getId()) {
             //上一题
             case R.id.btn_pre:

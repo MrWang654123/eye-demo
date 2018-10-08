@@ -104,7 +104,7 @@ public class AccountBindActivity extends BaseActivity {
             //获取用户手机号
             getUserPhoneNum();
         } else {
-            tvPhonenum.setText(phoneNum);
+            tvPhonenum.setText(Dictionary.Area_Code_86 + " " + phoneNum);
         }
     }
 
@@ -590,7 +590,7 @@ public class AccountBindActivity extends BaseActivity {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     String phoneNum = (String) dataMap.get("mobile");
                     if (!TextUtils.isEmpty(phoneNum)) {
-                        tvPhonenum.setText(phoneNum);
+                        tvPhonenum.setText(Dictionary.Area_Code_86 + " " + phoneNum);
                         //设置手机号
                         UCManager.getInstance().setPhoneNum(phoneNum);
                     }

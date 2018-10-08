@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
@@ -16,12 +17,15 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,15 +34,18 @@ import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
+import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.ModifyPasswordActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
@@ -47,6 +54,7 @@ import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -111,19 +119,19 @@ public class RegisterCaptchaActivity extends BaseActivity {
             R.id.et_captcha_num4, R.id.et_captcha_num5, R.id.et_captcha_num6})
     List<EditText> etCaptchaNumList;
 
+    //密码格式提示
+    @BindView(R.id.tv_password_format_tip)
+    TextView tvPasswordFormatTip;
     //密码模块
     @BindView(R.id.rl_password)
-    RelativeLayout rlPassword;
-    @BindView(R.id.rl_again_password)
-    RelativeLayout rlAgainPassword;
+    LinearLayout rlPassword;
     @BindView(R.id.et_password)
     EditText etPassword;
-    @BindView(R.id.et_again_password)
-    EditText etAgainPassword;
+    //密码的清空按钮
+    @BindView(R.id.iv_clear_pw)
+    ImageView ivClearPw;
     @BindView(R.id.cbox_password)
     CheckBox cboxPassword;
-    @BindView(R.id.cbox_again_password)
-    CheckBox cboxAgainPassword;
 
     //当前输入索引
     int position = 0;
@@ -196,21 +204,49 @@ public class RegisterCaptchaActivity extends BaseActivity {
             }
         });
 
-        //确认密码显隐
-        cboxAgainPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        etPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //如果选中，显示密码
-                    etAgainPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearPw.getVisibility() == View.INVISIBLE) {
+                        ivClearPw.setVisibility(View.VISIBLE);
+                    }
                 } else {
-                    //否则隐藏密码
-                    etAgainPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    if (ivClearPw.getVisibility() == View.VISIBLE) {
+                        ivClearPw.setVisibility(View.INVISIBLE);
+                    }
                 }
-                //光标置于末尾
-                etAgainPassword.setSelection(etAgainPassword.getText().length());
             }
         });
+
+        //监听密码输入框的软键盘回车键
+        etPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                //当actionId == XX_SEND 或者 XX_DONE时都触发
+                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
+                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
+                if (actionId == EditorInfo.IME_ACTION_SEND
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || (keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.getKeyCode() && KeyEvent.ACTION_DOWN == keyEvent.getAction())) {
+                    //下一步
+                    doNextDept();
+                }
+
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -234,7 +270,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         rlImageCaptcha.setVisibility(View.GONE);
         //初始隐藏密码模块
         rlPassword.setVisibility(View.GONE);
-        rlAgainPassword.setVisibility(View.GONE);
+        tvPasswordFormatTip.setVisibility(View.GONE);
 
         //操作类型
         smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
@@ -250,26 +286,27 @@ public class RegisterCaptchaActivity extends BaseActivity {
             //操作类型：注册用户
             case Dictionary.SmsType_Register: {
                 //设置标题
-                settingTitle("注册");
+                settingTitle("账号注册");
                 //修改按钮文字为“注册”
                 btnConfirm.setText(getResources().getString(R.string.register));
                 //密码编辑框默认提示文本
                 etPassword.setHint("请输入密码");
                 //显示密码模块
                 rlPassword.setVisibility(View.VISIBLE);
+                tvPasswordFormatTip.setVisibility(View.VISIBLE);
                 break;
             }
             //操作类型：找回密码
             case Dictionary.SmsType_Retrieve_Password: {
                 //设置标题
-                settingTitle("找回密码");
+                settingTitle("重置密码");
                 //修改按钮文字为“登录”
-                btnConfirm.setText("登录");
+                btnConfirm.setText("确定");
                 //密码编辑框默认提示文本
                 etPassword.setHint("请输入新密码");
                 //显示密码模块
                 rlPassword.setVisibility(View.VISIBLE);
-                rlAgainPassword.setVisibility(View.VISIBLE);
+                tvPasswordFormatTip.setVisibility(View.VISIBLE);
                 break;
             }
         }
@@ -551,25 +588,10 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
         //密码
         String password = etPassword.getText().toString();
-        //确认密码
-        String passwordAgain = etAgainPassword.getText().toString();
 
         //密码长度验证
         if (password.length() < 6 || password.length() > 24) {
             ToastUtil.showShort(getApplicationContext(), "新密码长度为6-24位");
-            return false;
-        }
-
-        //确认密码长度验证
-        //密码长度验证
-        if (passwordAgain.length() < 6 || passwordAgain.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码长度为6-24位");
-            return false;
-        }
-
-        //两次密码是否一致
-        if (!password.equals(passwordAgain)) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码不一致");
             return false;
         }
 
@@ -652,17 +674,117 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
             @Override
             public void onResponse(Object obj) {
-                LoadingView.getInstance().dismiss();
+//                LoadingView.getInstance().dismiss();
 
-                //重置密码成功后的处理
-                //清空密码缓存
+                //重置密码成功后的处理：重置用户名，清空密码
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
                 SharedPreferences.Editor editor = pref.edit();
+                editor.putString("user_name", phoneNum);
                 editor.remove("user_password");
-                editor.commit();
+                editor.apply();
+
+                //弹出重置密码成功确认对话框
+//                popupResetPasswordSuccessWindows();
+
+                //直接登录
+                //这时候如果需要图形验证码，则跳转到登录主页面
+                doPostAccountSessionForAccountLogin(false);
+            }
+        });
+    }
+
+
+    /**
+     * 账号登录
+     */
+    private void doAccountLoginWrap() {
+        //请求账号登录
+        String loginName = phoneNum;
+        String pwd = etPassword.getText().toString();
+        AccountLoginDto accountLoginDto = new AccountLoginDto();
+        accountLoginDto.setAccount(loginName);//用户名
+        accountLoginDto.setPassword(pwd);//密码
+        accountLoginDto.setSessionId(sessionCreateResult.getSessionId());//会话ID
+        //图形验证码
+//        if (!sessionCreateResult.getNormal()) {
+//            accountLoginDto.setVerificationCode(etImageCaptcha.getText().toString());
+//        }
+        accountLoginDto.setTenant(Dictionary.Tenant_CheersMind);//租户名
+        accountLoginDto.setDeviceType("android");//设备类型
+//        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
+        accountLoginDto.setDeviceDesc("android phone");//设备描述（华为 XXXX）
+        accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        doAccountLogin(accountLoginDto);
+    }
+
+
+    /**
+     * 账号登录
+     *
+     * @param accountLoginDto
+     */
+    private void doAccountLogin(final AccountLoginDto accountLoginDto) {
+        //关闭软键盘
+        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
+        //开启通信等待提示
+        LoadingView.getInstance().show(this);
+        //账号登录
+        DataRequestService.getInstance().postAccountLogin(accountLoginDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+//                onFailureDefault(e);
+                //关闭通信等待提示
+                LoadingView.getInstance().dismiss();
+
+//                ToastUtil.showShort(getApplicationContext(), "重置密码成功，请重新登录");
+                //跳转到登录主页面（作为根activity）
+//                gotoLoginPage(RegisterCaptchaActivity.this);
 
                 //弹出重置密码成功确认对话框
                 popupResetPasswordSuccessWindows();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //关闭通信等待提示
+//                LoadingView.getInstance().dismiss();
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //解析用户数据
+                    final WXUserInfoEntity wxUserInfoEntity = InjectionWrapperUtil.injectMap(dataMap, WXUserInfoEntity.class);
+                    //临时缓存用户数据
+                    UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
+                    //保存用户名和密码到缓存中
+                    saveUserAccount(accountLoginDto.getAccount(), accountLoginDto.getPassword());
+                    //保存用户数据到数据库
+                    DataSupport.deleteAll(WXUserInfoEntity.class);
+                    wxUserInfoEntity.save();
+
+                    //未绑定手机号则跳转绑定
+                    if (!wxUserInfoEntity.isBindMobile()) {
+                        //关闭通信等待提示
+                        LoadingView.getInstance().dismiss();
+                        //跳转手机号绑定流程
+                        RegisterPhoneNumActivity.startRegisterPhoneNumActivity(RegisterCaptchaActivity.this, Dictionary.SmsType_Bind_Phone_Num, null, null);
+
+                    } else {
+                        //获取孩子信息
+                        doGetChildListWrap();
+                    }
+
+                    //登录统计
+                    MANService manService = MANServiceProvider.getService();
+                    // 用户登录埋点("usernick", "userid")
+                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
+
+                    //获取孩子信息
+//                    doGetChildListWrap();
+
+                } catch (Exception e) {
+                    //完善用户信息（生成孩子）
+//                    gotoPerfectUserInfo(PhoneNumLoginActivity.this);
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
             }
         });
     }
@@ -813,7 +935,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("user_name", userName);
         editor.putString("user_password", password);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -950,7 +1072,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_confirm, R.id.btn_send_again, R.id.iv_image_captcha})
+    @OnClick({R.id.btn_confirm, R.id.btn_send_again, R.id.iv_image_captcha, R.id.iv_clear_pw})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //重新发送
@@ -970,6 +1092,12 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 if (sessionCreateResult != null) {
                     getImageCaptcha(sessionCreateResult.getSessionId(), null);
                 }
+                break;
+            }
+            //密码的清空按钮
+            case R.id.iv_clear_pw: {
+                etPassword.setText("");
+                etPassword.requestFocus();
                 break;
             }
         }
@@ -1284,6 +1412,27 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
 
     /**
+     * 创建会话然后直接登录
+     * @param showLoading 是否显示通信等待
+     */
+    private void doPostAccountSessionForAccountLogin(boolean showLoading) {
+        doPostAccountSession(Dictionary.CREATE_SESSION_ACCOUNT_LOGIN, showLoading, new OnResultListener() {
+            @Override
+            public void onSuccess(Object... objects) {
+                //账号登录
+                doAccountLoginWrap();
+            }
+
+            @Override
+            public void onFailed(Object... objects) {
+                //跳转到登录主页面（作为根activity）
+                gotoLoginPage(RegisterCaptchaActivity.this);
+            }
+        });
+    }
+
+
+    /**
      * 获取图形验证码
      * @param sessionId
      */
@@ -1441,10 +1590,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                         dialog.dismiss();
 
                         //跳转到登录主页面（作为根activity）
-                        Intent intent = new Intent(RegisterCaptchaActivity.this, XLoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        finish();
+                        gotoLoginPage(RegisterCaptchaActivity.this);
                     }
                 })
                 .create();

@@ -105,7 +105,7 @@
     <string name="parent">家长</string>
     <string name="lock_tip">请先完成%s场景下相关测评</string>
     <string name="look_report">查看报告</string>
-    <string name="cost_time">%s分钟</string>
+    <string name="cost_time">约%s分钟</string>
     <string name="question_submit_tip">恭喜你，完成所有问题，是否提交结果？</string>
 
 
@@ -149,6 +149,8 @@
     <!--短信验证码错误次数已超过上限-->
     <string name="forbid_phone_num_login">您今天的短信验证码输入错误次数已超过上限，请明天再试。给您造成的不便，敬请谅解，谢谢！</string>
     <string name="invalid_token_tip">您的登录信息已失效，请重新登录</string>
+    <string name="input_phone_num">请输入手机号</string>
+    <string name="default_area_code">+86</string>
 
     <!--登录-->
     <string name="bind_phone_num_tip">绑定手机号：%s</string>

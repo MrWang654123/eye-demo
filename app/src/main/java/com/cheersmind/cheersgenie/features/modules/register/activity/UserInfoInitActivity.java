@@ -3,7 +3,9 @@ package com.cheersmind.cheersgenie.features.modules.register.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,6 +59,9 @@ public class UserInfoInitActivity extends BaseActivity {
     //用户名
     @BindView(R.id.et_username)
     EditText etUsername;
+    //用户名的清空按钮
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
     //生日显示
     @BindView(R.id.et_birthday)
     EditText etBirthday;
@@ -101,11 +106,37 @@ public class UserInfoInitActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "用户信息初始化";
+        return "完善信息";
     }
 
     @Override
     protected void onInitView() {
+        //用户名的文本输入监听
+        etUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.INVISIBLE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+
         rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -145,8 +176,8 @@ public class UserInfoInitActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday})
-    public void click(View view) {
+    @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday, R.id.iv_clear})
+    public void onViewClick(View view) {
 
         Calendar calendar1 = Calendar.getInstance();
 
@@ -167,6 +198,12 @@ public class UserInfoInitActivity extends BaseActivity {
                 //下一步操作
                 doNextDept();
                 break;
+            //用户名的清空按钮
+            case R.id.iv_clear: {
+                etUsername.setText("");
+                etUsername.requestFocus();
+                break;
+            }
         }
     }
 

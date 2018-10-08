@@ -33,21 +33,58 @@
             android:layout_marginRight="45dp"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_phonenum"
+            <!--手机号输入-->
+            <LinearLayout
+                android:id="@+id/rl_phone_num"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/heightBigWidget"
+                android:layout_height="wrap_content"
                 android:background="@drawable/shape_corner_f4f5ed_8dp"
-                android:hint="请输入手机号"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:maxLength="11"
-                android:paddingLeft="20dp"
-                android:textColor="@color/color_333333"
-                android:imeOptions="actionNext"
-                android:text=""
-                android:textSize="15sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/default_area_code"
+                    android:textColor="@color/color_333333"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"/>
+
+                <TextView
+                    android:layout_width="1dp"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/color_555555" />
+
+                <EditText
+                    android:id="@+id/et_phonenum"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/heightBigWidget"
+                    android:layout_weight="1"
+                    android:hint="@string/input_phone_num"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:maxLength="11"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="20dp"
+                    android:background="@color/transpera"
+                    android:textColor="@color/color_333333"
+                    android:imeOptions="actionNext"
+                    android:text=""
+                    android:textSize="15sp" />
+
+                <ImageView
+                    android:id="@+id/iv_clear"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:padding="15dp"
+                    android:visibility="invisible"
+                    android:src="@drawable/close"/>
+
+            </LinearLayout>
 
             <!--图形验证码-->
             <RelativeLayout

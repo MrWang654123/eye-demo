@@ -9,7 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
@@ -98,16 +100,22 @@ public class XLoginAccountActivity extends BaseActivity {
     TextView tvBindPhoneNumTip;
     //用户名布局
     @BindView(R.id.rl_user_name)
-    RelativeLayout rlUserName;
+    LinearLayout rlUserName;
     //用户名
     @BindView(R.id.et_username)
     EditText etUsername;
+    //用户名的清空按钮
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
     //密码
     @BindView(R.id.et_password)
     EditText etPassword;
     //密码显隐
     @BindView(R.id.cbox_password)
     CheckBox cboxPassword;
+    //密码的清空按钮
+    @BindView(R.id.iv_clear_pw)
+    ImageView ivClearPw;
     @BindView(R.id.btn_login)
     Button btnLogin;
     //手机号短信快捷登录
@@ -171,6 +179,57 @@ public class XLoginAccountActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+        //用户名的文本输入监听
+        etUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.INVISIBLE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+
+        etPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearPw.getVisibility() == View.INVISIBLE) {
+                        ivClearPw.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClearPw.getVisibility() == View.VISIBLE) {
+                        ivClearPw.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+
         //密码显隐
         cboxPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -289,7 +348,8 @@ public class XLoginAccountActivity extends BaseActivity {
      *
      * @param view
      */
-    @OnClick({R.id.btn_login, R.id.tv_phonenum_login, R.id.tv_retrieve_password, R.id.iv_wx_login, R.id.iv_qq_login, R.id.iv_image_captcha})
+    @OnClick({R.id.btn_login, R.id.tv_phonenum_login, R.id.tv_retrieve_password, R.id.iv_wx_login,
+            R.id.iv_qq_login, R.id.iv_image_captcha, R.id.iv_clear, R.id.iv_clear_pw})
     public void onClickView(View view) {
         switch (view.getId()) {
             //手机号快捷登录
@@ -324,6 +384,18 @@ public class XLoginAccountActivity extends BaseActivity {
                 if (sessionCreateResult != null) {
                     getImageCaptcha(sessionCreateResult.getSessionId(), null);
                 }
+                break;
+            }
+            //用户名的清空按钮
+            case R.id.iv_clear: {
+                etUsername.setText("");
+                etUsername.requestFocus();
+                break;
+            }
+            //密码的清空按钮
+            case R.id.iv_clear_pw: {
+                etPassword.setText("");
+                etPassword.requestFocus();
                 break;
             }
         }

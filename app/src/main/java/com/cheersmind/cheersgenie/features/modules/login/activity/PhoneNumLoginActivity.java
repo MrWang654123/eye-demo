@@ -8,13 +8,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -69,7 +72,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
     TextView tvBindPhoneNumTip;
     //手机号布局
     @BindView(R.id.rl_phone_num)
-    RelativeLayout rlPhoneNum;
+    LinearLayout rlPhoneNum;
 
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
@@ -77,6 +80,9 @@ public class PhoneNumLoginActivity extends BaseActivity {
     Button btnCaptcha;
     @BindView(R.id.et_phonenum)
     EditText etPhonenum;
+    //手机号的清空按钮
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
     @BindView(R.id.et_captcha)
     EditText etCaptcha;
     @BindView(R.id.et_image_captcha)
@@ -140,6 +146,31 @@ public class PhoneNumLoginActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+        etPhonenum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.INVISIBLE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+
         //监听验证码输入框的软键盘回车键
         etCaptcha.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -220,7 +251,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_captcha, R.id.btn_confirm, R.id.iv_image_captcha, R.id.tv_account_login})
+    @OnClick({R.id.btn_captcha, R.id.btn_confirm, R.id.iv_image_captcha, R.id.tv_account_login, R.id.iv_clear})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //发送短信验证码
@@ -248,6 +279,12 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 Intent intent = new Intent(this, XLoginAccountActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);//FLAG_ACTIVITY_SINGLE_TOP
                 startActivity(intent);
+                break;
+            }
+            //手机号的清空按钮
+            case R.id.iv_clear: {
+                etPhonenum.setText("");
+                etPhonenum.requestFocus();
                 break;
             }
         }
