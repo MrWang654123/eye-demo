@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -10,12 +12,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
+import com.alibaba.sdk.android.feedback.impl.IActivityCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -41,6 +46,7 @@ import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
@@ -338,18 +344,30 @@ public class MineFragment extends TakePhotoFragment {
             }
             //反馈
             case R.id.ll_feedback: {
-                FeedbackAPI.setTranslucent(true);
+                //设置标题栏高度，单位为像素
+                FeedbackAPI.setTitleBarHeight(DensityUtil.dip2px(MineFragment.this.getContext(), 48));
                 FeedbackAPI.openFeedbackActivity();
-//                startActivity(new Intent(getActivity(), MineFeedBackActivity.class));
-//                FeedbackAPI.setTranslucent(true);
-//                FeedbackAPI.openFeedbackActivity(new Callable() {
-//                    @Override
-//                    public Object call() throws Exception {
-//                        FragmentActivity activity = getActivity();
-//                        ActionBar actionBar = activity.getActionBar();
-//                        return null;
-//                    }
-//                }/*success callback*/, null/*fail callback*/);
+                //设置回退按钮图标
+                FeedbackAPI.setBackIcon(R.drawable.ali_feedback_common_back_btn_bg);
+                /**
+                 * 在Activity的onCreate中执行的代码
+                 * 可以设置状态栏背景颜色和图标颜色，这里使用com.githang:status-bar-compat来实现
+                 */
+                FeedbackAPI.setActivityCallback(new IActivityCallback() {
+                    @Override
+                    public void onCreate(Activity activity) {
+//                        StatusBarCompat.setStatusBarColor(activity,getResources().getColor(R.color.aliwx_setting_bg_nor),true);
+
+                        //设置状态栏颜色
+                        setStatusBarColor(activity, Color.parseColor("#FFF000"));
+
+                        //设置状态栏文字颜色及图标为深色
+                        activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                        //设置状态栏文字颜色及图标为浅色
+//                        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+                    }
+                });
                 break;
             }
             //我的设置
@@ -556,6 +574,65 @@ public class MineFragment extends TakePhotoFragment {
                 }
             }
         });
+    }
+
+
+    /**
+     * 设置状态栏颜色
+     * （目前只支持5.0以上，4.4到5.0之间由于各厂商存在兼容问题，故暂不考虑）
+     * （用全屏的方式来强行模拟，感觉没必要）
+     * @param activity
+     * @param colorStatus
+     */
+    protected void setStatusBarColor(Activity activity, int colorStatus) {
+        //5.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(colorStatus);
+            //底部导航栏
+            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+
+            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }
+
+            //4.4到5.0
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            /*Window window = activity.getWindow();
+            ViewGroup decorViewGroup = (ViewGroup) window.getDecorView();
+            View statusBarView = new View(window.getContext());
+            int statusBarHeight = getStatusBarHeight(window.getContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+            params.gravity = Gravity.TOP;
+            statusBarView.setLayoutParams(params);
+            statusBarView.setBackgroundColor(colorStatus);
+            decorViewGroup.addView(statusBarView);
+
+            ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }*/
+        }
+    }
+
+    /**
+     * 用于子页面设置状态栏颜色（目前只支持5.0以后）
+     * @return
+     */
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.colorPrimary);
     }
 
 
