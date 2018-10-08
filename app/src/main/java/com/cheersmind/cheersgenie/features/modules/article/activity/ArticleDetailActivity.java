@@ -500,7 +500,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
 
-                    if (dimension == null) {
+                    if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
                         throw new Exception("量表数据为空");
                     }
 
