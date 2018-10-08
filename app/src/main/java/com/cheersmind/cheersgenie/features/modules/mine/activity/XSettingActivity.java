@@ -178,7 +178,7 @@ public class XSettingActivity extends BaseActivity {
         //清空用户名、密码
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
         SharedPreferences.Editor editor = pref.edit();
-        editor.remove("user_name");
+//        editor.remove("user_name");
         editor.remove("user_password");
         editor.apply();
         //删除数据库中的用户对象
