@@ -44,7 +44,11 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
     private TakePhoto takePhoto;
 
     //图片裁剪宽度（px）
-    private int cropWidth = 500;
+    private int cropWidth;
+    //图片压缩宽度（px）
+    private int compressWidth;
+    //最大压缩体积
+    private int compressMaxSize;//B
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,10 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
         super.onCreate(savedInstanceState);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        cropWidth = metrics.widthPixels - DensityUtil.dip2px(getContext(), 30);
+//        cropWidth = metrics.widthPixels - DensityUtil.dip2px(getContext(), 30);
+        cropWidth = 500;
+        compressWidth = 500;
+        compressMaxSize = 1024000;//B
     }
 
     @Override
@@ -241,10 +248,10 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
      */
     protected void configCompress(TakePhoto takePhoto) {
         //最大体积
-        int maxSize = 1024000;//B
+        int maxSize = compressMaxSize;
         //宽高
-        int width = cropWidth;
-        int height = cropWidth;
+        int width = compressWidth;
+        int height = compressWidth;
         //显示压缩进度条
         boolean showProgressBar = false;
         //拍照后保存原图
@@ -287,16 +294,16 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
      */
     protected CropOptions getCropOptions() {
 
-        int height = cropWidth;
         int width = cropWidth;
+        int height = cropWidth;
         //是否使用TakePhoto自带裁剪工具
         boolean withWonCrop = true;
 
         CropOptions.Builder builder = new CropOptions.Builder();
         //宽和高
-//        builder.setAspectX(width).setAspectY(height);
+        builder.setAspectX(width).setAspectY(height);
         //宽或者高
-        builder.setOutputX(width).setOutputY(height);
+//        builder.setOutputX(width).setOutputY(height);
         builder.setWithOwnCrop(withWonCrop);
         //三星用自带裁剪工具，其他的都用本框架默认裁剪工具
 //        builder.setWithOwnCrop(!"samsung".equals(Build.BRAND));
