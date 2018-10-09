@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -264,7 +265,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
     class ViewHolder{
         //布局容器
-        private LinearLayout llOption;
+        private View llOption;
         //选中图标
         private ImageView ivIcon;
         //选项标题

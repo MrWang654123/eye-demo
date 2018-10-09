@@ -117,6 +117,16 @@ public class TopicDetailActivity extends BaseActivity {
     protected void onInitView() {
         //初始隐藏scrollView
         scrollView.setVisibility(View.GONE);
+
+        //重载点击监听
+        emptyLayout.setOnReloadListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                //加载话题详情
+                loadTopicDetail(topicId);
+            }
+        });
     }
 
     @Override

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ll_option"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
     android:background="@drawable/shape_corner_f4f5ed_8dp">
@@ -12,16 +11,19 @@
     <ImageView
         android:id="@+id/iv_icon"
         android:layout_width="60dp"
-        android:layout_height="15dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:paddingBottom="1dp"
+        android:contentDescription="@string/placeholder_for_item"
         android:src="@drawable/option_selected" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:layout_centerVertical="true"
         android:orientation="vertical">
 
         <TextView
@@ -29,20 +31,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
+            android:lineSpacingMultiplier="1.2"
+            android:gravity="center"
             android:text="这是选项，请填写说明："
             android:textColor="@color/color_333333"
             android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_option_text"
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:layout_marginTop="5dp"
+            android:lineSpacingMultiplier="1.2"
+            android:gravity="center"
             android:visibility="visible"
             android:textColor="@color/color_444444"
-            android:text="我是手动填写的说明啊"/>
+            android:text="我是手动填写的说明啊。"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
