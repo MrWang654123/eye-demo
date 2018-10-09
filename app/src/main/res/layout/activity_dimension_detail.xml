@@ -40,16 +40,18 @@
                 <!--android:background="#e6f4f4"-->
                 <!--android:text="测一测你的整体情绪状态"/>-->
 
-            <RelativeLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="160dp">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/iv_dimension"
                     android:layout_width="match_parent"
-                    android:layout_height="160dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="h,16:9"
+                    android:scaleType="fitXY"
                     android:background="#f5f6f7"
-                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/placeholder_for_item"
                     />
                 <!--android:src="@drawable/page_main" -->
 
@@ -59,13 +61,14 @@
                     android:layout_height="40dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="10dp"
-                    android:clickable="true"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     android:padding="10dp"
                     android:src="@drawable/back_black"
                     android:visibility="gone"
                     android:background="@drawable/shape_corner_05000000_20dp"/>
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -104,7 +107,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/exam_question_count"
-                    android:textColor="@color/color_777777"
+                    android:textColor="@color/color_555555"
                     android:textSize="14sp"/>
 
                 <TextView
@@ -130,7 +133,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/cost_time"
-                    android:textColor="@color/color_777777"
+                    android:textColor="@color/color_555555"
                     android:textSize="14sp"/>
 
                 <TextView
@@ -145,7 +148,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="@string/exam_dimension_use_count"
-                    android:textColor="@color/color_777777"
+                    android:textColor="@color/color_555555"
                     android:textSize="14sp" />
 
             </LinearLayout>
@@ -167,10 +170,10 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="3dp"
-                    android:textColor="@color/color_555555"
+                    android:textColor="@color/color_333333"
                     android:textSize="17sp"
                     android:textStyle="normal"
-                    android:text="▪测什么▪"/>
+                    android:text="@string/exam_what"/>
 
                 <TextView
                     android:id="@+id/tv_dimension_desc"
@@ -200,15 +203,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/shape_corner_fece00_10dp"
                     android:paddingBottom="3dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:paddingTop="3dp"
                     android:text="@string/exam_need_to_know"
                     android:textColor="@color/color_333333"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textStyle="normal" />
+                <!--android:background="@drawable/shape_corner_fece00_10dp"-->
 
                 <TextView
                     android:id="@+id/tv_dimension_def"

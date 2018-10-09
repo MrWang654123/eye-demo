@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp">
         <!--android:background="@drawable/shape_corner_ffffff_12dp"-->
 
         <ImageView
             android:id="@+id/iv_main"
-            android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/default_image_round"/>
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h,16:9"
+            android:scaleType="fitXY"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/default_image_round"
+            tools:layout_editor_absoluteX="2dp" />
         <!--android:scaleType="centerCrop"-->
 
         <ImageView
             android:id="@+id/iv_play"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_centerInParent="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:src="@drawable/play"/>
 
         <LinearLayout
@@ -31,6 +42,8 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
             android:background="@color/color_ffcc00"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:paddingLeft="3dp"
             android:paddingRight="8dp"
             android:visibility="gone"
@@ -64,8 +77,11 @@
             android:paddingRight="10dp"
             android:text="为你的心情放个假开始的法律考试肯定发深度开发开始大幅速度飞快"
             android:textColor="@color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:textSize="18sp" />
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </RelativeLayout>

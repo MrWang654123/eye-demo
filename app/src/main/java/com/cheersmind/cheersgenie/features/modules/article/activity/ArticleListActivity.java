@@ -244,7 +244,7 @@ public class ArticleListActivity extends BaseActivity {
             //主图
             Glide.with(ArticleListActivity.this)
                     .load(category.getBackgroundImg())
-                    .thumbnail(0.5f)
+//                    .thumbnail(0.5f)
                     .apply(QSApplication.getDefaultOptions())
                     .into(ivMain);
         }

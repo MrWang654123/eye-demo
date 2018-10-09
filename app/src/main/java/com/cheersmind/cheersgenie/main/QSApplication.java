@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -40,6 +41,7 @@ import org.litepal.LitePalApplication;
 public class QSApplication extends LitePalApplication {
 
     private static Context context;
+    //主线程handler
     private static Handler mHandler;
 
     //默认Glide处理参数
@@ -57,6 +59,9 @@ public class QSApplication extends LitePalApplication {
 
     //当前顶层activity
     private static Activity topActivity = null;
+
+    //屏幕信息
+    private static DisplayMetrics metrics;
 
 
     @Override
@@ -96,6 +101,7 @@ public class QSApplication extends LitePalApplication {
 
        //默认Glide处理参数
         defaultOptions = new RequestOptions()
+                .centerCrop()//铺满、居中
             .skipMemoryCache(false)//不忽略内存
             .placeholder(R.drawable.default_image_round_article_list)//占位图
             .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
@@ -104,6 +110,9 @@ public class QSApplication extends LitePalApplication {
 
         //初始化全局的Activity
         initGlobeActivity();
+
+        //屏幕信息
+        metrics = context.getResources().getDisplayMetrics();
     }
 
     @Override
@@ -294,6 +303,11 @@ public class QSApplication extends LitePalApplication {
      */
     public static Activity getCurrentActivity() {
         return topActivity;
+    }
+
+
+    public static DisplayMetrics getMetrics() {
+        return metrics;
     }
 
 }

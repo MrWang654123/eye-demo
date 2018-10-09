@@ -10,9 +10,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
@@ -35,12 +39,14 @@ import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -298,6 +304,24 @@ public class HomeFragment extends LazyLoadFragment {
             }
         });
 
+        //动态计算banner的高度
+        final DisplayMetrics metrics = QSApplication.getMetrics();
+        int itemWidth = metrics.widthPixels - DensityUtil.dip2px(getContext(), 30);
+        final int itemHeight = (int) (itemWidth * (9f/16)) + DensityUtil.dip2px(getContext(), 30);
+        ViewTreeObserver vto = convenientBanner.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                convenientBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+//                int width = convenientBanner.getWidth();
+//                final int resHeight = (int)(width * (310.0f / 398));
+
+                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) convenientBanner.getLayoutParams();
+                params.width = metrics.widthPixels;
+                params.height = itemHeight;
+                convenientBanner.setLayoutParams(params);
+            }
+        });
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.holder;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -41,18 +42,18 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     /**
      * 初始化默认Glide处理参数
      */
-    private void initRequestOptions() {
+    private void initRequestOptions(Context context) {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL));
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
 
         //默认Glide处理参数
-        defaultOptions = new RequestOptions();
-        defaultOptions.skipMemoryCache(false);//不忽略内存
-        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
-        defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
-        defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
-        defaultOptions.transform(multi);
+        defaultOptions = new RequestOptions()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_article_list)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
+                .transform(multi);
 
     }
 
@@ -61,7 +62,7 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
         super(itemView);
         this.fragment = fragment;
 
-        initRequestOptions();
+        initRequestOptions(fragment.getContext());
     }
 
     @Override
