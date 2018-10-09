@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -46,52 +47,39 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
 
     private static RequestOptions blurOptions;
 
-    //获取屏幕宽高
-    DisplayMetrics metrics;
     //标题最大宽度
     int titleMaxWidth;
 
     /**
      * 初始化默认Glide处理参数
      */
-    private void initRequestOptions() {
+    private void initRequestOptions(Context context) {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL));
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 8), 0, RoundedCornersTransformation.CornerType.ALL));
 
         MultiTransformation<Bitmap> multiBlur = new MultiTransformation<>(
                 new CenterCrop(),
-                new BlurTransformation(12),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getActivity(), 12), 0, RoundedCornersTransformation.CornerType.ALL)
+                new BlurTransformation(8),
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 8), 0, RoundedCornersTransformation.CornerType.ALL)
                 );
 
         //默认Glide处理参数
-        defaultOptions = new RequestOptions();
-        defaultOptions.skipMemoryCache(false);//不忽略内存
-        defaultOptions.placeholder(R.drawable.default_image_round);//占位图
-        defaultOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
-        defaultOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
-        defaultOptions.transform(multi);
+        defaultOptions = new RequestOptions()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_exam)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
+                .transform(multi);
 
-        blurOptions = new RequestOptions();
-        blurOptions.skipMemoryCache(false);//不忽略内存
-        blurOptions.placeholder(R.drawable.default_image_round);//占位图
-        blurOptions.dontAnimate();//Glide默认是渐变动画，设置dontAnimate()不要动画
-        blurOptions.diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
-        blurOptions.transform(multiBlur);
+        blurOptions = new RequestOptions()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_exam)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
+                .transform(multiBlur);
     }
 
-    /**
-     * 构造方法
-     * @param layoutResId 普通项的布局ID
-     * @param sectionHeadResId 头部项的布局ID
-     * @param data 数据集合
-     */
-    public ExamDimensionRecyclerAdapter(int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) {
-        super(layoutResId, sectionHeadResId, data);
-
-        initRequestOptions();
-    }
 
     /**
      * 构造方法
@@ -103,9 +91,9 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         super(layoutResId, sectionHeadResId, data);
         this.fragment = fragment;
         //初始化Glide处理参数
-        initRequestOptions();
+        initRequestOptions(fragment.getContext());
         //获取屏幕宽高
-        metrics = this.fragment.getContext().getResources().getDisplayMetrics();
+        DisplayMetrics metrics = QSApplication.getMetrics();
         titleMaxWidth = metrics.widthPixels - DensityUtil.dip2px(fragment.getContext(), 60);
     }
 
@@ -177,9 +165,14 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item.t;
         //标题
         helper.setText(R.id.tv_title2, dimensionInfo.getDimensionName());
-        //使用人数
-        String useCount = "• " + fragment.getResources().getString(R.string.exam_dimension_use_count, dimensionInfo.getUseCount() + "");
-        helper.setText(R.id.tv_used_count, useCount);
+        //使用人数（0隐藏）
+        if (dimensionInfo.getUseCount() > 0) {
+            String useCount = "• " + fragment.getResources().getString(R.string.exam_dimension_use_count, dimensionInfo.getUseCount() + "");
+            helper.getView(R.id.tv_used_count).setVisibility(View.VISIBLE);
+            helper.setText(R.id.tv_used_count, useCount);
+        } else {
+            helper.getView(R.id.tv_used_count).setVisibility(View.GONE);
+        }
         //状态
         DimensionInfoChildEntity childDimension = dimensionInfo.getChildDimension();
         if (childDimension == null) {

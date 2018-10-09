@@ -123,6 +123,7 @@ public class TopicDetailActivity extends BaseActivity {
     protected void onInitData() {
         //默认Glide处理参数
         defaultOptions = new RequestOptions()
+                .centerCrop()//铺满、居中
                 .skipMemoryCache(false)//不忽略内存
                 .placeholder(R.drawable.default_image_round_exam)//占位图
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
@@ -207,24 +208,7 @@ public class TopicDetailActivity extends BaseActivity {
             rlUsedCount.setVisibility(View.GONE);
         }
 
-        //获取全屏大小
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        ViewTreeObserver vto = ivDesc.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                ivDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int width = ivDesc.getWidth();
-                final int resHeight = (int)(width * (310.0f / 398));
-
-                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) ivDesc.getLayoutParams();
-                params.width = width;
-                params.height = resHeight;
-                ivDesc.setLayoutParams(params);
-            }
-        });
-
-
+        //图片
         Glide.with(TopicDetailActivity.this)
                 .load(topicDetail.getIcon())
 //                .thumbnail(0.5f)

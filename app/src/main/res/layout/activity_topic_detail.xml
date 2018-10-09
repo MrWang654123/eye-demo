@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@android:color/white"
     android:fitsSystemWindows="true">
@@ -80,15 +81,23 @@
                 android:visibility="gone"
                 android:text="       老师希望每个学生都有良好的学习习惯，家长希望孩子有良好的学习习惯，学生也希望自己有良好的学习习惯，但是不同的人对良好的学习习惯的定义不同，方法也不同。"/>
 
-            <ImageView
-                android:id="@+id/iv_desc"
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_height="180dp"
-                android:scaleType="fitXY"/>
-            <!--android:scaleType="centerCrop"-->
+                android:layout_marginRight="15dp">
+
+                <ImageView
+                    android:id="@+id/iv_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="h,398:310"
+                    android:contentDescription="@string/placeholder_for_item"
+                    android:scaleType="fitXY"/>
+                <!--android:scaleType="centerCrop"-->
+
+            </android.support.constraint.ConstraintLayout>
 
             <TextView
                 android:id="@+id/tv_content_bottom"
