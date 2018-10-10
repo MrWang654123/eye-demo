@@ -7,9 +7,9 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp">
+        android:layout_height="wrap_content">
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginRight="15dp"-->
         <!--android:background="@drawable/shape_corner_ffffff_12dp"-->
 
         <ImageView
@@ -22,7 +22,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/default_image_round"
             tools:layout_editor_absoluteX="2dp" />
         <!--android:scaleType="centerCrop"-->
 
@@ -70,9 +69,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/shape_corner_bottom_00000000_12dp"
+            android:background="@drawable/shape_corner_bottom_00000000_0dp"
             android:paddingLeft="10dp"
-            android:paddingBottom="8dp"
+            android:paddingBottom="15dp"
             android:paddingTop="8dp"
             android:paddingRight="10dp"
             android:text="为你的心情放个假开始的法律考试肯定发深度开发开始大幅速度飞快"

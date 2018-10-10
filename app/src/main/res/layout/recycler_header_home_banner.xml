@@ -10,8 +10,9 @@
     android:id="@+id/convenientBanner"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp"
     app:canLoop="true"
     app:autoTurningTime="5000" />
+    <!--android:paddingTop="15dp"-->
+    <!--android:paddingBottom="15dp"-->
+
 <!--android:background="@drawable/shape_corner_f5f5f5_10dp"-->

@@ -306,8 +306,8 @@ public class HomeFragment extends LazyLoadFragment {
 
         //动态计算banner的高度
         final DisplayMetrics metrics = QSApplication.getMetrics();
-        int itemWidth = metrics.widthPixels - DensityUtil.dip2px(getContext(), 30);
-        final int itemHeight = (int) (itemWidth * (9f/16)) + DensityUtil.dip2px(getContext(), 30);
+        int itemWidth = metrics.widthPixels;
+        final int itemHeight = (int) (itemWidth * (9f/16));
         ViewTreeObserver vto = convenientBanner.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

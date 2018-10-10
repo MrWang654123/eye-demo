@@ -3,13 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
-    android:background="@color/white"
+    android:background="@drawable/shape_corner_e5e5e5_10dp"
     android:orientation="horizontal">
-
-    <TextView
-        android:layout_width="9dp"
-        android:layout_height="match_parent"
-        android:background="@color/color_ffcc00"/>
 
     <ImageView
         android:layout_width="44dp"
@@ -29,14 +24,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_777777"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:text="上次未完成的测评"/>
         <TextView
             android:id="@+id/tv_last_dimension_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_555555"
-            android:textSize="17sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:paddingVertical="3dp"
             android:text="我是否热爱我的班级？"/>

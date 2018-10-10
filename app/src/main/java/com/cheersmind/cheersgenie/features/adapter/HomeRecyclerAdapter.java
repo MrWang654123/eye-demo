@@ -39,11 +39,9 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
      * 初始化默认Glide处理参数
      */
     private void initRequestOptions() {
-//        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
-//                new CenterCrop(),
-//                new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
-                new CenterCrop());
+                new CenterCrop(),
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 3), 0, RoundedCornersTransformation.CornerType.TOP));
         //默认Glide处理参数
         defaultOptions = new RequestOptions()
                 .skipMemoryCache(false)//不忽略内存
@@ -51,6 +49,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
                 .transform(multi);
+//                .centerCrop();
     }
 
 
