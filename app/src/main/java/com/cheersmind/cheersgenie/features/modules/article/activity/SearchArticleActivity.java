@@ -11,9 +11,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
@@ -21,6 +26,7 @@ import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -32,6 +38,7 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -185,6 +192,7 @@ public class SearchArticleActivity extends BaseActivity {
             }
         });
 
+        //清空按钮的显隐
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -209,7 +217,27 @@ public class SearchArticleActivity extends BaseActivity {
                 }
             }
         });
+
+        //监听搜索输入框的软键盘回车键
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                //当actionId == XX_SEND 或者 XX_DONE时都触发
+                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
+                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
+                if (actionId == EditorInfo.IME_ACTION_SEND
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || (keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.getKeyCode() && KeyEvent.ACTION_DOWN == keyEvent.getAction())) {
+                    //搜索文章
+                    doSearchArticleWrap();
+                }
+
+                return false;
+            }
+        });
+
     }
+
 
     @Override
     protected void onInitData() {
@@ -418,18 +446,59 @@ public class SearchArticleActivity extends BaseActivity {
             }
             //搜索
             case R.id.iv_search: {
-                String filterText = etSearch.getText().toString();
-                //目前空搜索文本不进行搜索，搜索文本有进行变动才搜索
-                if (!TextUtils.isEmpty(filterText) && !filterText.equals(articleDto.getFilter())) {
-                    //关闭软键盘
-                    SoftInputUtil.closeSoftInput(SearchArticleActivity.this);
-                    articleDto.setFilter(filterText);
-                    //刷新文章数据
-                    refreshArticleData();
-                }
+                //搜索文章
+                doSearchArticleWrap();
                 break;
             }
         }
+    }
+
+    /**
+     * 搜索文章
+     */
+    private void doSearchArticleWrap() {
+        String filterText = etSearch.getText().toString();
+        //目前空搜索文本不进行搜索
+        if (!TextUtils.isEmpty(filterText)) {
+
+            //去除左右空格
+            filterText = filterText.trim();
+
+            //包含特殊字符则不搜索
+            if (DataCheckUtil.containSpecialCharacter(filterText)) {
+                //通用的搜索文本错误提示
+                commonSearchContentErrorTip(R.string.search_error_tip_special_char);
+                return;
+            }
+
+            //长度只有1的情况
+            if (filterText.length() < 2) {
+                //通用的搜索文本错误提示
+                commonSearchContentErrorTip(R.string.search_error_tip_length);
+                return;
+            }
+
+            //目前空搜索文本不进行搜索，
+            if (!filterText.equals(articleDto.getFilter())) {
+                //关闭软键盘
+                SoftInputUtil.closeSoftInput(SearchArticleActivity.this);
+                articleDto.setFilter(filterText);
+                //刷新文章数据
+                refreshArticleData();
+
+            } else {
+                //关闭软键盘
+                SoftInputUtil.closeSoftInput(SearchArticleActivity.this);
+            }
+        }
+    }
+
+
+    /**
+     * 通用的搜索文本错误提示
+     */
+    private void commonSearchContentErrorTip(int resId) {
+        ToastUtil.customToastGravity(getApplicationContext(), getResources().getString(resId), Toast.LENGTH_SHORT, Gravity.CENTER_VERTICAL, 0, 0);
     }
 
 

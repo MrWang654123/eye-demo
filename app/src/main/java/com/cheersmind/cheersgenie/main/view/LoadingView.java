@@ -1,9 +1,13 @@
 package com.cheersmind.cheersgenie.main.view;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -11,6 +15,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.service.BaseService;
 
 /**
  * Created by goodm on 2017/4/15.
@@ -29,8 +35,12 @@ public class LoadingView {
         return mLoadingView;
     }
 
+    /**
+     * 显示
+     * @param context
+     */
     @SuppressLint("NewApi")
-    public void show(Context context) {
+    public void show(final Context context) {
         if (dlg != null && dlg.isShowing()) {
             return;
         }
@@ -61,10 +71,26 @@ public class LoadingView {
 
                 }
             }, 50) ;
+
+            //监听回退
+            dlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if(keyCode==KeyEvent.KEYCODE_BACK){
+                        String tag = QSApplication.getCurrentActivity().getLocalClassName();
+                        BaseService.cancelTag(tag);
+                    }
+                    return false;
+                }
+            });
+
         } catch (Exception e) {
         }
     }
 
+    /**
+     * 取消
+     */
     public void dismiss() {
         try {
             if (dlg != null) {
@@ -76,4 +102,17 @@ public class LoadingView {
 
         }
     }
+
+    /**
+     * 是否正在显示
+     * @return
+     */
+    public boolean isShowing() {
+        if (dlg != null) {
+            return dlg.isShowing();
+        }
+
+        return false;
+    }
+
 }

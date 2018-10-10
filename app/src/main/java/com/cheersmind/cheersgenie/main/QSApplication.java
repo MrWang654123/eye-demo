@@ -31,8 +31,13 @@ import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.PhoneUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.litepal.LitePalApplication;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 
 
 /**
@@ -59,6 +64,8 @@ public class QSApplication extends LitePalApplication {
 
     //当前顶层activity
     private static Activity topActivity = null;
+    //上一个页面
+    private static Activity preActivity = null;
 
     //屏幕信息
     private static DisplayMetrics metrics;
@@ -113,6 +120,23 @@ public class QSApplication extends LitePalApplication {
 
         //屏幕信息
         metrics = context.getResources().getDisplayMetrics();
+
+        //初始化OkHttpUtils
+        initOkHttpUtils();
+    }
+
+    /**
+     * 初始化OkHttpUtils
+     */
+    private void initOkHttpUtils() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                .addInterceptor(new LoggerInterceptor("TAG"))
+                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                .readTimeout(20000L, TimeUnit.MILLISECONDS)
+                //其他配置
+                .build();
+
+        OkHttpUtils.initClient(okHttpClient);
     }
 
     @Override
@@ -263,7 +287,7 @@ public class QSApplication extends LitePalApplication {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-//                topActivity = activity;
+                preActivity = activity;
                 LogUtils.w("onActivityDestroyed===", topActivity + "");
             }
 
@@ -305,6 +329,12 @@ public class QSApplication extends LitePalApplication {
         return topActivity;
     }
 
+    /**
+     * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到前一个activity
+     */
+    public static Activity getPreActivity() {
+        return preActivity;
+    }
 
     public static DisplayMetrics getMetrics() {
         return metrics;

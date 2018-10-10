@@ -1,37 +1,30 @@
 package com.cheersmind.cheersgenie.main.request;
 
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.features.dto.ResponseDto;
+import com.cheersmind.cheersgenie.features.interfaces.ResponseStringCallback;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.google.gson.Gson;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.PostFormBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * Created by goodm on 2017/4/15.
  */
 public class BaseRequest {
 
-//    private static BaseRequest instance;
-//    private BaseRequest (){}
 
     public static final MediaType MediaType_JSON = MediaType.parse("application/json; charset=utf-8");
 
@@ -43,6 +36,11 @@ public class BaseRequest {
 //        }
 //        return instance;
 //    }
+
+    public interface BaseCallback {
+        public abstract void onFailure(Exception e);
+        public abstract void onResponse(int code, String bodyStr);
+    }
 
     private static String getHeader(String url,String method) {
         if (url.equals(HttpConfig.URL_LOGIN)
@@ -60,7 +58,9 @@ public class BaseRequest {
                 || url.equals(HttpConfig.URL_RESET_PASSWORD)
                 || url.equals(HttpConfig.URL_CREATE_SESSION)
                 || url.equals(HttpConfig.URL_PHONE_CAPTCHA)
-                || url.contains("verification_code")) {
+                || url.contains("verification_code")
+                //微信相关接口
+                || url.contains("api.weixin.qq.com")) {
             return "";
         }
 
@@ -87,98 +87,63 @@ public class BaseRequest {
         return strAuth;
     }
 
-    public static void get (String url,final Callback callback){
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
-        //请求超时设置
-        mOkHttpClient.newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS).build();
-        //创建一个Request
-        final Request request = new Request.Builder()
+    public static void get (String url,final BaseCallback callback, String tag){
+        OkHttpUtils
+                .get()
                 .url(url)
+                .tag(tag)
                 .addHeader("Content-Type","application/json; charset=utf-8")
                 .addHeader("Accept","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"GET"))
-                .build();
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+//                .addParams("username", "hyman")
+                .build()
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
     }
 
-    public static void post (String url, Map<String,Object> params, boolean isFormType, final Callback callback) {
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
-        mOkHttpClient.newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS).build();
-
-        //builder.add("xwdoor","xwdoor");
-        RequestBody formBody;
-
-        if (isFormType) {
-            FormBody.Builder builder = new FormBody.Builder();
-
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                builder.add(entry.getKey(), String.valueOf(entry.getValue()));
-            }
-            formBody = builder.build();
-        } else {
-            JSONObject obj = new JSONObject();
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                try {
-                    obj.put(entry.getKey(),entry.getValue());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            formBody = RequestBody.create(MediaType_JSON, String.valueOf(obj));
-        }
-
-        Request request = new Request.Builder()
+    public static void post (String url, Map<String,Object> params, boolean isFormType, final BaseCallback callback, String tag) {
+        OkHttpUtils
+                .postString()
                 .url(url)
+                .tag(tag)
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"POST"))
-                .post(formBody)
-                .build();
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+                .content(new Gson().toJson(params))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
     }
 
     /**
@@ -187,44 +152,35 @@ public class BaseRequest {
      * @param params
      * @param callback
      */
-    public static void post (String url, JSONObject params, final Callback callback) {
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
-        mOkHttpClient.newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS).build();
+    public static void post (String url, JSONObject params, final BaseCallback callback, String tag) {
 
-        //builder.add("xwdoor","xwdoor");
-        RequestBody formBody;
-
-        formBody = RequestBody.create(MediaType_JSON, String.valueOf(params));
-
-        Request request = new Request.Builder()
+        OkHttpUtils
+                .postString()
                 .url(url)
+                .tag(tag)
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"POST"))
-                .post(formBody)
-                .build();
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .content(params.toString())
+                .build()
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
     }
 
 
@@ -234,57 +190,41 @@ public class BaseRequest {
      * @param params
      * @param callback
      */
-    public static void post (String url, Map<String,File> params, final Callback callback) {
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
-        mOkHttpClient.newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS).build();
+    public static void post (String url, Map<String,File> params, final BaseCallback callback, String tag) {
 
-        //builder.add("xwdoor","xwdoor");
-        RequestBody requestBody;
-
-        MultipartBody.Builder builder=  new MultipartBody.Builder().setType(MultipartBody.FORM);
-
+        PostFormBuilder post = OkHttpUtils.post();//
         for (Map.Entry<String, File> entry : params.entrySet()) {
             File file = entry.getValue();
-            RequestBody fileBody = RequestBody.create(MediaType_Image_Type, file);
-            builder.addFormDataPart(entry.getKey(), file.getName(), fileBody);
+            post.addFile(entry.getKey(), file.getName(), file);
         }
-        requestBody = builder.build();
-
-        Request request = new Request.Builder()
-                .url(url)
+        post.url(url)//
+                .tag(tag)
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","multipart/form-data")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"POST"))
-                .post(requestBody)
-                .build();
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+                .build()//
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
+
     }
 
 
-    public static void patch (String url, Map<String,Object> params,final Callback callback) {
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
+    public static void patch (String url, Map<String,Object> params,final BaseCallback callback, String tag) {
 
         JSONObject obj = new JSONObject();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -295,41 +235,39 @@ public class BaseRequest {
                 e.printStackTrace();
             }
         }
-        RequestBody fequestBody = RequestBody.create(MediaType_JSON, String.valueOf(obj));
+        RequestBody requestBody = RequestBody.create(MediaType_JSON, String.valueOf(obj));
 
-        Request request = new Request.Builder()
+        OkHttpUtils
+                .patch()
                 .url(url)
+                .tag(tag)
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PATCH"))
-                .patch(fequestBody)
-                .build();
+                .requestBody(requestBody)
+                .build()
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
     }
 
 
-    public static void put (String url, Map<String,Object> params,final Callback callback) {
-        //创建okHttpClient对象
-        OkHttpClient mOkHttpClient = new OkHttpClient();
+    public static void put (String url, Map<String,Object> params,final BaseCallback callback, String tag) {
 
         JSONObject obj = new JSONObject();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -340,34 +278,46 @@ public class BaseRequest {
                 e.printStackTrace();
             }
         }
-        RequestBody fequestBody = RequestBody.create(MediaType_JSON, String.valueOf(obj));
+        RequestBody requestBody = RequestBody.create(MediaType_JSON, String.valueOf(obj));
 
-        Request request = new Request.Builder()
+        OkHttpUtils
+                .put()
                 .url(url)
+                .tag(tag)
                 .addHeader("Accept","application/json")
                 .addHeader("Content-Type","application/json")
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PUT"))
-                .put(fequestBody)
-                .build();
+                .requestBody(requestBody)
+                .build()
+                .execute(new ResponseStringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            callback.onFailure(e);
+                        }
+                    }
 
-        //new call
-        Call call = mOkHttpClient.newCall(request);
-        //请求加入调度
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(final Call call, final IOException e) {
-                if (callback != null) {
-                    callback.onFailure(call,e);
-                }
-            }
+                    @Override
+                    public void onResponse(ResponseDto dto, int id) {
+                        if (callback != null) {
+                            callback.onResponse(dto.getCode(), dto.getBodyStr());
+                        }
+                    }
+                });
 
-            @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    callback.onResponse(call, response);
-                }
-            }
-        });
     }
+
+
+    /**
+     *  根据tag取消通信
+     * @param tag
+     */
+    public static void cancelTag(String tag) {
+        OkHttpUtils.getInstance().cancelTag(tag);
+    }
+
+
 }
+

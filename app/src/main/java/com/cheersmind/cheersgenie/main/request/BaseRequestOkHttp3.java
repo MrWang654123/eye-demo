@@ -1,18 +1,15 @@
 package com.cheersmind.cheersgenie.main.request;
 
-import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
-import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +17,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -28,12 +26,14 @@ import okhttp3.Response;
 /**
  * Created by goodm on 2017/4/15.
  */
-public class BaseRequest2 {
+public class BaseRequestOkHttp3 {
 
 //    private static BaseRequest instance;
 //    private BaseRequest (){}
 
     public static final MediaType MediaType_JSON = MediaType.parse("application/json; charset=utf-8");
+
+    public static final MediaType MediaType_Image_Type = MediaType.parse("image/png");
 
 //    public static BaseRequest getInstance() {
 //        if (instance == null) {
@@ -51,9 +51,17 @@ public class BaseRequest2 {
                 || url.contains(HttpConfig.URL_UC_REGISTER)
                 || url.equals(HttpConfig.URL_UPDATE_NOTIFICATION)
                 || url.equals(HttpConfig.URL_SERVER_TIME)
-                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)) {
+                || url.equals(HttpConfig.URL_PHONE_MESSAGE_REGISTER)
+                || url.equals(HttpConfig.URL_PHONE_NUM_LOGIN)
+                || url.equals(HttpConfig.URL_ACCOUNT_LOGIN)
+                || url.equals(HttpConfig.URL_UC_THIRD_LOGIN_V2)
+                || url.equals(HttpConfig.URL_RESET_PASSWORD)
+                || url.equals(HttpConfig.URL_CREATE_SESSION)
+                || url.equals(HttpConfig.URL_PHONE_CAPTCHA)
+                || url.contains("verification_code")) {
             return "";
         }
+
         String host = url.startsWith(HttpConfig.API_HOST)?HttpConfig.API_HOST:HttpConfig.UC_HOST;
         String nonce = System.currentTimeMillis()+":";
         String[] randomStrs = {"0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
@@ -86,9 +94,9 @@ public class BaseRequest2 {
                 .readTimeout(20, TimeUnit.SECONDS).build();
         //创建一个Request
         final Request request = new Request.Builder()
+                .url(url)
                 .addHeader("Content-Type","application/json; charset=utf-8")
                 .addHeader("Accept","application/json")
-                .url(url)
                 .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"GET"))
                 .build();
@@ -100,27 +108,13 @@ public class BaseRequest2 {
             public void onFailure(final Call call, final IOException e) {
                 if (callback != null) {
                     callback.onFailure(call,e);
-                    if (e instanceof SocketTimeoutException) {
-                        //判断超时异常
-                    }else if (e instanceof ConnectException) {
-                        //判断连接异常，
-                    }
                 }
             }
 
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
-                LogUtils.w("onResponse_get",response.toString());
-
                 if (callback != null) {
-                    if(response.code() == 200 || response.code() == 201) {
-                        callback.onResponse(call, response);
-                    }else{
-                        String bodyStr = response.body().string();
-                        LogUtils.w("onResponse_get_body",bodyStr);
-                        callback.onFailure(call,new IOException(bodyStr));
-                    }
-
+                    callback.onResponse(call, response);
                 }
             }
         });
@@ -173,31 +167,118 @@ public class BaseRequest2 {
             public void onFailure(final Call call, final IOException e) {
                 if (callback != null) {
                     callback.onFailure(call,e);
-                    if (e instanceof SocketTimeoutException) {
-                        //判断超时异常
-                        LogUtils.w("on_failure:","连接超时SocketTimeoutException");
-                    }else if (e instanceof ConnectException) {
-                        ////判断连接异常，
-                        LogUtils.w("on_failure:","连接异常SocketTimeoutException");
-                    }
                 }
             }
 
             @Override
             public void onResponse(final Call call, final Response response) throws IOException {
-                LogUtils.w("onResponse_post",response.toString());
                 if (callback != null) {
-                    if(response.code() == 200 || response.code() == 201) {
-                        callback.onResponse(call, response);
-                    }else{
-                        String bodyStr = response.body().string();
-                        LogUtils.w("onResponse_get_body",bodyStr);
-                        callback.onFailure(call,new IOException(bodyStr));
-                    }
+                    callback.onResponse(call, response);
                 }
             }
         });
     }
+
+    /**
+     * POST请求，外部直接传入Json对象作为参数
+     * @param url
+     * @param params
+     * @param callback
+     */
+    public static void post (String url, JSONObject params, final Callback callback) {
+        //创建okHttpClient对象
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS).build();
+
+        //builder.add("xwdoor","xwdoor");
+        RequestBody formBody;
+
+        formBody = RequestBody.create(MediaType_JSON, String.valueOf(params));
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","application/json")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
+                .addHeader("Authorization",getHeader(url,"POST"))
+                .post(formBody)
+                .build();
+        //new call
+        Call call = mOkHttpClient.newCall(request);
+        //请求加入调度
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                if (callback != null) {
+                    callback.onFailure(call,e);
+                }
+            }
+
+            @Override
+            public void onResponse(final Call call, final Response response) throws IOException {
+                if (callback != null) {
+                    callback.onResponse(call, response);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * POST请求，上传图片
+     * @param url
+     * @param params
+     * @param callback
+     */
+    public static void post (String url, Map<String,File> params, final Callback callback) {
+        //创建okHttpClient对象
+        OkHttpClient mOkHttpClient = new OkHttpClient();
+        mOkHttpClient.newBuilder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS).build();
+
+        //builder.add("xwdoor","xwdoor");
+        RequestBody requestBody;
+
+        MultipartBody.Builder builder=  new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (Map.Entry<String, File> entry : params.entrySet()) {
+            File file = entry.getValue();
+            RequestBody fileBody = RequestBody.create(MediaType_Image_Type, file);
+            builder.addFormDataPart(entry.getKey(), file.getName(), fileBody);
+        }
+        requestBody = builder.build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","multipart/form-data")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
+                .addHeader("Authorization",getHeader(url,"POST"))
+                .post(requestBody)
+                .build();
+        //new call
+        Call call = mOkHttpClient.newCall(request);
+        //请求加入调度
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(final Call call, final IOException e) {
+                if (callback != null) {
+                    callback.onFailure(call,e);
+                }
+            }
+
+            @Override
+            public void onResponse(final Call call, final Response response) throws IOException {
+                if (callback != null) {
+                    callback.onResponse(call, response);
+                }
+            }
+        });
+    }
+
 
     public static void patch (String url, Map<String,Object> params,final Callback callback) {
         //创建okHttpClient对象
@@ -216,6 +297,9 @@ public class BaseRequest2 {
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","application/json")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PATCH"))
                 .patch(fequestBody)
                 .build();
@@ -227,28 +311,14 @@ public class BaseRequest2 {
             @Override
             public void onFailure(final Call call, final IOException e) {
                 if (callback != null) {
-                    QSApplication.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onFailure(call,e);
-                        }
-                    });
+                    callback.onFailure(call,e);
                 }
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) {
+            public void onResponse(final Call call, final Response response) throws IOException {
                 if (callback != null) {
-                    QSApplication.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                callback.onResponse(call,response);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    callback.onResponse(call, response);
                 }
             }
         });
@@ -272,6 +342,9 @@ public class BaseRequest2 {
 
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Accept","application/json")
+                .addHeader("Content-Type","application/json")
+                .addHeader("CHEERSMIND-APPID", Constant.API_APP_ID)
                 .addHeader("Authorization",getHeader(url,"PUT"))
                 .put(fequestBody)
                 .build();
@@ -283,28 +356,14 @@ public class BaseRequest2 {
             @Override
             public void onFailure(final Call call, final IOException e) {
                 if (callback != null) {
-                    QSApplication.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onFailure(call,e);
-                        }
-                    });
+                    callback.onFailure(call,e);
                 }
             }
 
             @Override
-            public void onResponse(final Call call, final Response response){
+            public void onResponse(final Call call, final Response response) throws IOException {
                 if (callback != null) {
-                    QSApplication.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                callback.onResponse(call,response);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    callback.onResponse(call, response);
                 }
             }
         });

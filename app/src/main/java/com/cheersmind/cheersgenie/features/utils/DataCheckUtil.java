@@ -62,6 +62,48 @@ public class DataCheckUtil {
         }
     }
 
+    /**
+     * 字母
+     * @param str
+     * @return
+     */
+    public static boolean isLetter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        } else {
+            String reg = "[a-zA-Z]*";
+            return str.matches(reg);
+        }
+    }
+
+    /**
+     * 包含特殊字符
+     * @param str
+     * @return
+     */
+    public static boolean containSpecialCharacter(String str){
+        String limitEx="[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+
+        Pattern pattern = Pattern.compile(limitEx);
+
+        Matcher m = pattern.matcher(str);
+
+        return m.find();
+    }
+
+    /**
+     * 汉字
+     * @param str
+     * @return
+     */
+    public static boolean isCnCharacter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        } else {
+            String reg = "[\\u4e00-\\u9fa5]*";
+            return str.matches(reg);
+        }
+    }
 
 }
 

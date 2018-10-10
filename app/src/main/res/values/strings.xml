@@ -123,6 +123,8 @@
 
     <!--文章-->
     <string name="search_edit_text_hint">搜索你想看到的内容</string>
+    <string name="search_error_tip_special_char">为了更精准的搜索，请避免输入标点等特殊符号</string>
+    <string name="search_error_tip_length">为了更精准的搜索，请输入2个及以上中文或英文</string>
 
     <!--评论-->
     <string name="comment_count">评论（%s）</string>

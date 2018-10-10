@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -176,6 +177,15 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //统计：页面埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageDisAppear(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //取消当前页面的所有通信
+        String tag = getLocalClassName();
+        BaseService.cancelTag(tag);
     }
 
 

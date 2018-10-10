@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
@@ -18,20 +17,20 @@ import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
+import com.cheersmind.cheersgenie.features.dto.ResponseDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
+import com.cheersmind.cheersgenie.features.interfaces.ResponseStringCallback;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.google.gson.JsonArray;
+import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -1858,6 +1856,80 @@ public class DataRequestService {
     public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback) {
         String url = HttpConfig.URL_IMAGE_CAPTCHA
                 .replace("{session_id}", sessionId);
+
+        OkHttpUtils
+                .get()
+                .url(url)
+                .tag(QSApplication.getCurrentActivity().getLocalClassName())
+//                .addParams("username", "hyman")
+                .build()
+                .execute(new ResponseByteCallback() {
+                    @Override
+                    public void onError(Call call,final Exception e, int id) {
+                        if (call.isCanceled()) return;
+                        if (callback != null) {
+                            QSApplication.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (e instanceof SocketTimeoutException) {
+                                        //判断超时异常
+                                        callback.onFailure(new QSCustomException("网络连接超时"));
+                                    }else if (e instanceof ConnectException) {
+                                        //判断连接异常
+                                        callback.onFailure(new QSCustomException("网络连接异常"));
+                                    } else {
+                                        //默认处理
+//                                callback.onFailure(new QSCustomException(e.getMessage()));
+                                        callback.onFailure(new QSCustomException("网络异常"));
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onResponse(final ResponseDto dto, int id) {
+
+                        if (callback != null) {
+                            //返回结果信息
+                            final byte[] bodyBytes = dto.getData();
+
+                            QSApplication.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int code = dto.getCode();
+                                    //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
+                                    // 而只会返回什么400+，500+之类的，并且附带错误信息串
+                                    if (code == 200 || code == 201) {
+                                        if (bodyBytes.length == 0) {
+                                            callback.onFailure(new QSCustomException("获取验证码失败"));
+                                            return;
+                                        }
+                                        callback.onResponse(bodyBytes);
+
+                                    } else if (code == 400) {
+                                        JSONObject respObj = null;
+                                        try {
+                                            respObj = new JSONObject(new String(bodyBytes));
+                                            callback.onFailure(new QSCustomException(respObj.toString()));
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            callback.onFailure(new QSCustomException("服务器返回数据异常"));
+                                        }
+
+                                    } else {
+                                        callback.onFailure(new QSCustomException("获取验证码失败."));
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+    }
+    /*public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback) {
+        String url = HttpConfig.URL_IMAGE_CAPTCHA
+                .replace("{session_id}", sessionId);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -1934,7 +2006,7 @@ public class DataRequestService {
             }
 
         });
-    }
+    }*/
 
 
     /**
@@ -1976,6 +2048,33 @@ public class DataRequestService {
         BaseService.post(url,map, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+    }
+
+    /**
+     * 获取微信token
+     * @param appId
+     * @param appSecret
+     * @param code
+     * @param callback
+     */
+    public void getWeChartToken(String appId,String appSecret,String code,final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_WX_GET_TOKEN
+                .replace("{appid}", appId)
+                .replace("{secret}", appSecret)
+                .replace("{code}", code);
+
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
                 callback.onFailure(e);
             }
 

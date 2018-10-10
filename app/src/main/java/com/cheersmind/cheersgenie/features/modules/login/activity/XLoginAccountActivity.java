@@ -755,25 +755,13 @@ public class XLoginAccountActivity extends BaseActivity {
 
     /**
      * 获取微信token根据code
-     *
      * @param code
      */
-    private void getWxToken(String code) {
-        String url = HttpConfig.URL_WX_GET_TOKEN
-                .replace("{appid}", Constant.WX_APP_ID)
-                .replace("{secret}", Constant.WX_APP_SECTET)
-                .replace("{code}", code);
+    private void getWxToken(String code){
 
-//        LoadingView.getInstance().show(XLoginActivity.this);
-        OkHttpClient client = new OkHttpClient();
-        //构造Request对象
-        //采用建造者模式，链式调用指明进行Get请求,传入Get的请求地址
-        Request request = new Request.Builder().get().url(url).build();
-        Call call = client.newCall(request);
-        //异步调用并设置回调函数
-        call.enqueue(new Callback() {
+        DataRequestService.getInstance().getWeChartToken(Constant.WX_APP_ID, Constant.WX_APP_SECTET, code, new BaseService.ServiceCallback() {
             @Override
-            public void onFailure(Call call, IOException e) {
+            public void onFailure(QSCustomException e) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -784,15 +772,19 @@ public class XLoginAccountActivity extends BaseActivity {
             }
 
             @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-//                LoadingView.getInstance().dismiss();
-                final String responseStr = response.body().string();
+            public void onResponse(Object obj) {
+                try {
+                    final String responseStr = obj.toString();
 
-                Map dataMap = JsonUtil.fromJson(responseStr, Map.class);
-                final WXTokenEntity entity = InjectionWrapperUtil.injectMap(dataMap, WXTokenEntity.class);
-                if (entity != null && !TextUtils.isEmpty(entity.getAccessToken())) {
-                    //获取微信token成功之后的处理
-                    doGetWxTokenComplete(entity);
+                    Map dataMap = JsonUtil.fromJson(responseStr, Map.class);
+                    final WXTokenEntity entity = InjectionWrapperUtil.injectMap(dataMap, WXTokenEntity.class);
+                    if (entity != null && !TextUtils.isEmpty(entity.getAccessToken())) {
+                        //获取微信token成功之后的处理
+                        doGetWxTokenComplete(entity);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
         });
@@ -1043,7 +1035,9 @@ public class XLoginAccountActivity extends BaseActivity {
 
             @Override
             public void onSuccess(Object... objects) {
-                if (showLoading)
+                if (showLoading) {
+                    LoadingView.getInstance().dismiss();
+                }
 
                 //不正常
                 if (!sessionCreateResult.getNormal()) {

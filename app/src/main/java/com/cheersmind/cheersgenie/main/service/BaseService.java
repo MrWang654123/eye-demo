@@ -1,27 +1,12 @@
 package com.cheersmind.cheersgenie.main.service;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.request.BaseRequest;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
-import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.main.view.TokenTimeOutView;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,16 +17,10 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 /**
- * Created by goodm on 2017/4/15.
+ * 通信解析基础服务
  */
 public class BaseService {
-
-    private static final  String TAG = "BaseService";
 
     public interface ServiceCallback {
         public abstract void onFailure(QSCustomException e);
@@ -49,100 +28,116 @@ public class BaseService {
     }
 
     public static void get(final String url, final ServiceCallback callback) {
-        BaseRequest.get(url, new Callback() {
+        BaseRequest.get(url, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        }, QSApplication.getCurrentActivity().getLocalClassName());
     }
 
     public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback) {
 
-        BaseRequest.post(url, params, isFormType, new Callback() {
+        BaseRequest.post(url, params, isFormType, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        }, QSApplication.getCurrentActivity().getLocalClassName());
     }
 
     public static void post(final String url, JSONObject params, final ServiceCallback callback) {
 
-        BaseRequest.post(url, params, new Callback() {
+        BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        }, QSApplication.getCurrentActivity().getLocalClassName());
     }
 
 
     public static void post(final String url, Map<String,File> params, final ServiceCallback callback) {
 
-        BaseRequest.post(url, params, new Callback() {
+        BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        }, QSApplication.getCurrentActivity().getLocalClassName());
     }
 
 
     public static void patch(String url, Map<String,Object> params,final ServiceCallback callback) {
-        BaseRequest.patch(url, params, new Callback() {
+        BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        }, QSApplication.getCurrentActivity().getLocalClassName());
     }
 
     public static void put(String url, Map<String,Object> params,final ServiceCallback callback) {
-        BaseRequest.put(url, params, new Callback() {
+        BaseRequest.put(url, params, new BaseRequest.BaseCallback() {
             @Override
-            public void onFailure(Call call, final IOException e) {
+            public void onFailure(Exception e) {
                 onFailureDefault(e, callback);
             }
 
             @Override
-            public void onResponse(final Call call, final Response response) throws IOException {
-                onResponseDefault(response, callback);
+            public void onResponse(int code, String bodyStr) {
+                onResponseDefault(code, bodyStr, callback);
             }
-        });
+        },QSApplication.getCurrentActivity().getLocalClassName());
     }
+
+
+    /**
+     *  根据tag取消通信
+     * @param tag
+     */
+    public static void cancelTag(String tag) {
+        BaseRequest.cancelTag(tag);
+    }
+
+    /**
+     *  根据tag取消通信
+     */
+//    public static void cancelTag() {
+//        BaseRequest.cancelTag(QSApplication.getPreActivity().getLocalClassName());
+//    }
 
     /**
      * 默认错误处理
      * @param callback
      * @param e
      */
-    private static void onFailureDefault(final IOException e, final ServiceCallback callback) {
+    private static void onFailureDefault(final Exception e, final ServiceCallback callback) {
         if (callback != null) {
             QSApplication.getHandler().post(new Runnable() {
                 @Override
@@ -165,23 +160,20 @@ public class BaseService {
 
     /**
      * 默认响应处理
-     * @param response
+     * @param code
+     * @param bodyStr
      * @param callback
      * @throws IOException
      */
-    private static void onResponseDefault(final Response response, final ServiceCallback callback) throws IOException {
+    private static void onResponseDefault(final int code, final String bodyStr, final ServiceCallback callback) {
         if (callback != null) {
-            try {
-                //返回结果信息
-                final String bodyStr = response.body().string();
-
                 QSApplication.getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
                             // 而只会返回什么400+，500+之类的，并且附带错误信息串
-                            if (response.code() == 200 || response.code() == 201) {
+                            if (code == 200 || code == 201) {
                                 JSONObject respObj = null;
                                 //返回结果为""空字符串，视为成功
                                 if (bodyStr == null || bodyStr.equals("")) {
@@ -204,11 +196,6 @@ public class BaseService {
                         }
                     }
                 });
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                callback.onFailure(new QSCustomException("返回数据异常"));
-            }
         }
     }
 

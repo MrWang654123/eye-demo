@@ -303,6 +303,13 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                 //标记已经处理了异常
                                 return true;
 
+                            }else if (ErrorCode.AC_USER_NOT_EXIST.equals(errorCode)) {//用户不存在
+                                //找回密码
+                                if (smsType == Dictionary.SmsType_Retrieve_Password) {
+                                    //重新请求图形验证码
+                                    requestImageCaptchaAgainWhenVisible();
+                                }
+
                             } else if (ErrorCode.AC_SESSION_EXPIRED.equals(errorCode) || ErrorCode.AC_SESSION_INVALID.equals(errorCode)) {//Session 未创建或已过期、无效
                                 //重新获取会话
                                 sessionCreateResult = null;
@@ -314,6 +321,10 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                 return true;
 
                             } else if (ErrorCode.AC_IDENTIFY_CODE_REQUIRED.equals(errorCode)) {//需要图形验证码
+                                //如果当前状态为正常，则置为不正常
+                                if (sessionCreateResult.getNormal()) {
+                                    sessionCreateResult.setNormal(false);
+                                }
                                 //开启通信等待
                                 LoadingView.getInstance().show(RegisterPhoneNumActivity.this);
                                 //请求图形验证码
