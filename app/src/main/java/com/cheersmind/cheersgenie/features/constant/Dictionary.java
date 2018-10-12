@@ -109,5 +109,9 @@ public class Dictionary {
     //学段：高中
     public static final int PERIOD_HIGH_SCHOOL = 4;
 
+    //头像header的key
+    public static final String PROFILE_HEADER_KEY = "Referer";
+    //头像header的value
+    public static final String PROFILE_HEADER_VALUE = "http://www.cheersmind.com/";
 
 }

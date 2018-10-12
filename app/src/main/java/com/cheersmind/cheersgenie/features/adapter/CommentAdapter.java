@@ -8,8 +8,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.holder.BaseHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.main.entity.CommentEntity;
@@ -50,9 +53,12 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
         if (item.getUserData() != null) {
             //头像
             String avatar = item.getUserData().getAvatar();
+            GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
+                    .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+                    .build());
             ImageView imageView = holder.getView(R.id.iv_profile);
             Glide.with(context)
-                    .load(avatar)
+                    .load(glideUrl)
                     .thumbnail(0.5f)
                     .apply(options)
                     .into(imageView);

@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
@@ -932,10 +934,13 @@ public class ArticleDetailActivity extends BaseActivity {
         if (item.getUserData() != null) {
             //头像
             String avatar = item.getUserData().getAvatar();
+            GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
+                    .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+                    .build());
             ImageView imageView = commentItemView.findViewById(R.id.iv_profile);
             Glide.with(ArticleDetailActivity.this)
-                    .load(avatar)
-                    .thumbnail(0.5f)
+                    .load(glideUrl)
+//                    .thumbnail(0.5f)
                     .apply(options)
                     .into(imageView);
 

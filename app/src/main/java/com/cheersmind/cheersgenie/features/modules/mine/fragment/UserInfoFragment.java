@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -182,7 +184,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                         @Override
                         public void run() {
                             //保存文件
-                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
+//                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
                             //发送修改头像的通知
                             EventBus.getDefault().post(new ModifyProfileEvent(profileUrl));
                         }
@@ -316,24 +318,34 @@ public class UserInfoFragment extends TakePhotoFragment {
             return;
         }
 
+        GlideUrl glideUrl = new GlideUrl(profileUrl, new LazyHeaders.Builder()
+                .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+                .build());
+        //加载网络图片
+        Glide.with(this)
+                .load(glideUrl)
+//                .thumbnail(0.5f)
+                .apply(options)
+                .into(ivProfile);
+
         //解析出图片名称
-        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
-        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
-        if (fileImage.exists()) {
-            //加载本地图片
-            Glide.with(this)
-                    .load(fileImage)
-//                .thumbnail(0.5f)
-                    .apply(options)
-                    .into(ivProfile);
-        } else {
-            //加载网络图片
-            Glide.with(this)
-                    .load(profileUrl)
-//                .thumbnail(0.5f)
-                    .apply(options)
-                    .into(ivProfile);
-        }
+//        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+//        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
+//        if (fileImage.exists()) {
+//            //加载本地图片
+//            Glide.with(this)
+//                    .load(fileImage)
+////                .thumbnail(0.5f)
+//                    .apply(options)
+//                    .into(ivProfile);
+//        } else {
+//            //加载网络图片
+//            Glide.with(this)
+//                    .load(profileUrl)
+////                .thumbnail(0.5f)
+//                    .apply(options)
+//                    .into(ivProfile);
+//        }
 
         //隐藏修改头像提示图
         tvModifyProfileTip.setVisibility(View.GONE);
