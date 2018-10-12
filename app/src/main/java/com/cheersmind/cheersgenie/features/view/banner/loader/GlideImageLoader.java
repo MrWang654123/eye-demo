@@ -1,4 +1,4 @@
-package com.cheersmind.cheersgenie.features.view.banner.loader.loader;
+package com.cheersmind.cheersgenie.features.view.banner.loader;
 
 import android.content.Context;
 import android.widget.ImageView;

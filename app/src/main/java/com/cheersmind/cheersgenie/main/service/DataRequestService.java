@@ -319,6 +319,11 @@ public class DataRequestService {
 
     //获取孩子最后一次使用量表 V2
     public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback){
+        getLatestDimensionV2(childId, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    //获取孩子最后一次使用量表 V2
+    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, String tag){
         String url = HttpConfig.URL_DIMENSION_LATEST_V2
                 .replace("{child_id}",childId);
         BaseService.get(url, new BaseService.ServiceCallback() {
@@ -331,7 +336,7 @@ public class DataRequestService {
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
             }
-        });
+        }, tag);
     }
 
     //开始孩子某个量表
@@ -1064,6 +1069,16 @@ public class DataRequestService {
      * @param callback
      */
     public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback){
+        getArticles(dto, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    /**
+     * 获取文章列表
+     * @param dto 文章dto
+     * @param callback 回调
+     * @param tag 通信标记
+     */
+    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback, String tag){
         String url = HttpConfig.URL_ARTICLES;
 
         Map<String, Object> params = new HashMap<>();
@@ -1097,7 +1112,7 @@ public class DataRequestService {
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
             }
-        });
+        }, tag);
     }
 
     /**
@@ -1201,6 +1216,16 @@ public class DataRequestService {
      * @param callback
      */
     public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback){
+        postDoFavorite(articleId, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    /**
+     * 收藏
+     * @param articleId 文章ID
+     * @param callback 回调
+     * @param tag 通信标记
+     */
+    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback, String tag){
         String url = HttpConfig.URL_FAVORITE
                 .replace("{articleId}", articleId);
 
@@ -1214,7 +1239,7 @@ public class DataRequestService {
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
             }
-        });
+        }, tag);
     }
 
     /**

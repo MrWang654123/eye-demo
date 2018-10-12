@@ -271,13 +271,6 @@
                         </LinearLayout>
 
                         <!--评论模块body-->
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recycleView"
-                            android:visibility="visible"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                        </android.support.v7.widget.RecyclerView>
 
                         <!--无评论提示-->
                         <TextView
@@ -289,6 +282,15 @@
                             android:paddingBottom="10dp"
                             android:layout_gravity="center_horizontal"
                             android:text="暂无评论"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycleView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusableInTouchMode="false"
+                            android:visibility="visible">
+
+                        </android.support.v7.widget.RecyclerView>
 
                     </LinearLayout>
 

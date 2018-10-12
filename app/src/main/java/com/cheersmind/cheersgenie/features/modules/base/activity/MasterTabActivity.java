@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.HomeFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MessageFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
@@ -102,7 +103,9 @@ public class MasterTabActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         //向ViewPager添加各页面
         listFragment = new ArrayList<>();
-        listFragment.add(new HomeFragment());
+        //首页改为探索
+//        listFragment.add(new HomeFragment());
+        listFragment.add(new ExploreFragment());
         listFragment.add(new ExamFragment());
 //        listFragment.add(new MessageFragment());
         listFragment.add(new ReportFragment());
@@ -128,7 +131,7 @@ public class MasterTabActivity extends BaseActivity {
         navigationBar.offsetTopAndBottom(20);
         //添加子项
         navigationBar
-                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"首页")
+                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"探索")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
 //                        .setBadgeItem(mShapeBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")

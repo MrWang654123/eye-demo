@@ -28,6 +28,10 @@ public class BaseService {
     }
 
     public static void get(final String url, final ServiceCallback callback) {
+        get(url, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    public static void get(final String url, final ServiceCallback callback, String tag) {
         BaseRequest.get(url, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -38,10 +42,14 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        }, QSApplication.getCurrentActivity().getLocalClassName());
+        }, tag);
     }
 
     public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback) {
+        post(url, params, isFormType, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback, String tag) {
 
         BaseRequest.post(url, params, isFormType, new BaseRequest.BaseCallback() {
             @Override
@@ -53,7 +61,7 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        }, QSApplication.getCurrentActivity().getLocalClassName());
+        }, tag);
     }
 
     public static void post(final String url, JSONObject params, final ServiceCallback callback) {

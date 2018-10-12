@@ -64,8 +64,6 @@ public class QSApplication extends LitePalApplication {
 
     //当前顶层activity
     private static Activity topActivity = null;
-    //上一个页面
-    private static Activity preActivity = null;
 
     //屏幕信息
     private static DisplayMetrics metrics;
@@ -287,7 +285,7 @@ public class QSApplication extends LitePalApplication {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-                preActivity = activity;
+//                preActivity = activity;
                 LogUtils.w("onActivityDestroyed===", topActivity + "");
             }
 
@@ -332,9 +330,9 @@ public class QSApplication extends LitePalApplication {
     /**
      * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到前一个activity
      */
-    public static Activity getPreActivity() {
-        return preActivity;
-    }
+//    public static Activity getPreActivity() {
+//        return preActivity;
+//    }
 
     public static DisplayMetrics getMetrics() {
         return metrics;

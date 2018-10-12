@@ -77,9 +77,20 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         //主图
         String url = item.getArticleImg();
         ImageView imageView = helper.getView(R.id.iv_main);
-        if (!url.equals(imageView.getTag(R.id.iv_main))) {
+        //非空
+        if (!TextUtils.isEmpty(url)) {
+            if (!url.equals(imageView.getTag(R.id.iv_main))) {
+                Glide.with(context)
+                        .load(url)
+//                        .thumbnail(0.5f)
+                        .apply(defaultOptions)
+                        .into(imageView);
+                imageView.setTag(R.id.iv_main, url);
+            }
+        } else {
+            //直接加载默认图
             Glide.with(context)
-                    .load(url)
+                    .load(R.drawable.default_image_round_article_list)
 //                        .thumbnail(0.5f)
                     .apply(defaultOptions)
                     .into(imageView);
