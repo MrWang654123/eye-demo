@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f5f5f5"
-    tools:context=".features.modules.mine.activity.UserInfoActivity"
-    android:orientation="vertical">
+    tools:context=".features.modules.mine.activity.UserInfoActivity">
 
     <!--标题栏-->
     <!--<include layout="@layout/toolbar"/>-->
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,6 +61,38 @@
                         android:src="@drawable/modify_profile_tip"/>
 
                 </RelativeLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/color_f2f2f2" />
+
+            <RelativeLayout
+                android:id="@+id/rl_nickname"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/selector_mine_btn"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    style="@style/common_option_text"
+                    android:text="昵称" />
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/color_00b8e9"
+                    android:text="@string/placeholder_for_item" />
 
             </RelativeLayout>
 
@@ -308,4 +338,4 @@
 
     </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
 
-</LinearLayout>
+</FrameLayout>

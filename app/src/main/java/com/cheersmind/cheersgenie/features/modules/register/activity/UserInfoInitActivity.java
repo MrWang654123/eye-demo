@@ -18,6 +18,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
+import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
@@ -62,6 +63,12 @@ public class UserInfoInitActivity extends BaseActivity {
     //用户名的清空按钮
     @BindView(R.id.iv_clear)
     ImageView ivClear;
+    //昵称
+    @BindView(R.id.et_nickname)
+    EditText etNickname;
+    //昵称的清空按钮
+    @BindView(R.id.iv_clear_nickname)
+    ImageView ivClearNickname;
     //生日显示
     @BindView(R.id.et_birthday)
     EditText etBirthday;
@@ -137,6 +144,32 @@ public class UserInfoInitActivity extends BaseActivity {
             }
         });
 
+        //昵称的文本输入监听
+        etNickname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearNickname.getVisibility() == View.INVISIBLE) {
+                        ivClearNickname.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClearNickname.getVisibility() == View.VISIBLE) {
+                        ivClearNickname.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
+
         rgSex.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -176,7 +209,7 @@ public class UserInfoInitActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday, R.id.iv_clear})
+    @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday, R.id.iv_clear, R.id.iv_clear_nickname})
     public void onViewClick(View view) {
 
         Calendar calendar1 = Calendar.getInstance();
@@ -202,6 +235,12 @@ public class UserInfoInitActivity extends BaseActivity {
             case R.id.iv_clear: {
                 etUsername.setText("");
                 etUsername.requestFocus();
+                break;
+            }
+            //昵称的清空按钮
+            case R.id.iv_clear_nickname: {
+                etNickname.setText("");
+                etNickname.requestFocus();
                 break;
             }
         }
@@ -289,19 +328,21 @@ public class UserInfoInitActivity extends BaseActivity {
         if (!checkData()) return;
         //提交用户信息
         String username = etUsername.getText().toString();
+        String nickName = etNickname.getText().toString();
         String birthday = etBirthday.getText().toString();
-        postUserInfo(classNum, genderVal, username, birthday, parentRole);
+        postUserInfo(classNum, genderVal, username, nickName, birthday, parentRole);
     }
 
     /**
      * 注册环节提交用户信息
      * @param classNum //班级群号
      * @param gender //孩子性别 1-男，2-女
-     * @param username //孩子名称
+     * @param username //姓名
+     * @param nickName //昵称
      * @param birthday //孩子生日
 //     * @param role //家长角色：1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
      */
-    private void postUserInfo(String classNum, String gender, String username, String birthday, int parentRole) {
+    private void postUserInfo(String classNum, String gender, String username, String nickName, String birthday, int parentRole) {
         //通信等待提示
         LoadingView.getInstance().show(UserInfoInitActivity.this);
         String url = HttpConfig.URL_REGISTER_SUBMIT_USERINFO;
@@ -316,6 +357,7 @@ public class UserInfoInitActivity extends BaseActivity {
         map.put("group_no", classNum);
         map.put("sex", gender);
         map.put("name", username);
+        map.put("nick_name", nickName);
         map.put("birthday", birthday);
         map.put("parent_role", parentRole);
         //注册环节提交用户信息
@@ -342,6 +384,7 @@ public class UserInfoInitActivity extends BaseActivity {
      */
     private boolean checkData() {
         String username = etUsername.getText().toString();
+        String nickName = etNickname.getText().toString();
         String birthday = etBirthday.getText().toString();
 
         //用户名非空
@@ -350,9 +393,20 @@ public class UserInfoInitActivity extends BaseActivity {
             return false;
         }
 
+        //昵称非空
+        if (TextUtils.isEmpty(nickName)) {
+            ToastUtil.showShort(getApplicationContext(), "请输入昵称");
+            return false;
+        }
+        //昵称格式验证
+        if (!DataCheckUtil.isNickname(nickName)) {
+            ToastUtil.showShort(getApplicationContext(), "昵称为3-8位数字/英文/中文");
+            return false;
+        }
+
         //生日非空
         if (TextUtils.isEmpty(birthday)) {
-            ToastUtil.showShort(getApplicationContext(), "请选择生日");
+            ToastUtil.showShort(getApplicationContext(), "请选择出生日期");
             return false;
         }
 

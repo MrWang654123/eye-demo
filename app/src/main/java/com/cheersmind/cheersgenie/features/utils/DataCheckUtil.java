@@ -105,5 +105,19 @@ public class DataCheckUtil {
         }
     }
 
+    /**
+     * 昵称（3-8位，数字、英文、中文）
+     * @param str
+     * @return
+     */
+    public static boolean isNickname(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        } else {
+            String reg = "([a-zA-Z0-9]|[\\u4e00-\\u9fa5]){3,8}";
+            return str.matches(reg);
+        }
+    }
+
 }
 

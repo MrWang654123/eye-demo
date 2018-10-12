@@ -54,18 +54,28 @@ public class UserInfoFragment extends TakePhotoFragment {
     @BindView(R.id.tv_childInfo_tip)
     TextView tvChildInfoTip;
 
+    //昵称
+    @BindView(R.id.tv_nickname)
+    TextView tvNickname;
+    //姓名
     @BindView(R.id.tv_user_name)
     TextView tvUserName;
+    //性别
     @BindView(R.id.tv_gender)
     TextView tvGender;
+    //出生日期
     @BindView(R.id.tv_birthday)
     TextView tvBirthday;
+    //学校
     @BindView(R.id.tv_school)
     TextView tvSchool;
+    //年段
     @BindView(R.id.tv_period)
     TextView tvPeriod;
+    //年级
     @BindView(R.id.tv_grade)
     TextView tvGrade;
+    //班级
     @BindView(R.id.tv_class)
     TextView tvClass;
     //头像
@@ -279,6 +289,8 @@ public class UserInfoFragment extends TakePhotoFragment {
             gender = userInfo.getSex();
         }
 
+        //昵称
+        tvNickname.setText(userInfo.getNickName());
         //姓名
         tvUserName.setText(userName);
         //性别

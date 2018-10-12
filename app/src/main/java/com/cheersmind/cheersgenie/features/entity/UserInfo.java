@@ -7,10 +7,11 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
  */
 public class UserInfo {
 
-    //    {
+//    {
 //        "user_id":123,          //用户ID
 //            "user_name":"string",   //用户名
 //            "sex":1,                //性别，0未知，1男，2女
+//            "nick_name":"string",   //用户昵称
 //            "avatar":"url"          //用户头像URL
 //    }
 
@@ -22,6 +23,9 @@ public class UserInfo {
 
     @InjectMap(name = "sex")
     private int sex;
+
+    @InjectMap(name = "nick_name")
+    private String nickName;
 
     @InjectMap(name = "avatar")
     private String avatar;
@@ -58,4 +62,13 @@ public class UserInfo {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 }
