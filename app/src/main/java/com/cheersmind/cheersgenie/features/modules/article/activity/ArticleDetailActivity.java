@@ -934,15 +934,24 @@ public class ArticleDetailActivity extends BaseActivity {
         if (item.getUserData() != null) {
             //头像
             String avatar = item.getUserData().getAvatar();
-            GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
-                    .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
-                    .build());
             ImageView imageView = commentItemView.findViewById(R.id.iv_profile);
-            Glide.with(ArticleDetailActivity.this)
-                    .load(glideUrl)
+            if (!TextUtils.isEmpty(avatar)) {
+                GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
+                        .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+                        .build());
+
+                Glide.with(ArticleDetailActivity.this)
+                        .load(glideUrl)
 //                    .thumbnail(0.5f)
-                    .apply(options)
-                    .into(imageView);
+                        .apply(options)
+                        .into(imageView);
+            } else {
+                Glide.with(ArticleDetailActivity.this)
+                        .load(R.drawable.ico_head)
+//                    .thumbnail(0.5f)
+                        .apply(options)
+                        .into(imageView);
+            }
 
             //用户名
             String userName = item.getUserData().getUserName();

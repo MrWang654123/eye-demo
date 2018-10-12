@@ -53,15 +53,23 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
         if (item.getUserData() != null) {
             //头像
             String avatar = item.getUserData().getAvatar();
-            GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
-                    .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
-                    .build());
             ImageView imageView = holder.getView(R.id.iv_profile);
-            Glide.with(context)
-                    .load(glideUrl)
-                    .thumbnail(0.5f)
-                    .apply(options)
-                    .into(imageView);
+            if (!TextUtils.isEmpty(avatar)) {
+                GlideUrl glideUrl = new GlideUrl(avatar, new LazyHeaders.Builder()
+                        .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+                        .build());
+                Glide.with(context)
+                        .load(glideUrl)
+//                    .thumbnail(0.5f)
+                        .apply(options)
+                        .into(imageView);
+            } else {
+                Glide.with(context)
+                        .load(R.drawable.ico_head)
+//                    .thumbnail(0.5f)
+                        .apply(options)
+                        .into(imageView);
+            }
 
             //用户名
             String userName = item.getUserData().getUserName();

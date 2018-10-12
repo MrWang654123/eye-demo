@@ -330,6 +330,7 @@ public class UserInfoFragment extends TakePhotoFragment {
             return;
         }
 
+        //非空
         GlideUrl glideUrl = new GlideUrl(profileUrl, new LazyHeaders.Builder()
                 .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
                 .build());
