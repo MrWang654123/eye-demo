@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
@@ -193,7 +194,9 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 //表示向下滚动,如果为false表示已经到底部了.
                 if (!recyclerView.canScrollVertically(1)) {
-                    System.out.println("停止滚动");
+                    if (BuildConfig.DEBUG) {
+                        System.out.println("停止滚动");
+                    }
                     recyclerView.stopScroll();
                 } else {
                     super.onScrolled(recyclerView, dx, dy);
