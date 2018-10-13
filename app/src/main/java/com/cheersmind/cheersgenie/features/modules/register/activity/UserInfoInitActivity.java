@@ -400,7 +400,7 @@ public class UserInfoInitActivity extends BaseActivity {
         }
         //昵称格式验证
         if (!DataCheckUtil.isNickname(nickName)) {
-            ToastUtil.showShort(getApplicationContext(), "昵称为3-8位数字/英文/中文");
+            ToastUtil.showShort(getApplicationContext(), getResources().getString(R.string.nickname_format_error));
             return false;
         }
 

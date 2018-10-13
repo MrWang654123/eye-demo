@@ -2111,4 +2111,41 @@ public class DataRequestService {
     }
 
 
+    /**
+     * 修改昵称
+     * @param nickname 昵称
+     * @param callback
+     */
+    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback){
+        patchModifyNickname(nickname, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+
+    /**
+     * 修改昵称
+     * @param nickname 昵称
+     * @param callback
+     */
+    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback, String tag){
+        String url = HttpConfig.URL_MODIFY_USER_INFO;
+//        {
+//            "nick_name":"string"        //用户昵称（必填），3-8位，数字、英文、中文
+//        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("nick_name", nickname);
+
+        BaseService.patch(url,map, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        }, tag);
+    }
+
+
 }

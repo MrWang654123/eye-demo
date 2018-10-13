@@ -1,6 +1,8 @@
 package com.cheersmind.cheersgenie.features.modules.mine.fragment;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,9 +18,12 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.TakePhotoFragment;
+import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.dialog.ModifyNicknameDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -26,6 +31,7 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
@@ -144,7 +150,7 @@ public class UserInfoFragment extends TakePhotoFragment {
 
     }
 
-    @OnClick({R.id.iv_profile, R.id.btn_modify_profile})
+    @OnClick({R.id.iv_profile, R.id.btn_modify_profile, R.id.rl_nickname})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //头像
@@ -159,6 +165,12 @@ public class UserInfoFragment extends TakePhotoFragment {
                 if (file != null) {
                     doPostModifyProfile(file);
                 }
+                break;
+            }
+            //跳转更改昵称
+            case R.id.rl_nickname: {
+//                ToastUtil.showShort(getContext(), "跳转更改昵称");
+                showModifyNicknameDialog(getContext());
                 break;
             }
         }
@@ -383,6 +395,33 @@ public class UserInfoFragment extends TakePhotoFragment {
 //        Glide.with(this).load(file).into(ivProfile);
         //上传头像
         doPostModifyProfile(file);
+    }
+
+
+    /**
+     * 显示修改昵称对话框
+     */
+    public void showModifyNicknameDialog(final Context context){
+        String nickname = tvNickname.getText().toString();
+        new ModifyNicknameDialog(context, nickname, new ModifyNicknameDialog.OnOperationListener() {
+
+            @Override
+            public void onModifySuccess(String nickname) {
+                //重置内存中用户信息的昵称
+                UserInfo userInfo = UCManager.getInstance().getUserInfo();
+                if (userInfo != null) {
+                    userInfo.setNickName(nickname);
+                }
+
+                //刷新昵称视图
+                tvNickname.setText(nickname);
+
+                //提示
+                ToastUtil.showShort(context, "修改成功");
+
+            }
+        }).show();
+
     }
 
 

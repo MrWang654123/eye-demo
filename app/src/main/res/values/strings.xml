@@ -120,6 +120,7 @@
     <!--用户信息完善-->
     <string name="class_num_tip_title">什么是邀请码？</string>
     <string name="complete">完成</string>
+    <string name="nickname_format_error">昵称为3&#8211;8位数字/英文/中文</string>
 
     <!--文章-->
     <string name="search_edit_text_hint">搜索你想看到的内容</string>

@@ -97,6 +97,10 @@ public class BaseService {
 
 
     public static void patch(String url, Map<String,Object> params,final ServiceCallback callback) {
+        patch(url, params, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    public static void patch(String url, Map<String,Object> params,final ServiceCallback callback, String tag) {
         BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -107,7 +111,7 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        }, QSApplication.getCurrentActivity().getLocalClassName());
+        }, tag);
     }
 
     public static void put(String url, Map<String,Object> params,final ServiceCallback callback) {
