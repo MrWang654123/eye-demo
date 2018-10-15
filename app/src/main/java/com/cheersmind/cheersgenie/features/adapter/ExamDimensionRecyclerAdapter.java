@@ -57,12 +57,12 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     private void initRequestOptions(Context context) {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(context, 8), 0, RoundedCornersTransformation.CornerType.ALL));
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 3), 0, RoundedCornersTransformation.CornerType.ALL));
 
         MultiTransformation<Bitmap> multiBlur = new MultiTransformation<>(
                 new CenterCrop(),
-                new BlurTransformation(8),
-                new RoundedCornersTransformation(DensityUtil.dip2px(context, 8), 0, RoundedCornersTransformation.CornerType.ALL)
+                new BlurTransformation(3),
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 3), 0, RoundedCornersTransformation.CornerType.ALL)
                 );
 
         //默认Glide处理参数
@@ -215,8 +215,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
             //被锁情况
             if (!url.equals(imageView.getTag(R.id.iv_icon))) {
                 Glide.with(fragment)
-                        .load(R.drawable.default_image_round)
-//                    .load(url)
+//                        .load(R.drawable.default_image_round)
+                        .load(url)
 //                        .thumbnail(0.5f)
                         .apply(defaultOptions)
                         .into(imageView);
@@ -227,8 +227,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
             //未被锁：正常显示图片
             if (!TextUtils.isEmpty(url) && !url.equals(imageView.getTag(R.id.iv_icon))) {
                 Glide.with(fragment)
-                        .load(R.drawable.default_image_round)
-//                    .load(url)
+//                        .load(R.drawable.default_image_round)
+                        .load(url)
 //                        .thumbnail(0.5f)
                         .apply(defaultOptions)
                         .into(imageView);
