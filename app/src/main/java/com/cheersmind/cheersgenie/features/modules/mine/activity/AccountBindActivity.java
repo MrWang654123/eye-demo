@@ -127,7 +127,7 @@ public class AccountBindActivity extends BaseActivity {
                     JSONArray items = ((JSONObject)obj).getJSONArray("items");
 
                     if (items == null || items.length() == 0) {
-                        throw new Exception();
+                        throw new QSCustomException("无绑定项");
                     }
 
                     //遍历已绑定平台
@@ -142,6 +142,12 @@ public class AccountBindActivity extends BaseActivity {
                         }
                     }
 
+                    //刷新绑定信息视图
+                    refreshBindInfoView();
+
+                } catch (QSCustomException e) {
+                    isQQBinded = false;
+                    isWeixinBinded = false;
                     //刷新绑定信息视图
                     refreshBindInfoView();
 

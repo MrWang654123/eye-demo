@@ -115,7 +115,7 @@ public class HomeFragment extends LazyLoadFragment {
     CBViewHolderCreator viewHolderCreator = new CBViewHolderCreator() {
         @Override
         public Holder createHolder(View itemView) {
-            return new BannerHomeHolder(HomeFragment.this, itemView);
+            return new BannerHomeHolder(getContext(), itemView);
         }
 
         @Override
@@ -205,7 +205,7 @@ public class HomeFragment extends LazyLoadFragment {
 
     //通信错误数量，目前本页面总共3个通信
     int errorQuantity = 0;
-    private static int MAX_ERROR_QUANTITY = 3;
+    private final static int MAX_ERROR_QUANTITY = 3;
     //消息：错误数量
     private static final int MSG_ERROR_QUANTITY = 1;
 
@@ -474,13 +474,17 @@ public class HomeFragment extends LazyLoadFragment {
 
                     } else {
                         //没数据或者数据异常
-                        throw new Exception();
+                        throw new QSCustomException("没有最新最测评");
                     }
 
                     evaluationBlock.setVisibility(View.VISIBLE);
                     evaluationBlock.startAnimation(mShowAction);
                     //空布局：隐藏
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                } catch (QSCustomException e) {
+                    lastDimension = null;
+                    evaluationBlock.setVisibility(View.GONE);
 
                 } catch (Exception e) {
                     e.printStackTrace();

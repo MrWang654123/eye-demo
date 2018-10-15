@@ -151,7 +151,11 @@ public class ExamCompletedFragment extends LazyLoadFragment {
         EventBus.getDefault().register(this);
 
 //        recyclerItem = new ArrayList<>();
-        recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamCompletedFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
+        try {
+            recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamCompletedFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
+        } catch (QSCustomException e) {
+            e.printStackTrace();
+        }
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);

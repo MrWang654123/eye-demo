@@ -20,6 +20,7 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
@@ -48,7 +49,7 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
     private static RequestOptions blurOptions;
 
     //标题最大宽度
-    int titleMaxWidth;
+    private int titleMaxWidth;
 
     /**
      * 初始化默认Glide处理参数
@@ -87,9 +88,12 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
      * @param sectionHeadResId 头部项的布局ID
      * @param data 数据集合
      */
-    public ExamDimensionRecyclerAdapter(Fragment fragment, int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) {
+    public ExamDimensionRecyclerAdapter(Fragment fragment, int layoutResId, int sectionHeadResId, List<RecyclerCommonSection<DimensionInfoEntity>> data) throws QSCustomException {
         super(layoutResId, sectionHeadResId, data);
         this.fragment = fragment;
+        if (this.fragment == null) {
+            throw new QSCustomException("fragment 不能为空");
+        }
         //初始化Glide处理参数
         initRequestOptions(fragment.getContext());
         //获取屏幕宽高

@@ -173,7 +173,11 @@ public class ExamFragment extends LazyLoadFragment {
         }
 
 //        recyclerItem = new ArrayList<>();
-        recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
+        try {
+            recyclerAdapter = new ExamDimensionRecyclerAdapter(ExamFragment.this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
+        } catch (QSCustomException e) {
+            e.printStackTrace();
+        }
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);

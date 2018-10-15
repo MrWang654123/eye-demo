@@ -95,7 +95,7 @@ public class ExploreFragment extends LazyLoadFragment {
     CBViewHolderCreator viewHolderCreator = new CBViewHolderCreator() {
         @Override
         public Holder createHolder(View itemView) {
-            return new BannerHomeHolder(ExploreFragment.this, itemView);
+            return new BannerHomeHolder(getContext(), itemView);
         }
 
         @Override

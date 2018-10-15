@@ -25,7 +25,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  */
 public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
 
-    private Fragment fragment;
+    private Context context;
     //主图
     private ImageView ivMain;
     //播放键
@@ -43,9 +43,11 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
      * 初始化默认Glide处理参数
      */
     private void initRequestOptions(Context context) {
-        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
-                new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
+        if (context != null) {
+            MultiTransformation<Bitmap> multi = new MultiTransformation<>(
+                    new CenterCrop(),
+                    new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
+        }
 
         //默认Glide处理参数
         defaultOptions = new RequestOptions()
@@ -58,11 +60,11 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     }
 
 
-    public BannerHomeHolder(Fragment fragment, View itemView) {
+    public BannerHomeHolder(Context context, View itemView) {
         super(itemView);
-        this.fragment = fragment;
+        this.context = context;
 
-        initRequestOptions(fragment.getContext());
+        initRequestOptions(context);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     @Override
     public void updateUI(SimpleArticleEntity entity) {
         //主图
-        Glide.with(fragment)
+        Glide.with(context)
                 .load(entity.getArticleImg())
 //                .thumbnail(0.5f)//缩略图
                 .apply(defaultOptions)

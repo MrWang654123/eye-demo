@@ -932,6 +932,9 @@ public class ArticleDetailActivity extends BaseActivity {
         View view = LayoutInflater.from(ArticleDetailActivity.this).inflate(R.layout.popup_window_comment_edit, null);
         final Dialog dialog = new Dialog(this, R.style.dialog_bottom_full);
         Window window = dialog.getWindow();
+        if (window == null) {
+            return;
+        }
         window.setGravity(Gravity.BOTTOM);
         window.setContentView(view);
 
