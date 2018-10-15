@@ -76,10 +76,13 @@ public class QSApplication extends LitePalApplication {
         mHandler = new Handler();
         Fresco.initialize(this);
 
-        //把自定义的异常处理类设置 给主线程
-        CrashHandler myCrashHandler =  CrashHandler.getInstance();
-        myCrashHandler.init(getApplicationContext());
-        Thread.currentThread().setUncaughtExceptionHandler(myCrashHandler);
+        //调试模式下不启用自定义的异常处理类
+        if (!BuildConfig.DEBUG) {
+            //把自定义的异常处理类设置 给主线程
+            CrashHandler myCrashHandler = CrashHandler.getInstance();
+            myCrashHandler.init(getApplicationContext());
+            Thread.currentThread().setUncaughtExceptionHandler(myCrashHandler);
+        }
 
         //反馈
         FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
@@ -87,8 +90,11 @@ public class QSApplication extends LitePalApplication {
         //统计
         // 获取MAN服务
         MANService manService = MANServiceProvider.getService();
-        // 关闭crash自动采集功能
-//        manService.getMANAnalytics().turnOffCrashReporter();
+        //调试模式下关闭crash自动采集功能
+        if (BuildConfig.DEBUG) {
+            // 关闭crash自动采集功能
+            manService.getMANAnalytics().turnOffCrashReporter();
+        }
         //初始化
         manService.getMANAnalytics().init(this, getApplicationContext(), Constant.FEEDBACK_APP_KEY, Constant.FEEDBACK_APP_SECRET);
         // 通过此接口关闭页面自动打点功能

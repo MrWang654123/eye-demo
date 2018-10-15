@@ -78,7 +78,8 @@
                 android:id="@+id/appbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/color_f5f5f5">
+                android:background="@color/color_f5f5f5"
+                app:layout_behavior="com.cheersmind.cheersgenie.features.view.CompatFlingBehavior">
                 <!--app:layout_behavior="com.cheersmind.cheersgenie.features.view.CompatFlingBehavior"-->
 
                 <!--<ImageView-->
