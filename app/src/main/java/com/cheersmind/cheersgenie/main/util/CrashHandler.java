@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import com.cheersmind.cheersgenie.features.modules.base.activity.SplashActivity;
 import com.cheersmind.cheersgenie.main.activity.StartActivity;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 
         try {
             Thread.sleep(500); // 1秒后重启，可有可无，仅凭个人喜好
-            Intent intent = new Intent(mContext, StartActivity.class);
+            Intent intent = new Intent(mContext, SplashActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(intent);
         } catch (InterruptedException e) {
