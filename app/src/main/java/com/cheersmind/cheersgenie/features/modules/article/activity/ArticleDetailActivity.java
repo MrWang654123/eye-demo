@@ -605,7 +605,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
 
                     if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
-                        throw new Exception("量表数据为空");
+                        throw new QSCustomException("量表数据为空");
                     }
 
                     ArticleDetailActivity.this.dimension = dimension;
@@ -613,8 +613,12 @@ public class ArticleDetailActivity extends BaseActivity {
                     //刷新关联评测视图
                     refreshRelativeExamView(dimension);
 
+                } catch (QSCustomException e) {
+                    onFailure(e);
+
                 } catch (Exception e) {
                     e.printStackTrace();
+                    onFailure(new QSCustomException(e.getMessage()));
                 }
             }
         });

@@ -121,12 +121,12 @@ public class SplashActivity extends BaseActivity {
                     SystemTimeEntity systemTimeEntity = InjectionWrapperUtil.injectMap(map,SystemTimeEntity.class);
 
                     if (systemTimeEntity == null || TextUtils.isEmpty(systemTimeEntity.getDatetime())) {
-                        throw new Exception("获取服务端时间戳失败");
+                        throw new QSCustomException("获取服务端时间戳失败");
                     }
 
                     WXUserInfoEntity wxUserInfoEntity  = DataSupport.findFirst(WXUserInfoEntity.class);
                     if (wxUserInfoEntity == null) {
-                        throw new Exception("本地无用户信息");
+                        throw new QSCustomException("本地无用户信息");
                     }
 
                     //判断token是否有效
@@ -137,7 +137,7 @@ public class SplashActivity extends BaseActivity {
                         ChildInfoEntity defaultChild = ChildInfoDao.getDefaultChildFromDataBase();
                         if (defaultChild == null) {
                             //无孩子
-                            throw new Exception("无孩子");
+                            throw new QSCustomException("无孩子对象");
 
                         } else {
                             //设置默认孩子到缓存中
@@ -148,14 +148,19 @@ public class SplashActivity extends BaseActivity {
 
                     } else {
                         //无效情况
-                        throw new Exception("token已失效");
+                        throw new QSCustomException("token已失效");
                     }
+
+                } catch (QSCustomException e) {
+                    //跳转到登录主页面
+                    gotoActivity(XLoginActivity.class);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                     //跳转到登录主页面
                     gotoActivity(XLoginActivity.class);
                 }
+
             }
         });
     }
