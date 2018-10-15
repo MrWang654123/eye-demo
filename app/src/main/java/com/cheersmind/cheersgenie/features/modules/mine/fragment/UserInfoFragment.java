@@ -356,7 +356,7 @@ public class UserInfoFragment extends TakePhotoFragment {
         //解析出图片名称
 //        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
 //        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
-//        if (fileImage.exists()) {
+//        if (fileImage != null && fileImage.exists()) {
 //            //加载本地图片
 //            Glide.with(this)
 //                    .load(fileImage)

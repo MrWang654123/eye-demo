@@ -149,7 +149,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      *
      * @param context
      */
-    public static String getExternalFileDir(Context context) {
+    private static String getExternalFileDir(Context context) {
         String state = Environment.getExternalStorageState();
 
         if (!Environment.MEDIA_MOUNTED.equals(state)) {
