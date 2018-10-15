@@ -368,9 +368,14 @@ public class ArticleDetailActivity extends BaseActivity {
         JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 //        JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
-        //设置视频ID和标题
-        jzVideo.setVideoId(article.getVideoId());
-        jzVideo.setTitle(article.getArticleTitle());
+        //视频ID非空
+        if (TextUtils.isEmpty(article.getVideoId())) {
+            jzVideo.setVisibility(View.GONE);
+        } else {
+            //设置视频ID和标题
+            jzVideo.setVideoId(article.getVideoId());
+            jzVideo.setTitle(article.getArticleTitle());
+        }
 
 //        jzVideo.startButton.setOnClickListener(new View.OnClickListener() {
 //            @Override

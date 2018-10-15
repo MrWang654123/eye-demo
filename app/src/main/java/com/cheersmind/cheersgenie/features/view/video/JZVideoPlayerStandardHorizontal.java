@@ -67,16 +67,24 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
             if (videoUrlCheck()) {
                 doStartBtnClick();
             } else {
-                onStatePreparing();
-                queryVideoRealUrl(videoId, title, R.id.start);
+                if (TextUtils.isEmpty(videoId)) {
+                    doStartBtnClick();
+                } else {
+                    onStatePreparing();
+                    queryVideoRealUrl(videoId, title, R.id.start);
+                }
             }
 
         } else if (i == cn.jzvd.R.id.retry_btn) {
             if (videoUrlCheck()) {
                 doRetryBtnClick();
             } else {
-                onStatePreparing();
-                queryVideoRealUrl(videoId, title, R.id.retry_btn);
+                if (TextUtils.isEmpty(videoId)) {
+                    doRetryBtnClick();
+                } else {
+                    onStatePreparing();
+                    queryVideoRealUrl(videoId, title, R.id.retry_btn);
+                }
             }
 
         } else {
