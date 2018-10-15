@@ -35,10 +35,14 @@ public class EnvHostManager {
     private String webHost;
 
 
+//    //开发环境
+//    public static final String VIDEO_SIGN_KEY_DEVELOP = "b7ab98891198478b0f897dabebbb62aaaaa8ba8a";
+//    //生产环境
+//    public static final String VIDEO_SIGN_KEY_PRODUCT = "42a8d9aadd8bc899c499fa985eb9cf9ae7bbd3b8";
     //开发环境
-    public static final String VIDEO_SIGN_KEY_DEVELOP = "b7ab98891198478b0f897dabebbb62aaaaa8ba8a";
+    public static final String VIDEO_SIGN_KEY_DEVELOP = "3deaadbc1e5540539884401ae0abaf0b";
     //生产环境
-    public static final String VIDEO_SIGN_KEY_PRODUCT = "42a8d9aadd8bc899c499fa985eb9cf9ae7bbd3b8";
+    public static final String VIDEO_SIGN_KEY_PRODUCT = "3deaadbc1e5540539884401ae0abaf0b";
 
     //视频签名key
     private String videoSignKey;

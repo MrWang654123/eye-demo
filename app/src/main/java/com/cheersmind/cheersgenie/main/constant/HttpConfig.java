@@ -295,5 +295,8 @@ public class HttpConfig {
     //获取分类
     public static final String URL_CATEGORIES = API_HOST + "/v2/api/categories";
 
+    //获取视频真实地址
+    public static final String URL_VIDEO_REAL_URL = API_HOST + "/v2/api/videos/{video_id}/actions/get_display_url?sign={sign}&t={t}";
+
 
 }

@@ -99,6 +99,10 @@ public class ArticleEntity extends DataSupport implements Serializable {
     @InjectMap(name = "content_type")
     private int contentType;
 
+    //视频ID
+    @InjectMap(name = "video_id")
+    private String videoId;
+
 
     public int getContentType() {
         return contentType;
@@ -274,5 +278,13 @@ public class ArticleEntity extends DataSupport implements Serializable {
 
     public void setArticleImg(String articleImg) {
         this.articleImg = articleImg;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 }

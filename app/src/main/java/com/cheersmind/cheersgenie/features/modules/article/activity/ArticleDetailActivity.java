@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
@@ -37,6 +38,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
 import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
@@ -50,6 +52,7 @@ import com.cheersmind.cheersgenie.main.entity.ArticleEntity;
 import com.cheersmind.cheersgenie.main.entity.CommentEntity;
 import com.cheersmind.cheersgenie.main.entity.CommentRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -57,6 +60,7 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
@@ -189,6 +193,13 @@ public class ArticleDetailActivity extends BaseActivity {
     //关联的测评
     DimensionInfoEntity dimension;
 
+    //视频真实url
+    String videoRealUrl;
+    //最后加载url的时间戳
+    long lastLoadUrlTimestamp = 0;
+    //失效间隔
+    private static final long INVALID_INTERVAL = 30 * 60 * 1000;
+
 
     /**
      * 开启文章详情页面
@@ -318,7 +329,11 @@ public class ArticleDetailActivity extends BaseActivity {
         JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
     }*/
 
-    private void initVideo(ArticleEntity article) {
+    /**
+     * 初始化视频
+     * @param article
+     */
+    private void initVideo(final ArticleEntity article) {
         if (article == null || TextUtils.isEmpty(article.getArticleVideo())) {
             jzVideo.setVisibility(View.GONE);
             return;
@@ -353,6 +368,10 @@ public class ArticleDetailActivity extends BaseActivity {
         JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 //        JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
+        //设置视频ID和标题
+        jzVideo.setVideoId(article.getVideoId());
+        jzVideo.setTitle(article.getArticleTitle());
+
 //        jzVideo.startButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -364,6 +383,90 @@ public class ArticleDetailActivity extends BaseActivity {
 //            }
 //        });
 //        jzVideo.startWindowFullscreen();
+
+//        jzVideo.startButton.setOnClickListener(new OnMultiClickListener() {
+//            @Override
+//            public void onMultiClick(View view) {
+//                jzVideo.onStatePreparing();
+//                jzVideo.startButton.performClick();
+//                //请求video真实地址
+//                queryVideoRealUrl(article.getVideoId(), article.getArticleTitle());
+//            }
+//        });
+
+//        jzVideo.mRetryBtn.setOnClickListener(new OnMultiClickListener() {
+//            @Override
+//            public void onMultiClick(View view) {
+//                jzVideo.onStatePreparing();
+//            }
+//        });
+    }
+
+    /**
+     * 请求视频真实地址
+     * @param videoId
+     */
+    private void queryVideoRealUrl(String videoId, final String title) {
+        long curTimestamp = System.currentTimeMillis() / 1000;
+        String curTimestampStr = String.valueOf(curTimestamp);
+        String key = EnvHostManager.getInstance().getVideoSignKey();
+        String sign = signVideoUrl(videoId, key, curTimestampStr);
+        //请求视频真实地址
+        DataRequestService.getInstance().getVideoRealUrl(videoId, sign, curTimestampStr, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                try {
+                    String bodyStr = e.getMessage();
+                    Map map = JsonUtil.fromJson(bodyStr, Map.class);
+                    ErrorCodeEntity errorCodeEntity = InjectionWrapperUtil.injectMap(map, ErrorCodeEntity.class);
+
+                    //参数错误，若出现错误可获取错误中的时间字段server_time，并转为时间戳使用。
+                    if (errorCodeEntity != null && ErrorCode.PSY_INVALID_PARAM.equals(errorCodeEntity.getCode())) {
+
+
+                    }
+
+                } catch (Exception err) {
+                    err.printStackTrace();
+
+                } finally {
+                    videoRealUrl = null;
+                    jzVideo.onStateError();
+                }
+
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    String videoRealUrl = (String) dataMap.get("display_url");
+                    if (TextUtils.isEmpty(videoRealUrl)) {
+                        throw new NullPointerException();
+                    }
+
+                    ArticleDetailActivity.this.videoRealUrl = videoRealUrl;
+                    jzVideo.setUp(videoRealUrl
+                            , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
+                    jzVideo.startVideo();
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取视频地址的请求签名
+     * @param videoId
+     * @param key
+     * @param timestamp
+     * @return
+     */
+    private String signVideoUrl(String videoId, String key, String timestamp) {
+        return EncryptUtil.md5(key + videoId+ timestamp).toLowerCase();
     }
 
     /**
@@ -414,7 +517,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (jzVideo.backPress()) {
+        if (JZVideoPlayer.backPress()) {
             return;
         }
         super.onBackPressed();
@@ -444,9 +547,6 @@ public class ArticleDetailActivity extends BaseActivity {
 
                     //视频视图处理
                     initVideo(articleEntity);
-//                    if (articleEntity.getContentType() == Dictionary.ARTICLE_IS_REFERENCE_EXAM_YES) {
-//                        initVideo(articleEntity);
-//                    }
 
                     //刷新文章视图
                     refreshArticleView(articleEntity);
@@ -461,9 +561,6 @@ public class ArticleDetailActivity extends BaseActivity {
                         topicInfo = articleEntity.getTopicInfo();
                         //请求关联测评
                         getReferenceExam(topicInfo);
-                    } else {
-                        //隐藏关联测评视图
-                        hideRelativeExamView();
                     }
 
                     //文章评论模块开启则加载评论信息

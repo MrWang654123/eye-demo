@@ -39,4 +39,6 @@ public class ErrorCode {
     public static final String PSY_CLASS_NOT_EXIST = "PSY_CLASS_NOT_EXIST";
 
 
+    //参数错误
+    public static final String PSY_INVALID_PARAM ="PSY_INVALID_PARAM";
 }

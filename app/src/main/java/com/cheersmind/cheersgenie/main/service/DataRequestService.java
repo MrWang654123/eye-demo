@@ -2148,4 +2148,30 @@ public class DataRequestService {
     }
 
 
+    /**
+     * 获取视频真实地址
+     * @param videoId 视频ID
+     * @param sign 签名
+     * @param curTimestamp 当前时间戳
+     * @param callback 回调
+     */
+    public void getVideoRealUrl(String videoId, String sign, String curTimestamp, final BaseService.ServiceCallback callback){
+        String url = HttpConfig.URL_VIDEO_REAL_URL
+                .replace("{video_id}",videoId)
+                .replace("{sign}",sign)
+                .replace("{t}",curTimestamp);
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        });
+
+    }
+
 }
