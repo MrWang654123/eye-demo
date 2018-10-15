@@ -88,7 +88,7 @@ public class QSApplication extends LitePalApplication {
         // 获取MAN服务
         MANService manService = MANServiceProvider.getService();
         // 关闭crash自动采集功能
-        manService.getMANAnalytics().turnOffCrashReporter();
+//        manService.getMANAnalytics().turnOffCrashReporter();
         //初始化
         manService.getMANAnalytics().init(this, getApplicationContext(), Constant.FEEDBACK_APP_KEY, Constant.FEEDBACK_APP_SECRET);
         // 通过此接口关闭页面自动打点功能
