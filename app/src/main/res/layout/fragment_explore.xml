@@ -13,6 +13,7 @@
         android:layout_height="@dimen/heightBigWidget"
         android:fitsSystemWindows="true"
         app:contentInsetStart="0dp"
+        android:visibility="visible"
         android:background="@color/colorPrimary">
         <!--app:navigationIcon="@android:drawable/btn_dialog"-->
         <RelativeLayout
@@ -81,12 +82,14 @@
                 android:background="@color/color_f5f5f5">
                 <!--app:layout_behavior="com.cheersmind.cheersgenie.features.view.CompatFlingBehavior"-->
 
-                <!--<ImageView-->
+                <!--<TextView-->
                     <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="210dp"-->
-                    <!--android:src="@drawable/default_image_round"-->
-                    <!--app:layout_scrollFlags="scroll"-->
-                    <!--/>-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:gravity="center"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:background="#ff0000"-->
+                    <!--android:text="模拟标题"-->
+                    <!--app:layout_scrollFlags="scroll|enterAlways"/>-->
 
                 <com.bigkoo.convenientbanner.ConvenientBanner
                     android:id="@+id/convenientBanner"
@@ -128,6 +131,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_anchor="@id/viewPager"
+                app:layout_anchorGravity="right|bottom"
+                app:fabSize="mini"
+                android:visibility="gone"
+                android:src="@drawable/ic_start" />
+            <!--app:layout_scrollFlags="scroll|enterAlways|snap"-->
+            <!--app:layout_behavior="@string/translate_up_down_behavior"-->
 
         </android.support.design.widget.CoordinatorLayout>
 

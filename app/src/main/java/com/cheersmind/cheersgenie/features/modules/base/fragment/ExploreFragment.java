@@ -379,7 +379,7 @@ public class ExploreFragment extends LazyLoadFragment {
                     viewPager.setVisibility(View.VISIBLE);
                     viewPager.setAdapter(new TabViewPagerAdapter(getChildFragmentManager(), items));
                     //预加载左右2个
-                    viewPager.setOffscreenPageLimit(2);
+//                    viewPager.setOffscreenPageLimit(2);
                     //标签绑定viewpager
                     tabs.setupWithViewPager(viewPager);
 
@@ -428,7 +428,7 @@ public class ExploreFragment extends LazyLoadFragment {
     }
 
 
-    @OnClick({R.id.iv_category, R.id.iv_search})
+    @OnClick({R.id.iv_category, R.id.iv_search, R.id.fab})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //分类
@@ -439,6 +439,11 @@ public class ExploreFragment extends LazyLoadFragment {
             //搜索
             case R.id.iv_search: {
                 SearchArticleActivity.startSearchArticleActivity(getContext(), null);
+                break;
+            }
+            //FAB
+            case R.id.fab: {
+                ToastUtil.showShort(getContext(), "点击FAB");
                 break;
             }
         }

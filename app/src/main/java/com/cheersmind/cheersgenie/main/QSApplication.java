@@ -65,8 +65,10 @@ public class QSApplication extends LitePalApplication {
     //当前顶层activity
     private static Activity topActivity = null;
 
-    //屏幕信息
+    //屏幕宽高信息
     private static DisplayMetrics metrics;
+    //状态栏高度
+    private static int statusBarHeight;
 
 
     @Override
@@ -124,6 +126,11 @@ public class QSApplication extends LitePalApplication {
 
         //屏幕信息
         metrics = context.getResources().getDisplayMetrics();
+        //状态栏高度
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            statusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+        }
 
         //初始化OkHttpUtils
         initOkHttpUtils();
@@ -340,8 +347,19 @@ public class QSApplication extends LitePalApplication {
 //        return preActivity;
 //    }
 
+    /**
+     * 获取屏幕宽高信息
+     * @return
+     */
     public static DisplayMetrics getMetrics() {
         return metrics;
     }
 
+    /**
+     * 获取状态栏高度
+     * @return
+     */
+    public static int getStatusBarHeight() {
+        return statusBarHeight;
+    }
 }

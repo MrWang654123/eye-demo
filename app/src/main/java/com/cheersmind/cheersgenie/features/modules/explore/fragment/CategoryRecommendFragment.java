@@ -4,6 +4,7 @@ package com.cheersmind.cheersgenie.features.modules.explore.fragment;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -27,6 +28,7 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
@@ -34,6 +36,7 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.CategoryEntity;
@@ -41,6 +44,7 @@ import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -81,6 +85,10 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
     RecyclerView recycleView;
     //适配器
     HomeRecyclerAdapter recyclerAdapter;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //空布局
     @BindView(R.id.emptyLayout)
@@ -208,25 +216,77 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
 
         //滑动到底部监听，强制停止Fling
-        recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(fabGotoTop) {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    //表示向下滚动,如果为false表示已经到底部了.
+                    if (!recyclerView.canScrollVertically(1)) {
+                        if (BuildConfig.DEBUG) {
+                            System.out.println("停止滚动");
+                        }
+                        recyclerView.stopScroll();
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //表示向下滚动,如果为false表示已经到底部了.
-                if (!recyclerView.canScrollVertically(1)) {
-                    if (BuildConfig.DEBUG) {
-                        System.out.println("停止滚动");
+                    } else {
+                        super.onScrolled(recyclerView, dx, dy);
                     }
-                    recyclerView.stopScroll();
-                } else {
-                    super.onScrolled(recyclerView, dx, dy);
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //滑动到底部监听，强制停止Fling
+//        recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                //表示向下滚动,如果为false表示已经到底部了.
+//                if (!recyclerView.canScrollVertically(1)) {
+//                    if (BuildConfig.DEBUG) {
+//                        System.out.println("停止滚动");
+//                    }
+//                    recyclerView.stopScroll();
+//                } else {
+//                    super.onScrolled(recyclerView, dx, dy);
+//
+//                    RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+//                    if (layoutManager instanceof LinearLayoutManager) {
+//                        LinearLayoutManager linearManager = (LinearLayoutManager) layoutManager;
+////                        int firstVisibleItemPosition = linearManager.findFirstVisibleItemPosition();
+//                        int lastVisibleItemPosition = linearManager.findLastVisibleItemPosition();
+//                        View viewByPosition = linearManager.findViewByPosition(lastVisibleItemPosition);
+//                        int itemAndDividerHeight = viewByPosition.getMeasuredHeight();
+//                        //屏幕高度
+//                        int screenHeight = QSApplication.getMetrics().heightPixels;
+//                        int statusBarHeight = QSApplication.getStatusBarHeight();
+//                        int otherViewHeight = DensityUtil.dip2px(getContext(),92 + 55);
+//                        int recyclerViewHeight = screenHeight - statusBarHeight - otherViewHeight;
+//                        int controlPosition = recyclerViewHeight / itemAndDividerHeight + 1;
+//
+//                        //向上滑
+//                        if (lastVisibleItemPosition == controlPosition && dy>0) {
+//                            if (fabGotoTop.getVisibility() != View.VISIBLE) {
+////                                fabGotoTop.setVisibility(View.VISIBLE);
+//                                fabGotoTop.show();
+//                            }
+//                        }
+//
+//                        //向下滑
+//                        if (lastVisibleItemPosition == controlPosition && dy<0) {
+//                            if (fabGotoTop.getVisibility() == View.VISIBLE) {
+////                                fabGotoTop.setVisibility(View.INVISIBLE);
+//                                fabGotoTop.hide();
+//                            }
+//                        }
+//                    }
+//                    System.out.println("dy：" + dy);
+//                }
+//            }
+//        });
 
         //设置显示时的动画
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
@@ -261,6 +321,12 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                 loadLastOperateEvaluation();
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
+
+        //初始的时候就置为加载状态（避免tab切换时，视觉上存在滞后感）
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始化数据
         initData();
@@ -324,6 +390,17 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
+    @OnClick({R.id.fabGotoTop})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //置顶按钮
+            case R.id.fabGotoTop: {
+                //滚动到顶部
+                recycleView.smoothScrollToPosition(0);
+                break;
+            }
+        }
+    }
 
     /**
      * 刷新文章数据

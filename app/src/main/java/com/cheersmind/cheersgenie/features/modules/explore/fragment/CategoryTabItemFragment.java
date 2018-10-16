@@ -4,6 +4,7 @@ package com.cheersmind.cheersgenie.features.modules.explore.fragment;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -21,6 +22,7 @@ import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -49,6 +51,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -74,6 +77,10 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
     RecyclerView recycleView;
     //适配器
     HomeRecyclerAdapter recyclerAdapter;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //空布局
     @BindView(R.id.emptyLayout)
@@ -187,25 +194,25 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
 
         //滑动到底部监听，强制停止Fling
-        recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(fabGotoTop) {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    //表示向下滚动,如果为false表示已经到底部了.
+                    if (!recyclerView.canScrollVertically(1)) {
+                        if (BuildConfig.DEBUG) {
+                            System.out.println("停止滚动");
+                        }
+                        recyclerView.stopScroll();
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                //表示向下滚动,如果为false表示已经到底部了.
-                if (!recyclerView.canScrollVertically(1)) {
-                    if (BuildConfig.DEBUG) {
-                        System.out.println("停止滚动");
+                    } else {
+                        super.onScrolled(recyclerView, dx, dy);
                     }
-                    recyclerView.stopScroll();
-                } else {
-                    super.onScrolled(recyclerView, dx, dy);
                 }
-            }
-        });
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //重载监听
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
@@ -215,6 +222,12 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
                 loadMoreArticleData();
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
+
+        //初始的时候就置为加载状态（避免tab切换时，视觉上存在滞后感）
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始化数据
         initData();
@@ -276,6 +289,18 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
+
+    @OnClick({R.id.fabGotoTop})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //置顶按钮
+            case R.id.fabGotoTop: {
+                //滚动到顶部
+                recycleView.smoothScrollToPosition(0);
+                break;
+            }
+        }
+    }
 
     /**
      * 刷新文章数据
