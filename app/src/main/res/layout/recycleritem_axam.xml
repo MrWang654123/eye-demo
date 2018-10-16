@@ -21,7 +21,7 @@
             app:layout_constraintDimensionRatio="h,16:9"
             android:layout_alignParentTop="true"
             android:contentDescription="@string/placeholder_for_item"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop" />
         <!--android:background="@drawable/default_image_round"-->
         <!--android:scaleType="fitCenter" -->
         <!--android:scaleType="centerCrop" -->
