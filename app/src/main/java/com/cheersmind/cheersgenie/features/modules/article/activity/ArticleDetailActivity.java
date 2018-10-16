@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.content.ContextCompat;
@@ -227,6 +228,9 @@ public class ArticleDetailActivity extends BaseActivity {
 
     @Override
     public void onInitView() {
+        //默认白色
+        setStatusBarColor(ArticleDetailActivity.this, Color.parseColor("#ffffff"));
+
         //正在加载提示
         xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         //重载点击监听

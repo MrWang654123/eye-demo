@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="55dp"
-    android:minHeight="55dp"
+    android:layout_height="@dimen/heightBigWidget"
+    android:minHeight="@dimen/heightBigWidget"
     android:background="@color/colorPrimary"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
     app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -26,7 +26,7 @@
             android:padding="14dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/close"/>
+            android:src="@drawable/back_black"/>
 
         <TextView
             android:id="@+id/tv_toolbar_title"
