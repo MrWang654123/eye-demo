@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -166,6 +167,8 @@ public class ArticleListActivity extends BaseActivity {
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
         recyclerAdapter.addHeaderView(new View(this));
+        //去除默认的动画效果
+        ((DefaultItemAnimator) recycleView.getItemAnimator()).setSupportsChangeAnimations(false);
         recycleView.setLayoutManager(new LinearLayoutManager(ArticleListActivity.this));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
