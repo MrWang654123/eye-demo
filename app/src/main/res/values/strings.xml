@@ -100,7 +100,7 @@
     <string name="exam_dimension_use_count">%s人测过</string>
     <string name="exam_dimension_status_complete">已完成</string>
     <string name="exam_question_count">%s个问题</string>
-    <string name="exam_need_to_know">▪ 测评须知 ▪</string>
+    <string name="exam_need_to_know">测评须知</string>
     <string name="exam_what">▪ 测什么 ▪</string>
     <string name="student">学生</string>
     <string name="parent">家长</string>

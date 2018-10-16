@@ -154,6 +154,11 @@ public class DimensionDetailActivity extends BaseActivity {
 //            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
 //        }
 
+        //默认白色
+        setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#ffffff"));
+
+        //标题
+        tvToolbarTitle.setText(dimensionInfoEntity.getDimensionName());
 
         //图片
         Glide.with(DimensionDetailActivity.this)
@@ -161,6 +166,7 @@ public class DimensionDetailActivity extends BaseActivity {
 //                .thumbnail(0.5f)
                 .apply(QSApplication.getDefaultOptions())
                 .into(ivDimension);
+
         //名称
         tvDimensionName.setText(dimensionInfoEntity.getDimensionName());
         //适合人群
