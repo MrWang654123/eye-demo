@@ -379,7 +379,7 @@ public class ExploreFragment extends LazyLoadFragment {
                     viewPager.setVisibility(View.VISIBLE);
                     viewPager.setAdapter(new TabViewPagerAdapter(getChildFragmentManager(), items));
                     //预加载左右2个
-//                    viewPager.setOffscreenPageLimit(2);
+                    viewPager.setOffscreenPageLimit(2);
                     //标签绑定viewpager
                     tabs.setupWithViewPager(viewPager);
 
