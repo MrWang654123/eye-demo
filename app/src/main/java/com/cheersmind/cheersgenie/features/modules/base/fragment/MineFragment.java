@@ -30,6 +30,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
+import com.cheersmind.cheersgenie.features.event.ModifyNicknameEvent;
 import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
@@ -225,6 +226,27 @@ public class MineFragment extends TakePhotoFragment {
         if (!TextUtils.isEmpty(profileUrl)) {
             //刷新头像
             refreshProfile(profileUrl);
+        }
+
+    }
+
+    /**
+     *
+     * 修改昵称的通知
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+//    @Subscribe
+    public void onModifyNicknameNotice(ModifyNicknameEvent event) {
+        if (event == null) {
+            return;
+        }
+
+        //刷新昵称视图
+        UserInfo userInfo = event.getUserInfo();
+        if (userInfo != null) {
+            //刷新用户名和昵称的视图
+            refreshUserNameAndNickname(userInfo.getUserName(), userInfo.getNickName());
         }
 
     }
@@ -453,10 +475,10 @@ public class MineFragment extends TakePhotoFragment {
      * @param userInfo 用户信息
      */
     private void refreshPersonalInfo(UserInfo userInfo) {
-        tvUserName.setVisibility(View.VISIBLE);
-//        tvGender.setVisibility(View.VISIBLE);
-        //姓名
-        tvUserName.setText(userInfo.getUserName());
+
+        //刷新用户名和昵称的视图
+        refreshUserNameAndNickname(userInfo.getUserName(), userInfo.getNickName());
+
         //性别
         tvGender.setText(userInfo.getSex() == 1 ? "男": "女");
 
@@ -469,6 +491,30 @@ public class MineFragment extends TakePhotoFragment {
 
         //刷新头像
         refreshProfile(userInfo.getAvatar());
+    }
+
+    /**
+     * 刷新用户名和昵称的视图
+     * @param userName 用户名
+     * @param nickname 昵称
+     */
+    private void refreshUserNameAndNickname(String userName, String nickname) {
+        tvUserName.setVisibility(View.VISIBLE);
+//        tvGender.setVisibility(View.VISIBLE);
+
+        if (!TextUtils.isEmpty(nickname)) {
+            if (!TextUtils.isEmpty(userName)) {
+                //姓名 + 昵称
+                tvUserName.setText(String.valueOf(userName + "（" + nickname + "）"));
+
+            } else {
+                //昵称
+                tvUserName.setText(nickname);
+            }
+        } else {
+            //姓名
+            tvUserName.setText(userName);
+        }
     }
 
     /**

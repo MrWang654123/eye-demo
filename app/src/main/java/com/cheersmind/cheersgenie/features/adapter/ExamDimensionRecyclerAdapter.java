@@ -70,6 +70,8 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
                 .skipMemoryCache(false)//不忽略内存
                 .placeholder(R.drawable.default_image_round)//占位图
 //                .placeholder(R.drawable.default_image_round_exam)//占位图
+                .error(R.drawable.default_image_round)
+//                .fallback(R.drawable.default_image_round) //url为空的时候,显示的图片
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
                 .transform(multi);

@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
+import com.cheersmind.cheersgenie.features.event.ModifyNicknameEvent;
 import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.TakePhotoFragment;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
@@ -297,12 +298,16 @@ public class UserInfoFragment extends TakePhotoFragment {
         } else {//是自己
             //隐藏提示是孩子信息
             tvChildInfoTip.setVisibility(View.GONE);
-            userName = userInfo.getUserName();
-            gender = userInfo.getSex();
+            if (userInfo != null) {
+                userName = userInfo.getUserName();
+                gender = userInfo.getSex();
+            }
         }
 
-        //昵称
-        tvNickname.setText(userInfo.getNickName());
+        if (userInfo != null) {
+            //昵称
+            tvNickname.setText(userInfo.getNickName());
+        }
         //姓名
         tvUserName.setText(userName);
         //性别
@@ -415,6 +420,9 @@ public class UserInfoFragment extends TakePhotoFragment {
 
                 //刷新昵称视图
                 tvNickname.setText(nickname);
+
+                //发送修改昵称的通知
+                EventBus.getDefault().post(new ModifyNicknameEvent(userInfo));
 
                 //提示
                 ToastUtil.showShort(context, "修改成功");
