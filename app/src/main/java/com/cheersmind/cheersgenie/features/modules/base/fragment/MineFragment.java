@@ -3,9 +3,14 @@ package com.cheersmind.cheersgenie.features.modules.base.fragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
@@ -25,7 +30,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
+import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
@@ -521,7 +532,7 @@ public class MineFragment extends TakePhotoFragment {
      * 刷新头像
      * @param profileUrl 头像url
      */
-    private void refreshProfile(String profileUrl) {
+    private void refreshProfile(final String profileUrl) {
         if (TextUtils.isEmpty(profileUrl)) {
             return;
         }
@@ -530,14 +541,89 @@ public class MineFragment extends TakePhotoFragment {
         GlideUrl glideUrl = new GlideUrl(profileUrl, new LazyHeaders.Builder()
                 .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
                 .build());
-        //加载网络图片
-        Glide.with(this)
-                .load(glideUrl)
-//                .thumbnail(0.5f)
-                .apply(options)
-                .into(ivProfile);
 
         //解析出图片名称
+        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+        //本地文件的完整名称
+        final String fileFullName = FileUtil.getFileFullNameFromExtraDirs(getContext(), imageName);
+        Bitmap bitmap = null;
+        if (!TextUtils.isEmpty(fileFullName)) {
+            try {
+                bitmap = BitmapFactory.decodeFile(fileFullName);
+            } catch (Exception e) {
+                bitmap = null;
+            }
+        }
+        //预加载Bitmap
+        final Bitmap preloadBitmap = bitmap;
+        //加载网络图片
+        ImageViewTarget target = new ImageViewTarget<BitmapDrawable>(ivProfile){
+
+            @Override
+            public void onLoadStarted(@Nullable Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                if (preloadBitmap != null) {
+                    view.setImageBitmap(preloadBitmap);
+                }
+            }
+
+            @Override
+            public void onResourceReady(final @NonNull BitmapDrawable resource, @Nullable Transition<? super BitmapDrawable> transition) {
+                super.onResourceReady(resource, transition);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //保存bitmap到外部文件系统
+                        FileUtil.saveBitmapToExtraDirs(getContext(), imageName, resource.getBitmap());
+                    }
+                }).start();
+            }
+
+            @Override
+            protected void setResource(@Nullable BitmapDrawable resource) {
+                if (resource != null) {
+                    Bitmap bitmap = resource.getBitmap();
+                    view.setImageBitmap(bitmap);
+                } else {
+                    view.setImageBitmap(null);
+                }
+            }
+        };
+
+        Glide.with(this)
+                .load(glideUrl)
+                .apply(options)
+                .into(target);
+
+//        ImageViewTarget target = new ImageViewTarget<BitmapDrawable>(ivProfile){
+//
+//            @Override
+//            public void onResourceReady(@NonNull BitmapDrawable resource, @Nullable Transition<? super BitmapDrawable> transition) {
+//                super.onResourceReady(resource, transition);
+//                //解析出图片名称
+//                String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+//                //保存bitmap到外部文件系统
+//                FileUtil.saveBitmapToExtraDirs(getContext(), imageName, resource.getBitmap());
+//            }
+//
+//            @Override
+//            protected void setResource(@Nullable BitmapDrawable resource) {
+//                if (resource != null) {
+//                    Bitmap bitmap = resource.getBitmap();
+//                    view.setImageBitmap(bitmap);
+//                } else {
+//                    view.setImageBitmap(null);
+//                }
+//            }
+//        };
+//
+//
+//        ImageViewTarget into = Glide.with(this)
+//                .load(glideUrl)
+//                .apply(options)
+//                .into(target);
+
+//        //解析出图片名称
 //        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
 //        File fileImage = FileUtil.getFileFromExtraDirs(getContext(), imageName);
 //        if (fileImage != null && fileImage.exists()) {
@@ -611,7 +697,7 @@ public class MineFragment extends TakePhotoFragment {
                         @Override
                         public void run() {
                             //保存文件
-//                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
+                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
                         }
                     }).start();
 

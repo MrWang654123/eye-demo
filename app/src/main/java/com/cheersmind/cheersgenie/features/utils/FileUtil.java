@@ -1,13 +1,55 @@
 package com.cheersmind.cheersgenie.features.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 public class FileUtil {
+
+    /**
+     * 保存bitmap，到Android外部文件系统
+     * @param context 上下文
+     * @param saveName 保存后的文件名称
+     * @param bitmap 内容文件
+     * @return true：保存成功
+     */
+    public static boolean saveBitmapToExtraDirs(Context context,String saveName, Bitmap bitmap) {
+        boolean res = false;
+        try {
+            if (bitmap == null) {
+                return false;
+            }
+            String state = Environment.getExternalStorageState();
+
+            if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                return false;
+            }
+            File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (externalFilesDir != null) {
+                //目标文件完整名称
+                String descFullFileName = externalFilesDir.getAbsolutePath() + File.separator + saveName;
+
+                //打开文件输入流
+                FileOutputStream outputStream = new FileOutputStream(descFullFileName);
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                //标记存储成功
+                res = true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return res;
+    }
 
     /**
      * 保存文件，到Android外部文件系统
@@ -113,5 +155,32 @@ public class FileUtil {
         return res;
     }
 
+
+    /**
+     * 获取文件完整名称，从Android外部文件系统
+     * @param context 上下文
+     * @param fileName 文件名称
+     * @return 文件对象
+     */
+    public static String getFileFullNameFromExtraDirs(Context context, String fileName) {
+        try {
+            if (TextUtils.isEmpty(fileName)) {
+                return null;
+            }
+            String state = Environment.getExternalStorageState();
+            if (!Environment.MEDIA_MOUNTED.equals(state)) {
+                return null;
+            }
+            File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (externalFilesDir !=null && externalFilesDir.exists()) {
+                //目标文件完整名称
+                return externalFilesDir.getAbsolutePath() + File.separator + fileName;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }

@@ -3,6 +3,12 @@ package com.cheersmind.cheersgenie.features.modules.mine.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +19,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.ImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
@@ -207,7 +215,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                         @Override
                         public void run() {
                             //保存文件
-//                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
+                            FileUtil.saveFileToExtraDirs(getContext(), imageName, file);
                             //发送修改头像的通知
                             EventBus.getDefault().post(new ModifyProfileEvent(profileUrl));
                         }
@@ -342,7 +350,7 @@ public class UserInfoFragment extends TakePhotoFragment {
      * 刷新头像
      * @param profileUrl 头像url
      */
-    private void refreshProfile(String profileUrl) {
+    private void refreshProfile(final String profileUrl) {
         if (TextUtils.isEmpty(profileUrl)) {
             return;
         }
@@ -351,12 +359,70 @@ public class UserInfoFragment extends TakePhotoFragment {
         GlideUrl glideUrl = new GlideUrl(profileUrl, new LazyHeaders.Builder()
                 .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
                 .build());
+
+        //解析出图片名称
+        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
+        //本地文件的完整名称
+        final String fileFullName = FileUtil.getFileFullNameFromExtraDirs(getContext(), imageName);
+        Bitmap bitmap = null;
+        if (!TextUtils.isEmpty(fileFullName)) {
+            try {
+                bitmap = BitmapFactory.decodeFile(fileFullName);
+            } catch (Exception e) {
+                bitmap = null;
+            }
+        }
+        //预加载Bitmap
+        final Bitmap preloadBitmap = bitmap;
         //加载网络图片
+        ImageViewTarget target = new ImageViewTarget<BitmapDrawable>(ivProfile){
+
+            @Override
+            public void onLoadStarted(@Nullable Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                if (preloadBitmap != null) {
+                    view.setImageBitmap(preloadBitmap);
+                }
+            }
+
+            @Override
+            public void onResourceReady(final @NonNull BitmapDrawable resource, @Nullable Transition<? super BitmapDrawable> transition) {
+                super.onResourceReady(resource, transition);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //保存bitmap到外部文件系统
+                        FileUtil.saveBitmapToExtraDirs(getContext(), imageName, resource.getBitmap());
+                    }
+                }).start();
+            }
+
+            @Override
+            protected void setResource(@Nullable BitmapDrawable resource) {
+                if (resource != null) {
+                    Bitmap bitmap = resource.getBitmap();
+                    view.setImageBitmap(bitmap);
+                } else {
+                    view.setImageBitmap(null);
+                }
+            }
+        };
+
         Glide.with(this)
                 .load(glideUrl)
-//                .thumbnail(0.5f)
                 .apply(options)
-                .into(ivProfile);
+                .into(target);
+
+//        //非空
+//        GlideUrl glideUrl = new GlideUrl(profileUrl, new LazyHeaders.Builder()
+//                .addHeader(Dictionary.PROFILE_HEADER_KEY, Dictionary.PROFILE_HEADER_VALUE)
+//                .build());
+//        //加载网络图片
+//        Glide.with(this)
+//                .load(glideUrl)
+////                .thumbnail(0.5f)
+//                .apply(options)
+//                .into(ivProfile);
 
         //解析出图片名称
 //        final String imageName = ImageUtil.parseImageNameFromUrl(profileUrl);
