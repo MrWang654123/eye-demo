@@ -25,7 +25,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  */
 public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
 
-    private Context context;
+    private Fragment fragment;
     //主图
     private ImageView ivMain;
     //播放键
@@ -42,11 +42,11 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     /**
      * 初始化默认Glide处理参数
      */
-    private void initRequestOptions(Context context) {
-        if (context != null) {
+    private void initRequestOptions(Fragment fragment) {
+        if (fragment != null && fragment.getContext() != null) {
             MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                     new CenterCrop(),
-                    new RoundedCornersTransformation(DensityUtil.dip2px(context, 12), 0, RoundedCornersTransformation.CornerType.ALL));
+                    new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getContext(), 12), 0, RoundedCornersTransformation.CornerType.ALL));
         }
 
         //默认Glide处理参数
@@ -60,11 +60,11 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     }
 
 
-    public BannerHomeHolder(Context context, View itemView) {
+    public BannerHomeHolder(Fragment fragment, View itemView) {
         super(itemView);
-        this.context = context;
+        this.fragment = fragment;
 
-        initRequestOptions(context);
+        initRequestOptions(fragment);
     }
 
     @Override
@@ -78,11 +78,13 @@ public class BannerHomeHolder extends Holder<SimpleArticleEntity> {
     @Override
     public void updateUI(SimpleArticleEntity entity) {
         //主图
-        Glide.with(context)
-                .load(entity.getArticleImg())
+        if (fragment != null) {
+            Glide.with(fragment)
+                    .load(entity.getArticleImg())
 //                .thumbnail(0.5f)//缩略图
-                .apply(defaultOptions)
-                .into(ivMain);
+                    .apply(defaultOptions)
+                    .into(ivMain);
+        }
 
         //播放键
         if (entity.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {

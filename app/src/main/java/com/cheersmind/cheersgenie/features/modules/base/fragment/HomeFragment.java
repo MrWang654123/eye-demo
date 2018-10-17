@@ -115,7 +115,7 @@ public class HomeFragment extends LazyLoadFragment {
     CBViewHolderCreator viewHolderCreator = new CBViewHolderCreator() {
         @Override
         public Holder createHolder(View itemView) {
-            return new BannerHomeHolder(getContext(), itemView);
+            return new BannerHomeHolder(HomeFragment.this, itemView);
         }
 
         @Override
