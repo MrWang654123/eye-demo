@@ -239,7 +239,7 @@ public class DimensionReportDialog extends Dialog {
             //测试用
             testInitView();
         } else {
-            //加载分类
+            //加载报告
             loadReport();
         }
     }

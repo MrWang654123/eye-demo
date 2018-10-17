@@ -47,6 +47,11 @@ public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+        //非根目录则关闭退出
+        if (!isTaskRoot()) {
+            finish();
+            return;
+        }
         //隐藏工具栏
 //        getSupportActionBar().hide();
         //全屏，隐藏标题栏

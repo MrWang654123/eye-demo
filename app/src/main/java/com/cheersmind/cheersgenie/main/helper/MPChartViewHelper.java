@@ -53,6 +53,7 @@ public class MPChartViewHelper {
             //图表高度，雷达图高度比其他的高一些（方便展示）
 //            int height = chartType == MPChartType.RADARCHARTVIEW.getType() ? 300 : 260;
 //            int height = 300;
+            //获取图表的高度
             int height = adjustHeightByXLabels(reportItemEntity);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                     DensityUtil.dip2px(context,height));
@@ -87,7 +88,7 @@ public class MPChartViewHelper {
     public static final int ADJUST_MAX_LENGTH_2 = 12;
 
     /**
-     *
+     * 获取图表的高度
      * @param reportItemEntity
      * @return
      */
@@ -106,11 +107,9 @@ public class MPChartViewHelper {
                 List<String> xLabels = getXLabels(reportItemEntity);
                 //非空
                 if (ArrayListUtil.isNotEmpty(xLabels)) {
-                    //x轴文本的最大长度
-                    int xLabelsMaxLength = getXLabelsMaxLength(xLabels);
                     //X轴坐标数量大于5，且最大文本长度大于7，则X轴文本旋转30度
                     if (xLabels.size() >= ADJUST_SIZE_3) {
-                        //最大长度
+                        //x轴文本的最大长度
                         int maxLen = getXLabelsMaxLength(xLabels);
                         if (maxLen >= ADJUST_MAX_LENGTH_2) {
                             height = 350;
@@ -128,7 +127,7 @@ public class MPChartViewHelper {
 
     /**
      * 获取x轴坐标文本集合
-     * @param reportItemEntity
+     * @param reportItemEntity 报告数据集合
      * @return
      */
     private static List<String> getXLabels(ReportItemEntity reportItemEntity) {
@@ -148,10 +147,10 @@ public class MPChartViewHelper {
 
     /**
      * 获取x轴文本的最大长度
-     * @param xLabels
+     * @param xLabels X轴文章集合
      * @return
      */
-    public static int getXLabelsMaxLength(List<String> xLabels) {
+    private static int getXLabelsMaxLength(List<String> xLabels) {
         if (xLabels == null) {
             return 0;
         }
