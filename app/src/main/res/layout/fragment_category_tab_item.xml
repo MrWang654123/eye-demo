@@ -28,7 +28,7 @@
             android:id="@+id/fabGotoTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_gravity="right|bottom"
             android:visibility="visible"
             app:fabSize="mini"

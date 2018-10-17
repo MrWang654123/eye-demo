@@ -175,4 +175,7 @@
     <string name="empty_tip_article_for_search">暂无相关文章</string>
     <string name="empty_tip_category">暂无分类</string>
 
+    <!--behaver-->
+    <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>
+
 </resources>

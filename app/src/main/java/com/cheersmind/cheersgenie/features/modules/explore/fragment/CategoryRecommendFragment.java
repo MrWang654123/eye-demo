@@ -219,6 +219,11 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         try {
             recycleView.addOnScrollListener(new RecyclerViewScrollListener(fabGotoTop) {
                 @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     //表示向下滚动,如果为false表示已经到底部了.
                     if (!recyclerView.canScrollVertically(1)) {
