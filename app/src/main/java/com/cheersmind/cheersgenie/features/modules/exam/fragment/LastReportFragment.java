@@ -1,22 +1,29 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
+import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
+import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -49,6 +56,10 @@ public class LastReportFragment extends LazyLoadFragment {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
+
     //报告列表header
     View headerReportView;
     TextView tvTopicReportTitle;
@@ -59,6 +70,36 @@ public class LastReportFragment extends LazyLoadFragment {
     List<List<ReportItemEntity>> recyclerItem = new ArrayList<>();//每个报告可能不只一个图表
     //适配器
     private ReportRecyclerAdapter recyclerAdapter;
+
+    //比较范围：默认全国
+    private int compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
+    //通信tag
+    private String tag = System.currentTimeMillis() + "";
+
+    //比较范围切换监听
+    private RadioGroup.OnCheckedChangeListener  compareChangeListener = new RadioGroup.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            //取消当前对话框的所有通信
+            BaseService.cancelTag(tag);
+
+            switch (checkedId) {
+                //比较范围国家
+                case R.id.rb_compare_country: {
+                    compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
+                    break;
+                }
+                //比较范围年级
+                case R.id.rb_compare_grade: {
+                    compareType = Dictionary.REPORT_COMPARE_AREA_GRADE;
+                    break;
+                }
+            }
+
+            //加载报告
+            loadReport(compareType);
+        }
+    };
 
 
     @Override
@@ -89,12 +130,14 @@ public class LastReportFragment extends LazyLoadFragment {
             @Override
             public void onMultiClick(View view) {
                 //加载报告
-                loadReport();
+                loadReport(compareType);
             }
         });
 
         //适配器
         recyclerAdapter = new ReportRecyclerAdapter(getContext(), R.layout.recycleritem_report, recyclerItem);
+        //添加比较范围切换监听
+        recyclerAdapter.setCompareChangeListener(compareChangeListener);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
@@ -103,31 +146,44 @@ public class LastReportFragment extends LazyLoadFragment {
 //        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
 //        recycleView.addItemDecoration(divider);
 
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //报告列表header
         headerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_header_topic_report, null);
         tvTopicReportTitle = headerReportView.findViewById(R.id.tv_topic_report_title);
         recyclerAdapter.addHeaderView(headerReportView);
         headerReportView.setVisibility(View.GONE);//初始隐藏header
 
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void lazyLoad() {
         //加载报告
-        loadReport();
+        loadReport(compareType);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+
+        //取消当前对话框的所有通信
+        BaseService.cancelTag(tag);
     }
 
 
     /**
      * 加载报告
+     * @param compareType 比较类型
      */
-    private void loadReport() {
+    private void loadReport(int compareType) {
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
@@ -135,7 +191,7 @@ public class LastReportFragment extends LazyLoadFragment {
                 topicInfo.getChildTopic().getChildExamId(),
                 topicInfo.getTopicId(),
                 Dictionary.REPORT_TYPE_TOPIC,
-                Dictionary.REPORT_COMPARE_AREA_COUNTRY,
+                compareType,
                 new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
@@ -164,6 +220,8 @@ public class LastReportFragment extends LazyLoadFragment {
                             List<ReportItemEntity> reportItems = data.getChartDatas();
                             //把报告结果置于报告图表对象中
                             reportItems = settingResultToReportItem(reportItems, reportResultEntities);
+                            //把比较名称置于报告图表对象中
+                            settingCompareName(reportItems, data);
                             //把reportItems分组，每个量表可能不只一个图表
                             recyclerItem = groupReportItem(reportItems);
 
@@ -185,7 +243,23 @@ public class LastReportFragment extends LazyLoadFragment {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                });
+                }, tag);
+    }
+
+
+    /**
+     * 把比较名称置于报告图表对象中
+     * @param reportItems
+     * @param data
+     */
+    private void settingCompareName(List<ReportItemEntity> reportItems, ReportRootEntity data) {
+        if (reportItems == null || data == null) {
+            return;
+        }
+
+        for (ReportItemEntity reportItem : reportItems) {
+            reportItem.setCompareName(data.getCompareName());
+        }
     }
 
     /**

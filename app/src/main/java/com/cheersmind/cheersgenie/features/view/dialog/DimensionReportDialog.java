@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
@@ -55,6 +56,9 @@ public class DimensionReportDialog extends Dialog {
     //比较范围模块
     @BindView(R.id.ll_compare)
     LinearLayout llCompare;
+    //比较范围
+    @BindView(R.id.rg_compare)
+    RadioGroup rgCompare;
 
     //报告内容布局
     @BindView(R.id.ll_report_content)
@@ -102,6 +106,11 @@ public class DimensionReportDialog extends Dialog {
 
     //操作监听
     private OnOperationListener listener;
+
+    //比较范围：默认全国
+    private int compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
+    //通信tag
+    private String tag = System.currentTimeMillis() + "";
 
 
     private String testReportStr = "{\n" +
@@ -240,7 +249,7 @@ public class DimensionReportDialog extends Dialog {
             testInitView();
         } else {
             //加载报告
-            loadReport();
+            loadReport(compareType);
         }
     }
 
@@ -254,8 +263,8 @@ public class DimensionReportDialog extends Dialog {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                //加载分类
-                loadReport();
+                //加载报告
+                loadReport(compareType);
             }
         });
 
@@ -263,12 +272,37 @@ public class DimensionReportDialog extends Dialog {
         llChart = findViewById(R.id.ll_chart);
         //后台不生成报告的提示
         tvNone = findViewById(R.id.tv_none);
+
+        rgCompare.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                //取消当前对话框的所有通信
+                BaseService.cancelTag(tag);
+
+                switch (checkedId) {
+                    //比较范围国家
+                    case R.id.rb_compare_country: {
+                        compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
+                        break;
+                    }
+                    //比较范围年级
+                    case R.id.rb_compare_grade: {
+                        compareType = Dictionary.REPORT_COMPARE_AREA_GRADE;
+                        break;
+                    }
+                }
+
+                //加载报告
+                loadReport(compareType);
+            }
+        });
     }
 
     /**
      * 加载报告
+     * @param compareType 比较类型
      */
-    private void loadReport() {
+    private void loadReport(int compareType) {
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
@@ -276,7 +310,7 @@ public class DimensionReportDialog extends Dialog {
                 dimension.getChildDimension().getChildExamId(),
                 dimension.getTopicDimensionId(),
                 Dictionary.REPORT_TYPE_DIMENSION,
-                Dictionary.REPORT_COMPARE_AREA_COUNTRY,
+                compareType,
                 new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
@@ -332,6 +366,13 @@ public class DimensionReportDialog extends Dialog {
                                     }
                                 }
 
+                                //为报告图表对象设置比较名称
+                                if (ArrayListUtil.isNotEmpty(dimensionReports)) {
+                                    for (ReportItemEntity reportItem : dimensionReports) {
+                                        reportItem.setCompareName(data.getCompareName());
+                                    }
+                                }
+
                                 //刷新报告视图
                                 refreshReportView(dimensionReports);
                             }
@@ -341,7 +382,7 @@ public class DimensionReportDialog extends Dialog {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                });
+                }, tag);
     }
 
     /**
@@ -359,6 +400,9 @@ public class DimensionReportDialog extends Dialog {
                 tvDimensionTitle.setText(dimension.getDimensionName());
             }
 
+            if (llChart.getChildCount() > 0 ) {
+                llChart.removeAllViews();
+            }
             //生成图表
             MPChartViewHelper.addMpChartView(context, llChart, dimensionReports);
 
@@ -438,10 +482,18 @@ public class DimensionReportDialog extends Dialog {
 //                    listener.onExit();
 //                }
                 dismiss();
+                break;
             }
         }
     }
 
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        //取消当前对话框的所有通信
+        BaseService.cancelTag(tag);
+    }
 
     //操作监听
     public interface OnOperationListener {

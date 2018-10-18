@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -25,6 +26,9 @@ import java.util.List;
 public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntity>, BaseViewHolder> {
 
     private Context context;
+
+    //比较范围切换监听
+    private RadioGroup.OnCheckedChangeListener  compareChangeListener;
 
     public ReportRecyclerAdapter(Context context, int layoutResId, @Nullable List<List<ReportItemEntity>> data) {
         super(layoutResId, data);
@@ -121,6 +125,20 @@ public class ReportRecyclerAdapter extends BaseQuickAdapter<List<ReportItemEntit
             helper.getView(R.id.ll_result_footer).setVisibility(View.GONE);
         }
 
+        //比较范围切换监听
+        if (this.compareChangeListener != null) {
+            ((RadioGroup)helper.getView(R.id.rg_compare)).setOnCheckedChangeListener(this.compareChangeListener);
+        }
 
     }
+
+    /**
+     * 设置比较范围切换监听
+     * @param compareChangeListener
+     */
+    public void setCompareChangeListener(RadioGroup.OnCheckedChangeListener compareChangeListener) {
+        this.compareChangeListener = compareChangeListener;
+    }
+
 }
+

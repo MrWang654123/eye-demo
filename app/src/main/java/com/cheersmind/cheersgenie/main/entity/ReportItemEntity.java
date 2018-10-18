@@ -65,6 +65,9 @@ public class ReportItemEntity implements Serializable {
     @InjectMap(name = "chart_item_name")
     private String chartItemName;
 
+    //比较名称
+    private String compareName = "";
+
     public boolean getTopic() {
         return isTopic;
     }
@@ -151,5 +154,17 @@ public class ReportItemEntity implements Serializable {
 
     public void setChartItemName(String chartItemName) {
         this.chartItemName = chartItemName;
+    }
+
+    public String getCompareName() {
+        return compareName;
+    }
+
+    public void setCompareName(String compareName) {
+        this.compareName = compareName;
+    }
+
+    public boolean isTopic() {
+        return isTopic;
     }
 }

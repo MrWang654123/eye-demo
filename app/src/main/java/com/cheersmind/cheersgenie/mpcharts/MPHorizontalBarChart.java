@@ -182,7 +182,7 @@ public class MPHorizontalBarChart extends MPBaseChart implements OnChartValueSel
                 set1.setDrawIcons(false);
                 set1.setColors(Color.parseColor(dataSetColor_1));
             }else{
-                set1 = new BarDataSet(yValues, "全国");
+                set1 = new BarDataSet(yValues, reportData.getCompareName());
                 set1.setDrawIcons(false);
                 set1.setColors(Color.parseColor(dataSetColor_2));
             }

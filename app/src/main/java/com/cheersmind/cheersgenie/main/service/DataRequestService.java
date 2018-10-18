@@ -1707,10 +1707,23 @@ public class DataRequestService {
      * @param childExamId 孩子测评ID
      * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
      * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
-     * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区)
+     * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
      * @param callback
      */
     public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback){
+        getReportV2(childExamId, relationId, relationType, compareId, callback, QSApplication.getCurrentActivity().getLocalClassName());
+    }
+
+    /**
+     * 获取报告V2
+     * @param childExamId 孩子测评ID
+     * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
+     * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
+     * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
+     * @param tag 通信标记
+     * @param callback 回调
+     */
+    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String tag){
         String url = HttpConfig.URL_REPORT_V2
                 .replace("{child_exam_id}",childExamId)
                 .replace("{relation_id}", relationId)
@@ -1726,7 +1739,7 @@ public class DataRequestService {
             public void onResponse(Object obj) {
                 callback.onResponse(obj);
             }
-        });
+        }, tag);
     }
 
 

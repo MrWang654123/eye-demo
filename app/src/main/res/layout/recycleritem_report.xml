@@ -33,8 +33,8 @@
             android:id="@+id/rl_dimension_title"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
             android:visibility="visible"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -68,26 +68,38 @@
                     android:padding="5dp"
                     android:src="@drawable/vs"/>
 
-                <ImageView
-                    android:id="@+id/iv_compare_country"
-                    android:layout_width="30dp"
-                    android:layout_height="35dp"
-                    android:padding="3dp"
-                    android:src="@drawable/compare_country_selected"/>
+                <RadioGroup
+                    android:id="@+id/rg_compare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/iv_compare_class"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="3dp"
-                    android:src="@drawable/compare_class_normal"/>
+                    <RadioButton
+                        android:id="@+id/rb_compare_country"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/radio_btn_compare_country"
+                        android:checked="true"
+                        android:button="@null"/>
 
-                <ImageView
-                    android:id="@+id/iv_compare_grade"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="3dp"
-                    android:src="@drawable/compare_grade_normal"/>
+                    <RadioButton
+                        android:id="@+id/rb_compare_class"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/radio_btn_compare_class"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="gone"
+                        android:button="@null"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_compare_grade"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/radio_btn_compare_grade"
+                        android:button="@null"/>
+
+                </RadioGroup>
 
             </LinearLayout>
 

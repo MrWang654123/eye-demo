@@ -40,6 +40,12 @@ public class Dictionary {
 
     //报告数据比较的范围：全国
     public static final int REPORT_COMPARE_AREA_COUNTRY = 0;
+    //报告数据比较的范围：学校
+    public static final int REPORT_COMPARE_AREA_SCHOOL = 5;
+    //报告数据比较的范围：年级
+    public static final int REPORT_COMPARE_AREA_GRADE = 6;
+    //报告数据比较的范围：班级
+    public static final int REPORT_COMPARE_AREA_CLASS = 7;
 
     //话题状态：未完成
     public static final int TOPIC_STATUS_INCOMPLETE = 0;

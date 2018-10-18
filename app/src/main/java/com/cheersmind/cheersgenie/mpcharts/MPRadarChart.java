@@ -138,7 +138,7 @@ public class MPRadarChart extends MPBaseChart {
                 // 是否绘制Y值到图表
                 set1.setDrawValues(true);
             }else{
-                set1 = new RadarDataSet(yValues, "全国");
+                set1 = new RadarDataSet(yValues, reportData.getCompareName());
                 set1.setColor(Color.parseColor(dataSetColor_2));
                 set1.setFillColor(Color.parseColor(dataSetColor_2));
                 set1.setDrawFilled(true);

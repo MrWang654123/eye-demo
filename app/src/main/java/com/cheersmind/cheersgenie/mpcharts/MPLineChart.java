@@ -219,7 +219,7 @@ public class MPLineChart extends MPBaseChart implements OnChartValueSelectedList
                 set1.setHighLightColor(Color.parseColor(dataSetColor_1));
                 set1.setDrawCircleHole(true);
             }else{
-                set1 = new LineDataSet(yValues, "全国");
+                set1 = new LineDataSet(yValues, reportData.getCompareName());
                 set1.setAxisDependency(YAxis.AxisDependency.LEFT);
                 set1.setColor(Color.parseColor(dataSetColor_2));
                 set1.setCircleColor(Color.parseColor(dataSetColor_2));
