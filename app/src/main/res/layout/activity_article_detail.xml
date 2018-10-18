@@ -395,9 +395,9 @@
                             android:layout_width="35dp"
                             android:layout_height="35dp"
                             android:paddingTop="6dp"
-                            android:paddingLeft="4dp"
-                            android:paddingRight="4dp"
-                            android:paddingBottom="2dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="0dp"
+                            android:paddingBottom="3dp"
                             android:layout_gravity="center_vertical"
                             android:src="@drawable/like_not"/>
 
@@ -405,7 +405,13 @@
                             android:id="@+id/tv_like_count"
                             android:layout_marginTop="5dp"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="18dp"
+                            android:paddingLeft="6dp"
+                            android:paddingRight="6dp"
+                            android:gravity="center"
+                            android:textSize="12sp"
+                            android:textColor="@color/white"
+                            android:background="@drawable/shape_corner_ffcc00_8dp"
                             android:text="9000" />
 
                     </LinearLayout>
