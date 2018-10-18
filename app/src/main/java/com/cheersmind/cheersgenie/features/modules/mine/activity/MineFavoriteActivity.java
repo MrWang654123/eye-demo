@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -10,9 +11,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.MineDto;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 我的收藏
@@ -47,6 +51,10 @@ public class MineFavoriteActivity extends BaseActivity {
     //空布局模块
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
 //    List<SimpleArticleEntity> recyclerItem;
@@ -145,6 +153,12 @@ public class MineFavoriteActivity extends BaseActivity {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(MineFavoriteActivity.this, fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
@@ -173,6 +187,9 @@ public class MineFavoriteActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -180,6 +197,18 @@ public class MineFavoriteActivity extends BaseActivity {
         //加载更多“我的收藏”数据
         loadMoreFavoriteData();
     }
+
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
 
     /**
      * 刷新收藏数据

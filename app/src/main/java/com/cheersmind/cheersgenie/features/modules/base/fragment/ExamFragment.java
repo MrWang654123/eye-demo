@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,8 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
+import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.TopicDetailActivity;
@@ -68,6 +71,10 @@ public class ExamFragment extends LazyLoadFragment {
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
     Unbinder unbinder;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //话题列表（话题基础数据、孩子话题的信息、量表）
     List<TopicInfoEntity> topicList;
@@ -193,6 +200,13 @@ public class ExamFragment extends LazyLoadFragment {
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
         recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recycleView.setAdapter(recyclerAdapter);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
         //设置样式刷新显示的位置
@@ -208,6 +222,9 @@ public class ExamFragment extends LazyLoadFragment {
                 loadMoreChildTopicList();
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override

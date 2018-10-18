@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.MineIntegralRecyclerAdapter;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 我的积分
@@ -49,6 +52,10 @@ public class MineIntegralActivity extends BaseActivity {
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
 //    List<IntegralEntity> recyclerItem;
@@ -111,6 +118,12 @@ public class MineIntegralActivity extends BaseActivity {
 //        DividerItemDecoration divider = new DividerItemDecoration(MineIntegralActivity.this,DividerItemDecoration.VERTICAL);
 //        divider.setDrawable(ContextCompat.getDrawable(MineIntegralActivity.this,R.drawable.recycler_divider_line_f5f5f5));
 //        recycleView.addItemDecoration(divider);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(MineIntegralActivity.this, fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
@@ -131,6 +144,8 @@ public class MineIntegralActivity extends BaseActivity {
 
         //初始隐藏总积分布局
         rlTotalIntegral.setVisibility(View.GONE);
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -140,6 +155,20 @@ public class MineIntegralActivity extends BaseActivity {
         //加载更多积分
         loadMoreIntegralData();
     }
+
+
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
+
 
     /**
      * 加载总积分
@@ -293,6 +322,10 @@ public class MineIntegralActivity extends BaseActivity {
 
                     totalCount = integralRoot.getTotal();
                     List<IntegralEntity> dataList = integralRoot.getItems();
+//                    IntegralEntity integralEntity = dataList.get(0);
+//                    for (int i=0; i<20; i++) {
+//                        dataList.add(integralEntity);
+//                    }
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {

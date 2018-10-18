@@ -195,7 +195,7 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
 
         //滑动到底部监听，强制停止Fling
         try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(fabGotoTop) {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop) {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     //表示向下滚动,如果为false表示已经到底部了.
@@ -290,17 +290,17 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
     }
 
 
-    @OnClick({R.id.fabGotoTop})
-    public void onViewClick(View view) {
-        switch (view.getId()) {
-            //置顶按钮
-            case R.id.fabGotoTop: {
-                //滚动到顶部
-                recycleView.smoothScrollToPosition(0);
-                break;
-            }
-        }
-    }
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
 
     /**
      * 刷新文章数据

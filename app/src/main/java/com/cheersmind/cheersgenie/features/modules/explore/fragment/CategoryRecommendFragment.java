@@ -217,7 +217,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
 
         //滑动到底部监听，强制停止Fling
         try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(fabGotoTop) {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop) {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
@@ -395,17 +395,17 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.fabGotoTop})
-    public void onViewClick(View view) {
-        switch (view.getId()) {
-            //置顶按钮
-            case R.id.fabGotoTop: {
-                //滚动到顶部
-                recycleView.smoothScrollToPosition(0);
-                break;
-            }
-        }
-    }
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
 
     /**
      * 刷新文章数据

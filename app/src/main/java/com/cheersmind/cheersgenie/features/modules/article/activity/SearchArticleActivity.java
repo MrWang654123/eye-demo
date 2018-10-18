@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.article.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,6 +26,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
@@ -67,6 +69,9 @@ public class SearchArticleActivity extends BaseActivity {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
 //    List<SimpleArticleEntity> recyclerItem;
@@ -179,6 +184,12 @@ public class SearchArticleActivity extends BaseActivity {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(SearchArticleActivity.this, fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
@@ -239,6 +250,8 @@ public class SearchArticleActivity extends BaseActivity {
             }
         });
 
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
 
@@ -270,6 +283,20 @@ public class SearchArticleActivity extends BaseActivity {
             loadMoreArticleData();
         }
     }
+
+
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
+
 
     /**
      * 刷新文章数据

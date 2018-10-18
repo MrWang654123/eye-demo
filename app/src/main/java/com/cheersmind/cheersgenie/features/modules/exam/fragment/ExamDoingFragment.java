@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
@@ -69,6 +71,10 @@ public class ExamDoingFragment extends LazyLoadFragment {
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     //recycler子项的点击监听
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener =  new BaseQuickAdapter.OnItemClickListener() {
@@ -173,6 +179,13 @@ public class ExamDoingFragment extends LazyLoadFragment {
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
         recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recycleView.setAdapter(recyclerAdapter);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
         //设置样式刷新显示的位置
@@ -188,6 +201,9 @@ public class ExamDoingFragment extends LazyLoadFragment {
                 loadMoreChildTopicList();
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.message.fragment;
 
 import android.content.DialogInterface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +14,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.SystemMessageRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
+import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
@@ -33,6 +35,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -46,6 +49,10 @@ public class SystemMessageFragment extends LazyLoadFragment {
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    //置顶按钮
+    @BindView(R.id.fabGotoTop)
+    FloatingActionButton fabGotoTop;
 
     Unbinder unbinder;
 
@@ -118,6 +125,13 @@ public class SystemMessageFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
+        //滑动监听
+        try {
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
@@ -130,6 +144,9 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 loadMoreMessageData();
             }
         });
+
+        //初始隐藏置顶按钮
+        fabGotoTop.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -143,6 +160,20 @@ public class SystemMessageFragment extends LazyLoadFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
+//    @OnClick({R.id.fabGotoTop})
+//    public void onViewClick(View view) {
+//        switch (view.getId()) {
+//            //置顶按钮
+//            case R.id.fabGotoTop: {
+//                //滚动到顶部
+//                recycleView.smoothScrollToPosition(0);
+//                break;
+//            }
+//        }
+//    }
+
 
     /**
      * 刷新消息数据
@@ -255,6 +286,10 @@ public class SystemMessageFragment extends LazyLoadFragment {
 
                     totalCount = messageRootEntity.getTotal();
                     List<MessageEntity> dataList = messageRootEntity.getItems();
+//                    MessageEntity messageEntity = dataList.get(0);
+//                    for (int i=0; i<20; i++) {
+//                        dataList.add(messageEntity);
+//                    }
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
