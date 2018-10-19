@@ -1,9 +1,11 @@
 package com.cheersmind.cheersgenie.features.modules.login.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -107,7 +109,10 @@ public class XLoginActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
-
+        //测试
+        DisplayMetrics metrics = QSApplication.getMetrics();
+        Configuration configuration = getResources().getConfiguration();
+        System.out.println("我是测试啊");
     }
 
     @Override

@@ -73,7 +73,8 @@
 
 
         <!-- 启动页面 -->
-        <activity android:name=".features.modules.base.activity.SplashActivity">
+        <activity android:name=".features.modules.base.activity.SplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
