@@ -30,7 +30,7 @@
                 android:padding="14dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/close"/>
+                android:src="@drawable/back_black"/>
 
             <TextView
                 android:id="@+id/tv_toolbar_title"

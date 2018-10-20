@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Pair;
+import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.TabViewPagerAdapter;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 报告页面（测评结果）
@@ -39,6 +41,10 @@ public class ReportActivity extends BaseActivity {
     TabLayout tabs;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
+
+    //切换按钮
+    @BindView(R.id.tv_switch)
+    TextView tvSwitch;
 
 
     /**
@@ -93,11 +99,55 @@ public class ReportActivity extends BaseActivity {
         viewPager.setAdapter(new TabViewPagerAdapter(getSupportFragmentManager(), items));
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //切换开关文本
+                changeSwitchText(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
     protected void onInitData() {
 
+    }
+
+    @OnClick(R.id.tv_switch)
+    public void onViewClicked() {
+        int curPosition = viewPager.getCurrentItem();
+        if (curPosition == 0) {
+            curPosition = 1;
+        } else if (curPosition == 1) {
+            curPosition = 0;
+        }
+
+        //切换开关文本
+        changeSwitchText(curPosition);
+        viewPager.setCurrentItem(curPosition);
+    }
+
+    /**
+     * 切换开关文本
+     * @param curPosition
+     */
+    private void changeSwitchText(int curPosition) {
+        if (curPosition == 0) {
+            tvSwitch.setText("往期记录");
+        } else if (curPosition == 1) {
+            tvSwitch.setText("最新测评");
+        }
     }
 
 }
