@@ -136,6 +136,7 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
         super.onStopNestedScroll(coordinatorLayout, abl, target, type);
 //        isFlinging = false;
 //        shouldBlockNestedScroll = false;
+        isUpSlide = false;
     }
 
 
