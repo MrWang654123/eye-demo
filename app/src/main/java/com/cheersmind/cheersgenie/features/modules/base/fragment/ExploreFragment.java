@@ -312,7 +312,7 @@ public class ExploreFragment extends LazyLoadFragment {
                         convenientBanner.setVisibility(View.VISIBLE);
                         convenientBanner.startAnimation(mShowAction);
                         //空布局：隐藏
-                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     } else {
                         //没数据或者数据异常
