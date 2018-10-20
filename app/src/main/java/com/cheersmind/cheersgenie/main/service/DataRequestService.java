@@ -1742,6 +1742,34 @@ public class DataRequestService {
         }, tag);
     }
 
+    /**
+     * 获取报告推荐文章
+     * @param childExamId 孩子测评ID
+     * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
+     * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
+     * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
+     * @param tag 通信标记
+     * @param callback 回调
+     */
+    public void getReportRecommendArticle(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String tag){
+        String url = HttpConfig.URL_REPORT_RECOMMEND_ARTICLE
+                .replace("{child_exam_id}",childExamId)
+                .replace("{relation_id}", relationId)
+                .replace("{relation_type}", relationType)
+                .replace("{compare_id}", compareId +"");
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        }, tag);
+    }
+
 
     /**
      * 获取话题的历史报告

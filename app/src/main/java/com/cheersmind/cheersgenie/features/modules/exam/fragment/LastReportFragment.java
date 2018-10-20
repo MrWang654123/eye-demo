@@ -1,25 +1,38 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
@@ -27,6 +40,7 @@ import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -39,6 +53,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * 最新报告
@@ -62,7 +77,13 @@ public class LastReportFragment extends LazyLoadFragment {
 
     //报告列表header
     View headerReportView;
+    //标题
     TextView tvTopicReportTitle;
+
+    //报告列表footer
+    View footerReportView;
+    //文章列表布局
+    LinearLayout llArticle;
 
     Unbinder unbinder;
 
@@ -102,6 +123,27 @@ public class LastReportFragment extends LazyLoadFragment {
     };
 
 
+    //默认Glide处理参数
+    private RequestOptions defaultOptions;
+
+    /**
+     * 初始化默认Glide处理参数
+     */
+    private void initRequestOptions(Context context) {
+        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
+                new CenterCrop(),
+                new RoundedCornersTransformation(DensityUtil.dip2px(context, 3), 0, RoundedCornersTransformation.CornerType.ALL));
+        //默认Glide处理参数
+        defaultOptions = new RequestOptions()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_article_list)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
+                .transform(multi);
+//                .centerCrop();
+    }
+
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_last_report;
@@ -122,7 +164,9 @@ public class LastReportFragment extends LazyLoadFragment {
         } catch (Exception e) {
             e.printStackTrace();
             ToastUtil.showShort(getContext(), "数据传递有误");
-            getActivity().finish();
+            if (getActivity() != null) {
+                getActivity().finish();
+            }
         }
 
         //重载监听
@@ -131,6 +175,8 @@ public class LastReportFragment extends LazyLoadFragment {
             public void onMultiClick(View view) {
                 //加载报告
                 loadReport(compareType);
+                //加载报告推荐文章
+                loadReportRecommendArticle(compareType);
             }
         });
 
@@ -153,20 +199,31 @@ public class LastReportFragment extends LazyLoadFragment {
             e.printStackTrace();
         }
 
-        //报告列表header
+        //报告列表header（标题）
         headerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_header_topic_report, null);
         tvTopicReportTitle = headerReportView.findViewById(R.id.tv_topic_report_title);
         recyclerAdapter.addHeaderView(headerReportView);
         headerReportView.setVisibility(View.GONE);//初始隐藏header
 
+        //报告列表footer（推荐文章）
+        footerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_footer_article_recommend, null);
+        llArticle = footerReportView.findViewById(R.id.ll_article);
+        recyclerAdapter.addFooterView(footerReportView);
+        footerReportView.setVisibility(View.GONE);//初始隐藏footer
+
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
+
+        //初始化默认Glide处理参数
+        initRequestOptions(getContext());
     }
 
     @Override
     protected void lazyLoad() {
         //加载报告
         loadReport(compareType);
+        //加载报告推荐文章
+        loadReportRecommendArticle(compareType);
     }
 
     @Override
@@ -241,6 +298,142 @@ public class LastReportFragment extends LazyLoadFragment {
                             e.printStackTrace();
                             //空布局：加载失败
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                        }
+                    }
+                }, tag);
+    }
+
+
+    /**
+     * 加载报告推荐文章
+     * @param compareType 比较类型
+     */
+    private void loadReportRecommendArticle(int compareType) {
+        //通信等待提示
+//        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+
+        DataRequestService.getInstance().getReportRecommendArticle(
+                topicInfo.getChildTopic().getChildExamId(),
+                topicInfo.getTopicId(),
+                Dictionary.REPORT_TYPE_TOPIC,
+                compareType,
+                new BaseService.ServiceCallback() {
+                    @Override
+                    public void onFailure(QSCustomException e) {
+                        //空布局：网络连接有误，或者请求失败
+//                        emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                        footerReportView.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onResponse(Object obj) {
+                        //空布局：隐藏
+//                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                        try {
+                            Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                            ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+
+                            int totalCount = articleRootEntity.getTotal();
+                            List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+
+                            //空数据处理
+                            if (ArrayListUtil.isEmpty(dataList)) {
+//                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                                return;
+                            }
+
+                            //清空已存在的推荐文章
+                            int childCount = llArticle.getChildCount();
+                            if (childCount > 0) {
+                                llArticle.removeAllViews();
+                            }
+
+                            footerReportView.setVisibility(View.VISIBLE);
+                            //添加推荐文章
+                            for (final SimpleArticleEntity article : dataList) {
+                                View commentItemView = View.inflate(getContext(), R.layout.recycleritem_report_recommed_article, null);
+                                llArticle.addView(commentItemView);
+
+                                ImageView ivMain = commentItemView.findViewById(R.id.iv_main);//主图
+                                //非空
+                                String url = article.getArticleImg();
+                                if (!TextUtils.isEmpty(url)) {
+                                    if (!url.equals(ivMain.getTag(R.id.iv_main))) {
+                                        Glide.with(LastReportFragment.this)
+                                                .load(url)
+                                                .apply(defaultOptions)
+                                                .into(ivMain);
+                                        ivMain.setTag(R.id.iv_main, url);
+                                    }
+                                }
+
+                                ImageView ivPlay = commentItemView.findViewById(R.id.iv_play);//播放键
+                                if (article.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
+                                    ivPlay.setVisibility(View.VISIBLE);
+                                } else {
+                                    ivPlay.setVisibility(View.GONE);
+                                }
+
+                                TextView tvArticleTitle = commentItemView.findViewById(R.id.tv_article_title);//标题
+                                tvArticleTitle.setText(article.getArticleTitle());
+
+                                TextView tvPublish = commentItemView.findViewById(R.id.tv_publish);//发布日期
+                                //目前没有发布日期这个字段返回
+                                tvPublish.setVisibility(View.GONE);
+
+                                //收藏状态初始化
+                                ImageView ivFavorite = commentItemView.findViewById(R.id.iv_favorite);
+                                if (article.isFavorite()) {
+                                    //收藏状态
+                                    ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_do));
+                                } else {
+                                    //未收藏状态
+                                    ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_not));
+                                }
+
+                                final TextView tvFavoriteCount = commentItemView.findViewById(R.id.tv_favorite_count);//收藏数量
+                                tvFavoriteCount.setText(String.valueOf(article.getPageFavorite()));
+                                //小于1隐藏
+                                if (article.getPageFavorite() < 1) {
+                                    tvFavoriteCount.setVisibility(View.GONE);
+                                }
+
+                                //项目点击（查看文章详情）
+                                commentItemView.setOnClickListener(new OnMultiClickListener() {
+                                    @Override
+                                    public void onMultiClick(View view) {
+                                        String articleId = article.getId();
+                                        //非空
+                                        if (!TextUtils.isEmpty(articleId)) {
+                                            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+                                        } else {
+                                            ToastUtil.showShort(getContext(), "暂无详情");
+                                        }
+                                    }
+                                });
+
+                                //收藏点击监听
+                                ivFavorite.setOnClickListener(new OnMultiClickListener() {
+                                    @Override
+                                    public void onMultiClick(View view) {
+                                        String articleId = article.getId();
+                                        //非空
+                                        if (!TextUtils.isEmpty(articleId)) {
+                                            doFavorite(articleId, (ImageView) view, tvFavoriteCount);
+                                        } else {
+                                            ToastUtil.showShort(getContext(), getResources().getString(R.string.operate_fail));
+                                        }
+                                    }
+                                });
+
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            //空布局：加载失败
+//                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                            footerReportView.setVisibility(View.GONE);
                         }
                     }
                 }, tag);
@@ -398,5 +591,54 @@ public class LastReportFragment extends LazyLoadFragment {
         return res;
     }
 
+
+    /**
+     * 收藏操作
+     *
+     * @param articleId
+     */
+    private void doFavorite(String articleId, final ImageView ivFavorite, final TextView tvFavoriteCount) {
+        DataRequestService.getInstance().postDoFavorite(articleId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //刷新收藏视图
+                    Boolean favorite = (Boolean) dataMap.get("is_favorite");
+                    Double pageFavorite = (Double) dataMap.get("page_favorite");
+                    int count = 0;
+                    if (pageFavorite != null) {
+                        count = pageFavorite.intValue();
+                    }
+
+                    if (favorite) {
+                        //收藏状态
+                        ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_do));
+                    } else {
+                        //未收藏状态
+                        ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_not));
+                    }
+
+                    //收藏数量
+                    tvFavoriteCount.setText(String.valueOf(count));
+                    //小于1隐藏
+                    if (count < 1) {
+                        tvFavoriteCount.setVisibility(View.GONE);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //操作失败
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
+            }
+        });
+    }
 
 }
