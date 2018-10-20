@@ -77,7 +77,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -85,17 +84,13 @@
         <activity
             android:name=".features.modules.base.activity.MasterTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <!-- 引导页面 -->
-        <activity android:name=".features.modules.base.activity.GuideActivity" />
+        <activity android:name=".features.modules.base.activity.GuideActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
         <!-- 登录主页面 -->
-        <activity android:name=".features.modules.login.activity.XLoginActivity">
-
+        <activity android:name=".features.modules.login.activity.XLoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->

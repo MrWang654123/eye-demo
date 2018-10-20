@@ -75,9 +75,9 @@
                 android:textColor="@color/color_666666"
                 android:text="@string/placeholder_for_item"/>
 
-            <TextView
+            <Button
                 android:id="@+id/tv_nav_to_report"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="36dp"
                 android:background="@drawable/btn_common_small"
                 android:layout_alignParentRight="true"

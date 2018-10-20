@@ -16,4 +16,8 @@
 
     <dimen name="fixed_height_bottom_padding">5dp</dimen><!--BottomNavigationBar 图标和文字的间距（默认是10dp，值越小，间距越大。适合的模式是BottomNavigationBar.MODE_FIXED）-->
 
+    <!--确认按钮的左右外间距-->
+    <dimen name="confirm_btn_margin_left">35dp</dimen>
+    <dimen name="confirm_btn_margin_right">35dp</dimen>
+
 </resources>

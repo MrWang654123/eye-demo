@@ -57,14 +57,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_class_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:textSize="15sp"
@@ -76,6 +76,8 @@
                 android:id="@+id/tv_class_num_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/color_ff8b00"
                 android:layout_gravity="center_horizontal"
@@ -87,6 +89,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:gravity="center_horizontal"
                 android:background="@drawable/shape_corner_f4f5ed_8dp"
                 android:layout_marginTop="10dp"
@@ -120,6 +124,8 @@
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/heightXBigWidget"
+                android:layout_marginLeft="@dimen/confirm_btn_margin_left"
+                android:layout_marginRight="@dimen/confirm_btn_margin_right"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/btn_common"
                 android:enabled="true"

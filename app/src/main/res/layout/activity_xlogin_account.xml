@@ -168,13 +168,11 @@
 
             <CheckBox
                 android:id="@+id/cbox_password"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="5dp"
-                android:paddingRight="10dp"
-                android:background="@android:color/transparent"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="12dp"
                 android:button="@null"
-                android:drawableRight="@drawable/rbtn_password_view"/>
+                android:background="@drawable/rbtn_password_view"/>
 
         </LinearLayout>
 
@@ -246,10 +244,10 @@
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="@dimen/heightXBigWidget"
-            android:layout_marginLeft="32dp"
             android:layout_marginTop="40dp"
-            android:layout_marginRight="32dp"
             android:layout_marginBottom="12dp"
+            android:layout_marginLeft="@dimen/confirm_btn_margin_left"
+            android:layout_marginRight="@dimen/confirm_btn_margin_right"
             android:background="@drawable/btn_common"
             android:enabled="true"
             android:text="登   录"

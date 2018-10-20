@@ -29,8 +29,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
             android:orientation="vertical">
 
             <!--手机号输入-->
@@ -38,6 +36,8 @@
                 android:id="@+id/rl_phone_num"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:background="@drawable/shape_corner_f4f5ed_8dp"
                 android:orientation="horizontal">
 
@@ -91,6 +91,8 @@
                 android:id="@+id/rl_image_captcha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:visibility="gone"
                 android:layout_marginTop="11dp">
 
@@ -127,6 +129,8 @@
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/heightXBigWidget"
+                android:layout_marginLeft="@dimen/confirm_btn_margin_left"
+                android:layout_marginRight="@dimen/confirm_btn_margin_right"
                 android:layout_marginTop="45dp"
                 android:background="@drawable/btn_common"
                 android:enabled="true"
@@ -139,6 +143,8 @@
                 android:id="@+id/tv_goto_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="35dp"
+                android:layout_marginRight="35dp"
                 android:layout_marginTop="35dp"
                 android:textSize="16sp"
                 android:layout_gravity="center_horizontal"

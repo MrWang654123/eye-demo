@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
@@ -13,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
@@ -41,14 +44,23 @@ public class ModifyPasswordActivity extends BaseActivity {
 
     @BindView(R.id.et_old_password)
     EditText etOldPassword;
+    //密码的清空按钮
+    @BindView(R.id.iv_clear_pw)
+    ImageView ivClearPw;
     @BindView(R.id.cbox_password)
     CheckBox cboxPassword;
     @BindView(R.id.et_new_password)
     EditText etNewPassword;
+    //新密码的清空按钮
+    @BindView(R.id.iv_clear_new_pw)
+    ImageView ivClearNewPw;
     @BindView(R.id.cbox_new_password)
     CheckBox cboxNewPassword;
     @BindView(R.id.et_again_password)
     EditText etAgainPassword;
+    //确认密码的清空按钮
+    @BindView(R.id.iv_clear_again_pw)
+    ImageView ivClearAgainPw;
     @BindView(R.id.cbox_again_password)
     CheckBox cboxAgainPassword;
 
@@ -64,6 +76,30 @@ public class ModifyPasswordActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+        etOldPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearPw.getVisibility() == View.INVISIBLE) {
+                        ivClearPw.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClearPw.getVisibility() == View.VISIBLE) {
+                        ivClearPw.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
         //旧密码显隐
         cboxPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -80,6 +116,30 @@ public class ModifyPasswordActivity extends BaseActivity {
             }
         });
 
+        etNewPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearNewPw.getVisibility() == View.INVISIBLE) {
+                        ivClearNewPw.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClearNewPw.getVisibility() == View.VISIBLE) {
+                        ivClearNewPw.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
         //新密码显隐
         cboxNewPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -96,6 +156,30 @@ public class ModifyPasswordActivity extends BaseActivity {
             }
         });
 
+        etAgainPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClearAgainPw.getVisibility() == View.INVISIBLE) {
+                        ivClearAgainPw.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClearAgainPw.getVisibility() == View.VISIBLE) {
+                        ivClearAgainPw.setVisibility(View.INVISIBLE);
+                    }
+                }
+            }
+        });
         //确认密码显隐
         cboxAgainPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -137,7 +221,8 @@ public class ModifyPasswordActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.et_old_password, R.id.et_new_password, R.id.et_again_password, R.id.btn_confirm})
+    @OnClick({R.id.et_old_password, R.id.et_new_password, R.id.et_again_password, R.id.btn_confirm,
+            R.id.iv_clear_pw, R.id.iv_clear_new_pw, R.id.iv_clear_again_pw})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //确保密码编辑框点击后光标在最后
@@ -151,6 +236,24 @@ public class ModifyPasswordActivity extends BaseActivity {
                 //修改密码
                 doModifyPasswordWrap();
                 break;
+            //旧密码的清空按钮
+            case R.id.iv_clear_pw: {
+                etOldPassword.setText("");
+                etOldPassword.requestFocus();
+                break;
+            }
+            //新密码的清空按钮
+            case R.id.iv_clear_new_pw: {
+                etNewPassword.setText("");
+                etNewPassword.requestFocus();
+                break;
+            }
+            //确认密码的清空按钮
+            case R.id.iv_clear_again_pw: {
+                etAgainPassword.setText("");
+                etAgainPassword.requestFocus();
+                break;
+            }
         }
     }
 

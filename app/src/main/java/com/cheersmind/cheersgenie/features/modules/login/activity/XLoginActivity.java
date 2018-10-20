@@ -178,7 +178,7 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //家长角色选择页面
-//                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
 
                 //完善信息页面
 //                Intent intent = new Intent(XLoginActivity.this, UserInfoInitActivity.class);
@@ -189,8 +189,8 @@ public class XLoginActivity extends BaseActivity {
 //                PackageUtils.installPackage(QSApplication.getContext(), new File(mFile));
 
                 //Gif测试页面
-                Intent intent = new Intent(XLoginActivity.this, GifActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(XLoginActivity.this, GifActivity.class);
+//                startActivity(intent);
 
                 break;
             }
