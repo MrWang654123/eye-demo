@@ -378,10 +378,6 @@ public class LastReportFragment extends LazyLoadFragment {
                                 TextView tvArticleTitle = commentItemView.findViewById(R.id.tv_article_title);//标题
                                 tvArticleTitle.setText(article.getArticleTitle());
 
-                                TextView tvPublish = commentItemView.findViewById(R.id.tv_publish);//发布日期
-                                //目前没有发布日期这个字段返回
-                                tvPublish.setVisibility(View.GONE);
-
                                 //收藏状态初始化
                                 ImageView ivFavorite = commentItemView.findViewById(R.id.iv_favorite);
                                 if (article.isFavorite()) {
@@ -392,11 +388,15 @@ public class LastReportFragment extends LazyLoadFragment {
                                     ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_not));
                                 }
 
-                                final TextView tvFavoriteCount = commentItemView.findViewById(R.id.tv_favorite_count);//收藏数量
-                                tvFavoriteCount.setText(String.valueOf(article.getPageFavorite()));
-                                //小于1隐藏
-                                if (article.getPageFavorite() < 1) {
-                                    tvFavoriteCount.setVisibility(View.GONE);
+                                //阅读数量
+                                View rlRead = commentItemView.findViewById(R.id.rl_read);
+                                if (article.getPageView() > 0) {
+                                    rlRead.setVisibility(View.VISIBLE);
+                                    TextView tvReadCount = commentItemView.findViewById(R.id.tv_read_count);
+                                    tvReadCount.setText(String.valueOf(article.getPageView()));
+
+                                } else {
+                                    rlRead.setVisibility(View.GONE);
                                 }
 
                                 //项目点击（查看文章详情）
@@ -420,7 +420,7 @@ public class LastReportFragment extends LazyLoadFragment {
                                         String articleId = article.getId();
                                         //非空
                                         if (!TextUtils.isEmpty(articleId)) {
-                                            doFavorite(articleId, (ImageView) view, tvFavoriteCount);
+                                            doFavorite(articleId, (ImageView) view);
                                         } else {
                                             ToastUtil.showShort(getContext(), getResources().getString(R.string.operate_fail));
                                         }
@@ -597,7 +597,7 @@ public class LastReportFragment extends LazyLoadFragment {
      *
      * @param articleId
      */
-    private void doFavorite(String articleId, final ImageView ivFavorite, final TextView tvFavoriteCount) {
+    private void doFavorite(String articleId, final ImageView ivFavorite) {
         DataRequestService.getInstance().postDoFavorite(articleId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -623,13 +623,6 @@ public class LastReportFragment extends LazyLoadFragment {
                     } else {
                         //未收藏状态
                         ivFavorite.setImageDrawable(getResources().getDrawable(R.drawable.favorite_not));
-                    }
-
-                    //收藏数量
-                    tvFavoriteCount.setText(String.valueOf(count));
-                    //小于1隐藏
-                    if (count < 1) {
-                        tvFavoriteCount.setVisibility(View.GONE);
                     }
 
                 } catch (Exception e) {

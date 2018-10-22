@@ -4,13 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_corner_ffffff_3dp"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:orientation="vertical">
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="horizontal">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp">
 
         <ImageView
             android:id="@+id/iv_main"
@@ -25,8 +26,8 @@
 
         <ImageView
             android:id="@+id/iv_play"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -39,65 +40,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="5dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_article_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="@color/color_333333"
-            android:layout_marginTop="10dp"
             android:lineSpacingMultiplier="1.2"
+            android:maxLines="2"
+            android:minLines="2"
+            android:ellipsize="end"
             android:textStyle="normal"
             android:text="成功人士郑成功的7中成功的方法，你学到吗？第四条超管用"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_marginBottom="1dp">
 
-            <TextView
-                android:id="@+id/tv_publish"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/iv_favorite"
+                android:layout_width="39dp"
+                android:layout_height="39dp"
+                android:padding="5dp"
+                android:clickable="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:text="2018-01-20"
-                android:layout_alignParentLeft="true"
-                android:textColor="@color/color_666666"
-                android:textSize="14sp" />
-            <!--android:background="@drawable/tag"-->
-
-            <!--<CheckBox-->
-            <!--android:id="@+id/cboxCollect"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="40dp"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:text="收藏"/>-->
+                android:src="@drawable/favorite_not"/>
 
             <RelativeLayout
+                android:id="@+id/rl_read"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true">
+                android:layout_marginRight="8dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_favorite">
 
                 <ImageView
-                    android:id="@+id/iv_favorite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/iv_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/favorite_not"/>
-
+                    android:layout_marginRight="1dp"
+                    android:padding="3dp"
+                    android:src="@drawable/read_normal" />
                 <TextView
-                    android:id="@+id/tv_favorite_count"
+                    android:id="@+id/tv_read_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/iv_favorite"
+                    android:layout_toRightOf="@+id/iv_read"
                     android:layout_centerVertical="true"
                     android:textColor="@color/color_a6a6a6"
                     android:textSize="14sp"
