@@ -232,6 +232,8 @@ public class HttpConfig {
     public static String USER_LICENSE = "http://cheersmind.com/about/user.html";
     //关于我们
     public static String URL_ABOUT_US = "http://cheersmind.com/about/about.html";
+    //积分说明
+    public static String URL_INTEGRAL_DESC = "http://cheersmind.com/about/description/score.html";
     //app访问地址
     public static String URL_APP_MARKET = "http://zhushou.360.cn/detail/index/soft_id/3950691?recrefer=SE_D_%E5%A4%A9%E5%A4%A9%E6%99%BA%E5%AD%A6#nogo";
 //    public static String URL_APP_MARKET = "http://sj.qq.com/myapp/detail.htm?apkName=com.cheersmind.smartapp";

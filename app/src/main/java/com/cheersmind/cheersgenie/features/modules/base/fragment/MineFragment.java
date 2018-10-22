@@ -58,6 +58,7 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
@@ -115,6 +116,12 @@ public class MineFragment extends TakePhotoFragment {
     @BindView(R.id.tv_modify_profile_tip)
     ImageView tvModifyProfileTip;
 
+    //可用积分
+    @BindView(R.id.tv_usable_integral_val)
+    TextView tvUsableIntegralVal;
+    //可用积分的值
+    int useableIntegralVal = -1;
+
     //默认Glide配置
     RequestOptions options;
 
@@ -167,6 +174,8 @@ public class MineFragment extends TakePhotoFragment {
             getUserInfo();
         }
 
+        //加载总积分
+        loadIntegralTotalScore();
     }
 
     @Override
@@ -191,6 +200,12 @@ public class MineFragment extends TakePhotoFragment {
         if (UCManager.getInstance().getUserInfo() == null) {
             //请求个人资料
             getUserInfo();
+        }
+
+        //如果积分值还是为-1，则再获取一次
+        if (useableIntegralVal == -1) {
+            //加载总积分
+            loadIntegralTotalScore();
         }
     }
 
@@ -778,6 +793,35 @@ public class MineFragment extends TakePhotoFragment {
      */
     protected int getStatusBarColor() {
         return getResources().getColor(R.color.colorPrimary);
+    }
+
+
+    /**
+     * 加载总积分
+     */
+    private void loadIntegralTotalScore() {
+        DataRequestService.getInstance().getIntegralTotalScore(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                tvUsableIntegralVal.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    TotalIntegralEntity totalIntegralEntity = InjectionWrapperUtil.injectMap(dataMap, TotalIntegralEntity.class);
+                    //刷新总积分视图
+                    tvUsableIntegralVal.setVisibility(View.VISIBLE);
+                    useableIntegralVal = totalIntegralEntity.getConsumable();
+                    tvUsableIntegralVal.setText(String.valueOf(useableIntegralVal));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    tvUsableIntegralVal.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
 

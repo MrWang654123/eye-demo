@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -157,17 +158,16 @@ public class MineIntegralActivity extends BaseActivity {
     }
 
 
-//    @OnClick({R.id.fabGotoTop})
-//    public void onViewClick(View view) {
-//        switch (view.getId()) {
-//            //置顶按钮
-//            case R.id.fabGotoTop: {
-//                //滚动到顶部
-//                recycleView.smoothScrollToPosition(0);
-//                break;
-//            }
-//        }
-//    }
+    @OnClick({R.id.tv_integral_desc})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //积分说明
+            case R.id.tv_integral_desc: {
+                startActivity(new Intent(MineIntegralActivity.this, IntegralDescActivity.class));
+                break;
+            }
+        }
+    }
 
 
     /**
