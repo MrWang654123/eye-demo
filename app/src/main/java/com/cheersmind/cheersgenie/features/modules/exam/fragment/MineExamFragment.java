@@ -48,7 +48,7 @@ public class MineExamFragment extends LazyLoadFragment {
         items.add(new Pair<String, Fragment>("已完成", new ExamCompletedFragment()));
         viewPager.setAdapter(new TabViewPagerAdapter(getChildFragmentManager(), items));
         //标签绑定viewpager
-//        tabs.setupWithViewPager(viewPager);
+        tabs.setupWithViewPager(viewPager);
     }
 
     @Override

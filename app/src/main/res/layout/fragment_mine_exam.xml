@@ -23,7 +23,7 @@
             android:layout_alignParentBottom="true"
             android:background="@android:color/white"
             app:tabIndicatorColor="@color/colorAccent"
-            app:tabIndicatorHeight="4dp"
+            app:tabIndicatorHeight="1dp"
             app:tabTextAppearance="@style/TabLayoutTextStyle"
             app:tabSelectedTextColor="@color/colorAccent"
             app:tabTextColor="@color/color_bar_gray" />

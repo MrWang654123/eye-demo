@@ -113,7 +113,7 @@
                     app:tabBackground="@color/white"
                     app:tabMode="scrollable"
                     app:tabIndicatorColor="@color/colorAccent"
-                    app:tabIndicatorHeight="4dp"
+                    app:tabIndicatorHeight="1dp"
                     app:tabTextAppearance="@style/TabLayoutTextStyle"
                     app:tabSelectedTextColor="@color/colorAccent"
                     app:tabTextColor="@color/color_555555" />
