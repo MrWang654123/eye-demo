@@ -71,10 +71,10 @@ public class CommentAdapter extends BaseAdapter<CommentEntity> {
                         .into(imageView);
             }
 
-            //用户名
-            String userName = item.getUserData().getUserName();
-            if (!TextUtils.isEmpty(userName)) {
-                holder.setText(R.id.tv_username, item.getUserData().getUserName());
+            //昵称
+            String nickName = item.getUserData().getNickName();
+            if (!TextUtils.isEmpty(nickName)) {
+                holder.setText(R.id.tv_username, nickName);
             } else {
                 ((View)holder.getView(R.id.tv_username)).setVisibility(View.GONE);
             }

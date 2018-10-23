@@ -1,6 +1,5 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,16 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -30,12 +26,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -43,20 +35,16 @@ import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
 import com.cheersmind.cheersgenie.features.event.ModifyNicknameEvent;
 import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFeedBackActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.fragment.UserInfoFragment;
 import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
-import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -74,11 +62,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,9 +108,6 @@ public class MineFragment extends TakePhotoFragment {
 
     //默认Glide配置
     RequestOptions options;
-
-    //头像图片文件
-    private File file;
 
 
     @Override
@@ -179,6 +160,16 @@ public class MineFragment extends TakePhotoFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         //注销事件
@@ -209,6 +200,16 @@ public class MineFragment extends TakePhotoFragment {
         }
     }
 
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser) {
+            //加载总积分
+            loadIntegralTotalScore();
+        }
+    }
 
     /**
      * 消息被置为已读的通知
@@ -275,6 +276,18 @@ public class MineFragment extends TakePhotoFragment {
             refreshUserNameAndNickname(userInfo.getUserName(), userInfo.getNickName());
         }
 
+    }
+
+
+    /**
+     * 刷新积分的消息
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+//    @Subscribe
+    public void onRefreshIntegralNotice(RefreshIntegralEvent event) {
+        //加载总积分
+        loadIntegralTotalScore();
     }
 
 
@@ -445,6 +458,9 @@ public class MineFragment extends TakePhotoFragment {
                 LoadingView.getInstance().dismiss();
                 //设置签到状态：已签
                 settingSignInStatus(true);
+
+                //加载总积分
+                loadIntegralTotalScore();
             }
         });
     }
@@ -676,7 +692,7 @@ public class MineFragment extends TakePhotoFragment {
     public void takeSuccess(TResult result) {
         super.takeSuccess(result);
 
-        file = new File(result.getImages().get(0).getCompressPath());
+        File file = new File(result.getImages().get(0).getCompressPath());
 //        Glide.with(this).load(file).into(ivProfile);
         //上传头像
         doPostModifyProfile(file);

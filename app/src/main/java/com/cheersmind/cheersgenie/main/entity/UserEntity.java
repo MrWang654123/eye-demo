@@ -23,6 +23,10 @@ public class UserEntity extends DataSupport implements Serializable {
     @InjectMap(name = "avatar")
     private String avatar;
 
+    //昵称
+    @InjectMap(name = "nick_name")
+    private String nickName;
+
 
     public String getUserId() {
         return userId;
@@ -47,4 +51,13 @@ public class UserEntity extends DataSupport implements Serializable {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
 }

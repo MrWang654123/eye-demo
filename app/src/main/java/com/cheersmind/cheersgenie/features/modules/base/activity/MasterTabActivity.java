@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.HomeFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MessageFragment;
@@ -38,6 +39,8 @@ import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -156,6 +159,16 @@ public class MasterTabActivity extends BaseActivity {
 //        }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //如果当前是“我的”，则刷新积分
+        if (viewPager.getCurrentItem() == 3) {
+            //发送刷新积分通知
+            EventBus.getDefault().post(new RefreshIntegralEvent());
+        }
+    }
 
     @Override
     protected void onResume() {
