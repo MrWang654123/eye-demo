@@ -74,7 +74,8 @@
 
         <!-- 启动页面 -->
         <activity android:name=".features.modules.base.activity.SplashActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -83,14 +84,17 @@
         <!-- 主页面 -->
         <activity
             android:name=".features.modules.base.activity.MasterTabActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
         </activity>
         <!-- 引导页面 -->
         <activity android:name=".features.modules.base.activity.GuideActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/>
         <!-- 登录主页面 -->
         <activity android:name=".features.modules.login.activity.XLoginActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize">
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait">
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
@@ -99,47 +103,61 @@
         <!-- 账号登录 -->
         <activity
             android:name=".features.modules.login.activity.XLoginAccountActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <!-- 手机号输入页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.RegisterPhoneNumActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <!-- 验证码输入页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.RegisterCaptchaActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <!-- 密码初始化页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.PasswordInitActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <!-- 班级群号输入页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.ClassNumActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <!-- 完善用户信息页面 -->
         <activity
             android:name=".features.modules.register.activity.UserInfoInitActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <!-- 手机号快捷登录页面 -->
         <activity
             android:name=".features.modules.login.activity.PhoneNumLoginActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:screenOrientation="portrait"/>
         <!-- 量表详细页面 -->
-        <activity android:name=".features.modules.exam.activity.DimensionDetailActivity" />
+        <activity android:name=".features.modules.exam.activity.DimensionDetailActivity"
+            android:screenOrientation="portrait"/>
         <!-- 作答页面 -->
         <activity
             android:name=".features.modules.exam.activity.ReplyQuestionActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <!-- 话题详细 -->
-        <activity android:name=".features.modules.exam.activity.TopicDetailActivity" />
+        <activity android:name=".features.modules.exam.activity.TopicDetailActivity"
+            android:screenOrientation="portrait"/>
         <!-- 我的积分 -->
-        <activity android:name=".features.modules.mine.activity.MineIntegralActivity" />
+        <activity android:name=".features.modules.mine.activity.MineIntegralActivity"
+            android:screenOrientation="portrait"/>
         <!-- 我的消息 -->
-        <activity android:name=".features.modules.mine.activity.MineMessageActivity" />
+        <activity android:name=".features.modules.mine.activity.MineMessageActivity"
+            android:screenOrientation="portrait"/>
         <!-- 我的收藏 -->
-        <activity android:name=".features.modules.mine.activity.MineFavoriteActivity" />
+        <activity android:name=".features.modules.mine.activity.MineFavoriteActivity"
+            android:screenOrientation="portrait"/>
         <!-- 收缩appbar测试页面 -->
-        <activity android:name=".features.modules.test.activity.CollapsedAppBarActivity">
+        <activity android:name=".features.modules.test.activity.CollapsedAppBarActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -155,14 +173,16 @@
         <activity
             android:name=".features.modules.test.activity.WebviewTestActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:hardwareAccelerated="true">
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".features.modules.test.activity.SchemaActivity">
+        <activity android:name=".features.modules.test.activity.SchemaActivity"
+            android:screenOrientation="portrait">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -174,7 +194,8 @@
         <activity
             android:name="com.tencent.tauth.AuthActivity"
             android:launchMode="singleTask"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -188,22 +209,17 @@
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="portrait"/>
         <!-- QQ相关页面 end -->
 
-        <activity android:name=".features.modules.test.activity.TextViewForHtmlImageActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+        <activity android:name=".features.modules.test.activity.TextViewForHtmlImageActivity"
+            android:screenOrientation="portrait"/>
         <!-- 用户资料页面 -->
         <activity
             android:name=".features.modules.mine.activity.UserInfoActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"/>
 
         <!-- 阿里服务推送 begin -->
         <meta-data
@@ -252,29 +268,38 @@
 
 
         <!-- 设置页面 -->
-        <activity android:name=".features.modules.mine.activity.XSettingActivity" />
+        <activity android:name=".features.modules.mine.activity.XSettingActivity"
+            android:screenOrientation="portrait"/>
         <!-- 账号绑定 -->
-        <activity android:name=".features.modules.mine.activity.AccountBindActivity" />
+        <activity android:name=".features.modules.mine.activity.AccountBindActivity"
+            android:screenOrientation="portrait"/>
         <!-- 修改密码 -->
-        <activity android:name=".features.modules.mine.activity.ModifyPasswordActivity" />
+        <activity android:name=".features.modules.mine.activity.ModifyPasswordActivity"
+            android:screenOrientation="portrait"/>
         <!-- 重置密码 -->
-        <activity android:name=".features.modules.register.activity.RetrievePasswordActivity" />
+        <activity android:name=".features.modules.register.activity.RetrievePasswordActivity"
+            android:screenOrientation="portrait"/>
         <!-- 报告页面 -->
-        <activity android:name=".features.modules.exam.activity.ReportActivity" />
+        <activity android:name=".features.modules.exam.activity.ReportActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".features.modules.article.activity.VideoActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
         <!-- 文章列表页面 -->
-        <activity android:name=".features.modules.article.activity.ArticleListActivity" />
+        <activity android:name=".features.modules.article.activity.ArticleListActivity"
+            android:screenOrientation="portrait"/>
         <!-- 文章搜索页面 -->
         <activity
             android:name=".features.modules.article.activity.SearchArticleActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
+            android:screenOrientation="portrait"/>
         <!-- 监护人角色选择页面 -->
-        <activity android:name=".features.modules.register.activity.ParentRoleActivity" />
+        <activity android:name=".features.modules.register.activity.ParentRoleActivity"
+            android:screenOrientation="portrait"/>
         <!-- 我的智评 -->
-        <activity android:name=".features.modules.mine.activity.MineExamActivity" />
+        <activity android:name=".features.modules.mine.activity.MineExamActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- 7.0用content://Uri来替代file://Uri -->
         <!-- 目前使用的是和TakePhoto相同的权限名称和路径名称，如果不相同，则三星等一些型号的手机拍照后裁剪页面中图片被旋转90度 -->
@@ -288,9 +313,12 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".features.modules.mine.activity.MineFeedBackActivity" />
-        <activity android:name=".features.modules.test.activity.GifActivity"></activity>
-        <activity android:name=".features.modules.mine.activity.IntegralDescActivity" />
+        <activity android:name=".features.modules.mine.activity.MineFeedBackActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.test.activity.GifActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.mine.activity.IntegralDescActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
