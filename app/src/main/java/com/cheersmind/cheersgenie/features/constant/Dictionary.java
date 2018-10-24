@@ -120,4 +120,9 @@ public class Dictionary {
     //头像header的value
     public static final String PROFILE_HEADER_VALUE = "http://www.cheersmind.com/";
 
+    //测评列表布局类型：网格
+    public static final int EXAM_LIST_LAYOUT_TYPE_GRID = 1;
+    //测评列表布局类型：线性
+    public static final int EXAM_LIST_LAYOUT_TYPE_LINEAR = 2;
+
 }

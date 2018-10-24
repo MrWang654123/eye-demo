@@ -8,10 +8,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamCompletedFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -29,6 +31,11 @@ public class ReportFragment extends LazyLoadFragment {
     @BindView(R.id.iv_left)
     @Nullable
     ImageView ivLeft;
+
+    //切换列表布局按钮
+    @BindView(R.id.iv_switch_layout)
+    ImageView ivSwitchLayout;
+
 
     @Override
     protected int setContentView() {
@@ -69,5 +76,36 @@ public class ReportFragment extends LazyLoadFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
+    @OnClick({R.id.iv_switch_layout})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //切换列表布局
+            case R.id.iv_switch_layout:{
+                //改变图标
+                Object imageTag = ivSwitchLayout.getTag();
+                if (imageTag == null || (Integer)imageTag == 1) {
+                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_grid_black_30dp);
+                    ivSwitchLayout.setTag(2);
+                } else if ((Integer)imageTag == 2) {
+                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_list_black_30dp);
+                    ivSwitchLayout.setTag(1);
+                }
+
+                //切换布局
+                FragmentManager childFragmentManager = getChildFragmentManager();
+                String tag = ExamCompletedFragment.class.getSimpleName();
+                Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
+                //非空
+                if (fragmentByTag != null) {
+                    //调用切换布局
+                    ((ExamCompletedFragment)fragmentByTag).switchLayout();
+                }
+                break;
+            }
+        }
+    }
+
 
 }

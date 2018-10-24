@@ -163,6 +163,9 @@ public class ExamDimensionRecyclerAdapter extends BaseSectionQuickAdapter<Recycl
         helper.addOnClickListener(R.id.iv_desc);
         //查看报告按钮点击监听
         helper.addOnClickListener(R.id.tv_nav_to_report);
+
+        //隐藏伸缩按钮
+        helper.getView(R.id.iv_expand).setVisibility(View.GONE);
     }
 
 //    https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=699364419,1344336727&fm=26&gp=0.jpg

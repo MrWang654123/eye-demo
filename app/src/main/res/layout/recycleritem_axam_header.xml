@@ -73,7 +73,7 @@
                 android:layout_centerVertical="true"
                 android:textSize="13sp"
                 android:textColor="@color/color_666666"
-                android:text="@string/placeholder_for_item"/>
+                android:text="有效期至 2018-08-08"/>
 
             <Button
                 android:id="@+id/tv_nav_to_report"
@@ -87,6 +87,13 @@
                 android:gravity="center"
                 android:visibility="visible"
                 android:text="@string/look_report"/>
+
+            <ImageView
+                android:id="@+id/iv_expand"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp"/>
 
         </RelativeLayout>
 

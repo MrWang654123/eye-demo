@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="CheckReport"></dbname>
-    <version value="6"></version>
+    <version value="7"></version>
     <list>
         <mapping class="com.cheersmind.cheersgenie.main.entity.UserInfoEntity"></mapping>
         <mapping class="com.cheersmind.cheersgenie.main.entity.OrgExinfo"></mapping>
         <mapping class="com.cheersmind.cheersgenie.main.entity.ChildInfoEntity"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.TopicInfoEntity"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity"></mapping>
         <mapping class="com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity"></mapping>
         <mapping class="com.cheersmind.cheersgenie.main.entity.ProjectEntity"></mapping>
     </list>

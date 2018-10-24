@@ -416,7 +416,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
                     if(topicData != null && topicData.getItems()!=null){
-                        DataSupport.saveAll(topicData.getItems());
+//                        DataSupport.saveAll(topicData.getItems());
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class); // 从启动动画ui跳转到主ui
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);

@@ -1,5 +1,7 @@
 package com.cheersmind.cheersgenie.main.entity;
 
+import com.chad.library.adapter.base.entity.AbstractExpandableItem;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import org.litepal.crud.DataSupport;
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * 话题（场景）
  */
-public class TopicInfoEntity extends DataSupport implements Serializable{
+public class TopicInfoEntity extends AbstractExpandableItem<DimensionInfoEntity> implements MultiItemEntity, Serializable {
 
     @InjectMap(name = "topic_id")
     private String topicId;
@@ -198,5 +200,15 @@ public class TopicInfoEntity extends DataSupport implements Serializable{
 
     public void setEndTime(String endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getItemType() {
+        return 0;
     }
 }

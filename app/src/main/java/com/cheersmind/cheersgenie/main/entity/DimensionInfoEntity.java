@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.entity;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
@@ -7,7 +8,7 @@ import java.io.Serializable;
 /**
  * 量表信息
  */
-public class DimensionInfoEntity implements Serializable{
+public class DimensionInfoEntity implements MultiItemEntity, Serializable {
 
     @InjectMap(name = "topic_dimension_id")
     private String topicDimensionId;
@@ -277,5 +278,10 @@ public class DimensionInfoEntity implements Serializable{
 
     public void setExamId(String examId) {
         this.examId = examId;
+    }
+
+    @Override
+    public int getItemType() {
+        return 1;
     }
 }
