@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.main.entity;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.adapter.ExamDimensionBaseRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
@@ -282,6 +283,6 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
 
     @Override
     public int getItemType() {
-        return 1;
+        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_BODY;
     }
 }

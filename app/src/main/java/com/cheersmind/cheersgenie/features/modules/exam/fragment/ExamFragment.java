@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionLinearRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -31,6 +32,7 @@ public class ExamFragment extends ExamDoingFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+        //量表
         if (dimension == null) {
             //重置为第一页
             resetPageInfo();
@@ -38,54 +40,143 @@ public class ExamFragment extends ExamDoingFragment {
             refreshChildTopList();
 
         } else {
-            //网格布局
-            if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {
-                //局部刷新量表对应的视图项
-                List<RecyclerCommonSection<DimensionInfoEntity>> data = recyclerAdapter.getData();
-                if (ArrayListUtil.isNotEmpty(data)) {
-                    //header模型位置
-                    int headerPosition = 0;
 
-                    for (int i = 0; i < data.size(); i++) {
-                        RecyclerCommonSection<DimensionInfoEntity> item = data.get(i);
-                        TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
-                        DimensionInfoEntity t = (DimensionInfoEntity) item.t;
+//            //局部刷新量表对应的视图项
+//            List<RecyclerCommonSection<DimensionInfoEntity>> data = recyclerAdapter.getData();
+//            if (ArrayListUtil.isNotEmpty(data)) {
+//                //header模型位置
+//                int headerPosition = 0;
+//
+//                for (int i = 0; i < data.size(); i++) {
+//                    RecyclerCommonSection<DimensionInfoEntity> item = data.get(i);
+//                    TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
+//                    DimensionInfoEntity t = (DimensionInfoEntity) item.t;
+//
+//                    //t不为空
+//                    if (t != null ) {
+//                        //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                        if (t.getTopicId().equals(dimension.getTopicId())
+//                                && t.getDimensionId().equals(dimension.getDimensionId())) {
+//                            //刷新对应量表的列表项
+//                            t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+//                            recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+//
+//                            //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+//                            if (isMeetUnlockCondition(topicInfo)) {
+//                                //重置为第一页
+//                                resetPageInfo();
+//                                //刷新孩子话题
+//                                refreshChildTopList();
+//
+//                            } else {
+//                                //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
+//                                refreshHeader(headerPosition, topicInfo);
+//                            }
+//                            break;
+//                        }
+//
+//                    } else {
+//                        //t为空则代表是header模型
+//                        headerPosition = i;
+//                    }
+//
+//                }
+//            }
 
-                        //t不为空
-                        if (t != null) {
-                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
-                            if (t.getTopicId().equals(dimension.getTopicId())
-                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
-                                //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
-                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
-                                if (childTopic == null) {
-                                    childTopic = new TopicInfoChildEntity();
-                                    childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
-                                    topicInfo.setChildTopic(childTopic);
-                                }
 
-                                //刷新对应量表的列表项
-                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
-                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
-                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+            //局部刷新量表对应的视图项
+            List<MultiItemEntity> data = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(data)) {
+                //header模型位置
+                int headerPosition = 0;
+                TopicInfoEntity topicInfo = null;
+                DimensionInfoEntity t = null;
 
-                                break;
+                for (int i = 0; i < data.size(); i++) {
+                    MultiItemEntity item = data.get(i);
+                    if (item instanceof TopicInfoEntity) {
+                        topicInfo = (TopicInfoEntity) item;
+                        headerPosition = i;
+
+                    } else if (item instanceof DimensionInfoEntity) {
+                        t = (DimensionInfoEntity) item;
+                    }
+
+                    //t不为空
+                    if (t != null ) {
+                        //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                        if (t.getTopicId().equals(dimension.getTopicId())
+                                && t.getDimensionId().equals(dimension.getDimensionId())) {
+                            //刷新对应量表的列表项
+                            t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                            recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+
+                            //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+                            if (isMeetUnlockCondition(topicInfo)) {
+                                //重置为第一页
+                                resetPageInfo();
+                                //刷新孩子话题
+                                refreshChildTopList();
+
+                            } else {
+                                //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
+                                refreshHeader(headerPosition, topicInfo);
                             }
-
-                        } else {
-                            //t为空则代表是header模型
-                            headerPosition = i;
+                            break;
                         }
 
                     }
                 }
-            } else {
-                //重置为第一页
-                resetPageInfo();
-                //刷新孩子话题
-                refreshChildTopList();
             }
+
+
+//            //局部刷新量表对应的视图项
+//            List<MultiItemEntity> data = recyclerAdapter.getData();
+//            if (ArrayListUtil.isNotEmpty(data)) {
+//                //header模型位置
+//                int headerPosition = 0;
+//                int tempPos = 0;
+//
+//                for (int i = 0; i < data.size(); i++) {
+//                    headerPosition = tempPos;
+//
+//                    TopicInfoEntity topicInfo = (TopicInfoEntity) data.get(i);
+//                    List<DimensionInfoEntity> subItems = topicInfo.getSubItems();
+//
+//                    if (ArrayListUtil.isNotEmpty(subItems)) {
+//                        for (DimensionInfoEntity t : subItems) {
+//                            tempPos++;
+//                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                            if (t.getTopicId().equals(dimension.getTopicId())
+//                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+//                                //刷新对应量表的列表项
+//                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//                                int tempPosition = tempPos + recyclerAdapter.getHeaderLayoutCount();
+//                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+//
+//                                //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+//                                if (isMeetUnlockCondition(topicInfo)) {
+//                                    //重置为第一页
+//                                    resetPageInfo();
+//                                    //刷新孩子话题
+//                                    refreshChildTopList();
+//
+//                                } else {
+//                                    //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
+//                                    refreshHeader(headerPosition, topicInfo);
+//                                }
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    tempPos++;
+//                }
+//            }
         }
+
     }
 
 
@@ -140,16 +231,15 @@ public class ExamFragment extends ExamDoingFragment {
                         return;
                     }
 
-                    List recyclerItem = null;
-                    if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {
-                        //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                        recyclerItem = topicInfoEntityToRecyclerSection(dataList);
-                    } else if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
-                        recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-                    }
+                    //转成列表的数据项
+                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
 
                     //下拉刷新
                     recyclerAdapter.setNewData(recyclerItem);
+
+                    //初始展开
+                    recyclerAdapter.expandAll();
+
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
@@ -226,13 +316,8 @@ public class ExamFragment extends ExamDoingFragment {
                         return;
                     }
 
-                    List recyclerItem = null;
-                    if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {
-                        //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                        recyclerItem = topicInfoEntityToRecyclerSection(dataList);
-                    } else if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
-                        recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-                    }
+                    //转成列表的数据项
+                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
 
                     //当前列表无数据
                     if (recyclerAdapter.getData().size() == 0) {
@@ -241,6 +326,10 @@ public class ExamFragment extends ExamDoingFragment {
                     } else {
                         recyclerAdapter.addData(recyclerItem);
                     }
+
+                    //初始展开
+                    int totalItem = getTotalItem(dataList);
+                    recyclerAdapter.expandAll(totalItem);
 
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {

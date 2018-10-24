@@ -2,9 +2,8 @@ package com.cheersmind.cheersgenie.main.entity;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.adapter.ExamDimensionBaseRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
-
-import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +12,10 @@ import java.util.List;
  * 话题（场景）
  */
 public class TopicInfoEntity extends AbstractExpandableItem<DimensionInfoEntity> implements MultiItemEntity, Serializable {
+
+    public TopicInfoEntity() {
+        mExpandable = false;
+    }
 
     @InjectMap(name = "topic_id")
     private String topicId;
@@ -209,6 +212,6 @@ public class TopicInfoEntity extends AbstractExpandableItem<DimensionInfoEntity>
 
     @Override
     public int getItemType() {
-        return 0;
+        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_HEADER;
     }
 }

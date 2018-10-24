@@ -11,6 +11,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.ExamDimensionBaseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionLinearRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -67,14 +68,14 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     //话题列表（话题基础数据、孩子话题的信息、量表）
     List<TopicInfoEntity> topicList;
-    //适配器的数据列表
-//    List<RecyclerCommonSection<DimensionInfoEntity>> recyclerItem;
+
     //适配器
-    protected BaseQuickAdapter recyclerAdapter;
+    protected ExamDimensionBaseRecyclerAdapter recyclerAdapter;
     //适配器（网格式）
-    protected BaseQuickAdapter gridRecyclerAdapter;
+    protected ExamDimensionBaseRecyclerAdapter gridRecyclerAdapter;
     //适配器（线性式）
-    protected BaseQuickAdapter linearRecyclerAdapter;
+    protected ExamDimensionBaseRecyclerAdapter linearRecyclerAdapter;
+
     @BindView(R.id.swipeRefreshLayout)
     protected SwipeRefreshLayout swipeRefreshLayout;
     //空布局
@@ -92,26 +93,23 @@ public class ExamBaseFragment extends LazyLoadFragment {
     protected BaseQuickAdapter.OnItemClickListener recyclerItemClickListener =  new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            //网格
-            if (adapter instanceof ExamDimensionRecyclerAdapter) {
-                RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
-                //非Header模型
-                if (!data.isHeader) {
-                    DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
-                    TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
-                    //点击量表项的操作
-                    operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-                }
+//            //网格
+//            RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
+//            //非Header模型
+//            if (!data.isHeader) {
+//                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
+//                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
+//                //点击量表项的操作
+//                operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+//            }
 
-            } else if (adapter instanceof ExamDimensionLinearRecyclerAdapter) {//线性
-                Object item = ((ExamDimensionLinearRecyclerAdapter) adapter).getItem(position);
-                if (item instanceof DimensionInfoEntity) {
-                    DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) item;
-                    int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
-                    TopicInfoEntity topicInfoEntity = (TopicInfoEntity) ((ExamDimensionLinearRecyclerAdapter) adapter).getItem(parentPosition);
-                    //点击量表项的操作
-                    operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-                }
+            Object item = ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(position);
+            if (item instanceof DimensionInfoEntity) {
+                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) item;
+                int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
+                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(parentPosition);
+                //点击量表项的操作
+                operateClickDimension(dimensionInfoEntity, topicInfoEntity);
             }
         }
     };
@@ -120,21 +118,34 @@ public class ExamBaseFragment extends LazyLoadFragment {
     protected BaseQuickAdapter.OnItemChildClickListener recyclerItemChildClickListener =  new BaseQuickAdapter.OnItemChildClickListener() {
         @Override
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+//            //话题详情
+//            if (view.getId() == R.id.iv_desc) {
+//                RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
+//                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
+//                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
+//                //跳转到话题详情页面
+//                TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId(), topicInfoEntity);
+//
+//            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
+//                RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
+//                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
+//                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
+//                //查看话题报告
+//                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//            }
+
+            Object item = ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(position);
+            TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
             //话题详情
             if (view.getId() == R.id.iv_desc) {
-                RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
-                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
-                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(), topicInfoEntity.getTopicId(), topicInfoEntity);
 
             } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
-                RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
-                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
-                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
                 //查看话题报告
                 ReportActivity.startReportActivity(getContext(), topicInfoEntity);
             }
+
         }
     };
 
@@ -185,7 +196,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
         EventBus.getDefault().register(this);
 
         try {
-            gridRecyclerAdapter = new ExamDimensionRecyclerAdapter(this, R.layout.recycleritem_axam, R.layout.recycleritem_axam_header, null);
+            gridRecyclerAdapter = new ExamDimensionRecyclerAdapter(this, null);
             linearRecyclerAdapter = new ExamDimensionLinearRecyclerAdapter(this,  null);
         } catch (QSCustomException e) {
             e.printStackTrace();
@@ -193,13 +204,39 @@ public class ExamBaseFragment extends LazyLoadFragment {
         //设置适配器属性
         settingAdapterProperty(gridRecyclerAdapter);
         settingAdapterProperty(linearRecyclerAdapter);
+
         //默认设置网格布局
-        recyclerAdapter = gridRecyclerAdapter;
+        if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID) {
+            recyclerAdapter = gridRecyclerAdapter;
+        } else {
+            recyclerAdapter = linearRecyclerAdapter;
+        }
 
         //设置加载更多视图
         recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
-        recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
         recycleView.setAdapter(recyclerAdapter);
+
+        //线性布局
+        if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
+            recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        } else if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {//网格布局
+            //网格布局管理器
+            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return recyclerAdapter.getItemViewType(position) == ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_BODY ? 1 : gridLayoutManager.getSpanCount();
+                }
+            });
+            //必须在setAdapter之后
+            recycleView.setLayoutManager(gridLayoutManager);
+
+        } else {
+            recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+
         //滑动监听
         try {
             recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
@@ -230,7 +267,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     /**
      * 设置适配器属性
-     * @param recyclerAdapter
+     * @param recyclerAdapter 适配器
      */
     protected void settingAdapterProperty(BaseQuickAdapter recyclerAdapter) {
         //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
@@ -289,7 +326,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     /**
      * 问题提交成功的通知事件
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onQuestionSubmitNotice(QuestionSubmitSuccessEvent event) {
@@ -303,7 +340,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     /**
      * 问题提交成功的通知事件的处理
-     * @param dimension
+     * @param dimension 量表
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
         //重置为第一页
@@ -314,8 +351,8 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     /**
      * 是否满足解锁条件
-     * @param topicInfo
-     * @return
+     * @param topicInfo 话题
+     * @return true 满足
      */
     protected boolean isMeetUnlockCondition(TopicInfoEntity topicInfo) {
         //是否满足解锁条件
@@ -380,7 +417,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
                 for (DimensionInfoEntity tempDimension : dimensions) {
                     //孩子量表对象为空或者状态为0，视为未完成
                     if (tempDimension.getChildDimension() == null
-                            || tempDimension.getChildDimension().getStatus() == 0) {
+                            || tempDimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                         isTopicComplete = false;
                         break;
                     }
@@ -463,19 +500,15 @@ public class ExamBaseFragment extends LazyLoadFragment {
                         return;
                     }
 
-                    List recyclerItem = null;
-                    if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {
-                        //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                        recyclerItem = topicInfoEntityToRecyclerSection(dataList);
-                    } else if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
-                        recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-                    }
+                    //转成列表的数据项
+                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
 
                     //下拉刷新
                     recyclerAdapter.setNewData(recyclerItem);
-                    if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
-                        recyclerAdapter.expandAll();
-                    }
+
+                    //初始展开
+                    recyclerAdapter.expandAll();
+
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
@@ -551,13 +584,8 @@ public class ExamBaseFragment extends LazyLoadFragment {
                         return;
                     }
 
-                    List recyclerItem = null;
-                    if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {
-                        //话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
-                        recyclerItem = topicInfoEntityToRecyclerSection(dataList);
-                    } else if (recyclerAdapter instanceof ExamDimensionLinearRecyclerAdapter) {
-                        recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-                    }
+                    //转成列表的数据项
+                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
 
                     //当前列表无数据
                     if (recyclerAdapter.getData().size() == 0) {
@@ -566,6 +594,10 @@ public class ExamBaseFragment extends LazyLoadFragment {
                     } else {
                         recyclerAdapter.addData(recyclerItem);
                     }
+
+                    //初始展开
+                    int totalItem = getTotalItem(dataList);
+                    recyclerAdapter.expandAll(totalItem);
 
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
@@ -663,6 +695,31 @@ public class ExamBaseFragment extends LazyLoadFragment {
         }
 
         return resList;
+    }
+
+
+    /**
+     * 获取共总有多少项（话题加量表）
+     *
+     * @param topicList 话题集合
+     * @return 适配recycler的分组数据模型
+     */
+    protected int getTotalItem(List<TopicInfoEntity> topicList) {
+        int total = 0;
+
+        if (ArrayListUtil.isNotEmpty(topicList)) {
+            //话题数量
+            total = topicList.size();
+            //遍历话题列表
+            for (TopicInfoEntity topicInfo : topicList) {
+                List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();
+                if (ArrayListUtil.isNotEmpty(dimensionInfoList)) {
+                    total += dimensionInfoList.size();
+                }
+            }
+        }
+
+        return total;
     }
 
 
@@ -775,17 +832,32 @@ public class ExamBaseFragment extends LazyLoadFragment {
             linearRecyclerAdapter.setNewData(newData);
             recyclerAdapter = linearRecyclerAdapter;
             recycleView.setAdapter(recyclerAdapter);
-            //必须在setAdapter之后调用
             recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerAdapter.expandAll();
 
         } else if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID) {//网格
-            List<RecyclerCommonSection<DimensionInfoEntity>> newData = topicInfoEntityToRecyclerSection(topicList);
+//            List<RecyclerCommonSection<DimensionInfoEntity>> newData = topicInfoEntityToRecyclerSection(topicList);
+//            gridRecyclerAdapter.setNewData(newData);
+//            recyclerAdapter = gridRecyclerAdapter;
+//            //setAdapter之前调用
+//            recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+//            recycleView.setAdapter(recyclerAdapter);
+
+            List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(topicList);
             gridRecyclerAdapter.setNewData(newData);
             recyclerAdapter = gridRecyclerAdapter;
-            //setAdapter之前调用
-            recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
             recycleView.setAdapter(recyclerAdapter);
+            //网格布局管理器（切换后受到了影响，得重新设置对象）
+            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return recyclerAdapter.getItemViewType(position) == ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_BODY ? 1 : gridLayoutManager.getSpanCount();
+                }
+            });
+            //必须在setAdapter之后调用
+            recycleView.setLayoutManager(gridLayoutManager);
+            recyclerAdapter.expandAll();
         }
 
         //判断是否全部加载结束
