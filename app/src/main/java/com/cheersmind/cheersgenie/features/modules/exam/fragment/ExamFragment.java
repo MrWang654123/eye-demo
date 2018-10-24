@@ -1,10 +1,13 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.support.v4.app.Fragment;
+
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionLinearRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
+import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -162,6 +165,12 @@ public class ExamFragment extends ExamDoingFragment {
                 emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                 //清空列表数据
                 recyclerAdapter.setNewData(null);
+
+                //回调布局切换
+                Fragment parentFragment = getParentFragment();
+                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                }
             }
 
             @Override
@@ -209,12 +218,24 @@ public class ExamFragment extends ExamDoingFragment {
                     pageNum++;
                     topicList = dataList;
 
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
+
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                    }
                 }
 
             }
@@ -245,6 +266,13 @@ public class ExamFragment extends ExamDoingFragment {
                 if (recyclerAdapter.getData().size() == 0) {
                     //设置空布局：网络错误
                     emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                    }
+
                 } else {
                     //加载失败处理
                     recyclerAdapter.loadMoreFail();
@@ -303,11 +331,24 @@ public class ExamFragment extends ExamDoingFragment {
                     }
                     topicList.addAll(dataList);
 
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
                         emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+
+                        //回调布局切换
+                        Fragment parentFragment = getParentFragment();
+                        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                            ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                        }
+
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();

@@ -99,7 +99,8 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 //查看报告按钮点击监听
                 helper.addOnClickListener(R.id.tv_nav_to_report);
 
-                //伸缩按钮
+                //伸缩按钮（网格模式隐藏）
+                helper.getView(R.id.iv_expand).setVisibility(View.GONE);
                 helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
                 helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
                     @Override

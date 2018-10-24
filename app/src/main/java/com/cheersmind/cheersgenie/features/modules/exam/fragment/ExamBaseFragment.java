@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
@@ -475,6 +477,12 @@ public class ExamBaseFragment extends LazyLoadFragment {
                 emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                 //清空列表数据
                 recyclerAdapter.setNewData(null);
+
+                //回调布局切换
+                Fragment parentFragment = getParentFragment();
+                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                }
             }
 
             @Override
@@ -522,12 +530,24 @@ public class ExamBaseFragment extends LazyLoadFragment {
                     pageNum++;
                     topicList = dataList;
 
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     //设置空布局：没有数据，可重载
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
+
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                    }
                 }
 
             }
@@ -557,6 +577,13 @@ public class ExamBaseFragment extends LazyLoadFragment {
                 if (recyclerAdapter.getData().size() == 0) {
                     //设置空布局：网络错误
                     emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                    }
+
                 } else {
                     //加载失败处理
                     recyclerAdapter.loadMoreFail();
@@ -615,11 +642,24 @@ public class ExamBaseFragment extends LazyLoadFragment {
                     }
                     topicList.addAll(dataList);
 
+                    //回调布局切换
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (recyclerAdapter.getData().size() == 0) {
                         //设置空布局：没有数据，可重载
                         emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+
+                        //回调布局切换
+                        Fragment parentFragment = getParentFragment();
+                        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+                            ((ExamLayoutListener)parentFragment).change(layoutType, false);
+                        }
+
                     } else {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();
@@ -807,14 +847,9 @@ public class ExamBaseFragment extends LazyLoadFragment {
     /**
      * 切换布局
      */
-    public void switchLayout() {
+    public void switchLayout(int layoutType) {
         //改变布局标记值
-        if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID) {
-            layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR;
-
-        } else if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR) {
-            layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID;
-        }
+        this.layoutType = layoutType;
 
         //改变列表布局
         changeRecyclerViewLayout(layoutType);
