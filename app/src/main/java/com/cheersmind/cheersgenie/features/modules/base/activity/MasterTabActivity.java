@@ -2,10 +2,7 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -13,27 +10,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.HomeFragment;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.MessageFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
-import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamCompletedFragment;
 import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
@@ -42,7 +28,6 @@ import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +94,7 @@ public class MasterTabActivity extends BaseActivity {
         //首页改为探索
 //        listFragment.add(new HomeFragment());
         listFragment.add(new ExploreFragment());
-        listFragment.add(new ExamFragment());
+        listFragment.add(new ExamWrapFragment());
 //        listFragment.add(new MessageFragment());
         listFragment.add(new ReportFragment());
         //由于不需要标题栏，又需要懒加载，所以直接使用它，用ReportFragment嵌套懒加载会失效
