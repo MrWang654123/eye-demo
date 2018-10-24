@@ -134,48 +134,6 @@ public class ExamDoingFragment extends ExamBaseFragment {
                     }
                 }
 
-
-//                //局部刷新量表对应的视图项
-//                List<MultiItemEntity> data = recyclerAdapter.getData();
-//                if (ArrayListUtil.isNotEmpty(data)) {
-//                    //header模型位置
-////                    int headerPosition = 0;
-//                    int tempPos = 0;
-//
-//                    for (int i = 0; i < data.size(); i++) {
-////                        headerPosition = recyclerAdapter.getHeaderLayoutCount();
-//
-//                        TopicInfoEntity topicInfo = (TopicInfoEntity) data.get(i);
-//                        List<DimensionInfoEntity> subItems = topicInfo.getSubItems();
-//
-//                        if (ArrayListUtil.isNotEmpty(subItems)) {
-//                            for (DimensionInfoEntity t : subItems) {
-//                                tempPos++;
-//                                //找出同一个量表，设置孩子量表，然后局部刷新列表项
-//                                if (t.getTopicId().equals(dimension.getTopicId())
-//                                        && t.getDimensionId().equals(dimension.getDimensionId())) {
-//                                    //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
-//                                    TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
-//                                    if (childTopic == null) {
-//                                        childTopic = new TopicInfoChildEntity();
-//                                        childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
-//                                        topicInfo.setChildTopic(childTopic);
-//                                    }
-//
-//                                    //刷新对应量表的列表项
-//                                    t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
-//                                    int tempPosition = tempPos + recyclerAdapter.getHeaderLayoutCount();
-//                                    recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
-//
-//                                    break;
-//                                }
-//                            }
-//                        }
-//
-//                        tempPos++;
-//                    }
-//                }
-
             }
         }
     }
