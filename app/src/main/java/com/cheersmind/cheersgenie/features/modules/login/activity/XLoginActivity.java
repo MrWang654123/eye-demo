@@ -178,7 +178,7 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //家长角色选择页面
-                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
+//                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
 
                 //完善信息页面
 //                Intent intent = new Intent(XLoginActivity.this, UserInfoInitActivity.class);
@@ -192,7 +192,10 @@ public class XLoginActivity extends BaseActivity {
 //                Intent intent = new Intent(XLoginActivity.this, GifActivity.class);
 //                startActivity(intent);
 
-                break;
+                //崩溃日志是否会上传的测试
+                throw new NullPointerException("啊啊啊是你的水电费，不能为空啊啊啊啊");
+
+//                break;
             }
             //服务条款（用户协议）
             case R.id.tv_license: {

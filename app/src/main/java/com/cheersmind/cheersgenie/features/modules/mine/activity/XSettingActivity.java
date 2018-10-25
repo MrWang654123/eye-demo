@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.man.MANService;
+import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
@@ -188,6 +190,11 @@ public class XSettingActivity extends BaseActivity {
         //清空登录信息的临时缓存
         UCManager.getInstance().clearToken();
 //                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);
+
+        // 用户注销埋点
+        MANService manService = MANServiceProvider.getService();
+        manService.getMANAnalytics().updateUserAccount("", "");
+
         //跳转到登录主页面（作为根activity）
         Intent intent = new Intent(XSettingActivity.this, XLoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
