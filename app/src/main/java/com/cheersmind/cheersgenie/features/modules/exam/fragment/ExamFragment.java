@@ -157,87 +157,12 @@ public class ExamFragment extends ExamDoingFragment {
         DataRequestService.getInstance().loadChildTopicList(defaultChildId, pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //开启上拉加载功能
-                recyclerAdapter.setEnableLoadMore(true);
-                //结束下拉刷新动画
-                swipeRefreshLayout.setRefreshing(false);
-                //设置空布局：网络错误
-                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                //清空列表数据
-                recyclerAdapter.setNewData(null);
-
-                //回调布局切换
-                Fragment parentFragment = getParentFragment();
-                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                }
+                onRefreshChildTopListFailed(e);
             }
 
             @Override
             public void onResponse(Object obj) {
-                try {
-                    //开启上拉加载功能
-                    recyclerAdapter.setEnableLoadMore(true);
-                    //结束下拉刷新动画
-                    swipeRefreshLayout.setRefreshing(false);
-                    //设置空布局：隐藏
-                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
-
-                    //后台总记录数
-                    totalCount = topicData.getTotal();
-                    List<TopicInfoEntity> dataList = topicData.getItems();
-
-                    //空数据处理
-                    if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                        return;
-                    }
-
-                    //转成列表的数据项
-                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-
-                    //下拉刷新
-                    recyclerAdapter.setNewData(recyclerItem);
-
-                    //初始展开
-                    recyclerAdapter.expandAll();
-
-                    //判断是否全部加载结束
-                    if (recyclerAdapter.getData().size() >= totalCount) {
-                        //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
-                    } else {
-                        //本次加载完成
-                        recyclerAdapter.loadMoreComplete();
-                    }
-
-                    //页码+1
-                    pageNum++;
-                    topicList = dataList;
-
-                    //回调布局切换
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //设置空布局：没有数据，可重载
-                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-                    //清空列表数据
-                    recyclerAdapter.setNewData(null);
-
-                    //回调布局切换
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                    }
-                }
-
+                onRefreshChildTopListSuccess(obj);
             }
         });
     }
@@ -260,101 +185,12 @@ public class ExamFragment extends ExamDoingFragment {
         DataRequestService.getInstance().loadChildTopicList(defaultChildId, pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //开启下拉刷新功能
-                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
-
-                if (recyclerAdapter.getData().size() == 0) {
-                    //设置空布局：网络错误
-                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-
-                    //回调布局切换
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                        ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                    }
-
-                } else {
-                    //加载失败处理
-                    recyclerAdapter.loadMoreFail();
-                }
+                onLoadMoreChildTopicListFailed(e);
             }
 
             @Override
             public void onResponse(Object obj) {
-                try {
-                    //开启下拉刷新功能
-                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
-                    //设置空布局：隐藏
-                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
-
-                    //后台总记录数
-                    totalCount = topicData.getTotal();
-                    List<TopicInfoEntity> dataList = topicData.getItems();
-
-                    //空数据处理
-                    if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                        return;
-                    }
-
-                    //转成列表的数据项
-                    List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
-
-                    //当前列表无数据
-                    if (recyclerAdapter.getData().size() == 0) {
-                        recyclerAdapter.setNewData(recyclerItem);
-
-                    } else {
-                        recyclerAdapter.addData(recyclerItem);
-                    }
-
-                    //初始展开
-                    int totalItem = getTotalItem(dataList);
-                    recyclerAdapter.expandAll(totalItem);
-
-                    //判断是否全部加载结束
-                    if (recyclerAdapter.getData().size() >= totalCount) {
-                        //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
-                    } else {
-                        //本次加载完成
-                        recyclerAdapter.loadMoreComplete();
-                    }
-
-                    //页码+1
-                    pageNum++;
-                    if (topicList == null) {
-                        topicList = new ArrayList<>();
-                    }
-                    topicList.addAll(dataList);
-
-                    //回调布局切换
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                        ((ExamLayoutListener)parentFragment).change(layoutType, true);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (recyclerAdapter.getData().size() == 0) {
-                        //设置空布局：没有数据，可重载
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-
-                        //回调布局切换
-                        Fragment parentFragment = getParentFragment();
-                        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                            ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                        }
-
-                    } else {
-                        //加载失败处理
-                        recyclerAdapter.loadMoreFail();
-                    }
-                }
-
+                onLoadMoreChildTopicListSuccess(obj);
             }
         });
     }
