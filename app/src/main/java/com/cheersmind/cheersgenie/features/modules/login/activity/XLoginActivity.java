@@ -194,7 +194,7 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //崩溃日志是否会上传的测试
-                throw new OutOfMemoryError("123333333333123123123123123123");
+                throw new NullPointerException("666666666666666666666666666我是空啊");
 
 //                break;
             }
