@@ -91,13 +91,11 @@ public class ReportFragment extends LazyLoadFragment implements ExamLayoutListen
             case R.id.iv_switch_layout:{
                 //当前是网格，切换成线性，显示网格图标
                 if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID) {
-                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_list_black_30dp);
-                    ivSwitchLayout.setTag(Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID);
+                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_grid_black_30dp);
                     layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR;
 
                 } else if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR) {//当前是线性，切换成网格，显示线性图标
-                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_grid_black_30dp);
-                    ivSwitchLayout.setTag(Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR);
+                    ivSwitchLayout.setImageResource(R.drawable.ic_layout_list_black_30dp);
                     layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID;
                 }
 
@@ -128,11 +126,9 @@ public class ReportFragment extends LazyLoadFragment implements ExamLayoutListen
 
         if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID) {
             ivSwitchLayout.setImageResource(R.drawable.ic_layout_list_black_30dp);
-            ivSwitchLayout.setTag(Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID);
 
         } else if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR) {
             ivSwitchLayout.setImageResource(R.drawable.ic_layout_grid_black_30dp);
-            ivSwitchLayout.setTag(Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR);
         }
 
     }
