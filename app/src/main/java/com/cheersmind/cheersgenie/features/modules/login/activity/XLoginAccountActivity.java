@@ -64,6 +64,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -625,6 +626,9 @@ public class XLoginAccountActivity extends BaseActivity {
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
+                    //友盟统计：当用户使用自有账号登录时，可以这样统计：
+                    MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));
+
                     //获取孩子信息
 //                    doGetChildListWrap();
 
@@ -857,9 +861,13 @@ public class XLoginAccountActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
+                    //登录统计
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
+
+                    //友盟统计：当用户使用第三方账号（如新浪微博）登录时，可以这样统计：
+                    MobclickAgent.onProfileSignIn(thirdLoginDto.getPlatSource(), String.valueOf(wxUserInfoEntity.getUserId()));
 
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {

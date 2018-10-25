@@ -16,6 +16,7 @@ import com.alibaba.sdk.android.man.MANService;
 import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.view.CustomDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -242,19 +243,23 @@ public class XWebViewBaseActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        MobclickAgent.onResume(this);
         //统计：页面埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageAppear(this);
+
+        //友盟统计
+        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        MobclickAgent.onPause(this);
         //统计：页面埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageDisAppear(this);
+
+        //友盟统计
+        MobclickAgent.onPause(this);
     }
 }
 

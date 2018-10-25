@@ -31,6 +31,7 @@ import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.PhoneUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.litepal.LitePalApplication;
@@ -134,6 +135,9 @@ public class QSApplication extends LitePalApplication {
 
         //初始化OkHttpUtils
         initOkHttpUtils();
+
+        //友盟统计
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, Constant.UAPP_KEY);
     }
 
     /**

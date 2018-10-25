@@ -16,8 +16,8 @@ public class Constant {
     public static final String FEEDBACK_APP_KEY = "25035344";
     public static final String FEEDBACK_APP_SECRET = "1b1b8a41c7f29936fd735ac8bf0cc8d2";
 
-    //统计
-    public static final String UAPP_KEY = "5a2bbbec8f4a9d7ac10001da";
+    //友盟统计
+    public static final String UAPP_KEY = "5bd18dadf1f556c16000000d";
 //    public static final String UAPP_KEY = "593e99fe677baa7c00001499";
 
     //微信登入

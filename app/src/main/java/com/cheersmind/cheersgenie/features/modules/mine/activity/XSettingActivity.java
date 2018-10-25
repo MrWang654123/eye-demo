@@ -33,6 +33,7 @@ import com.cheersmind.cheersgenie.module.login.LoginActivity;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.cheersmind.cheersgenie.module.login.UserLicenseActivity;
 import com.cheersmind.cheersgenie.module.mine.AboutActivity;
+import com.umeng.analytics.MobclickAgent;
 
 import org.litepal.crud.DataSupport;
 
@@ -194,6 +195,9 @@ public class XSettingActivity extends BaseActivity {
         // 用户注销埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANAnalytics().updateUserAccount("", "");
+
+        //友盟统计：登出
+        MobclickAgent.onProfileSignOff();
 
         //跳转到登录主页面（作为根activity）
         Intent intent = new Intent(XSettingActivity.this, XLoginActivity.class);

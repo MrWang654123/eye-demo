@@ -49,6 +49,7 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.umeng.analytics.MobclickAgent;
 
 import org.litepal.crud.DataSupport;
 
@@ -434,6 +435,9 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
+
+                    //友盟统计：当用户使用自有账号登录时，可以这样统计：
+                    MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));
 
                     //获取孩子信息
 //                    doGetChildListWrap();

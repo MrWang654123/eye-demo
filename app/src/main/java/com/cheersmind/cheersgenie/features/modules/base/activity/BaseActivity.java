@@ -56,6 +56,7 @@ import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.cheersmind.cheersgenie.module.login.UserService;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 import java.util.Map;
@@ -169,6 +170,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //统计：页面埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageAppear(this);
+
+        //友盟统计
+        MobclickAgent.onResume(this);
     }
 
     @Override
@@ -177,6 +181,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //统计：页面埋点
         MANService manService = MANServiceProvider.getService();
         manService.getMANPageHitHelper().pageDisAppear(this);
+
+        //友盟统计
+        MobclickAgent.onPause(this);
     }
 
     @Override

@@ -80,16 +80,16 @@
         <Button
             android:id="@+id/btn_third_page"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/heightDefaultWidget"
+            android:layout_height="@dimen/heightXBigWidget"
             android:layout_marginTop="25dp"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="@dimen/confirm_btn_margin_left"
             android:layout_marginRight="@dimen/confirm_btn_margin_right"
-            android:background="@drawable/btn_common_round"
+            android:background="@drawable/btn_common"
             android:enabled="true"
             android:text="测试按钮"
             android:textColor="@color/color_text_white"
-            android:visibility="gone"
+            android:visibility="visible"
             android:textSize="16sp" />
 
     </LinearLayout>

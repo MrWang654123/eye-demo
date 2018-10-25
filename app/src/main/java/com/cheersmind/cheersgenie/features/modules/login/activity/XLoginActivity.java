@@ -58,6 +58,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,7 +113,7 @@ public class XLoginActivity extends BaseActivity {
         //测试
         DisplayMetrics metrics = QSApplication.getMetrics();
         Configuration configuration = getResources().getConfiguration();
-        System.out.println("我是测试啊");
+        System.out.println("XLoginActivity：我是测试啊【DisplayMetrics】【Configuration】");
     }
 
     @Override
@@ -193,7 +194,7 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //崩溃日志是否会上传的测试
-                throw new NullPointerException("啊啊啊是你的水电费，不能为空啊啊啊啊");
+                throw new OutOfMemoryError("123333333333123123123123123123");
 
 //                break;
             }
@@ -377,9 +378,13 @@ public class XLoginActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
+                    //登录统计
                     MANService manService = MANServiceProvider.getService();
                     // 用户登录埋点("usernick", "userid")
                     manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
+
+                    //友盟统计：当用户使用第三方账号（如新浪微博）登录时，可以这样统计：
+                    MobclickAgent.onProfileSignIn(thirdLoginDto.getPlatSource(), String.valueOf(wxUserInfoEntity.getUserId()));
 
                     //未绑定手机号则跳转绑定
                     if (!wxUserInfoEntity.isBindMobile()) {

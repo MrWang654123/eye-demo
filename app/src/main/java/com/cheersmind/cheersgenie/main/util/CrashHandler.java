@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.cheersmind.cheersgenie.features.modules.base.activity.SplashActivity;
 import com.cheersmind.cheersgenie.main.activity.StartActivity;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,18 +46,26 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
         Log.i("uncaughtException",ex.getMessage());
+
+        //友盟统计：手动上传错误
+        MobclickAgent.reportError(mContext, ex);
+
         if (!handleException(ex) && mDefaultHandler != null) {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
 //            android.os.Process.killProcess(android.os.Process.myPid());
 //            System.exit(10);
+
+            //友盟统计：调用kill或者exit之类的方法杀死进程之前，保存统计数据
+            MobclickAgent.onKillProcess(mContext);
+
             restartApp();
         }
 
     }
 
-    public void restartApp(){
+    private void restartApp(){
         System.out.println("uncaughtException "+"奔溃了，重新启动应用");
 
         try {
