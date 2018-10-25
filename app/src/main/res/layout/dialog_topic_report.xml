@@ -9,6 +9,7 @@
         android:id="@+id/viewSimulateOutSite"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:visibility="gone"
         android:background="#00000000"/>
 
     <RelativeLayout
