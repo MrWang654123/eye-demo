@@ -14,14 +14,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="66dp">
+        android:layout_height="50dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="66dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/shape_corner_top_12dp">
-            <!--android:layout_height="50dp"-->
+            <!--android:layout_height="66dp"-->
 
             <TextView
                 android:id="@+id/tv_title"
