@@ -256,9 +256,9 @@ public class ArticleDetailActivity extends BaseActivity {
         recycleView.setNestedScrollingEnabled(false);
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(ArticleDetailActivity.this,DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(ArticleDetailActivity.this,R.drawable.recycler_divider_line_eeeeee));
-        recycleView.addItemDecoration(divider);
+//        DividerItemDecoration divider = new DividerItemDecoration(ArticleDetailActivity.this,DividerItemDecoration.VERTICAL);
+//        divider.setDrawable(ContextCompat.getDrawable(ArticleDetailActivity.this,R.drawable.recycler_divider_line_eeeeee));
+//        recycleView.addItemDecoration(divider);
 
         //nestedscrollview滑动监听（禁止了内部的recyclerview的滑动，所以上拉加载得监听它）
         svMainBlock.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -1067,10 +1067,10 @@ public class ArticleDetailActivity extends BaseActivity {
             }
 
             //用户名
-            String userName = item.getUserData().getUserName();
-            if (!TextUtils.isEmpty(userName)) {
+            String nickName = item.getUserData().getNickName();
+            if (!TextUtils.isEmpty(nickName)) {
                 TextView textView = commentItemView.findViewById(R.id.tv_username);
-                textView.setText(item.getUserData().getUserName());
+                textView.setText(nickName);
             } else {
                 commentItemView.findViewById(R.id.tv_username).setVisibility(View.GONE);
             }

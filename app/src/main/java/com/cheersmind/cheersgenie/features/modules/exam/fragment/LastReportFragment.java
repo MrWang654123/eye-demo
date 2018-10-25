@@ -366,6 +366,12 @@ public class LastReportFragment extends LazyLoadFragment {
                                                 .into(ivMain);
                                         ivMain.setTag(R.id.iv_main, url);
                                     }
+                                } else {
+                                    Glide.with(LastReportFragment.this)
+                                            .load(R.drawable.default_image_round_article_list)
+                                            .apply(defaultOptions)
+                                            .into(ivMain);
+                                    ivMain.setTag(R.id.iv_main, url);
                                 }
 
                                 ImageView ivPlay = commentItemView.findViewById(R.id.iv_play);//播放键
