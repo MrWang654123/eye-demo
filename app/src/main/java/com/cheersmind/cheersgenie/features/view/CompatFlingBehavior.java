@@ -63,7 +63,9 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
 //                    System.out.println("mCurPosX = " + mCurPosX + "    mPosX = " + mPosX);
                 //是否往上划
                 isUpSlide = isUpSile(mPosX, mPosY, mCurPosX, mCurPosY);
-                System.out.println(isUpSlide ? "isUpSlide: 向上划" : "isUpSlide: No");
+                if (BuildConfig.DEBUG) {
+                    System.out.println(isUpSlide ? "isUpSlide: 向上划" : "isUpSlide: No");
+                }
 
                 break;
             case MotionEvent.ACTION_UP:
