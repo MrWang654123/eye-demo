@@ -176,6 +176,10 @@ public class ExamBaseFragment extends LazyLoadFragment {
     //后台总记录数
     protected int totalCount = 0;
 
+    //滚动监听
+    RecyclerViewScrollListener scrollListener;
+
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_report_completed;
@@ -241,7 +245,8 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
         //滑动监听
         try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+            scrollListener = new RecyclerViewScrollListener(getContext(), fabGotoTop);
+            recycleView.addOnScrollListener(scrollListener);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -941,7 +946,10 @@ public class ExamBaseFragment extends LazyLoadFragment {
             //本次加载完成
             recyclerAdapter.loadMoreComplete();
         }
-//        recycleView.setAdapter(recyclerAdapter);
+
+        //清除滚动数据
+        scrollListener.clearScrollYData();
+
     }
 
 
