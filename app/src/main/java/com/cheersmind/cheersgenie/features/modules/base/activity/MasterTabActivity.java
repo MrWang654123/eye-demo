@@ -353,6 +353,7 @@ public class MasterTabActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
+        //切换tab
         int position = intent.getIntExtra(VIEWPAGER_POSITION, -1);
         if (position >= 0) {
             viewPager.setCurrentItem(position);
