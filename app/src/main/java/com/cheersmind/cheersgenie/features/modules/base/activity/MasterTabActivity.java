@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -21,6 +23,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
 import com.cheersmind.cheersgenie.features.utils.BottomNavigationViewHelper;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -131,6 +134,13 @@ public class MasterTabActivity extends BaseActivity {
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
                 .setFirstSelectedPosition(0)//设置默认选择的按钮
                 .initialise();//所有的设置需在调用该方法前完成
+
+
+        //测试
+        DisplayMetrics metrics = QSApplication.getMetrics();
+        Configuration configuration = getResources().getConfiguration();
+        System.out.println("MasterTabActivity：测试【DisplayMetrics】【Configuration】");
+
     }
 
     @Override

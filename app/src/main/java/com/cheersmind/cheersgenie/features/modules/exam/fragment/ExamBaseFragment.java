@@ -229,7 +229,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
         } else if (recyclerAdapter instanceof ExamDimensionRecyclerAdapter) {//网格布局
             //网格布局管理器
-            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), getResources().getInteger(R.integer.exam_grid_layout_span_count));
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
@@ -926,7 +926,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
             recyclerAdapter = gridRecyclerAdapter;
             recycleView.setAdapter(recyclerAdapter);
             //网格布局管理器（切换后受到了影响，得重新设置对象）
-            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+            final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), getResources().getInteger(R.integer.exam_grid_layout_span_count));
             gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--测评网格布局的列数-->
+    <integer name="exam_grid_layout_span_count">2</integer>
+</resources>
