@@ -366,7 +366,7 @@ public class ExploreFragment extends LazyLoadFragment {
                         //滑动动画
                         viewPagerBanner.setPageTransformer(false, new ScaleTransformer());
                         //页面间距
-                        viewPagerBanner.setPageMargin(-DensityUtil.dip2px(getContext(),34));
+                        viewPagerBanner.setPageMargin(-DensityUtil.dip2px(getContext(),33));
                         //预加载数量（左右）
                         viewPagerBanner.setOffscreenPageLimit(2);
                         viewPagerBanner.setAdapter(pageAdapter);

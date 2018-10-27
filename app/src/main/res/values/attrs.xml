@@ -37,5 +37,10 @@
         <attr name="isFull" format="boolean"></attr>
     </declare-styleable>
 
+    <!--矩形圆角图片-->
+    <declare-styleable name="RoundRectImageView">
+        <attr name="corner" format="dimension"></attr>
+    </declare-styleable>
+
 
 </resources>
