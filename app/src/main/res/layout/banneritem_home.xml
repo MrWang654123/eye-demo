@@ -71,7 +71,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/shape_corner_bottom_00000000_0dp"
             android:paddingLeft="10dp"
-            android:paddingBottom="15dp"
+            android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:paddingRight="10dp"
             android:text="为你的心情放个假开始的法律考试肯定发深度开发开始大幅速度飞快"

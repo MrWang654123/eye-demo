@@ -80,17 +80,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/color_f5f5f5"
+                android:clipChildren="false"
                 app:layout_behavior="@string/CompatFlingBehavior">
-                <!--app:layout_behavior="com.cheersmind.cheersgenie.features.view.CompatFlingBehavior"-->
-
-                <!--<TextView-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center"-->
-                    <!--android:padding="10dp"-->
-                    <!--android:background="#ff0000"-->
-                    <!--android:text="模拟标题"-->
-                    <!--app:layout_scrollFlags="scroll|enterAlways"/>-->
 
                 <com.bigkoo.convenientbanner.ConvenientBanner
                     android:id="@+id/convenientBanner"
@@ -98,12 +89,24 @@
                     android:layout_height="210dp"
                     app:canLoop="true"
                     app:autoTurningTime="5000"
+                    android:visibility="gone"
                     app:layout_scrollFlags="scroll"/>
                 <!--<include layout="@layout/recycler_header_home_banner"-->
                     <!--android:layout_width="match_parent"-->
                     <!--android:layout_height="210dp"-->
                     <!--app:layout_scrollFlags="scroll"-->
                     <!--/>-->
+
+                <com.cheersmind.cheersgenie.features.view.HorizontalViewPager
+                    android:id="@+id/viewPagerBanner"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:clipChildren="false"
+                    app:layout_scrollFlags="scroll"/>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tabs"

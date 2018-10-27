@@ -1,20 +1,26 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,8 +28,15 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.BannerPageAdapter;
 import com.cheersmind.cheersgenie.features.adapter.TabViewPagerAdapter;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
@@ -38,6 +51,7 @@ import com.cheersmind.cheersgenie.features.modules.explore.fragment.CategoryTabI
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
+import com.cheersmind.cheersgenie.features.view.transformer.ScaleTransformer;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
@@ -62,6 +76,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * 探索
@@ -70,8 +85,13 @@ public class ExploreFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
 
+    //banner
     @BindView(R.id.convenientBanner)
     ConvenientBanner convenientBanner;
+    @BindView(R.id.viewPagerBanner)
+    ViewPager viewPagerBanner;
+    //广告栏viewPager适配器
+    BannerPageAdapter pageAdapter;
 
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
@@ -160,6 +180,7 @@ public class ExploreFragment extends LazyLoadFragment {
         convenientBanner.setVisibility(View.GONE);
         tabs.setVisibility(View.GONE);
         viewPager.setVisibility(View.GONE);
+        viewPagerBanner.setVisibility(View.GONE);
 
         //设置显示时的动画
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
@@ -197,45 +218,63 @@ public class ExploreFragment extends LazyLoadFragment {
         });
 
         //动态计算banner的高度
+//        final DisplayMetrics metrics = QSApplication.getMetrics();
+//        int itemWidth = metrics.widthPixels;
+//        final int itemHeight = (int) (itemWidth * (9f/16));
+//        ViewTreeObserver vto = convenientBanner.getViewTreeObserver();
+//        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//                convenientBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+////                int width = convenientBanner.getWidth();
+////                final int resHeight = (int)(width * (310.0f / 398));
+//
+//                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) convenientBanner.getLayoutParams();
+//                params.width = metrics.widthPixels;
+//                params.height = itemHeight;
+//                convenientBanner.setLayoutParams(params);
+//            }
+//        });
+
+        //动态计算banner的高度
         final DisplayMetrics metrics = QSApplication.getMetrics();
-        int itemWidth = metrics.widthPixels;
-        final int itemHeight = (int) (itemWidth * (9f/16));
-        ViewTreeObserver vto = convenientBanner.getViewTreeObserver();
+        ViewTreeObserver vto = viewPagerBanner.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                convenientBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                int width = convenientBanner.getWidth();
-//                final int resHeight = (int)(width * (310.0f / 398));
+                viewPagerBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width = viewPagerBanner.getWidth();
+                final int resHeight = (int) ((metrics.widthPixels - DensityUtil.dip2px(getContext(), 40)) * (9f/16));
 
-                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) convenientBanner.getLayoutParams();
-                params.width = metrics.widthPixels;
-                params.height = itemHeight;
-                convenientBanner.setLayoutParams(params);
+                AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) viewPagerBanner.getLayoutParams();
+//                params.width = width;
+                params.height = resHeight;
+                viewPagerBanner.setLayoutParams(params);
             }
         });
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //开始自动翻页
-        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
-            //开始轮播
-//            banner.startAutoPlay();
-            convenientBanner.startTurning();
-        }
+//        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
+//            //开始轮播
+////            banner.startAutoPlay();
+//            convenientBanner.startTurning();
+//        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         //停止翻页
-        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
-            //结束轮播
-//            banner.stopAutoPlay();
-            convenientBanner.stopTurning();
-        }
+//        if (!ArrayListUtil.isEmpty(bannerArticleList)) {
+//            //结束轮播
+////            banner.stopAutoPlay();
+//            convenientBanner.stopTurning();
+//        }
         //取消toast
         ToastUtil.cancelToast();
     }
@@ -258,6 +297,7 @@ public class ExploreFragment extends LazyLoadFragment {
         unbinder.unbind();
     }
 
+
     /**
      * 加载banner数据（目前指的是热门文章）
      */
@@ -267,7 +307,8 @@ public class ExploreFragment extends LazyLoadFragment {
             @Override
             public void onFailure(QSCustomException e) {
 //                banner.setVisibility(View.GONE);
-                convenientBanner.setVisibility(View.GONE);
+//                convenientBanner.setVisibility(View.GONE);
+                viewPagerBanner.setVisibility(View.GONE);
                 //发送通信错误消息
                 mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
@@ -298,19 +339,38 @@ public class ExploreFragment extends LazyLoadFragment {
                         banner.startAnimation(mShowAction);
                         */
 
-//                        ConvenientBanner convenientBanner = new ConvenientBanner();
-                        convenientBanner.setPages(viewHolderCreator, bannerArticleList) //mList是图片地址的集合
-                                .setPointViewVisible(true)    //设置指示器是否可见
-                                //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
-                                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
-                                //设置指示器位置（左、中、右）
-                                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL)
-                                .setOnItemClickListener(bannerItemClickListener)//点击监听
-                                .startTurning(BANNER_AUTO_NEXT_PAGE_TIME);     //设置自动切换（同时设置了切换时间间隔）
-//                .setManualPageable(true)  //设置手动影响（设置了该项无法手动切换）
-//        ;
-                        convenientBanner.setVisibility(View.VISIBLE);
-                        convenientBanner.startAnimation(mShowAction);
+//                        convenientBanner.setPages(viewHolderCreator, bannerArticleList) //mList是图片地址的集合
+//                                .setPointViewVisible(true)    //设置指示器是否可见
+//                                //设置两个点图片作为翻页指示器，不设置则没有指示器，可以根据自己需求自行配合自己的指示器,不需要圆点指示器可用不设
+//                                .setPageIndicator(new int[]{R.drawable.ic_page_indicator, R.drawable.ic_page_indicator_focused})
+//                                //设置指示器位置（左、中、右）
+//                                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL)
+//                                .setOnItemClickListener(bannerItemClickListener)//点击监听
+//                                .startTurning(BANNER_AUTO_NEXT_PAGE_TIME);     //设置自动切换（同时设置了切换时间间隔）
+////                .setManualPageable(true)  //设置手动影响（设置了该项无法手动切换）
+////        ;
+//                        convenientBanner.setVisibility(View.VISIBLE);
+//                        convenientBanner.startAnimation(mShowAction);
+
+                        if (pageAdapter == null) {
+                            pageAdapter = new BannerPageAdapter(ExploreFragment.this, bannerArticleList);
+                            //页面点击监听
+                            pageAdapter.setListener(new BannerPageAdapter.OnPageClickListener() {
+                                @Override
+                                public void onPageClick(int position) {
+                                    handlerBannerItemClick(position);
+                                }
+                            });
+                        }
+                        viewPagerBanner.setVisibility(View.VISIBLE);
+                        //滑动动画
+                        viewPagerBanner.setPageTransformer(false, new ScaleTransformer());
+                        //页面间距
+                        viewPagerBanner.setPageMargin(-DensityUtil.dip2px(getContext(),34));
+                        //预加载数量（左右）
+                        viewPagerBanner.setOffscreenPageLimit(2);
+                        viewPagerBanner.setAdapter(pageAdapter);
+
                         //空布局：隐藏
 //                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
@@ -322,7 +382,8 @@ public class ExploreFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
 //                    banner.setVisibility(View.GONE);
-                    convenientBanner.setVisibility(View.GONE);
+//                    convenientBanner.setVisibility(View.GONE);
+                    viewPagerBanner.setVisibility(View.GONE);
                 }
 
             }
