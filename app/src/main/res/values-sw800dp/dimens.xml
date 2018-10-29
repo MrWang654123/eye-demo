@@ -15,8 +15,8 @@
     <!--banner页垂直外间距-->
     <dimen name="bannerVerticalMargin">15dp</dimen>
     <!--banner页水平外间距-->
-    <dimen name="bannerHorizontalMargin">32dp</dimen>
+    <dimen name="bannerHorizontalMargin">35dp</dimen>
     <!--banner页之间间距的而外距离-->
-    <dimen name="bannerPageMarginExtra">20dp</dimen>
+    <dimen name="bannerPageMarginExtra">28dp</dimen>
 
 </resources>

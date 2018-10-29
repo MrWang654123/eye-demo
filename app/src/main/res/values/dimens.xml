@@ -20,7 +20,11 @@
     <dimen name="confirm_btn_margin_left">35dp</dimen>
     <dimen name="confirm_btn_margin_right">35dp</dimen>
 
-    <!--banner页之间的间距（dp）-->
-    <dimen name="bannerPageMargin">20dp</dimen>
+    <!--banner页垂直外间距-->
+    <dimen name="bannerVerticalMargin">15dp</dimen>
+    <!--banner页水平外间距-->
+    <dimen name="bannerHorizontalMargin">20dp</dimen>
+    <!--banner页之间间距的而外距离-->
+    <dimen name="bannerPageMarginExtra">3dp</dimen>
 
 </resources>

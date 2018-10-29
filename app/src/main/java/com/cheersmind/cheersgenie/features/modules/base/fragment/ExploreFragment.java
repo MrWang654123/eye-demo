@@ -1,51 +1,33 @@
 package com.cheersmind.cheersgenie.features.modules.base.fragment;
 
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.BannerPageAdapter;
 import com.cheersmind.cheersgenie.features.adapter.TabViewPagerAdapter;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.holder.BannerHomeHolder;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleListActivity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
-import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamCompletedFragment;
-import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamDoingFragment;
 import com.cheersmind.cheersgenie.features.modules.explore.fragment.CategoryRecommendFragment;
 import com.cheersmind.cheersgenie.features.modules.explore.fragment.CategoryTabItemFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -76,7 +58,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * 探索
@@ -243,7 +224,8 @@ public class ExploreFragment extends LazyLoadFragment {
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int margin = (int) getResources().getDimension(R.dimen.bannerPageMargin);
+                int margin = (int) getResources().getDimension(R.dimen.bannerHorizontalMargin);
+                int bannerPageMarginExtra = (int) getResources().getDimension(R.dimen.bannerPageMarginExtra);
                 viewPagerBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 int width = metrics.widthPixels - margin * 2;
                 final int resHeight = (int) ((width) * (9f/16));
@@ -254,11 +236,12 @@ public class ExploreFragment extends LazyLoadFragment {
                 viewPagerBanner.setLayoutParams(params);
 
                 //计算banner页之间的间距
-//                int temp = DensityUtil.dip2px(getContext(), 33);
-//                float density = getResources().getDisplayMetrics().density;
-                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
-//                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
-//                System.out.println("页间距：" + bannerPageMargin);
+                int temp = DensityUtil.dip2px(getContext(), 33);
+                float density = getResources().getDisplayMetrics().density;
+//                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
+                bannerPageMargin = -((int) (margin/2 * 3) + bannerPageMarginExtra);
+                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
+                System.out.println("页间距：" + bannerPageMargin);
             }
         });
 

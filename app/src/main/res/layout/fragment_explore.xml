@@ -101,10 +101,10 @@
                     android:id="@+id/viewPagerBanner"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginLeft="@dimen/bannerPageMargin"
-                    android:layout_marginRight="@dimen/bannerPageMargin"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="@dimen/bannerHorizontalMargin"
+                    android:layout_marginRight="@dimen/bannerHorizontalMargin"
+                    android:layout_marginTop="@dimen/bannerVerticalMargin"
+                    android:layout_marginBottom="@dimen/bannerVerticalMargin"
                     android:clipChildren="false"
                     app:layout_scrollFlags="scroll"/>
 
