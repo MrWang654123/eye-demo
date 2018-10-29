@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 
 import com.cheersmind.cheersgenie.BuildConfig;
 
@@ -27,15 +28,17 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
     //按下时的x、y
     private int mPosX;
     private int mPosY;
-    //当前的x、y
-//    private int mCurPosX;
-//    private int mCurPosY;
+
+    //最小滑动距离
+    int touchSlop;
+
 
     public CompatFlingBehavior() {
     }
 
     public CompatFlingBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
+        touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
     @Override
@@ -67,6 +70,11 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
                     System.out.println(isUpSlide ? "isUpSlide: 向上划" : "isUpSlide: No");
                 }
 
+                //水平滑动
+                if (isHorizontalSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
+                    return false;
+                }
+
                 break;
             case MotionEvent.ACTION_UP:
                 mCurPosX = (int) event.getX();
@@ -83,6 +91,10 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
 //
 //                        return false;
 //                    }
+                //水平滑动
+                if (isHorizontalSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
+                    return false;
+                }
 
                 break;
         }
@@ -151,17 +163,22 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
      * @return
      */
     private boolean isUpSile(int oldPosX, int oldPosY, int curPosX, int curPosY) {
-//         && (Math.abs(curPosX - oldPosX) > 25)
-        if (curPosY < oldPosY
-//                && Math.abs(curPosX - oldPosX) > DensityUtil.dip2px(context, 1)
-//                && Math.abs(curPosY - oldPosY) < DensityUtil.dip2px(context, 6)
-                ) {
-//            LogUtils.w("Pos ReplyQuestionViewpager", "左滑");
-            return true;
-        }
-
-        return false;
+        return curPosY < oldPosY && oldPosY - curPosY > touchSlop;
     }
+
+
+    /**
+     * 判断是否水平滑动
+     * @param oldPosX 前一个位置x
+     * @param oldPosY 前一个位置y
+     * @param curPosX 当前位置x
+     * @param curPosY 当前位置y
+     * @return
+     */
+    private boolean isHorizontalSile(int oldPosX, int oldPosY, int curPosX, int curPosY) {
+        return Math.abs(curPosX - oldPosX) > touchSlop && Math.abs(curPosX - oldPosX) > Math.abs(curPosY - oldPosY);
+    }
+
 
 }
 

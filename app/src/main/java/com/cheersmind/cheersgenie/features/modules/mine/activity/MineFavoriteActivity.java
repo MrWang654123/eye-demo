@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -126,6 +127,7 @@ public class MineFavoriteActivity extends BaseActivity {
     }
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView() {
         //适配器

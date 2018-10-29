@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.explore.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -152,6 +153,7 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
         return R.layout.fragment_category_tab_item;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);

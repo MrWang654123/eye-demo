@@ -212,11 +212,9 @@ public class ExploreFragment extends LazyLoadFragment {
 
                 if (verticalOffset >= 0) {
                     //发送停止Fling的事件
-                    EventBus.getDefault().postSticky(new StopFlingEvent());
-
-                } else {
-//                    swipeRefreshLayout.setEnabled(false);
+                    EventBus.getDefault().post(new StopFlingEvent());
                 }
+
             }
         });
 

@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -149,6 +150,7 @@ public class LastReportFragment extends LazyLoadFragment {
         return R.layout.fragment_last_report;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);

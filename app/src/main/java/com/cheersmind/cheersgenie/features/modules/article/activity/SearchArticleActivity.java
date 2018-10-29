@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.article.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -156,6 +157,7 @@ public class SearchArticleActivity extends BaseActivity {
         return null;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView() {
 

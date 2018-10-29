@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.message.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -106,6 +107,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
         return R.layout.fragment_message_system;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);

@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.annotation.SuppressLint;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -194,6 +195,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
     /**
      * 初始化视图
      */
+    @SuppressLint("RestrictedApi")
     @Override
     public void onInitView(View contentView) {
         //绑定ButterKnife
