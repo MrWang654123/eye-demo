@@ -165,6 +165,9 @@ public class ExploreFragment extends LazyLoadFragment {
     //分类集合数据
     private List<CategoryEntity> categories;
 
+    //banner页之间的间距
+    private int bannerPageMargin;
+
 
     @Override
     protected int setContentView() {
@@ -242,14 +245,22 @@ public class ExploreFragment extends LazyLoadFragment {
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                int margin = (int) getResources().getDimension(R.dimen.bannerPageMargin);
                 viewPagerBanner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int width = viewPagerBanner.getWidth();
-                final int resHeight = (int) ((metrics.widthPixels - DensityUtil.dip2px(getContext(), 40)) * (9f/16));
+                int width = metrics.widthPixels - margin * 2;
+                final int resHeight = (int) ((width) * (9f/16));
 
                 AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) viewPagerBanner.getLayoutParams();
-//                params.width = width;
+                params.width = width;
                 params.height = resHeight;
                 viewPagerBanner.setLayoutParams(params);
+
+                //计算banner页之间的间距
+//                int temp = DensityUtil.dip2px(getContext(), 33);
+//                float density = getResources().getDisplayMetrics().density;
+                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
+//                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
+//                System.out.println("页间距：" + bannerPageMargin);
             }
         });
 
@@ -366,7 +377,8 @@ public class ExploreFragment extends LazyLoadFragment {
                         //滑动动画
                         viewPagerBanner.setPageTransformer(false, new ScaleTransformer());
                         //页面间距
-                        viewPagerBanner.setPageMargin(-DensityUtil.dip2px(getContext(),33));
+//                        viewPagerBanner.setPageMargin(-DensityUtil.dip2px(getContext(),33));
+                        viewPagerBanner.setPageMargin(bannerPageMargin);
                         //预加载数量（左右）
                         viewPagerBanner.setOffscreenPageLimit(2);
                         viewPagerBanner.setAdapter(pageAdapter);
