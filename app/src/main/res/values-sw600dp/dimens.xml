@@ -9,8 +9,8 @@
     <dimen name="heightXBigWidget">52dp</dimen> <!-- 默认控件高度 -->
 
     <!--确认按钮的左右外间距-->
-    <dimen name="confirm_btn_margin_left">100dp</dimen>
-    <dimen name="confirm_btn_margin_right">100dp</dimen>
+    <dimen name="confirm_btn_margin_left">150dp</dimen>
+    <dimen name="confirm_btn_margin_right">150dp</dimen>
 
     <!--banner页垂直外间距-->
     <dimen name="bannerVerticalMargin">15dp</dimen>

@@ -3,7 +3,7 @@
     android:id="@+id/btn_guide_late_item"
     android:layout_width="match_parent"
     android:layout_height="@dimen/heightXBigWidget"
-    android:background="@drawable/btn_common"
+    android:background="@drawable/btn_common_small"
     android:textColor="@color/color_333333"
     android:textSize="18sp"
     android:text="马上体验">
