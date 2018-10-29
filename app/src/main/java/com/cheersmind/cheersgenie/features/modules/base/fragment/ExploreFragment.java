@@ -236,12 +236,12 @@ public class ExploreFragment extends LazyLoadFragment {
                 viewPagerBanner.setLayoutParams(params);
 
                 //计算banner页之间的间距
-                int temp = DensityUtil.dip2px(getContext(), 33);
-                float density = getResources().getDisplayMetrics().density;
-//                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
+//                int temp = DensityUtil.dip2px(getContext(), 33);
+//                float density = getResources().getDisplayMetrics().density;
+////                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
                 bannerPageMargin = -((int) (margin/2 * 3) + bannerPageMarginExtra);
-                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
-                System.out.println("页间距：" + bannerPageMargin);
+//                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
+//                System.out.println("页间距：" + bannerPageMargin);
             }
         });
 
