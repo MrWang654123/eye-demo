@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.xdandroid.materialprogressview.MaterialProgressView;
 
 /**
  * Created by goodm on 2017/4/15.
@@ -24,6 +26,9 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 public class LoadingView {
     private static LoadingView mLoadingView = null;
     private AlertDialog dlg;
+
+    //通信等待视图
+    MaterialProgressView materialProgressView;
 
     private LoadingView() {
     }
@@ -60,17 +65,21 @@ public class LoadingView {
             lp.dimAmount = 0.1f;
             window.setAttributes(lp);
 
-            final Animation ani = AnimationUtils.loadAnimation(context, R.anim.loading);
-            new Handler().postDelayed(new Runnable() {
+            //图片动画
+//            final Animation ani = AnimationUtils.loadAnimation(context, R.anim.loading);
+//            new Handler().postDelayed(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    //动画效果
+//                    ImageView imageView = (ImageView) window.findViewById(R.id.loadingImg);
+//                    imageView.startAnimation(ani);
+//
+//                }
+//            }, 50) ;
 
-                @Override
-                public void run() {
-                    //动画效果
-                    ImageView imageView = (ImageView) window.findViewById(R.id.loadingImg);
-                    imageView.startAnimation(ani);
-
-                }
-            }, 50) ;
+            materialProgressView = window.findViewById(R.id.progress_view);
+            materialProgressView.setVisibility(View.VISIBLE);
 
             //监听回退
             dlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -98,6 +107,11 @@ public class LoadingView {
                 dlg.cancel();
                 dlg = null;
             }
+
+            if (materialProgressView != null) {
+                materialProgressView.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
 
         }
@@ -105,14 +119,10 @@ public class LoadingView {
 
     /**
      * 是否正在显示
-     * @return
+     * @return true：显示
      */
     public boolean isShowing() {
-        if (dlg != null) {
-            return dlg.isShowing();
-        }
-
-        return false;
+        return dlg != null && dlg.isShowing();
     }
 
 }
