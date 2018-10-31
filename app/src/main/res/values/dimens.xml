@@ -27,4 +27,9 @@
     <!--banner页之间间距的而外距离-->
     <dimen name="bannerPageMarginExtra">3dp</dimen>
 
+    <!--话题报告外间距-->
+    <dimen name="chart_margin_horizontal">15dp</dimen>
+    <dimen name="chart_margin_top">15dp</dimen>
+    <dimen name="chart_margin_bottom">20dp</dimen>
+
 </resources>

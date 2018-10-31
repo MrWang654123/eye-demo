@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.view.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -20,7 +22,9 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
@@ -31,6 +35,7 @@ import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
 import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -257,8 +262,6 @@ public class DimensionReportDialog extends Dialog {
      * 初始化视图
      */
     private void initView() {
-        //空布局
-        emptyLayout = findViewById(R.id.emptyLayout);
         //点击重载监听
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
@@ -268,11 +271,7 @@ public class DimensionReportDialog extends Dialog {
             }
         });
 
-        //图标容器布局
-        llChart = findViewById(R.id.ll_chart);
-        //后台不生成报告的提示
-        tvNone = findViewById(R.id.tv_none);
-
+        //比较范围切换监听
         rgCompare.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -404,7 +403,8 @@ public class DimensionReportDialog extends Dialog {
                 llChart.removeAllViews();
             }
             //生成图表
-            MPChartViewHelper.addMpChartView(context, llChart, dimensionReports);
+//            MPChartViewHelper.addMpChartView(context, llChart, dimensionReports);
+            doAddChartView(llChart, dimensionReports);
 
             //报告结果
             ReportResultEntity reportResult = dimensionReports.get(0).getReportResult();
@@ -456,6 +456,58 @@ public class DimensionReportDialog extends Dialog {
 
         } else {
             throw new Exception();
+        }
+    }
+
+
+    /**
+     * 生成图表视图
+     * @param dimensionReports
+     */
+    private void doAddChartView(LinearLayout llChart, List<ReportItemEntity> dimensionReports) {
+        try {
+            //非空
+            if (llChart == null || ArrayListUtil.isEmpty(dimensionReports)) {
+                return;
+            }
+
+            for (ReportItemEntity reportItem : dimensionReports) {
+                ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), reportItem.getChartType(), reportItem);
+                View chartItemView = null;
+                //图表类型
+                switch (chartItem.getItemType()) {
+                    case Dictionary.CHART_RADAR: {
+                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_radar, llChart);
+//                            LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_footer, parent, false);
+                        break;
+                    }
+                    case Dictionary.CHART_LINE: {
+                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_line, llChart);
+                        break;
+                    }
+                    case Dictionary.CHART_BAR_V: {
+                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_v, llChart);
+                        break;
+                    }
+                    case Dictionary.CHART_BAR_H: {
+                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_h, llChart);
+                        break;
+                    }
+                }
+
+                if (chartItemView != null) {
+                    View charView = chartItemView.findViewById(R.id.chart);
+                    if (charView != null) {
+                        //初始化图表视图
+                        chartItem.initChart(charView);
+//                            chartItem.invalidate();
+//                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) charView.getLayoutParams();
+                        //添加到容器中
+                        llChart.addView(charView);
+                    }
+                }
+            }
+        } catch (Exception e) {
         }
     }
 

@@ -150,10 +150,12 @@
                         android:id="@+id/ll_report_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
                         android:background="@color/white"
-                        android:visibility="visible"
-                        android:padding="0dp">
+                        android:orientation="vertical"
+                        android:padding="0dp"
+                        android:visibility="visible">
                         <!--android:padding="10dp"-->
 
                         <!--结论header布局-->
@@ -169,13 +171,13 @@
                                 android:id="@+id/tv_result_simple_prefix"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginBottom="5dp"
                                 android:layout_marginLeft="15dp"
                                 android:layout_marginRight="15dp"
                                 android:lineSpacingMultiplier="1.2"
-                                android:layout_marginBottom="5dp"
-                                android:textSize="14sp"
+                                android:text=""
                                 android:textColor="@color/color_777777"
-                                android:text=""/>
+                                android:textSize="14sp" />
                             <!--思考对方就是点击附件是的房价数据的福建省地方圣诞节放假时代峰峻-->
 
                             <!--结论的简单文本-->
@@ -183,13 +185,13 @@
                                 android:id="@+id/tv_result_simple"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
                                 android:layout_marginLeft="15dp"
                                 android:layout_marginRight="15dp"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="18sp"
                                 android:lineSpacingMultiplier="1.2"
-                                android:layout_gravity="center_horizontal"
-                                android:text="课程体验不佳"/>
+                                android:text="课程体验不佳"
+                                android:textColor="@color/colorAccent"
+                                android:textSize="18sp" />
                             <!--课程体验不佳-->
 
                         </LinearLayout>
@@ -198,13 +200,10 @@
                             android:id="@+id/ll_chart"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
-                            android:layout_marginTop="20dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
                             android:layout_marginBottom="20dp"
-                            android:orientation="vertical">
-                        </LinearLayout>
+                            android:layout_marginTop="20dp"
+                            android:gravity="center_horizontal"
+                            android:orientation="vertical"/>
 
                         <!--结论footer布局-->
                         <LinearLayout

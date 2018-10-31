@@ -23,17 +23,26 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.ReportMultiRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.entity.ChartItem;
+import com.cheersmind.cheersgenie.features.entity.HBarChartItem;
+import com.cheersmind.cheersgenie.features.entity.LineChartItem;
+import com.cheersmind.cheersgenie.features.entity.RadarChartItem;
+import com.cheersmind.cheersgenie.features.entity.VBarChartItem;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
@@ -46,6 +55,10 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.mpcharts.MPHorizontalBarChart;
+import com.cheersmind.cheersgenie.mpcharts.MPLineChart;
+import com.cheersmind.cheersgenie.mpcharts.MPRadarChart;
+import com.cheersmind.cheersgenie.mpcharts.MPVerticalBarChart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +104,7 @@ public class LastReportFragment extends LazyLoadFragment {
     //报告列表
     List<List<ReportItemEntity>> recyclerItem = new ArrayList<>();//每个报告可能不只一个图表
     //适配器
-    private ReportRecyclerAdapter recyclerAdapter;
+    private ReportMultiRecyclerAdapter recyclerAdapter;
 
     //比较范围：默认全国
     private int compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
@@ -183,12 +196,12 @@ public class LastReportFragment extends LazyLoadFragment {
         });
 
         //适配器
-        recyclerAdapter = new ReportRecyclerAdapter(getContext(), R.layout.recycleritem_report, recyclerItem);
+        recyclerAdapter = new ReportMultiRecyclerAdapter(null);
         //添加比较范围切换监听
         recyclerAdapter.setCompareChangeListener(compareChangeListener);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
-        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
+        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
 //        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
@@ -293,8 +306,11 @@ public class LastReportFragment extends LazyLoadFragment {
                                 headerReportView.setVisibility(View.GONE);
                             }
 
+                            List<MultiItemEntity> multiItemEntities = reportItemCollectionToRecyclerMulti(recyclerItem);
                             //目前每次都是重置列表数据
-                            recyclerAdapter.setNewData(recyclerItem);
+                            recyclerAdapter.setNewData(multiItemEntities);
+                            //初始展开
+                            recyclerAdapter.expandAll();
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -303,6 +319,48 @@ public class LastReportFragment extends LazyLoadFragment {
                         }
                     }
                 }, tag);
+    }
+
+
+    /**
+     * List<List<ReportItemEntity>>转成用于适配recycler的分组数据模型List<MultiItemEntity>
+     *
+     * @param reportItemCollection List<List<ReportItemEntity>>
+     * @return 适配recycler的分组数据模型
+     */
+    protected List<MultiItemEntity> reportItemCollectionToRecyclerMulti(List<List<ReportItemEntity>> reportItemCollection) throws CloneNotSupportedException {
+        List<MultiItemEntity> resList = null;
+
+        if (ArrayListUtil.isNotEmpty(reportItemCollection)) {
+            resList = new ArrayList<MultiItemEntity>();
+            //遍历话题列表
+            for (List<ReportItemEntity> reportItemList : reportItemCollection) {
+                if (ArrayListUtil.isEmpty(reportItemList)) {
+                    break;
+                }
+
+                //header
+                ReportItemEntity header = reportItemList.get(0);
+                ReportItemEntity footer = (ReportItemEntity) reportItemList.get(0).clone();
+                resList.add(header);
+
+                //图表
+                for (ReportItemEntity reportItem : reportItemList) {
+                    //图表类型
+                    int chartType = reportItem.getChartType();
+                    //报告项转图表项
+                    ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), chartType, reportItem);
+                    //添加为header的子项
+                    header.addSubItem(chartItem);
+                }
+
+                //footer
+                footer.setItemType(Dictionary.CHART_FOOTER);
+                resList.add(footer);
+            }
+        }
+
+        return resList;
     }
 
 

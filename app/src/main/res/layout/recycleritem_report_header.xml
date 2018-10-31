@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!--标题栏-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/white">
+
+        <!--话题的标题布局-->
+        <RelativeLayout
+            android:id="@+id/rl_topic_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/white">
+
+            <TextView
+                android:id="@+id/tv_topic_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="标题"
+                android:textColor="@color/color_333333"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+        <!--量表的标题布局-->
+        <LinearLayout
+            android:id="@+id/rl_dimension_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="10dp"
+            android:visibility="visible"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="4dp"
+                android:layout_height="20dp"
+                android:background="@color/colorAccent"
+                android:text=""/>
+
+            <TextView
+                android:id="@+id/tv_dimension_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text="学业兴趣测评："
+                android:textColor="@color/color_333333"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="5dp"
+                    android:src="@drawable/vs"/>
+
+                <RadioGroup
+                    android:id="@+id/rg_compare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/rb_compare_country"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/radio_btn_compare_country"
+                        android:checked="true"
+                        android:button="@null"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_compare_class"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/radio_btn_compare_class"
+                        android:layout_marginLeft="5dp"
+                        android:visibility="gone"
+                        android:button="@null"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_compare_grade"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/radio_btn_compare_grade"
+                        android:button="@null"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!--分割线-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#f7f7f7"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="15dp"
+        android:background="@color/white">
+
+        <!--报告内容布局-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll_report_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="0dp">
+                <!--android:padding="10dp"-->
+
+                <!--结论header布局-->
+                <LinearLayout
+                    android:id="@+id/ll_result_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical">
+
+                    <!--结论的简单文本的前缀语-->
+                    <TextView
+                        android:id="@+id/tv_result_simple_prefix"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/color_777777"
+                        android:text="思考对方就是点击附件是的房节放假时代峰峻"/>
+                    <!--思考对方就是点击附件是的房价数据的福建省地方圣诞节放假时代峰峻-->
+
+                    <!--结论的简单文本-->
+                    <TextView
+                        android:id="@+id/tv_result_simple"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="18sp"
+                        android:lineSpacingMultiplier="1.2"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="15dp"
+                        android:text="课程体验不佳"/>
+                    <!--课程体验不佳-->
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

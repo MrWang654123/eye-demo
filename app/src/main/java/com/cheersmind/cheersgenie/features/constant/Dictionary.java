@@ -125,4 +125,20 @@ public class Dictionary {
     //测评列表布局类型：线性
     public static final int EXAM_LIST_LAYOUT_TYPE_LINEAR = 2;
 
+
+    //图表类型
+    //header
+    public final static int CHART_HEADER = 999;
+    //footer
+    public final static int CHART_FOOTER = 1000;
+    //网状图
+    public final static int CHART_RADAR = 1;
+    //曲线图
+    public final static int CHART_LINE = 2;
+    //垂直柱状图
+    public final static int CHART_BAR_V = 3;
+    //水平条状图
+    public final static int CHART_BAR_H = 4;
+
+
 }

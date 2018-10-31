@@ -1,15 +1,19 @@
 package com.cheersmind.cheersgenie.main.entity;
 
+import com.chad.library.adapter.base.entity.AbstractExpandableItem;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Administrator on 2018/6/27.
- */
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_HEADER;
 
-public class ReportItemEntity implements Serializable {
+/**
+ * 报告数据项（包含图表信息）
+ */
+public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implements MultiItemEntity, Serializable,Cloneable {
 
 //    "isTopic": true,
 //            "report_result": null,
@@ -67,6 +71,10 @@ public class ReportItemEntity implements Serializable {
 
     //比较名称
     private String compareName = "";
+
+    //项类型
+    int itemType = CHART_HEADER;
+
 
     public boolean getTopic() {
         return isTopic;
@@ -166,5 +174,24 @@ public class ReportItemEntity implements Serializable {
 
     public boolean isTopic() {
         return isTopic;
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getItemType() {
+        return itemType;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
     }
 }
