@@ -79,6 +79,9 @@ public class MineFavoriteActivity extends BaseActivity {
         }
     };
 
+    //查询Dto
+    MineDto dto;
+
     //页长度
     private static final int PAGE_SIZE = 10;
     //页码
@@ -196,6 +199,12 @@ public class MineFavoriteActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
+        //初始化查询dto
+        dto = new MineDto();
+        dto.setUserId(UCManager.getInstance().getUserId());
+        dto.setPage(pageNum);
+        dto.setSize(PAGE_SIZE);
+
         //加载更多“我的收藏”数据
         loadMoreFavoriteData();
     }
@@ -218,13 +227,11 @@ public class MineFavoriteActivity extends BaseActivity {
     private void refreshFavoriteData() {
         //下拉刷新
         pageNum = 1;
+        //设置页
+        dto.setPage(pageNum);
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        MineDto dto = new MineDto();
-        dto.setUserId(UCManager.getInstance().getUserId());
-        dto.setPage(pageNum);
-        dto.setSize(PAGE_SIZE);
         //请求收藏数据
         DataRequestService.getInstance().getMyFavorite(dto, new BaseService.ServiceCallback() {
             @Override
@@ -291,6 +298,8 @@ public class MineFavoriteActivity extends BaseActivity {
      * 加载更多收藏数据
      */
     private void loadMoreFavoriteData() {
+        //设置页
+        dto.setPage(pageNum);
         //关闭下拉刷新功能
         swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 

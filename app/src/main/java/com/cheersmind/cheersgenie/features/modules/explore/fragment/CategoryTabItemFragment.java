@@ -310,6 +310,8 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
     private void refreshArticleData() {
         //下拉刷新
         pageNum = 1;
+        //设置页
+        articleDto.setPage(pageNum);
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
@@ -378,6 +380,8 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
      * 加载更多文章数据
      */
     private void loadMoreArticleData() {
+        //设置页
+        articleDto.setPage(pageNum);
         //关闭下拉刷新功能
         swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
