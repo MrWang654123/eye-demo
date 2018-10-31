@@ -24,8 +24,10 @@ public class RecyclerViewScrollListener extends RecyclerView.OnScrollListener {
     private View emptyView;
     //阈值比例
     private static final float THRESHOLD_RATIO = 1.1f;
-    //阈值
+    //显隐指定按钮的阈值
     private int thresholdValue = 0;
+    //置顶时是否smooth的阈值
+    private int smoothThresholdValue = 0;
 
     public RecyclerViewScrollListener(Context context, final FloatingActionButton fabGotoTop) throws Exception {
         if (fabGotoTop == null) {
@@ -50,12 +52,19 @@ public class RecyclerViewScrollListener extends RecyclerView.OnScrollListener {
         //确定阈值
         if (thresholdValue == 0) {
             thresholdValue = (int) (recyclerViewHeight * THRESHOLD_RATIO);
+            smoothThresholdValue = thresholdValue * 2;
             //置顶按钮点击监听
             this.fabGotoTop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //置顶
-                    recyclerView.smoothScrollToPosition(0);
+                    int scrollY = emptyView.getScrollY();
+                    if (scrollY < smoothThresholdValue) {
+                        recyclerView.smoothScrollToPosition(0);
+                    } else {
+                        recyclerView.scrollToPosition(0);
+                        clearScrollYData();
+                    }
                 }
             });
         }
