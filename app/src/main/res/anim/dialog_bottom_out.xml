@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 上下滑入式 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <translate
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:duration="180"
+        android:fromXDelta="0"
+        android:fromYDelta="0"
+        android:toXDelta="0"
+        android:toYDelta="-15%">
+    </translate>
+
+    <!-- 旋转动画 -->
+    <rotate
+        android:duration="240"
+        android:fromDegrees="0"
+        android:startOffset="180"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="-8" />
+
+    <translate
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:duration="360"
+        android:fromXDelta="0"
+        android:fromYDelta="0"
+        android:toXDelta="0"
+        android:toYDelta="100%p"
+        android:startOffset="180">
+    </translate>
+
+
+    <!--<set android:ordering="together">-->
+        <!--<objectAnimator android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:valueFrom="0" android:valueTo="-100" android:propertyName="translationY" />-->
+    <!--</set>-->
+    <!--<set android:ordering="together">-->
+        <!--<objectAnimator android:interpolator="@android:anim/accelerate_interpolator" android:duration="240" android:valueFrom="-100" android:valueTo="2000" android:propertyName="translationY" />-->
+        <!--<objectAnimator android:interpolator="@android:anim/accelerate_interpolator" android:duration="180" android:valueFrom="0" android:valueTo="-8" android:propertyName="rotation" />-->
+    <!--</set>-->
+</set>

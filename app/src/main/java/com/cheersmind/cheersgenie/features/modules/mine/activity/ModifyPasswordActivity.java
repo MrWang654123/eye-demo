@@ -379,6 +379,7 @@ public class ModifyPasswordActivity extends BaseActivity {
         //不能回退关闭
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
         dialog.show();
     }
 

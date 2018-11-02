@@ -138,5 +138,20 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="WUI.Animation" parent="@android:style/Animation" />
+    <!--答题过程对话框显隐动画-->
+    <style name="WUI.Animation.Dialog" parent="Animation.AppCompat.Dialog">
+        <!--<item name="android:windowEnterAnimation">@anim/u_dialog_enter</item>-->
+        <!--<item name="android:windowExitAnimation">@anim/u_dialog_out</item>-->
+        <!--<item name="android:windowEnterAnimation">@anim/tips_show</item>-->
+        <!--<item name="android:windowExitAnimation">@anim/tips_dismiss</item>-->
+
+        <item name="android:windowEnterAnimation">@anim/dialog_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_bottom_out</item>
+    </style>
+
+    <style name="Test">
+        <item name="android:windowAnimationStyle">@style/WUI.Animation.Dialog</item>
+    </style>
 
 </resources>

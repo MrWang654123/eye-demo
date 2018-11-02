@@ -116,53 +116,15 @@ public class XSettingActivity extends BaseActivity {
             }
             //清除缓存
             case R.id.rl_cache: {
-                //清除缓存
-                new AlertDialog.Builder(this)
-                        .setTitle("温馨提示")
-                        .setMessage("确定要清除缓存吗？")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                DataCleanCacheUtils.clearAllCache(XSettingActivity.this);
-                                try {
-                                    tvCache.setText(DataCleanCacheUtils.getTotalCacheSize(XSettingActivity.this));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        })
-                        .create().show();
+                //弹出清除缓存对话框
+                popupClearCacheWindow();
                 break;
             }
             //退出
             case R.id.rl_exit:
             case R.id.btn_exit: {
-                //清除缓存
-                new AlertDialog.Builder(this)
-                        .setTitle("温馨提示")
-                        .setMessage("确定要退出吗？")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                //退出操作
-                                doExit();
-                            }
-                        })
-                        .create().show();
+                //弹出退出确认对话框
+                popupExitWindows();
                 break;
             }
             //账号绑定设置
@@ -173,6 +135,63 @@ public class XSettingActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * 弹出清除缓存对话框
+     */
+    private void popupClearCacheWindow() {
+        //清除缓存
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("温馨提示")
+                .setMessage("确定要清除缓存吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        DataCleanCacheUtils.clearAllCache(XSettingActivity.this);
+                        try {
+                            tvCache.setText(DataCleanCacheUtils.getTotalCacheSize(XSettingActivity.this));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                })
+                .create();
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
+    }
+
+    /**
+     * 弹出退出确认对话框
+     */
+    private void popupExitWindows() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("温馨提示")
+                .setMessage("确定要退出吗？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //退出操作
+                        doExit();
+                    }
+                })
+                .create();
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
+    }
 
     /**
      * 退出操作

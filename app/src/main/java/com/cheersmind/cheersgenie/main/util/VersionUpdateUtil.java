@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
+import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -140,7 +141,9 @@ public class VersionUpdateUtil {
                                             },false);
                                         }
                                     });
+                                    appHintUpdateDialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
                                     appHintUpdateDialog.show();
+
                                 }
                             } catch (PackageManager.NameNotFoundException e) {
                                 e.printStackTrace();

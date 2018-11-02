@@ -913,7 +913,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         //释放计时器
         releaseTimeTask();
 
-        QuestionQuitDialog questionQuitDialog = new QuestionQuitDialog(ReplyQuestionActivity.this,
+        QuestionQuitDialog dialog = new QuestionQuitDialog(ReplyQuestionActivity.this,
                 type, new QuestionQuitDialog.QuestionQuitDialogCallback() {
             @Override
             public void onQuesExit() {
@@ -929,9 +929,9 @@ public class ReplyQuestionActivity extends BaseActivity {
                 startTimeTask();
             }
         });
-        if(ReplyQuestionActivity.this!=null){
-            questionQuitDialog.show();
-        }
+
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
     }
 
     /**
@@ -941,7 +941,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         //释放计时器
         releaseTimeTask();
 
-        new QuestionCompleteXDialog(ReplyQuestionActivity.this, new QuestionCompleteXDialog.OnOperationListener() {
+        QuestionCompleteXDialog dialog = new QuestionCompleteXDialog(ReplyQuestionActivity.this, new QuestionCompleteXDialog.OnOperationListener() {
             @Override
             public void onCancel() {
                 //继续答题，开启计时器
@@ -953,8 +953,10 @@ public class ReplyQuestionActivity extends BaseActivity {
                 //提交所有答案
                 doPostSubmitQuestions();
             }
-        }).show();
+        });
 
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
     }
 
 }

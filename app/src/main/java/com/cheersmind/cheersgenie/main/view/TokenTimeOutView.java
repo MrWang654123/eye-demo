@@ -59,6 +59,7 @@ public class TokenTimeOutView {
                         dlg = null;
                     }
                 });
+                dlg.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
                 dlg.show();
             }
         } catch (Exception e) {

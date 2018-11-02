@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 上下滑入式 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <translate
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:duration="360"
+        android:fromXDelta="0"
+        android:fromYDelta="100%p"
+        android:toXDelta="0"
+        android:toYDelta="-15%">
+    </translate>
+
+    <rotate
+        android:duration="240"
+        android:startOffset="100"
+        android:fromDegrees="8"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="0" />
+
+    <translate
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:duration="240"
+        android:fromXDelta="0"
+        android:fromYDelta="0"
+        android:toXDelta="0"
+        android:toYDelta="15%"
+        android:startOffset="360">
+    </translate>
+
+    <!--<translate-->
+        <!--android:duration="1000"-->
+        <!--android:startOffset="1000"-->
+        <!--android:fromXDelta="0"-->
+        <!--android:fromYDelta="15%"-->
+        <!--android:toXDelta="0"-->
+        <!--android:toYDelta="0"-->
+        <!--android:fillAfter="false">-->
+    <!--</translate>-->
+
+    <!--<translate-->
+        <!--android:duration="1000"-->
+        <!--android:fromXDelta="0"-->
+        <!--android:fromYDelta="0"-->
+        <!--android:toXDelta="10%p"-->
+        <!--android:toYDelta="0">-->
+    <!--</translate>-->
+
+    <!--<translate-->
+        <!--android:duration="1000"-->
+        <!--android:fromXDelta="0"-->
+        <!--android:fromYDelta="0"-->
+        <!--android:toXDelta="-10%"-->
+        <!--android:toYDelta="0"-->
+        <!--android:startOffset="1000">-->
+    <!--</translate>-->
+    <!--android:fillAfter="false"-->
+
+    <!--<translate-->
+        <!--android:duration="300"-->
+        <!--android:fromXDelta="0"-->
+        <!--android:fromYDelta="100%p"-->
+        <!--android:toXDelta="0"-->
+        <!--android:toYDelta="0">-->
+    <!--</translate>-->
+
+
+
+    <!--<objectAnimator android:duration="0" android:valueFrom="0" android:valueTo="8" android:propertyName="rotation" />-->
+    <!--<set android:ordering="together">-->
+        <!--<set android:ordering="sequentially">-->
+            <!--<objectAnimator android:duration="360" android:valueFrom="2000" android:valueTo="-80" android:propertyName="translationY" />-->
+            <!--<objectAnimator android:duration="240" android:valueFrom="-80" android:valueTo="0" android:propertyName="translationY" />-->
+        <!--</set>-->
+        <!--<objectAnimator android:duration="240" android:startOffset="100" android:valueFrom="8" android:valueTo="0" android:propertyName="rotation" />-->
+    <!--</set>-->
+
+</set>
