@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.v4.content.ContextCompat;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -61,7 +59,6 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
@@ -143,14 +140,12 @@ public class ArticleDetailActivity extends BaseActivity {
     TextView tvNoComment;
 
     //评论编辑模块
-//    @BindView(R.id.ll_comment_edit)
-//    LinearLayout llCommentEdit;
-    //评论编辑提示图标
-    @BindView(R.id.iv_comment_edit_tip)
-    ImageView ivCommentEditTip;
-    //触发评论对话框的提示文本
-    @BindView(R.id.tv_comment_tip)
-    TextView tvCommentTip;
+    @BindView(R.id.cl_comment_edit)
+    ConstraintLayout clCommentEdit;
+    //评论总数
+    @BindView(R.id.tv_comment_total_count)
+    TextView tvCommentTotalCount;
+
     //收藏
     @BindView(R.id.iv_favorite)
     ImageView ivFavorite;
@@ -844,8 +839,8 @@ public class ArticleDetailActivity extends BaseActivity {
                     if (ArrayListUtil.isEmpty(dataList)) {
                         //显示评论模块
                         showCommentBlock();
-                        //刷新评论内容模块的header
-                        refreshCommentContentBlockHeaderView(totalCount);
+                        //刷新评论总数
+                        refreshCommentTotalCountView(totalCount);
                         //暂无评论
                         settingNoCommentView();
                         return;
@@ -868,8 +863,8 @@ public class ArticleDetailActivity extends BaseActivity {
 
                     //显示评论模块
                     showCommentBlock();
-                    //刷新评论内容模块的header
-                    refreshCommentContentBlockHeaderView(totalCount);
+                    //刷新评论总数
+                    refreshCommentTotalCountView(totalCount);
                     //显示评论内容
                     settingHasCommentView();
 
@@ -883,11 +878,13 @@ public class ArticleDetailActivity extends BaseActivity {
     }
 
     /**
-     * 刷新评论内容模块的header部分的视图
+     * 刷新评论总数
      */
-    private void refreshCommentContentBlockHeaderView(int totalCount) {
-        //评论总数
+    private void refreshCommentTotalCountView(int totalCount) {
+        //评论列表header中的评论总数
         tvCommentCount.setText(getResources().getString(R.string.comment_count, totalCount + ""));
+        //编辑模块中的评论总数
+        tvCommentTotalCount.setText(String.valueOf(totalCount));
     }
 
 
@@ -895,18 +892,20 @@ public class ArticleDetailActivity extends BaseActivity {
      * 隐藏评论模块
      */
     private void hideCommentBlock() {
+        //评论内容模块
         llCommentContent.setVisibility(View.GONE);
-        ivCommentEditTip.setVisibility(View.INVISIBLE);
-        tvCommentTip.setVisibility(View.INVISIBLE);
+        //编辑模块
+        clCommentEdit.setVisibility(View.INVISIBLE);
     }
 
     /**
      * 显示评论模块
      */
     private void showCommentBlock() {
+        //评论内容模块
         llCommentContent.setVisibility(View.VISIBLE);
-        ivCommentEditTip.setVisibility(View.VISIBLE);
-        tvCommentTip.setVisibility(View.VISIBLE);
+        //编辑模块
+        clCommentEdit.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -1095,6 +1094,8 @@ public class ArticleDetailActivity extends BaseActivity {
         //分割线
         if (llCommentMineContent.getChildCount() > 0) {
             commentItemView.findViewById(R.id.tv_divider_line).setVisibility(View.VISIBLE);
+        } else {
+            commentItemView.findViewById(R.id.tv_divider_line).setVisibility(View.GONE);
         }
         //添加评论
         llCommentMineContent.addView(commentItemView, 0);
@@ -1124,7 +1125,7 @@ public class ArticleDetailActivity extends BaseActivity {
             "\t\t\t</div>";
 
 
-    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like})
+    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like, R.id.fl_comment_total_count})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
@@ -1150,6 +1151,17 @@ public class ArticleDetailActivity extends BaseActivity {
                     ToastUtil.showShort(ArticleDetailActivity.this, "该测评被锁定");
                 }
 
+                break;
+            }
+            //编辑模块中的评论总数布局
+            case R.id.fl_comment_total_count: {
+                svMainBlock.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int temp = llCommentContent.getTop();
+                        svMainBlock.scrollTo(0,  temp);
+                    }
+                });
                 break;
             }
             //触发评论对话框的提示文本
