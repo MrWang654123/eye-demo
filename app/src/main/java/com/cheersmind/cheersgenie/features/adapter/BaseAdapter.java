@@ -1,6 +1,8 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.chad.library.adapter.base.loadmore.LoadMoreView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.holder.BaseHolder;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerLoadMoreStatusHandler;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -22,33 +26,34 @@ import java.util.List;
 public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements RecyclerLoadMoreStatusHandler {
 
     //普通布局的type
-    static final int TYPE_ITEM = 0;
+    private static final int TYPE_ITEM = 0;
     //脚布局
-    static final int TYPE_FOOTER = 1;
+    private static final int TYPE_FOOTER = 1;
 
     //数据集合
-    private List<T> mList = new ArrayList<>();
+    private List<T> mData = new ArrayList<>();
     //子项布局ID
     private int layoutId;
     //脚布局当前的状态,默认为隐藏状态
-    int footer_state = FootViewHolder.LOAD_MORE_GONE;
+    private int footer_state = FootViewHolder.LOAD_MORE_GONE;
 
     //加载失败视图，用于点击重载
     private View llFailed;
 
 
-    public BaseAdapter(int layoutId, List<T> list){
+    public BaseAdapter(int layoutId, List<T> data){
         this.layoutId=layoutId;
-        this. mList=list;
+        this.mData =  data == null ? new ArrayList<T>() : data;;
     }
     //onCreateViewHolder用来给rv创建缓存
+    @NonNull
     @Override
-    public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public BaseHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             //普通子项布局
             View view = LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false);
-            BaseHolder holder = new BaseHolder(view);
-            return holder;
+            return new BaseHolder(view);
+
         } else if (viewType == TYPE_FOOTER) {
             //footer布局
 //            View view = View.inflate(context, R.layout.recycler_footer, null);//这种方式，提示文本等视图不会居中
@@ -58,7 +63,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
             llFailed.setOnClickListener(new OnMultiClickListener() {
                 @Override
                 public void onMultiClick(View view) {
-                    //本次加载结束（为了显示正在加载的提示视图，有待优化）
+                    //本次加载结束（为了显示正在加载的提示视图）
                     loadMoreComplete();
                     //通知加载更多
                     notifyLoadMoreToLoading();
@@ -72,7 +77,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
     }
     //onBindViewHolder给缓存控件设置数据
     @Override
-    public void onBindViewHolder(BaseHolder holder, int position) {
+    public void onBindViewHolder(@NonNull BaseHolder holder, int position) {
         if (holder instanceof BaseAdapter.FootViewHolder) {
             //footer的holder
             FootViewHolder footViewHolder  = (FootViewHolder) holder;
@@ -119,7 +124,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
 
         } else {
             //普通的holder
-            T item = mList.get(position);
+            T item = mData.get(position);
             convert(holder, item);
         }
     }
@@ -131,7 +136,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
     //获取记录数据
     @Override
     public int getItemCount() {
-        return mList != null ? mList.size() + 1 : 0;
+        return mData != null ? mData.size() + 1 : 0;
     }
 
     @Override
@@ -144,28 +149,59 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
         }
     }
 
+
+    /**
+     * 添加新数据
+     *
+     * @param newData 数据集合
+     */
+    public void addData(@NonNull Collection<? extends T> newData) {
+        mData.addAll(newData);
+        notifyItemRangeInserted(mData.size() - newData.size(), newData.size());
+    }
+
+
+    /**
+     * 获取加载更多视图的位置
+     *
+     * @return 位置
+     */
+    private int getLoadMoreViewPosition() {
+        return mData.size();
+    }
+
+
+    /**
+     * 全部数据加载结束
+     */
     @Override
     public void loadMoreEnd() {
         footer_state = FootViewHolder.LOAD_MORE_END;
         mLoading = false;//标记未正在加载中
         mAllHasLoaded = true;//标记全部数据结束
-        notifyDataSetChanged();
+        notifyItemChanged(getLoadMoreViewPosition());
     }
 
+    /**
+     * 本次加载完成
+     */
     @Override
     public void loadMoreComplete() {
         footer_state = FootViewHolder.LOAD_MORE_COMPLETE;
         mLoading = false;//标记未正在加载中
         mAllHasLoaded = false;//标记全部数据未结束
-        notifyDataSetChanged();
+        notifyItemChanged(getLoadMoreViewPosition());
     }
 
+    /**
+     * 本次加载失败
+     */
     @Override
     public void loadMoreFail() {
         footer_state = FootViewHolder.LOAD_MORE_FAILED;
         mLoading = false;//标记未正在加载中
         mAllHasLoaded = false;//标记全部数据未结束
-        notifyDataSetChanged();
+        notifyItemChanged(getLoadMoreViewPosition());
     }
 
     /**
@@ -179,13 +215,13 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
      */
     public class FootViewHolder extends BaseHolder {
         //加载布局隐藏
-        public static final int LOAD_MORE_GONE = 0;
+        static final int LOAD_MORE_GONE = 0;
         //本次加载完成
-        public static final int LOAD_MORE_COMPLETE  = 1;
+        static final int LOAD_MORE_COMPLETE  = 1;
         //全部数据已经加载结束
-        public static final int LOAD_MORE_END = 2;
+        static final int LOAD_MORE_END = 2;
         //加载失败
-        public static final int LOAD_MORE_FAILED = 3;
+        static final int LOAD_MORE_FAILED = 3;
 
         //正在加载
         private LinearLayout ll_loading;
@@ -195,7 +231,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
         private LinearLayout ll_failed;
 
 
-        public FootViewHolder(View itemView) {
+        FootViewHolder(View itemView) {
             super(itemView);
             ll_loading = itemView.findViewById(R.id.ll_loading);
             ll_complete = itemView.findViewById(R.id.ll_complete);
@@ -205,7 +241,7 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
 
     private RecyclerView mRecyclerView;
 
-    protected RecyclerView getRecyclerView() {
+    private RecyclerView getRecyclerView() {
         return mRecyclerView;
     }
 
@@ -298,12 +334,12 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
      * 通知加载更多
      */
     public void notifyLoadMoreToLoading() {
+        //正在加载则直接返回
         if (mLoading) {
             return;
         }
 
-        if (!mLoading//当前没有在加载
-                && !mAllHasLoaded) {//加载未结束全部数据
+        if (!mAllHasLoaded) {//加载未结束全部数据
             //加载回调
             onLoadMoreRequested();
         }
@@ -319,5 +355,6 @@ public class BaseAdapter<T> extends RecyclerView.Adapter<BaseHolder> implements 
             mRequestLoadMoreListener.onLoadMoreRequested();
         }
     }
+
 
 }

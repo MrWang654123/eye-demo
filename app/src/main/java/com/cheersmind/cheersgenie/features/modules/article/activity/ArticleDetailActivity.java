@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +23,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +48,7 @@ import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features.view.htmlImageGetter.URLImageParser;
@@ -56,12 +63,18 @@ import com.cheersmind.cheersgenie.main.entity.TopicInfo;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +114,11 @@ public class ArticleDetailActivity extends BaseActivity {
     @BindView(R.id.tv_read_count)
     TextView tvReadCount;
     //文章内容（富文本）
-//    @BindView(R.id.web_article_content)
-//    @Nullable WebView webArticleContent;
+    @BindView(R.id.web_article_content)
+    WebView webArticleContent;
+    //正在初始化富文本的提示
+    @BindView(R.id.tv_init_content)
+    TextView tvInitContent;
     //文章内容（富文本）
     @BindView(R.id.tv_article_content)
     TextView tvArticleContent;
@@ -233,6 +249,8 @@ public class ArticleDetailActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
+                //正在加载提示
+                xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
                 //加载文章详情
                 loadArticleDetail(articleId);
             }
@@ -275,6 +293,9 @@ public class ArticleDetailActivity extends BaseActivity {
                 .placeholder(R.drawable.ico_head)//占位图
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
+
+        //初始化webView
+        initWebView();
     }
 
 
@@ -308,25 +329,58 @@ public class ArticleDetailActivity extends BaseActivity {
 //        initVideo();
     }
 
-    //测试视频地址
-    String testVideoUrl = "http://video-test.cheersmind.com/lpmeKVqGCSmjjXUROI8Q5YPtBaej";
 
     /**
-     * 初始化视频
+     * 初始化webView
      */
-    /*private void initVideo() {
-        String videoUrl = signVideoUrl(testVideoUrl);
-        jzVideo.setUp(videoUrl
-                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子不信");
-//        jzVideo.setUp(VideoConstant.videoUrlList[0]
-//                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子不信");
-        Glide.with(this)
-                .load(VideoConstant.videoThumbList[0])
-                .into(jzVideo.thumbImageView);
+    private void initWebView() {
 
-        JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-    }*/
+        WebSettings webSettings = webArticleContent.getSettings();
+        // 让WebView能够执行javaScript
+//        webSettings.setJavaScriptEnabled(true);
+        // 让JavaScript可以自动打开windows
+//        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        // 设置缓存
+        webSettings.setAppCacheEnabled(true);
+        // 设置缓存模式,一共有四种模式
+        webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        // 设置缓存路径
+//        webSettings.setAppCachePath("");
+        // 支持缩放(适配到当前屏幕)
+//        webSettings.setSupportZoom(true);
+        // 将图片调整到合适的大小
+//        webSettings.setUseWideViewPort(true);
+        // 支持内容重新布局,一共有四种方式
+        // 默认的是NARROW_COLUMNS
+//        webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        // 设置可以被显示的屏幕控制
+//        webSettings.setDisplayZoomControls(true);
+        // 设置默认字体大小
+        webSettings.setDefaultFontSize(18);
+
+        webArticleContent.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+//                return super.shouldOverrideUrlLoading(view, request);
+                return false;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                tvInitContent.setVisibility(View.VISIBLE);
+
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                tvInitContent.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     /**
      * 初始化视频
@@ -791,7 +845,9 @@ public class ArticleDetailActivity extends BaseActivity {
             tempContent = tempContent.replaceAll("\t", "");
             tempContent = tempContent.replaceAll("\n", "");
             if (!TextUtils.isEmpty(tempContent)) {
-                tvArticleContent.setText(Html.fromHtml(tempContent, new URLImageParser(ArticleDetailActivity.this, tvArticleContent), null));
+                tempContent = getNewContent(tempContent, webArticleContent.getMeasuredWidth() - DensityUtil.dip2px(ArticleDetailActivity.this, 100));
+//                tvArticleContent.setText(Html.fromHtml(tempContent, new URLImageParser(ArticleDetailActivity.this, tvArticleContent), null));
+                webArticleContent.loadData(tempContent, "text/html; charset=UTF-8", "utf-8");
             } else {
                 tvArticleContent.setVisibility(View.GONE);
             }
@@ -801,6 +857,48 @@ public class ArticleDetailActivity extends BaseActivity {
 
 //        tempContent = HtmlUtil.getNewContentByHandleImage(tempContent);
 //        webArticleContent.loadDataWithBaseURL(null, tempContent, "text/html","utf-8",null);
+    }
+
+
+    /**
+     * 重新处理内容文本
+     * @param htmlText html文本
+     * @param maxWidth 控件宽度
+     * @return 返回新文本
+     */
+    private String getNewContent(String htmlText, int maxWidth){
+
+        Document doc= Jsoup.parse(htmlText);
+        //图片处理
+        Elements elements = doc.getElementsByTag("img");
+        for (Element element : elements) {
+            String widthStr = element.attr("width");
+            int width = 0;
+            try {
+                if (!TextUtils.isEmpty(widthStr)) {
+                    width = Integer.parseInt(widthStr);
+                }
+                if (width == 0) {
+                    widthStr = element.attr("img_width");
+                    if (!TextUtils.isEmpty(widthStr)) {
+                        width = Integer.parseInt(widthStr);
+                    }
+                }
+            } catch (Exception e) {
+            }
+            if (width == 0 || width > 400) {
+                element.attr("width", "100%").attr("height", "auto");
+            }
+        }
+
+        //段落处理
+        Elements pElements = doc.getElementsByTag("p");
+        for (Element element : pElements) {
+            element.attr("style", "line-height:160%");
+        }
+
+//        Log.d("VACK", doc.toString());
+        return doc.toString();
     }
 
 
@@ -847,7 +945,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     }
 
                     //添加数据
-                    recyclerItem.addAll(dataList);
+                    recyclerAdapter.addData(dataList);
 
                     //判断是否全部加载结束
                     if (recyclerItem.size() >= totalCount) {

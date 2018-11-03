@@ -165,6 +165,7 @@
             android:name=".features.modules.article.activity.ArticleDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
+        <!--android:hardwareAccelerated="false"-->
         <!-- webview测试页面 -->
         <activity
             android:name=".features.modules.test.activity.WebviewTestActivity"
