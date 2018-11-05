@@ -17,9 +17,12 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
+import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
@@ -370,8 +373,14 @@ public class UserInfoInitActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
 //                LoadingView.getInstance().dismiss();
-                //提交完善信息成功后，获取孩子列表
-                doGetChildListWrap();
+                //积分提示
+                IntegralUtil.showIntegralTipDialog(UserInfoInitActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+                    @Override
+                    public void onAnimationEnd() {
+                        //提交完善信息成功后，获取孩子列表
+                        doGetChildListWrap();
+                    }
+                });
             }
         });
     }

@@ -44,6 +44,8 @@ import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivit
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
 import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
+import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
+import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TotalIntegralEntity;
@@ -59,6 +61,7 @@ import org.devio.takephoto.model.TResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -461,6 +464,11 @@ public class MineFragment extends TakePhotoFragment {
 
                 //加载总积分
                 loadIntegralTotalScore();
+
+                //积分提示
+                if (getContext() != null) {
+                    IntegralUtil.showIntegralTipDialog(getContext(), obj, null);
+                }
             }
         });
     }
@@ -819,7 +827,7 @@ public class MineFragment extends TakePhotoFragment {
         DataRequestService.getInstance().getIntegralTotalScore(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                tvUsableIntegralVal.setVisibility(View.GONE);
+                tvUsableIntegralVal.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -834,7 +842,7 @@ public class MineFragment extends TakePhotoFragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    tvUsableIntegralVal.setVisibility(View.GONE);
+                    tvUsableIntegralVal.setVisibility(View.INVISIBLE);
                 }
             }
         });

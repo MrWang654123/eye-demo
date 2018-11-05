@@ -25,9 +25,11 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionCompleteXDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -614,7 +616,7 @@ public class ReplyQuestionActivity extends BaseActivity {
                         try {
                             //提交分量表返回添加了topic_id和topic_dimension_id
                             Map map = JsonUtil.fromJson(obj.toString(), Map.class);
-                            DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
+                            final DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
 
                             //设置孩子量表对象
                             dimensionInfoEntity.setChildDimension(dimensionChild);
@@ -646,23 +648,35 @@ public class ReplyQuestionActivity extends BaseActivity {
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
-                            //判断话题是否已完成
-                            if (dimensionChild.isTopicComplete()) {
-                                //确保话题对象有孩子话题对象，且孩子测评ID不为空
-                                if (topicInfoEntity.getChildTopic() == null) {
-                                    TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
-                                    topicInfoEntity.setChildTopic(topicInfoChild);
+                            //积分提示
+                            IntegralUtil.showIntegralTipDialog(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+                                @Override
+                                public void onAnimationEnd() {
+                                    try {
+                                        //判断话题是否已完成
+                                        if (dimensionChild.isTopicComplete()) {
+                                            //确保话题对象有孩子话题对象，且孩子测评ID不为空
+                                            if (topicInfoEntity.getChildTopic() == null) {
+                                                TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
+                                                topicInfoEntity.setChildTopic(topicInfoChild);
+                                            }
+                                            //设置孩子测评ID
+                                            topicInfoEntity.getChildTopic().setChildExamId(dimensionChild.getChildExamId());
+
+                                            //请求话题报告（需要TopicId和ChildExamId）
+                                            queryTopicReport(topicInfoEntity);
+
+                                        } else {
+                                            //请求量表报告
+                                            queryDimensionReport(dimensionInfoEntity);
+                                        }
+
+                                    } catch (Exception e) {
+                                        onFailure(new QSCustomException("获取报告失败"));
+                                    }
                                 }
-                                //设置孩子测评ID
-                                topicInfoEntity.getChildTopic().setChildExamId(dimensionChild.getChildExamId());
 
-                                //请求话题报告（需要TopicId和ChildExamId）
-                                queryTopicReport(topicInfoEntity);
-
-                            } else {
-                                //请求量表报告
-                                queryDimensionReport(dimensionInfoEntity);
-                            }
+                            });
 
                         } catch (Exception e) {
                             onFailure(new QSCustomException("获取报告失败"));

@@ -29,6 +29,7 @@ import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
+import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
@@ -194,9 +195,12 @@ public class XLoginActivity extends BaseActivity {
 //                startActivity(intent);
 
                 //崩溃日志是否会上传的测试
-                throw new NullPointerException("666666666666666666666666666我是空啊");
+//                throw new NullPointerException("666666666666666666666666666我是空啊");
 
-//                break;
+                //积分提示对话框
+                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
+
+                break;
             }
             //服务条款（用户协议）
             case R.id.tv_license: {

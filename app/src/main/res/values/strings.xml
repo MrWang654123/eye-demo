@@ -146,6 +146,7 @@
     <!--积分-->
     <string name="total_integral">已获得积分：</string>
     <string name="available_integral">可用积分：</string>
+    <string name="integral_tip_add">+%s积分</string>
 
     <!--通用-->
     <string name="operate_fail">操作失败，请稍后再试</string>
