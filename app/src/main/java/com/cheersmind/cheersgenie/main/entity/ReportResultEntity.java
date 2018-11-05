@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.main.entity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/6/27.
@@ -10,17 +11,28 @@ import java.io.Serializable;
 
 public class ReportResultEntity implements Serializable {
 
-    @InjectMap(name = "content")
-    private String content;
+    //标题的前缀语句
+    @InjectMap(name = "header")
+    private String header;
 
+    //标题（结果）
+    @InjectMap(name = "title")
+    private String title;
+
+    //标题颜色
     @InjectMap(name = "color")
     private String color;
 
+    //评价
+    @InjectMap(name = "content")
+    private String content;
+
+    //图表说明
     @InjectMap(name = "description")
     private String description;
 
-    @InjectMap(name = "title")
-    private String title;
+    //图表说明是否展开
+    private boolean isExpandDesc = false;
 
     @InjectMap(name = "relation_id")
     private String relationId;
@@ -28,8 +40,13 @@ public class ReportResultEntity implements Serializable {
     @InjectMap(name = "result")
     private String result;
 
-    @InjectMap(name = "header")
-    private String header;
+    //因子结果
+    @InjectMap(name = "factor_result")
+    private List<FactorResultEntity> factorResultList;
+
+    //因子结果拼接的文本（标题+内容）
+    private String factorResultText;
+
 
     public String getContent() {
         return content;
@@ -85,5 +102,29 @@ public class ReportResultEntity implements Serializable {
 
     public void setHeader(String header) {
         this.header = header;
+    }
+
+    public List<FactorResultEntity> getFactorResultList() {
+        return factorResultList;
+    }
+
+    public void setFactorResultList(List<FactorResultEntity> factorResultList) {
+        this.factorResultList = factorResultList;
+    }
+
+    public String getFactorResultText() {
+        return factorResultText;
+    }
+
+    public void setFactorResultText(String factorResultText) {
+        this.factorResultText = factorResultText;
+    }
+
+    public boolean isExpandDesc() {
+        return isExpandDesc;
+    }
+
+    public void setExpandDesc(boolean expandDesc) {
+        isExpandDesc = expandDesc;
     }
 }

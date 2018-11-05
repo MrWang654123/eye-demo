@@ -113,68 +113,51 @@
         android:layout_height="0.5dp"
         android:background="#f7f7f7"/>
 
+    <!--报告内容布局-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="15dp"
         android:background="@color/white">
 
-        <!--报告内容布局-->
-        <RelativeLayout
+        <!--结论header布局-->
+        <LinearLayout
+            android:id="@+id/ll_result_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/ll_report_content"
-                android:layout_width="match_parent"
+            <!--结论的简单文本的前缀语-->
+            <TextView
+                android:id="@+id/tv_result_simple_prefix"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@color/white"
-                android:padding="0dp">
-                <!--android:padding="10dp"-->
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="5dp"
+                android:textSize="14sp"
+                android:textColor="@color/color_777777"
+                android:text="思考对方就是点击附件是的房节放假时代峰峻"/>
+            <!--思考对方就是点击附件是的房价数据的福建省地方圣诞节放假时代峰峻-->
 
-                <!--结论header布局-->
-                <LinearLayout
-                    android:id="@+id/ll_result_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:orientation="vertical">
+            <!--结论的简单文本-->
+            <TextView
+                android:id="@+id/tv_result_simple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:text="课程体验不佳"/>
+            <!--课程体验不佳-->
 
-                    <!--结论的简单文本的前缀语-->
-                    <TextView
-                        android:id="@+id/tv_result_simple_prefix"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:layout_marginBottom="5dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/color_777777"
-                        android:text="思考对方就是点击附件是的房节放假时代峰峻"/>
-                    <!--思考对方就是点击附件是的房价数据的福建省地方圣诞节放假时代峰峻-->
-
-                    <!--结论的简单文本-->
-                    <TextView
-                        android:id="@+id/tv_result_simple"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="18sp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="15dp"
-                        android:text="课程体验不佳"/>
-                    <!--课程体验不佳-->
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </FrameLayout>
 

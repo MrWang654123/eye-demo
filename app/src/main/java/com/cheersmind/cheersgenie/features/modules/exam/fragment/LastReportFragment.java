@@ -43,6 +43,7 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.FactorResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
@@ -290,12 +291,19 @@ public class LastReportFragment extends LazyLoadFragment {
                             List<ReportResultEntity> reportResultEntities = data.getReportResults();
                             //报告图表数据
                             List<ReportItemEntity> reportItems = data.getChartDatas();
+
+                            //拼接因子结果文本
+                            formatFactorResultText(reportResultEntities);
+                            //初始图表说明是否展开（没有评价则展开）
+                            initDescIsExpand(reportResultEntities);
                             //把报告结果置于报告图表对象中
                             reportItems = settingResultToReportItem(reportItems, reportResultEntities);
                             //把比较名称置于报告图表对象中
                             settingCompareName(reportItems, data);
                             //把reportItems分组，每个量表可能不只一个图表
                             recyclerItem = groupReportItem(reportItems);
+                            //如果topic报告项没有报告结果（ReportResultEntity中的title），则提取所有量表项的结果作为结果
+                            fetchDimensionResultToTopicResult(recyclerItem);
 
                             //报告标题
                             tvTopicReportTitle.setText(data.getTopicName());
@@ -319,6 +327,128 @@ public class LastReportFragment extends LazyLoadFragment {
                         }
                     }
                 }, tag);
+    }
+
+
+    /**
+     * 如果topic报告项没有报告结果（ReportResultEntity中的title），则提取所有量表项的结果作为结果
+     * @param recyclerItem
+     */
+    private void fetchDimensionResultToTopicResult(List<List<ReportItemEntity>> recyclerItem) {
+        if (ArrayListUtil.isNotEmpty(recyclerItem)) {
+            //所有量表项的结果作为结果文本
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("【");
+
+            for (List<ReportItemEntity> list : recyclerItem) {
+                //非空
+                if (ArrayListUtil.isNotEmpty(list)) {
+                    //非topic项
+                    if (!list.get(0).isTopic() && list.get(0).getReportResult() != null
+                            && !TextUtils.isEmpty(list.get(0).getReportResult().getTitle())) {
+                        stringBuilder.append(list.get(0).getReportResult().getTitle());
+                        stringBuilder.append("、");
+                    }
+                }
+            }
+
+            if (stringBuilder.length() > 1) {
+                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+//                stringBuilder.substring(0,stringBuilder.length() - 2);
+            }
+            stringBuilder.append("】");
+
+            //量表项的结果文本有数据的情况才继续
+            if (stringBuilder.length() > 2) {
+                for (List<ReportItemEntity> list : recyclerItem) {
+                    //非空
+                    if (ArrayListUtil.isNotEmpty(list)) {
+                        //是topic项，且ReportResultEntity为空，则赋值
+                        if (list.get(0).isTopic() && list.get(0).getReportResult() == null) {
+                            ReportResultEntity reportResult = new ReportResultEntity();
+                            reportResult.setTitle(stringBuilder.toString());
+                            list.get(0).setReportResult(reportResult);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    /**
+     * 初始图表说明是否展开（没有评价则展开）
+     * @param reportResultEntities
+     */
+    private void initDescIsExpand(List<ReportResultEntity> reportResultEntities) {
+        //非空
+        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
+            for (ReportResultEntity reportResult : reportResultEntities) {
+                //评价
+                if (TextUtils.isEmpty(reportResult.getContent())) {
+                    reportResult.setExpandDesc(true);
+                } else {
+                    reportResult.setExpandDesc(false);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 拼接因子结果文本
+     * @param reportResultEntities
+     */
+    private void formatFactorResultText(List<ReportResultEntity> reportResultEntities) {
+        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
+            for (ReportResultEntity reportResult : reportResultEntities) {
+                //因子结果集合非空，且数量大于1
+                if (ArrayListUtil.isNotEmpty(reportResult.getFactorResultList()) && reportResult.getFactorResultList().size() > 1) {
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    for (int i=0; i<reportResult.getFactorResultList().size(); i++) {
+                        FactorResultEntity factorResult = reportResult.getFactorResultList().get(i);
+
+                        stringBuilder.append("<strong>");
+                        stringBuilder.append((i+1));
+                        stringBuilder.append("、");
+                        stringBuilder.append("</strong>");
+
+                        //标题非空
+                        if (!TextUtils.isEmpty(factorResult.getTitle())) {
+                            stringBuilder.append("<strong>");
+                            //颜色非空
+                            if (!TextUtils.isEmpty(factorResult.getColor())) {
+                                stringBuilder.append("<font color='");
+                                stringBuilder.append(factorResult.getColor());
+                                stringBuilder.append("'>");
+                            } else {
+                                stringBuilder.append("<font>");
+                            }
+                            stringBuilder.append(factorResult.getTitle());
+                            stringBuilder.append("</font>");
+                            stringBuilder.append("</strong>");
+
+                            //内容非空（结果详细）
+                            if (!TextUtils.isEmpty(factorResult.getContent())) {
+                                stringBuilder.append("，");
+                            }
+                        }
+
+                        //内容非空（结果详细）
+                        if (!TextUtils.isEmpty(factorResult.getContent())) {
+                            stringBuilder.append(factorResult.getContent());
+                        }
+
+                        stringBuilder.append("<br/><br/>");
+                    }
+
+                    //最终拼接结果
+                    reportResult.setFactorResultText(stringBuilder.toString());
+
+                }
+            }
+        }
     }
 
 
@@ -523,7 +653,7 @@ public class LastReportFragment extends LazyLoadFragment {
 
     /**
      * 把reportItems分组，每个报告可能不只一个图表
-     *
+     * （topic项在前，dimension项在后）
      * @param reportItems
      * @return
      */

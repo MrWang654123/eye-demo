@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -23,12 +24,14 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.FactorResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
@@ -86,12 +89,27 @@ public class DimensionReportDialog extends Dialog {
     //结论的脚布局
     @BindView(R.id.ll_result_footer)
     LinearLayout llResultFooter;
+    //图标说明布局
+    @BindView(R.id.ll_char_desc)
+    LinearLayout llCharDesc;
+    //图标说明收缩控制文本
+    @BindView(R.id.tv_ctrl_chart_desc)
+    TextView tvCtrlChartDesc;
+    //图标说明文本
+    @BindView(R.id.tv_chart_desc)
+    TextView tvChartDesc;
     //结论的长文本描述布局
     @BindView(R.id.ll_result_desc)
     LinearLayout llResultDesc;
     //结论的长文本描述（评价）
     @BindView(R.id.tv_result_desc)
     TextView tvResultDesc;
+    //因子结果布局
+    @BindView(R.id.ll_factor_result)
+    LinearLayout llFactorResult;
+    //因子结果文本
+    @BindView(R.id.tv_factor_result)
+    TextView tvFactorResult;
     //建议
     @BindView(R.id.ll_result_suggest)
     LinearLayout llResultSuggest;
@@ -342,6 +360,11 @@ public class DimensionReportDialog extends Dialog {
                                 List<ReportResultEntity> reportResultEntities = data.getReportResults();
                                 //报告图表数据
                                 List<ReportItemEntity> dimensionReports = data.getChartDatas();
+
+                                //拼接因子结果文本
+                                formatFactorResultText(reportResultEntities);
+                                //把报告结果置于报告图表对象中
+//                                dimensionReports = settingResultToReportItem(dimensionReports, reportResultEntities);
                                 //把报告结果置于报告图表对象中
                                 if (ArrayListUtil.isNotEmpty(dimensionReports)  && ArrayListUtil.isNotEmpty(reportResultEntities)) {
                                     //图表项
@@ -364,13 +387,8 @@ public class DimensionReportDialog extends Dialog {
                                         }
                                     }
                                 }
-
-                                //为报告图表对象设置比较名称
-                                if (ArrayListUtil.isNotEmpty(dimensionReports)) {
-                                    for (ReportItemEntity reportItem : dimensionReports) {
-                                        reportItem.setCompareName(data.getCompareName());
-                                    }
-                                }
+                                //把比较名称置于报告图表对象中
+                                settingCompareName(dimensionReports, data);
 
                                 //刷新报告视图
                                 refreshReportView(dimensionReports);
@@ -407,7 +425,7 @@ public class DimensionReportDialog extends Dialog {
             doAddChartView(llChart, dimensionReports);
 
             //报告结果
-            ReportResultEntity reportResult = dimensionReports.get(0).getReportResult();
+            final ReportResultEntity reportResult = dimensionReports.get(0).getReportResult();
             if (reportResult != null) {
                 //结论头布局以及内容
                 llResultHeader.setVisibility(View.VISIBLE);
@@ -433,6 +451,29 @@ public class DimensionReportDialog extends Dialog {
                     e.printStackTrace();
                 }
 
+                //图表说明
+                if (!TextUtils.isEmpty(reportResult.getDescription())) {
+                    llCharDesc.setVisibility(View.VISIBLE);
+
+                    tvChartDesc.setText(Html.fromHtml(reportResult.getDescription()));
+                    //刷新图表说明布局
+                    refreshChartDesc(reportResult.isExpandDesc());
+
+                    //图标说明是否展开点击监听
+                    tvCtrlChartDesc.setOnClickListener(new OnMultiClickListener() {
+                        @Override
+                        public void onMultiClick(View view) {
+                            //取反
+                            reportResult.setExpandDesc(!reportResult.isExpandDesc());
+                            //刷新图表说明布局
+                            refreshChartDesc(reportResult.isExpandDesc());
+                        }
+                    });
+
+                } else {
+                    llCharDesc.setVisibility(View.GONE);
+                }
+
                 //结论脚布局以及内容
                 llResultFooter.setVisibility(View.VISIBLE);
                 //结论的长文本描述（评价）
@@ -441,6 +482,15 @@ public class DimensionReportDialog extends Dialog {
                 } else {
                     //隐藏结论的长文本描述布局
                     llResultDesc.setVisibility(View.GONE);
+                }
+
+                //因子结果（即详细说明）
+                if (!TextUtils.isEmpty(reportResult.getFactorResultText())) {
+                    llFactorResult.setVisibility(View.VISIBLE);
+                    tvFactorResult.setText(Html.fromHtml(reportResult.getFactorResultText()));
+
+                } else {
+                    llFactorResult.setVisibility(View.GONE);
                 }
 
                 //建议（目前隐藏）
@@ -461,6 +511,132 @@ public class DimensionReportDialog extends Dialog {
 
 
     /**
+     * 刷新图表说明布局
+     * @param isExpandDesc 是否展开
+     */
+    private void refreshChartDesc(boolean isExpandDesc) {
+        //是否展开
+        if (isExpandDesc) {
+            //向上图标
+            tvCtrlChartDesc.setCompoundDrawablesWithIntrinsicBounds(
+                    null, null, ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_drop_up), null);
+            tvChartDesc.setVisibility(View.VISIBLE);
+
+        } else {
+            //向下图标
+            tvCtrlChartDesc.setCompoundDrawablesWithIntrinsicBounds(
+                    null, null, ContextCompat.getDrawable(getContext(), R.drawable.ic_arrow_drop_down), null);
+            tvChartDesc.setVisibility(View.GONE);
+        }
+    }
+
+
+    /**
+     * 拼接因子结果文本
+     * @param reportResultEntities
+     */
+    private void formatFactorResultText(List<ReportResultEntity> reportResultEntities) {
+        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
+            for (ReportResultEntity reportResult : reportResultEntities) {
+                //因子结果集合非空，且数量大于1
+                if (ArrayListUtil.isNotEmpty(reportResult.getFactorResultList()) && reportResult.getFactorResultList().size() > 1) {
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    for (int i=0; i<reportResult.getFactorResultList().size(); i++) {
+                        FactorResultEntity factorResult = reportResult.getFactorResultList().get(i);
+
+                        stringBuilder.append("<strong>");
+                        stringBuilder.append((i+1));
+                        stringBuilder.append("、");
+                        stringBuilder.append("</strong>");
+
+                        //标题非空
+                        if (!TextUtils.isEmpty(factorResult.getTitle())) {
+                            stringBuilder.append("<strong>");
+                            //颜色非空
+                            if (!TextUtils.isEmpty(factorResult.getColor())) {
+                                stringBuilder.append("<font color='");
+                                stringBuilder.append(factorResult.getColor());
+                                stringBuilder.append("'>");
+                            } else {
+                                stringBuilder.append("<font>");
+                            }
+                            stringBuilder.append(factorResult.getTitle());
+                            stringBuilder.append("</font>");
+                            stringBuilder.append("</strong>");
+
+                            //内容非空（结果详细）
+                            if (!TextUtils.isEmpty(factorResult.getContent())) {
+                                stringBuilder.append("，");
+                            }
+                        }
+
+                        //内容非空（结果详细）
+                        if (!TextUtils.isEmpty(factorResult.getContent())) {
+                            stringBuilder.append(factorResult.getContent());
+                        }
+
+                        stringBuilder.append("<br/><br/>");
+                    }
+
+                    //最终拼接结果
+                    reportResult.setFactorResultText(stringBuilder.toString());
+
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 把ReportResult设置到对应的ReportItem中
+     *
+     * @param reportItemEntities   图表项集合
+     * @param reportResultEntities 结果项集合
+     * @return
+     */
+    private List<ReportItemEntity> settingResultToReportItem(List<ReportItemEntity> reportItemEntities, List<ReportResultEntity> reportResultEntities) {
+        //图表项
+        for (int i = 0; i < reportItemEntities.size(); i++) {
+            ReportItemEntity reportItemEntity = reportItemEntities.get(i);
+            //结果项
+            for (int j = 0; j < reportResultEntities.size(); j++) {
+                ReportResultEntity reportResultEntity = reportResultEntities.get(j);
+                try {
+                    //判等：chart_item_id和relationId
+                    if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
+                        //图表项中的reportResult为空才赋值
+                        if (reportItemEntity.getReportResult() == null) {
+                            reportItemEntity.setReportResult(reportResultEntity);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return reportItemEntities;
+    }
+
+
+    /**
+     * 把比较名称置于报告图表对象中
+     * @param reportItems
+     * @param data
+     */
+    private void settingCompareName(List<ReportItemEntity> reportItems, ReportRootEntity data) {
+        if (reportItems == null || data == null) {
+            return;
+        }
+
+        for (ReportItemEntity reportItem : reportItems) {
+            reportItem.setCompareName(data.getCompareName());
+        }
+    }
+
+
+    /**
      * 生成图表视图
      * @param dimensionReports
      */
@@ -469,6 +645,8 @@ public class DimensionReportDialog extends Dialog {
             //非空
             if (llChart == null || ArrayListUtil.isEmpty(dimensionReports)) {
                 return;
+            } else {
+                llChart.removeAllViews();
             }
 
             for (ReportItemEntity reportItem : dimensionReports) {
@@ -477,20 +655,24 @@ public class DimensionReportDialog extends Dialog {
                 //图表类型
                 switch (chartItem.getItemType()) {
                     case Dictionary.CHART_RADAR: {
-                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_radar, llChart);
+                        chartItemView = View.inflate(getContext(), R.layout.chart_item_radar, null);
+//                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_radar, null);
 //                            LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_footer, parent, false);
                         break;
                     }
                     case Dictionary.CHART_LINE: {
-                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_line, llChart);
+                        chartItemView = View.inflate(getContext(), R.layout.chart_item_line, null);
+//                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_line, llChart);
                         break;
                     }
                     case Dictionary.CHART_BAR_V: {
-                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_v, llChart);
+                        chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_v, null);
+//                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_v, null);
                         break;
                     }
                     case Dictionary.CHART_BAR_H: {
-                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_h, llChart);
+                        chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_h, null);
+//                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_h, null);
                         break;
                     }
                 }
@@ -503,11 +685,12 @@ public class DimensionReportDialog extends Dialog {
 //                            chartItem.invalidate();
 //                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) charView.getLayoutParams();
                         //添加到容器中
-                        llChart.addView(charView);
+                        llChart.addView(chartItemView);
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
