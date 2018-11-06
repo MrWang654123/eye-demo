@@ -135,20 +135,15 @@
 
                     </LinearLayout>
 
-                    <!--文章内容-->
-                    <!--<com.cheersmind.cheersgenie.features.view.NoScrollWebView-->
-                        <!--android:id="@+id/web_article_content"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content" />-->
                     <!--播放器-->
-                    <com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal
-                        android:id="@+id/jz_video"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:visibility="gone"/>
+                    <!--<com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal-->
+                        <!--android:id="@+id/jz_video"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="200dp"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:layout_marginLeft="15dp"-->
+                        <!--android:layout_marginRight="15dp"-->
+                        <!--android:visibility="gone"/>-->
 
                     <!--文章内容-->
                     <TextView
@@ -168,17 +163,54 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <WebView
-                            android:id="@+id/web_article_content"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="6dp"
-                            android:layout_marginRight="6dp"
-                            android:scrollbars="none"
-                            android:background="@color/transpera">
-                        </WebView>
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal
+                                android:id="@+id/jz_video"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:visibility="gone"/>
+
+                            <WebView
+                                android:id="@+id/web_article_content"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:minHeight="10dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginLeft="6dp"
+                                android:layout_marginRight="6dp"
+                                android:scrollbars="none"
+                                android:background="@color/transpera">
+                            </WebView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_init_content_tip"
+                            android:layout_width="match_parent"
+                            android:layout_height="1000dp"
+                            android:background="@color/white"
+                            android:gravity="center_horizontal"
+                            android:paddingTop="20dp"
+                            android:paddingBottom="15dp">
+
+                            <com.wang.avi.AVLoadingIndicatorView
+                                android:id="@+id/ldv_init_count_tip"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                style="@style/AVLoadingIndicatorView"
+                                android:visibility="visible"
+                                app:indicatorName="BallPulseIndicator"
+                                app:indicatorColor="@color/colorAccent"/>
+
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/tv_init_content"
@@ -189,6 +221,7 @@
                             android:paddingTop="20dp"
                             android:paddingBottom="15dp"
                             android:gravity="center_horizontal"
+                            android:visibility="gone"
                             android:text="正在加载内容"/>
 
                     </RelativeLayout>

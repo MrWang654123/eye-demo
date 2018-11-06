@@ -178,4 +178,5 @@ dependencies {
     implementation 'com.zhy:okhttputils:2.6.2'
 
     implementation 'com.xdandroid:materialprogressview:+'
+    implementation 'com.wang.avi:library:2.1.3'
 }

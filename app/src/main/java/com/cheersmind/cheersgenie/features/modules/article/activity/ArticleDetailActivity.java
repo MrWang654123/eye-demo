@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -70,6 +72,7 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -119,6 +122,12 @@ public class ArticleDetailActivity extends BaseActivity {
     //正在初始化富文本的提示
     @BindView(R.id.tv_init_content)
     TextView tvInitContent;
+    //正在初始化富文本的提示布局
+    @BindView(R.id.ll_init_content_tip)
+    LinearLayout llInitContentTip;
+    //正在初始化富文本的提示控件
+    @BindView(R.id.ldv_init_count_tip)
+    AVLoadingIndicatorView ldvInitCountTip;
     //文章内容（富文本）
     @BindView(R.id.tv_article_content)
     TextView tvArticleContent;
@@ -368,7 +377,9 @@ public class ArticleDetailActivity extends BaseActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                tvInitContent.setVisibility(View.VISIBLE);
+//                tvInitContent.setVisibility(View.VISIBLE);
+                llInitContentTip.setVisibility(View.VISIBLE);
+                ldvInitCountTip.show();
 
                 super.onPageStarted(view, url, favicon);
             }
@@ -376,9 +387,37 @@ public class ArticleDetailActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                tvInitContent.setVisibility(View.GONE);
+//                tvInitContent.setVisibility(View.GONE);
             }
         });
+
+        webArticleContent.setWebChromeClient(new WebChromeClient(){
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+
+                //会被调用多次
+                if (newProgress == 100) {
+                    if (llInitContentTip.getVisibility() == View.VISIBLE) {
+                        int delay = 200;//默认延迟关闭等待提示布局
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            delay = 200;
+                        } else {
+                            delay = 500;
+                        }
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+//                                tvInitContent.setVisibility(View.GONE);
+                                llInitContentTip.setVisibility(View.GONE);
+                                ldvInitCountTip.hide();
+                            }
+                        }, delay);
+                    }
+                }
+            }
+        });
+
     }
 
 
@@ -613,11 +652,15 @@ public class ArticleDetailActivity extends BaseActivity {
                     //刷新点赞视图
                     refreshLikeView(articleEntity.isLike(), articleEntity.getPageLike());
 
-                    int delay = 150;//默认文章延迟加载关联测评和评论
+                    int delay = 150;//默认延迟加载关联测评和评论
                     //文章内容过长，则加长延迟时间
                     if (!TextUtils.isEmpty(articleEntity.getArticleContent())
                             && articleEntity.getArticleContent().length() > 300) {
-                        delay = 300;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            delay = 300;
+                        } else {
+                            delay = 500;
+                        }
                     }
                     mHandler.postDelayed(new Runnable() {
                         @Override
