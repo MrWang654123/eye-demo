@@ -1,17 +1,17 @@
 package com.cheersmind.cheersgenie.features.view.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -21,21 +21,16 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
-import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.fragment.UserInfoFragment;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
-import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.Map;
 
@@ -136,22 +131,25 @@ public class ModifyNicknameDialog extends Dialog {
     }
 
 
-    public void onDismiss() {
-        this.dismiss();
+    @Override
+    public void dismiss() {
+        super.dismiss();
+
+        //取消当前对话框的所有通信
+        BaseService.cancelTag(HTTP_TAG);
     }
+
 
     @OnClick({R.id.tv_cancel, R.id.tv_confirm, R.id.iv_clear_nickname})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //取消
             case R.id.tv_cancel: {
-                BaseService.cancelTag(HTTP_TAG);
-                onDismiss();
+                dismiss();
                 break;
             }
             //确定
             case R.id.tv_confirm: {
-//                onDismiss();
                 //修改昵称
                 doModifyNicknameWrap(context);
                 break;
@@ -248,7 +246,7 @@ public class ModifyNicknameDialog extends Dialog {
                 }
 
                 //关闭对话框
-                onDismiss();
+                dismiss();
             }
         }, HTTP_TAG);
     }
@@ -314,5 +312,23 @@ public class ModifyNicknameDialog extends Dialog {
             }
         }
     }
+
+
+    @Override
+    public void show() {
+        super.show();
+        /**
+         * 设置宽度全屏，要设置在show的后面
+         */
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.gravity = Gravity.CENTER_VERTICAL;
+        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+        getWindow().getDecorView().setPadding(0, 0, 0, 0);
+
+        getWindow().setAttributes(layoutParams);
+    }
+
 
 }

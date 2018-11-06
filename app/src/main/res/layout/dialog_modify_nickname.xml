@@ -10,13 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/shape_corner_ffffff_20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/heightXBigWidget"
             android:gravity="center_vertical"
-            android:paddingLeft="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="0dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -30,20 +35,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_555555"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="更改昵称"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:textSize="15sp"
                 android:textColor="@color/color_ff8b00"
                 android:text="@string/nickname_format_error"/>
@@ -54,8 +61,8 @@
                 android:background="@drawable/shape_corner_f4f5ed_8dp"
                 android:gravity="center_vertical"
                 android:layout_marginTop="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -98,7 +105,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="20dp"
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
@@ -107,7 +114,7 @@
             <TextView
                 android:id="@+id/tv_cancel"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:background="@drawable/btn_common_small"
@@ -124,7 +131,7 @@
             <TextView
                 android:id="@+id/tv_confirm"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:background="@drawable/btn_common_small"
