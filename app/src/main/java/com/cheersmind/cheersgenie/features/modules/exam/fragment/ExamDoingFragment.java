@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.view.View;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
@@ -26,8 +27,10 @@ public class ExamDoingFragment extends ExamBaseFragment {
     public void onInitView(View contentView) {
         //未完成状态
         topicStatus = Dictionary.TOPIC_STATUS_INCOMPLETE;
-
         super.onInitView(contentView);
+
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_exam));
     }
 
 

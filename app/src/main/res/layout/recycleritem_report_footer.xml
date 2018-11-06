@@ -3,8 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
     android:paddingTop="15dp"
     android:orientation="vertical">
 
@@ -14,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="17dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:orientation="vertical"
         android:visibility="visible">
 
@@ -48,6 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:visibility="visible">
 
         <!--结论描述（评价）-->
@@ -90,7 +92,7 @@
             android:id="@+id/ll_factor_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
             <TextView

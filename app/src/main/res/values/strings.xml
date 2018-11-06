@@ -172,7 +172,7 @@
     <string name="empty_tip_message">暂无消息</string>
     <string name="empty_tip_integral">暂无积分</string>
     <string name="empty_tip_report">暂无报告</string>
-    <string name="empty_tip_exam">暂无测评</string>
+    <string name="empty_tip_exam">暂无智评</string>
     <string name="empty_tip_article_on_category">暂无该分类的文章</string>
     <string name="empty_tip_article_for_search">暂无相关文章</string>
     <string name="empty_tip_category">暂无分类</string>
