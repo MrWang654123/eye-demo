@@ -294,10 +294,10 @@ public class LastReportFragment extends LazyLoadFragment {
 
                             //拼接因子结果文本
                             formatFactorResultText(reportResultEntities);
-                            //初始图表说明是否展开（没有评价则展开）
-                            initDescIsExpand(reportResultEntities);
                             //把报告结果置于报告图表对象中
                             reportItems = settingResultToReportItem(reportItems, reportResultEntities);
+                            //初始图表说明是否展开（没有评价则展开）
+                            initDescIsExpand(reportItems);
                             //把比较名称置于报告图表对象中
                             settingCompareName(reportItems, data);
                             //把reportItems分组，每个量表可能不只一个图表
@@ -378,17 +378,17 @@ public class LastReportFragment extends LazyLoadFragment {
 
     /**
      * 初始图表说明是否展开（没有评价则展开）
-     * @param reportResultEntities
+     * @param reportItems
      */
-    private void initDescIsExpand(List<ReportResultEntity> reportResultEntities) {
+    private void initDescIsExpand(List<ReportItemEntity> reportItems) {
         //非空
-        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
-            for (ReportResultEntity reportResult : reportResultEntities) {
+        if (ArrayListUtil.isNotEmpty(reportItems)) {
+            for (ReportItemEntity reportItem : reportItems) {
                 //评价
-                if (TextUtils.isEmpty(reportResult.getContent())) {
-                    reportResult.setExpandDesc(true);
+                if (reportItem.getReportResult() == null || TextUtils.isEmpty(reportItem.getReportResult().getContent())) {
+                    reportItem.setExpandDesc(true);
                 } else {
-                    reportResult.setExpandDesc(false);
+                    reportItem.setExpandDesc(false);
                 }
             }
         }

@@ -363,30 +363,10 @@ public class DimensionReportDialog extends Dialog {
 
                                 //拼接因子结果文本
                                 formatFactorResultText(reportResultEntities);
-                                //把报告结果置于报告图表对象中
-//                                dimensionReports = settingResultToReportItem(dimensionReports, reportResultEntities);
-                                //把报告结果置于报告图表对象中
-                                if (ArrayListUtil.isNotEmpty(dimensionReports)  && ArrayListUtil.isNotEmpty(reportResultEntities)) {
-                                    //图表项
-                                    for (int i = 0; i < dimensionReports.size(); i++) {
-                                        ReportItemEntity reportItemEntity = dimensionReports.get(i);
-                                        //结果项
-                                        for (int j = 0; j < reportResultEntities.size(); j++) {
-                                            ReportResultEntity reportResultEntity = reportResultEntities.get(j);
-                                            try {
-                                                //判等：chart_item_id和relationId
-                                                if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
-                                                    //图表项中的reportResult为空才赋值
-                                                    if (reportItemEntity.getReportResult() == null) {
-                                                        reportItemEntity.setReportResult(reportResultEntity);
-                                                    }
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                }
+                                //把报告结果置于报告图表对象中（和话题报告不太一样）
+                                dimensionReports = settingResultToReportItem(dimensionReports, reportResultEntities);
+                                //初始图表说明是否展开（没有评价则展开）
+                                initDescIsExpand(dimensionReports);
                                 //把比较名称置于报告图表对象中
                                 settingCompareName(dimensionReports, data);
 
@@ -409,8 +389,9 @@ public class DimensionReportDialog extends Dialog {
      */
     private void refreshReportView(List<ReportItemEntity> dimensionReports) throws Exception {
         if (ArrayListUtil.isNotEmpty(dimensionReports)) {
+            final ReportItemEntity reportItem = dimensionReports.get(0);
             //标题
-            String chartName = dimensionReports.get(0).getChartItemName();
+            String chartName = reportItem.getChartItemName();
             if (!TextUtils.isEmpty(chartName)) {
                 tvDimensionTitle.setText(chartName);
             } else {
@@ -423,6 +404,29 @@ public class DimensionReportDialog extends Dialog {
             //生成图表
 //            MPChartViewHelper.addMpChartView(context, llChart, dimensionReports);
             doAddChartView(llChart, dimensionReports);
+
+            //图表说明
+            if (!TextUtils.isEmpty(reportItem.getChartDescription())) {
+                llCharDesc.setVisibility(View.VISIBLE);
+
+                tvChartDesc.setText(Html.fromHtml(reportItem.getChartDescription()));
+                //刷新图表说明布局
+                refreshChartDesc(reportItem.isExpandDesc());
+
+                //图标说明是否展开点击监听
+                tvCtrlChartDesc.setOnClickListener(new OnMultiClickListener() {
+                    @Override
+                    public void onMultiClick(View view) {
+                        //取反
+                        reportItem.setExpandDesc(!reportItem.isExpandDesc());
+                        //刷新图表说明布局
+                        refreshChartDesc(reportItem.isExpandDesc());
+                    }
+                });
+
+            } else {
+                llCharDesc.setVisibility(View.GONE);
+            }
 
             //报告结果
             final ReportResultEntity reportResult = dimensionReports.get(0).getReportResult();
@@ -449,29 +453,6 @@ public class DimensionReportDialog extends Dialog {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-
-                //图表说明
-                if (!TextUtils.isEmpty(reportResult.getDescription())) {
-                    llCharDesc.setVisibility(View.VISIBLE);
-
-                    tvChartDesc.setText(Html.fromHtml(reportResult.getDescription()));
-                    //刷新图表说明布局
-                    refreshChartDesc(reportResult.isExpandDesc());
-
-                    //图标说明是否展开点击监听
-                    tvCtrlChartDesc.setOnClickListener(new OnMultiClickListener() {
-                        @Override
-                        public void onMultiClick(View view) {
-                            //取反
-                            reportResult.setExpandDesc(!reportResult.isExpandDesc());
-                            //刷新图表说明布局
-                            refreshChartDesc(reportResult.isExpandDesc());
-                        }
-                    });
-
-                } else {
-                    llCharDesc.setVisibility(View.GONE);
                 }
 
                 //结论脚布局以及内容
@@ -589,30 +570,55 @@ public class DimensionReportDialog extends Dialog {
 
 
     /**
-     * 把ReportResult设置到对应的ReportItem中
+     * 初始图表说明是否展开（没有评价则展开）
+     * @param reportItems
+     */
+    private void initDescIsExpand(List<ReportItemEntity> reportItems) {
+        //非空
+        if (ArrayListUtil.isNotEmpty(reportItems)) {
+            for (ReportItemEntity reportItem : reportItems) {
+                //评价
+                if (reportItem.getReportResult() == null || TextUtils.isEmpty(reportItem.getReportResult().getContent())) {
+                    reportItem.setExpandDesc(true);
+                } else {
+                    reportItem.setExpandDesc(false);
+                }
+            }
+        }
+    }
+
+
+    /**
+     * 把ReportResult设置到对应的ReportItem中（和话题报告不太一样）
      *
      * @param reportItemEntities   图表项集合
      * @param reportResultEntities 结果项集合
      * @return
      */
     private List<ReportItemEntity> settingResultToReportItem(List<ReportItemEntity> reportItemEntities, List<ReportResultEntity> reportResultEntities) {
-        //图表项
-        for (int i = 0; i < reportItemEntities.size(); i++) {
-            ReportItemEntity reportItemEntity = reportItemEntities.get(i);
-            //结果项
-            for (int j = 0; j < reportResultEntities.size(); j++) {
-                ReportResultEntity reportResultEntity = reportResultEntities.get(j);
-                try {
-                    //判等：chart_item_id和relationId
-                    if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
-                        //图表项中的reportResult为空才赋值
-                        if (reportItemEntity.getReportResult() == null) {
-                            reportItemEntity.setReportResult(reportResultEntity);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        if (ArrayListUtil.isNotEmpty(reportItemEntities)  && ArrayListUtil.isNotEmpty(reportResultEntities)) {
+            //图表项
+            for (int i = 0; i < reportItemEntities.size(); i++) {
+                ReportItemEntity reportItemEntity = reportItemEntities.get(i);
+                //结果项
+                //图表项中的reportResult为空才赋值
+                if (reportItemEntity.getReportResult() == null) {
+                    reportItemEntity.setReportResult(reportResultEntities.get(0));
                 }
+//                for (int j = 0; j < reportResultEntities.size(); j++) {
+//                    ReportResultEntity reportResultEntity = reportResultEntities.get(j);
+//                    try {
+//                        //判等：chart_item_id和relationId
+//                        if (reportItemEntity.getChartItemId().equals(reportResultEntity.getRelationId())) {
+//                            //图表项中的reportResult为空才赋值
+//                            if (reportItemEntity.getReportResult() == null) {
+//                                reportItemEntity.setReportResult(reportResultEntity);
+//                            }
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
         }
 

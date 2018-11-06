@@ -117,49 +117,50 @@ public class ReportMultiRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiI
             }
             //footer
             case CHART_FOOTER: {
+                //报告项
+                final ReportItemEntity reportItem = (ReportItemEntity) item;
+
+                //图表说明
+                if (!TextUtils.isEmpty(reportItem.getChartDescription())) {
+                    helper.getView(R.id.ll_char_desc).setVisibility(View.VISIBLE);
+
+                    helper.setText(R.id.tv_chart_desc, Html.fromHtml(reportItem.getChartDescription()));
+
+                    //是否展开
+                    if (reportItem.isExpandDesc()) {
+                        //向上图标
+                        ((TextView)helper.getView(R.id.tv_ctrl_chart_desc)).setCompoundDrawablesWithIntrinsicBounds(
+                                null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_up), null);
+                        helper.getView(R.id.tv_chart_desc).setVisibility(View.VISIBLE);
+
+                    } else {
+                        //向下图标
+                        ((TextView)helper.getView(R.id.tv_ctrl_chart_desc)).setCompoundDrawablesWithIntrinsicBounds(
+                                null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down), null);
+                        helper.getView(R.id.tv_chart_desc).setVisibility(View.GONE);
+                    }
+
+                    //图标说明是否展开点击监听
+//                        helper.addOnClickListener(R.id.tv_ctrl_chart_desc);
+                    helper.getView(R.id.tv_ctrl_chart_desc).setOnClickListener(new OnMultiClickListener() {
+                        @Override
+                        public void onMultiClick(View view) {
+                            //取反
+                            reportItem.setExpandDesc(!reportItem.isExpandDesc());
+                            //刷新
+                            notifyItemChanged(helper.getLayoutPosition());
+                        }
+                    });
+
+                } else {
+                    helper.getView(R.id.ll_char_desc).setVisibility(View.GONE);
+                }
+
                 //报告结论
-                ReportItemEntity reportItem = (ReportItemEntity) item;
-                //报告结论
-                final ReportResultEntity reportResult = reportItem.getReportResult();
+                ReportResultEntity reportResult = reportItem.getReportResult();
                 if (reportResult != null) {
                     //结论脚布局以及内容
                     helper.getView(R.id.ll_result_footer).setVisibility(View.VISIBLE);
-
-                    //图表说明
-                    if (!TextUtils.isEmpty(reportResult.getDescription())) {
-                        helper.getView(R.id.ll_char_desc).setVisibility(View.VISIBLE);
-
-                        helper.setText(R.id.tv_chart_desc, Html.fromHtml(reportResult.getDescription()));
-
-                        //是否展开
-                        if (reportResult.isExpandDesc()) {
-                            //向上图标
-                            ((TextView)helper.getView(R.id.tv_ctrl_chart_desc)).setCompoundDrawablesWithIntrinsicBounds(
-                                    null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_up), null);
-                            helper.getView(R.id.tv_chart_desc).setVisibility(View.VISIBLE);
-
-                        } else {
-                            //向下图标
-                            ((TextView)helper.getView(R.id.tv_ctrl_chart_desc)).setCompoundDrawablesWithIntrinsicBounds(
-                                    null, null, ContextCompat.getDrawable(mContext, R.drawable.ic_arrow_drop_down), null);
-                            helper.getView(R.id.tv_chart_desc).setVisibility(View.GONE);
-                        }
-
-                        //图标说明是否展开点击监听
-//                        helper.addOnClickListener(R.id.tv_ctrl_chart_desc);
-                        helper.getView(R.id.tv_ctrl_chart_desc).setOnClickListener(new OnMultiClickListener() {
-                            @Override
-                            public void onMultiClick(View view) {
-                                //取反
-                                reportResult.setExpandDesc(!reportResult.isExpandDesc());
-                                //刷新
-                                notifyItemChanged(helper.getLayoutPosition());
-                            }
-                        });
-
-                    } else {
-                        helper.getView(R.id.ll_char_desc).setVisibility(View.GONE);
-                    }
 
                     //结论的长文本描述（评价）
                     if (!TextUtils.isEmpty(reportResult.getContent())) {

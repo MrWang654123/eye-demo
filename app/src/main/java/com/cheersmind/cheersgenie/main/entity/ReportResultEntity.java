@@ -31,9 +31,6 @@ public class ReportResultEntity implements Serializable {
     @InjectMap(name = "description")
     private String description;
 
-    //图表说明是否展开
-    private boolean isExpandDesc = false;
-
     @InjectMap(name = "relation_id")
     private String relationId;
 
@@ -120,11 +117,4 @@ public class ReportResultEntity implements Serializable {
         this.factorResultText = factorResultText;
     }
 
-    public boolean isExpandDesc() {
-        return isExpandDesc;
-    }
-
-    public void setExpandDesc(boolean expandDesc) {
-        isExpandDesc = expandDesc;
-    }
 }

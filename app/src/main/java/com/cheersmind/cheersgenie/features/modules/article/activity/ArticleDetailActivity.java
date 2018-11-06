@@ -601,7 +601,7 @@ public class ArticleDetailActivity extends BaseActivity {
                 try {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ArticleEntity articleEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleEntity.class);
+                    final ArticleEntity articleEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleEntity.class);
 
                     //视频视图处理
                     initVideo(articleEntity);
@@ -613,19 +613,30 @@ public class ArticleDetailActivity extends BaseActivity {
                     //刷新点赞视图
                     refreshLikeView(articleEntity.isLike(), articleEntity.getPageLike());
 
-                    //有关联的测评，则刷新关联测评的视图
-                    if (articleEntity.getTopicInfo() != null) {
-                        //refreshRelativeExamView(articleEntity);
-                        topicInfo = articleEntity.getTopicInfo();
-                        //请求关联测评
-                        getReferenceExam(topicInfo);
+                    int delay = 150;//默认文章延迟加载关联测评和评论
+                    //文章内容过长，则加长延迟时间
+                    if (!TextUtils.isEmpty(articleEntity.getArticleContent())
+                            && articleEntity.getArticleContent().length() > 300) {
+                        delay = 300;
                     }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //有关联的测评，则刷新关联测评的视图
+                            if (articleEntity.getTopicInfo() != null) {
+                                //refreshRelativeExamView(articleEntity);
+                                topicInfo = articleEntity.getTopicInfo();
+                                //请求关联测评
+                                getReferenceExam(topicInfo);
+                            }
 
-                    //文章评论模块开启则加载评论信息
-                    if (articleEntity.isShowComment()) {
-                        //加载评论
-                        loadCommentData(articleId);
-                    }
+                            //文章评论模块开启则加载评论信息
+                            if (articleEntity.isShowComment()) {
+                                //加载评论
+                                loadCommentData(articleId);
+                            }
+                        }
+                    }, delay);
 
                 } catch (Exception e) {
                     e.printStackTrace();

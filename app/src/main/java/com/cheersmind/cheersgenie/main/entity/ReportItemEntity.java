@@ -61,9 +61,12 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
     @InjectMap(name = "max_score")
     private int maxScore;
 
-    //说明
+    //图表说明
     @InjectMap(name = "chart_description")
     private String chartDescription;
+
+    //图表说明是否展开
+    private boolean isExpandDesc = false;
 
     //当前chart的主题或量表名称
     @InjectMap(name = "chart_item_name")
@@ -193,5 +196,13 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
 
     public void setItemType(int itemType) {
         this.itemType = itemType;
+    }
+
+    public boolean isExpandDesc() {
+        return isExpandDesc;
+    }
+
+    public void setExpandDesc(boolean expandDesc) {
+        isExpandDesc = expandDesc;
     }
 }
