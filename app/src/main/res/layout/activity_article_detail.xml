@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
-                            android:textColor="@color/color_ffa200"
+                            android:textColor="@color/color_ff8b00"
                             android:layout_marginRight="20dp"
                             android:text="奇思" />
 
@@ -175,9 +175,9 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginLeft="15dp"
                                 android:layout_marginRight="15dp"
-                                android:visibility="gone"/>
+                                android:visibility="visible"/>
 
-                            <WebView
+                            <com.cheersmind.cheersgenie.features.view.DisplayFinishWebView
                                 android:id="@+id/web_article_content"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -185,9 +185,8 @@
                                 android:layout_marginTop="5dp"
                                 android:layout_marginLeft="6dp"
                                 android:layout_marginRight="6dp"
-                                android:scrollbars="none"
-                                android:background="@color/transpera">
-                            </WebView>
+                                android:scrollbars="none">
+                            </com.cheersmind.cheersgenie.features.view.DisplayFinishWebView>
 
                         </LinearLayout>
 

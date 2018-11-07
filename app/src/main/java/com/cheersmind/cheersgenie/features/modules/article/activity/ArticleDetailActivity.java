@@ -51,6 +51,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
+import com.cheersmind.cheersgenie.features.view.DisplayFinishWebView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features.view.htmlImageGetter.URLImageParser;
@@ -118,7 +119,7 @@ public class ArticleDetailActivity extends BaseActivity {
     TextView tvReadCount;
     //文章内容（富文本）
     @BindView(R.id.web_article_content)
-    WebView webArticleContent;
+    DisplayFinishWebView webArticleContent;
     //正在初始化富文本的提示
     @BindView(R.id.tv_init_content)
     TextView tvInitContent;
@@ -344,7 +345,7 @@ public class ArticleDetailActivity extends BaseActivity {
      */
     private void initWebView() {
 
-        WebSettings webSettings = webArticleContent.getSettings();
+        final WebSettings webSettings = webArticleContent.getSettings();
         // 让WebView能够执行javaScript
 //        webSettings.setJavaScriptEnabled(true);
         // 让JavaScript可以自动打开windows
@@ -367,6 +368,19 @@ public class ArticleDetailActivity extends BaseActivity {
         // 设置默认字体大小
         webSettings.setDefaultFontSize(18);
 
+        //先阻塞加载图片
+        webSettings.setBlockNetworkImage(true);
+        //开启硬件加速
+        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+//        webArticleContent.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
+
+        webArticleContent.setListener(new DisplayFinishWebView.DisplayFinishListener() {
+            @Override
+            public void onDisplayFinish() {
+
+            }
+        });
+
         webArticleContent.setWebViewClient(new WebViewClient() {
 
             @Override
@@ -386,8 +400,33 @@ public class ArticleDetailActivity extends BaseActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                //不阻塞加载图片
+                webSettings.setBlockNetworkImage(false);
+                //判断webView是否加载了，图片资源
+                if (!webSettings.getLoadsImagesAutomatically()) {
+                    //设置wenView加载图片资源
+                    webSettings.setLoadsImagesAutomatically(true);
+                }
+
+                //                tvInitContent.setVisibility(View.GONE);
+                if (llInitContentTip.getVisibility() == View.VISIBLE) {
+                    int delay = 200;//默认延迟关闭等待提示布局
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        delay = 200;
+                    } else {
+                        delay = 400;
+                    }
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+//                                tvInitContent.setVisibility(View.GONE);
+                            llInitContentTip.setVisibility(View.GONE);
+                            ldvInitCountTip.hide();
+                        }
+                    }, delay);
+                }
+
                 super.onPageFinished(view, url);
-//                tvInitContent.setVisibility(View.GONE);
             }
         });
 
@@ -398,24 +437,11 @@ public class ArticleDetailActivity extends BaseActivity {
 
                 //会被调用多次
                 if (newProgress == 100) {
-                    if (llInitContentTip.getVisibility() == View.VISIBLE) {
-                        int delay = 200;//默认延迟关闭等待提示布局
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            delay = 200;
-                        } else {
-                            delay = 500;
-                        }
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-//                                tvInitContent.setVisibility(View.GONE);
-                                llInitContentTip.setVisibility(View.GONE);
-                                ldvInitCountTip.hide();
-                            }
-                        }, delay);
-                    }
+
                 }
             }
+
+
         });
 
     }
@@ -451,8 +477,17 @@ public class ArticleDetailActivity extends BaseActivity {
                 , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
 //        jzVideo.setUp(VideoConstant.videoUrlList[0]
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子不信");
+        //默认Glide处理参数
+        RequestOptions defaultOptions = new RequestOptions()
+//                .transform(multi)
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_article_list)//占位图
+//                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+                ;
         Glide.with(this)
                 .load(cover)
+                .apply(defaultOptions)
                 .into(jzVideo.thumbImageView);
 //        播放时4GDialog提示
         JZVideoPlayer.WIFI_TIP_DIALOG_SHOWED=false;
