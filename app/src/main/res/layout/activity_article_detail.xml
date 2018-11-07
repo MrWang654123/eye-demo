@@ -197,7 +197,7 @@
                             android:layout_height="1000dp"
                             android:background="@color/white"
                             android:gravity="center_horizontal"
-                            android:paddingTop="20dp"
+                            android:paddingTop="35dp"
                             android:paddingBottom="15dp">
 
                             <com.wang.avi.AVLoadingIndicatorView

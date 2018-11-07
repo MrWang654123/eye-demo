@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.article.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -160,6 +161,8 @@ public class SearchArticleActivity extends BaseActivity {
     @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView() {
+        //默认白色
+        setStatusBarColor(SearchArticleActivity.this, Color.parseColor("#ffffff"));
 
         //适配器
         recyclerAdapter = new HomeRecyclerAdapter(SearchArticleActivity.this, R.layout.recycleritem_home, null);
