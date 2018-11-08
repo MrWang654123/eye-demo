@@ -141,4 +141,7 @@ public class Dictionary {
     public final static int CHART_BAR_H = 4;
 
 
+    //RecyclerView最大滑动速度（dp）
+    public final static int RECYCLER_VIEW_MAX_VELOCITY = 2000;
+
 }

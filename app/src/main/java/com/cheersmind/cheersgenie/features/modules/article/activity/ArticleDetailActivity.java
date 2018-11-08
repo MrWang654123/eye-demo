@@ -42,6 +42,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZMediaIjkplayer;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
 import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -86,6 +88,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.JZMediaSystem;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 
@@ -472,7 +475,21 @@ public class ArticleDetailActivity extends BaseActivity {
 //        String title  = "饺子不信";
         final String title  = article.getArticleTitle();
 
-//        JZVideoPlayerStandard.startFullscreen(this, JZVideoPlayerStandard.class, videoUrl, title);
+//        JZVideoPlayer.releaseAllVideos();
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //播放引擎
+//                //IjkPlayer
+////                JZVideoPlayer.setMediaInterface(new JZMediaIjkplayer());
+//                //ExoPlayer
+//                JZVideoPlayer.setMediaInterface(new JZExoPlayer());
+//                //MediaSystem（默认）
+////                JZVideoPlayer.setMediaInterface(new JZMediaSystem());
+//            }
+//        }, 200);
+//        JZVideoPlayer.setMediaInterface(new JZExoPlayer());
+
         jzVideo.setUp(videoUrl
                 , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
 //        jzVideo.setUp(VideoConstant.videoUrlList[0]
@@ -482,7 +499,7 @@ public class ArticleDetailActivity extends BaseActivity {
 //                .transform(multi)
                 .skipMemoryCache(false)//不忽略内存
                 .placeholder(R.drawable.default_image_round_article_list)//占位图
-//                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
                 ;
         Glide.with(this)

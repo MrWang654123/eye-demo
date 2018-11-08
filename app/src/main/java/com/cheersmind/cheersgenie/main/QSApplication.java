@@ -24,6 +24,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -39,6 +40,7 @@ import org.litepal.LitePalApplication;
 
 import java.util.concurrent.TimeUnit;
 
+import cn.jzvd.JZVideoPlayer;
 import okhttp3.OkHttpClient;
 
 
@@ -142,6 +144,15 @@ public class QSApplication extends LitePalApplication {
 
         //图表初始化
         Utils.init(getApplicationContext());
+
+        //初始化播放引擎
+        //IjkPlayer
+//        JZVideoPlayer.setMediaInterface(new JZMediaIjkplayer());
+        //ExoPlayer
+        JZVideoPlayer.setMediaInterface(new JZExoPlayer());
+        //MediaSystem（默认）
+//        JZVideoPlayer.setMediaInterface(new JZMediaSystem());
+
     }
 
     /**
@@ -296,6 +307,9 @@ public class QSApplication extends LitePalApplication {
     }
 
 
+    /**
+     * 监听Activity生命周期
+     */
     private void initGlobeActivity() {
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
@@ -348,12 +362,6 @@ public class QSApplication extends LitePalApplication {
         return topActivity;
     }
 
-    /**
-     * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到前一个activity
-     */
-//    public static Activity getPreActivity() {
-//        return preActivity;
-//    }
 
     /**
      * 获取屏幕宽高信息

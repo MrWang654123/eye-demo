@@ -75,7 +75,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                 }
             }
 
-        } else if (i == cn.jzvd.R.id.retry_btn) {
+        } else if (i == R.id.retry_btn) {
             if (videoUrlCheck()) {
                 doRetryBtnClick();
             } else {
@@ -83,7 +83,8 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                     doRetryBtnClick();
                 } else {
                     onStatePreparing();
-                    queryVideoRealUrl(videoId, title, R.id.retry_btn);
+                    //此处用的是R.id.start
+                    queryVideoRealUrl(videoId, title, R.id.start);
                 }
             }
 
@@ -219,12 +220,16 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                     err.printStackTrace();
 
                 } finally {
-                    if (btnId == R.id.start) {
-                        doStartBtnClick();
-
-                    } else if (btnId == cn.jzvd.R.id.retry_btn) {
-                        doRetryBtnClick();
-
+//                    if (btnId == R.id.start) {
+//                        doStartBtnClick();
+//
+//                    } else if (btnId == cn.jzvd.R.id.retry_btn) {
+//                        doRetryBtnClick();
+//
+//                    }
+                    onStateError();
+                    if (isCurrentPlay()) {
+                        JZMediaManager.instance().releaseMediaPlayer();
                     }
                 }
 

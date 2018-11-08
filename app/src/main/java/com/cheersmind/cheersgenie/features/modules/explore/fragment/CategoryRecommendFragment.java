@@ -34,6 +34,7 @@ import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetai
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -294,6 +295,10 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
 //                }
 //            }
 //        });
+
+        //限制最大滑动速度
+        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
+        RecyclerViewUtil.setMaxFlingVelocity(recycleView,DensityUtil.dip2px(getContext(), Dictionary.RECYCLER_VIEW_MAX_VELOCITY));
 
         //设置显示时的动画
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
