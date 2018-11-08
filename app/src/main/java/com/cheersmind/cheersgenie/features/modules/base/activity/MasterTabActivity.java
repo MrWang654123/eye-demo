@@ -91,10 +91,7 @@ public class MasterTabActivity extends BaseActivity {
 //        listFragment.add(new HomeFragment());
         listFragment.add(new ExploreFragment());
         listFragment.add(new ExamWrapFragment());
-//        listFragment.add(new MessageFragment());
-        listFragment.add(new ReportFragment());
-        //由于不需要标题栏，又需要懒加载，所以直接使用它，用ReportFragment嵌套懒加载会失效
-//        listFragment.add(new ExamCompletedFragment());
+//        listFragment.add(new ReportFragment());//最近使用
         listFragment.add(new MineFragment());
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);
@@ -120,8 +117,8 @@ public class MasterTabActivity extends BaseActivity {
 //                        .setBadgeItem(mShapeBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
-                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
-                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
+//                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
+//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
 //                        .setBadgeItem(mTextBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
@@ -152,7 +149,7 @@ public class MasterTabActivity extends BaseActivity {
         super.onStart();
 
         //如果当前是“我的”，则刷新积分
-        if (viewPager.getCurrentItem() == 3) {
+        if (viewPager.getCurrentItem() == 2) {
             //发送刷新积分通知
             EventBus.getDefault().post(new RefreshIntegralEvent());
         }
