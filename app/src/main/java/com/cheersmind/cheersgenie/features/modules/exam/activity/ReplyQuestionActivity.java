@@ -211,7 +211,8 @@ public class ReplyQuestionActivity extends BaseActivity {
         loadChildQuestions(dimensionInfoEntity.getChildDimension().getChildDimensionId());
 
         //初始化计时时间值
-        costTime = dimensionInfoEntity.getChildDimension().getCostTime();
+//        costTime = dimensionInfoEntity.getChildDimension().getCostTime();
+        costTime = 0;
     }
 
 
