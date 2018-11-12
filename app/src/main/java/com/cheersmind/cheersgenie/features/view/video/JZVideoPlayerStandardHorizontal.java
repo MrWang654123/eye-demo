@@ -181,6 +181,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
         } else if (i == R.id.surface_container) {//播放屏幕容器
             startDismissControlViewTimer();
 
+            //屏幕双击响应
             long curSystemTimestamp = System.currentTimeMillis();
             if (curSystemTimestamp - lastClickTimestamp < FULL_SCREEN_NORMAL_DELAY_CUSTOM) {
                 //清空时间
