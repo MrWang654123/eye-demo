@@ -574,6 +574,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
 //        播放时4GDialog提示
         JZVideoPlayer.WIFI_TIP_DIALOG_SHOWED=false;
+        //屏幕方向
         JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
         JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 //        JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
@@ -586,6 +587,15 @@ public class ArticleDetailActivity extends BaseActivity {
             jzVideo.setVideoId(article.getVideoId());
             jzVideo.setTitle(article.getArticleTitle());
         }
+
+        //退出全屏监听
+        JZVideoPlayerStandardHorizontal.exitFullScreenListener = new JZVideoPlayerStandardHorizontal.ExitFullScreenListener() {
+            @Override
+            public void onExitFullScreen() {
+                svMainBlock.scrollTo(0, 0);
+            }
+        };
+//        jzVideo.setExitFullScreenListener();
 
 //        jzVideo.startButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -733,6 +743,8 @@ public class ArticleDetailActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         if (JZVideoPlayer.backPress()) {
+            //退出全屏，避免滑动偏移
+            svMainBlock.scrollTo(0, 0);
             return;
         }
         super.onBackPressed();
@@ -1406,7 +1418,7 @@ public class ArticleDetailActivity extends BaseActivity {
             "\t\t\t</div>";
 
 
-    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like, R.id.fl_comment_total_count})
+    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like, R.id.fl_comment_total_count,R.id.iv_comment_edit_tip })
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
@@ -1465,6 +1477,11 @@ public class ArticleDetailActivity extends BaseActivity {
                     return;
                 }
                 doLike(articleId);
+                break;
+            }
+            //铅笔图标（测试）
+            case R.id.iv_comment_edit_tip : {
+                svMainBlock.scrollTo(0, 0);
                 break;
             }
         }

@@ -50,6 +50,11 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     public SimpleDraweeView ivMain;
 
 
+    public static final int FULL_SCREEN_NORMAL_DELAY_CUSTOM = 500;
+    //最后一次点击时间
+    private long lastClickTimestamp;
+
+
     public JZVideoPlayerStandardHorizontal(Context context) {
         super(context);
     }
@@ -67,11 +72,17 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     public void init(Context context) {
         super.init(context);
 
+        //播放按钮
         startButton.setOnClickListener(this);
+        //重新加载按钮
         mRetryBtn.setOnClickListener(this);
 
+        //新主图
         ivMain = findViewById(R.id.thumb_x);
         ivMain.setOnClickListener(this);
+
+
+
     }
 
 
@@ -167,11 +178,64 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                 onClickUiToggle();
             }
 
+        } else if (i == R.id.surface_container) {//播放屏幕容器
+            startDismissControlViewTimer();
+
+            long curSystemTimestamp = System.currentTimeMillis();
+            if (curSystemTimestamp - lastClickTimestamp < FULL_SCREEN_NORMAL_DELAY_CUSTOM) {
+                //清空时间
+                lastClickTimestamp = 0;
+                //全屏操作
+                Log.i(TAG, "onClick fullscreen [" + this.hashCode() + "] ");
+                if (currentState == CURRENT_STATE_AUTO_COMPLETE) return;
+                if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
+                    //quit fullscreen
+                    backPress();
+                    //退出全屏回调
+                    if (exitFullScreenListener != null) {
+                        exitFullScreenListener.onExitFullScreen();
+                    }
+
+                } else {
+                    Log.d(TAG, "toFullscreenActivity [" + this.hashCode() + "] ");
+                    onEvent(JZUserAction.ON_ENTER_FULLSCREEN);
+                    startWindowFullscreen();
+                }
+
+            } else {
+                lastClickTimestamp = curSystemTimestamp;
+            }
+
+        }else if (i == R.id.back) {//全屏的顶部回退按钮
+            backPress();
+            //退出全屏回调
+            if (exitFullScreenListener != null) {
+                exitFullScreenListener.onExitFullScreen();
+            }
+
+        } else if (i == R.id.fullscreen) {//右下角全屏键
+            Log.i(TAG, "onClick fullscreen [" + this.hashCode() + "] ");
+            if (currentState == CURRENT_STATE_AUTO_COMPLETE) return;
+            if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
+                //quit fullscreen
+                backPress();
+                //退出全屏回调
+                if (exitFullScreenListener != null) {
+                    exitFullScreenListener.onExitFullScreen();
+                }
+
+            } else {
+                Log.d(TAG, "toFullscreenActivity [" + this.hashCode() + "] ");
+                onEvent(JZUserAction.ON_ENTER_FULLSCREEN);
+                startWindowFullscreen();
+            }
+
         } else {
             super.onClick(v);
         }
 
     }
+
 
     /**
      *  开始按钮点击响应
@@ -359,4 +423,25 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
         return EncryptUtil.md5(key + videoId+ timestamp).toLowerCase();
     }
 
+
+
+    public static ExitFullScreenListener exitFullScreenListener;
+
+    /**
+     * 退出全屏监听
+     */
+    public interface ExitFullScreenListener {
+        void onExitFullScreen();
+    }
+
+    /**
+     * 设置退出全屏监听器
+     * @param exitFullScreenListener
+     */
+//    public void setExitFullScreenListener(ExitFullScreenListener exitFullScreenListener) {
+//        this.exitFullScreenListener = exitFullScreenListener;
+//    }
+
 }
+
+
