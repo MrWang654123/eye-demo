@@ -592,6 +592,7 @@ public class ArticleDetailActivity extends BaseActivity {
         JZVideoPlayerStandardHorizontal.exitFullScreenListener = new JZVideoPlayerStandardHorizontal.ExitFullScreenListener() {
             @Override
             public void onExitFullScreen() {
+                //退出全屏，避免滑动偏移
                 svMainBlock.scrollTo(0, 0);
             }
         };
