@@ -174,8 +174,12 @@ public class HomeFragment extends LazyLoadFragment {
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 //            ToastUtil.showShort(getContext(), "点击第" + (position + 1) + "项");
             //跳转到文章详情页面
-            String articleId = recyclerAdapter.getData().get(position).getId();
-            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+            SimpleArticleEntity simpleArticle = recyclerAdapter.getData().get(position);
+            String articleId = simpleArticle.getId();
+            String ivMainUrl = simpleArticle.getArticleImg();
+            String articleTitle = simpleArticle.getArticleTitle();
+
+            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
 //            VideoActivity.startVideoActivity(getContext(), articleId);
         }
     };
@@ -752,9 +756,13 @@ public class HomeFragment extends LazyLoadFragment {
      * @param position
      */
     private void handlerBannerItemClick(int position) {
+        //跳转到文章详情页面
         SimpleArticleEntity simpleArticle = bannerArticleList.get(position);
         String articleId = simpleArticle.getId();
-        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+        String ivMainUrl = simpleArticle.getArticleImg();
+        String articleTitle = simpleArticle.getArticleTitle();
+
+        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
 //        ToastUtil.showShort(getContext(), "点击了第" + (position + 1) + "页");
     }
 

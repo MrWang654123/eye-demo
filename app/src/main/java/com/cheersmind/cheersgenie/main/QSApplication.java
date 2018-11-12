@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -32,6 +33,7 @@ import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.PhoneUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.github.mikephil.charting.utils.Utils;
 import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -80,7 +82,11 @@ public class QSApplication extends LitePalApplication {
         super.onCreate();
         context = getApplicationContext();
         mHandler = new Handler();
+
+        //初始化Fresco（图片加载库）
         Fresco.initialize(this);
+        ImagePipelineConfig.newBuilder(this).setBitmapsConfig(Bitmap.Config.RGB_565);
+
 
         //调试模式下不启用自定义的异常处理类
         if (!BuildConfig.DEBUG) {

@@ -3,22 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_corner_ffffff_3dp"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:orientation="vertical">
+    <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
+    <!--xmlns:fresco="http://schemas.android.com/tools"-->
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_main"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="h,16:9"
-            android:contentDescription="@string/placeholder_for_item"
-            android:scaleType="fitXY" />
+            fresco:placeholderImage="@drawable/default_image_round_article_list"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            fresco:viewAspectRatio="1.4"
+            fresco:roundedCornerRadius="3dp"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundBottomLeft="false"
+            fresco:roundBottomRight="false"
+            fresco:actualImageScaleType="centerCrop"
+            />
+        <!--fresco:scaleType="fitXY"-->
+
         <!--android:scaleType="centerCrop"-->
         <!--android:scaleType="fitCenter"-->
         <!--android:src="@drawable/home_sample"-->

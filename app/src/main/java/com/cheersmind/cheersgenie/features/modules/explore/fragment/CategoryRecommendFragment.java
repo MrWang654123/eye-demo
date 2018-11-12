@@ -2,11 +2,18 @@ package com.cheersmind.cheersgenie.features.modules.explore.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -51,6 +58,7 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -129,8 +137,12 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             //跳转到文章详情页面
-            String articleId = recyclerAdapter.getData().get(position).getId();
-            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+            SimpleArticleEntity simpleArticle = recyclerAdapter.getData().get(position);
+            String articleId = simpleArticle.getId();
+            String ivMainUrl = simpleArticle.getArticleImg();
+            String articleTitle = simpleArticle.getArticleTitle();
+
+            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
         }
     };
 

@@ -111,8 +111,12 @@ public class SearchArticleActivity extends BaseActivity {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             //跳转到文章详情页面
-            String articleId = recyclerAdapter.getData().get(position).getId();
-            ArticleDetailActivity.startArticleDetailActivity(SearchArticleActivity.this, articleId);
+            SimpleArticleEntity simpleArticle = recyclerAdapter.getData().get(position);
+            String articleId = simpleArticle.getId();
+            String ivMainUrl = simpleArticle.getArticleImg();
+            String articleTitle = simpleArticle.getArticleTitle();
+
+            ArticleDetailActivity.startArticleDetailActivity(SearchArticleActivity.this, articleId, ivMainUrl, articleTitle);
         }
     };
 

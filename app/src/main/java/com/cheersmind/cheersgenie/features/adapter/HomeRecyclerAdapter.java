@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,9 +19,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.view.TranslateDraweeView;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -74,8 +77,9 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         } else {
             helper.getView(R.id.tv_article_desc).setVisibility(View.GONE);
         }
+
         //主图
-        String url = item.getArticleImg();
+        /*String url = item.getArticleImg();
         ImageView imageView = helper.getView(R.id.iv_main);
         //非空
         if (!TextUtils.isEmpty(url)) {
@@ -95,6 +99,14 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
                     .apply(defaultOptions)
                     .into(imageView);
             imageView.setTag(R.id.iv_main, url);
+        }*/
+
+        //主图
+        SimpleDraweeView imageView = helper.getView(R.id.iv_main);
+        if (!TextUtils.isEmpty(item.getArticleImg())) {
+            imageView.setImageURI(item.getArticleImg());
+        } else {
+            imageView.setActualImageResource(R.drawable.default_image_round_article_list);
         }
 
         //播放键

@@ -475,9 +475,13 @@ public class ExploreFragment extends LazyLoadFragment {
      * @param position
      */
     private void handlerBannerItemClick(int position) {
+        //跳转到文章详情页面
         SimpleArticleEntity simpleArticle = bannerArticleList.get(position);
         String articleId = simpleArticle.getId();
-        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+        String ivMainUrl = simpleArticle.getArticleImg();
+        String articleTitle = simpleArticle.getArticleTitle();
+
+        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
 //        ToastUtil.showShort(getContext(), "点击了第" + (position + 1) + "页");
     }
 

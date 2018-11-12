@@ -289,7 +289,7 @@
         <!-- 文章搜索页面 -->
         <activity
             android:name=".features.modules.article.activity.SearchArticleActivity"
-            android:windowSoftInputMode="stateAlwaysVisible|adjustPan"
+            android:windowSoftInputMode="stateVisible|adjustPan"
             android:screenOrientation="portrait"/>
         <!-- 监护人角色选择页面 -->
         <activity android:name=".features.modules.register.activity.ParentRoleActivity"

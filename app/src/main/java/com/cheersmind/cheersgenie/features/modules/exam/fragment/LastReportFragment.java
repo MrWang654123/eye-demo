@@ -602,7 +602,11 @@ public class LastReportFragment extends LazyLoadFragment {
                                         String articleId = article.getId();
                                         //非空
                                         if (!TextUtils.isEmpty(articleId)) {
-                                            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId);
+                                            //跳转到文章详情页面
+                                            String ivMainUrl = article.getArticleImg();
+                                            String articleTitle = article.getArticleTitle();
+
+                                            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
                                         } else {
                                             ToastUtil.showShort(getContext(), "暂无详情");
                                         }

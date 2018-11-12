@@ -18,11 +18,13 @@ import com.cheersmind.cheersgenie.main.util.EncryptUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.Map;
 
 import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZUserAction;
+import cn.jzvd.JZUserActionStandard;
 import cn.jzvd.JZUtils;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerManager;
@@ -44,6 +46,10 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     //失效间隔30分钟
     private static final long INVALID_INTERVAL = 30 * 60 * 1000;
 
+    //封面图片
+    public SimpleDraweeView ivMain;
+
+
     public JZVideoPlayerStandardHorizontal(Context context) {
         super(context);
     }
@@ -53,16 +59,71 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     }
 
     @Override
+    public int getLayoutId() {
+        return R.layout.jz_layout_standard;
+    }
+
+    @Override
     public void init(Context context) {
         super.init(context);
 
         startButton.setOnClickListener(this);
         mRetryBtn.setOnClickListener(this);
+
+        ivMain = findViewById(R.id.thumb_x);
+        ivMain.setOnClickListener(this);
     }
+
+
+    /**
+     * 重新该方法，为了添加新封面图片
+     * @param topCon
+     * @param bottomCon
+     * @param startBtn
+     * @param loadingPro
+     * @param thumbImg
+     * @param bottomPro
+     * @param retryLayout
+     */
+    public void setAllControlsVisiblity(int topCon, int bottomCon, int startBtn, int loadingPro,
+                                        int thumbImg, int bottomPro, int retryLayout) {
+        //非全屏情况，隐藏顶部布局
+        if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
+            topContainer.setVisibility(topCon);
+        } else {
+            topContainer.setVisibility(INVISIBLE);
+        }
+
+        bottomContainer.setVisibility(bottomCon);
+        startButton.setVisibility(startBtn);
+        loadingProgressBar.setVisibility(loadingPro);
+
+        //新封面图和旧封面图同步控制显隐
+        thumbImageView.setVisibility(thumbImg);
+        ivMain.setVisibility(thumbImg);
+
+        bottomProgressBar.setVisibility(bottomPro);
+        mRetryLayout.setVisibility(retryLayout);
+    }
+
+
+    @Override
+    public void setUp(String url, int screen, Object... objects) {
+        super.setUp(url, screen, objects);
+
+        //非全屏情况，隐藏顶部布局
+        if (currentScreen == SCREEN_WINDOW_FULLSCREEN) {
+            topContainer.setVisibility(View.VISIBLE);
+        } else {
+            topContainer.setVisibility(View.INVISIBLE);
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
+        //播放按钮
         if (i == R.id.start) {
             if (videoUrlCheck()) {
                 doStartBtnClick();
@@ -75,7 +136,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                 }
             }
 
-        } else if (i == R.id.retry_btn) {
+        } else if (i == R.id.retry_btn) {//重新加载按钮
             if (videoUrlCheck()) {
                 doRetryBtnClick();
             } else {
@@ -83,14 +144,33 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                     doRetryBtnClick();
                 } else {
                     onStatePreparing();
-                    //此处用的是R.id.start
+                    //此处用的是R.id.start，因为setUp之后currentState == CURRENT_STATE_NORMAL
                     queryVideoRealUrl(videoId, title, R.id.start);
                 }
+            }
+
+        } else if (i == R.id.thumb_x) {//新封面图
+            if (dataSourceObjects == null || JZUtils.getCurrentFromDataSource(dataSourceObjects, currentUrlMapIndex) == null) {
+                Toast.makeText(getContext(), getResources().getString(cn.jzvd.R.string.no_url), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (currentState == CURRENT_STATE_NORMAL) {
+                if (!JZUtils.getCurrentFromDataSource(dataSourceObjects, currentUrlMapIndex).toString().startsWith("file") &&
+                        !JZUtils.getCurrentFromDataSource(dataSourceObjects, currentUrlMapIndex).toString().startsWith("/") &&
+                        !JZUtils.isWifiConnected(getContext()) && !WIFI_TIP_DIALOG_SHOWED) {
+                    showWifiDialog();
+                    return;
+                }
+                startVideo();
+                onEvent(JZUserActionStandard.ON_CLICK_START_THUMB);//开始的事件应该在播放之后，此处特殊
+            } else if (currentState == CURRENT_STATE_AUTO_COMPLETE) {
+                onClickUiToggle();
             }
 
         } else {
             super.onClick(v);
         }
+
     }
 
     /**

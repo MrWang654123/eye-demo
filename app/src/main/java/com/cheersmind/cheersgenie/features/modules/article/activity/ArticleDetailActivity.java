@@ -8,16 +8,16 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.transition.Explode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -42,8 +42,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
-import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZMediaIjkplayer;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
 import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -52,11 +50,9 @@ import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.features.view.DisplayFinishWebView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
-import com.cheersmind.cheersgenie.features.view.htmlImageGetter.URLImageParser;
 import com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ArticleEntity;
@@ -75,6 +71,7 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.jsoup.Jsoup;
@@ -88,7 +85,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cn.jzvd.JZMediaSystem;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 
@@ -97,13 +93,29 @@ import cn.jzvd.JZVideoPlayerStandard;
  */
 public class ArticleDetailActivity extends BaseActivity {
 
+    public static final String VIEW_NAME_HEADER_IMAGE = "VIEW_NAME_HEADER_IMAGE";
+    public static final String VIEW_NAME_HEADER_TITLE = "VIEW_NAME_HEADER_TITLE";
+
+    //主图url
+    private static final String IV_MAIN_URL = "ivMainUrl";
+    //文章标题
+    private static final String ARTICLE_TITLE = "articleTitle";
+    //文章ID
     private static final String ARTICLE_ID = "article_id";
     //文章Id
     String articleId;
+    //主图Url
+    String ivMainUrl;
+    //文章标题
+    String articleTitle;
 
     //标题栏
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
+
+    //文章标题
+    @BindView(R.id.iv_main)
+    SimpleDraweeView ivMain;
 
     //内容模块
     @BindView(R.id.sv_main_block)
@@ -111,15 +123,22 @@ public class ArticleDetailActivity extends BaseActivity {
     //文章标题
     @BindView(R.id.tv_article_title)
     TextView tvArticleTitle;
+
+    //信息布局
+    @BindView(R.id.ll_info)
+    LinearLayout llInfo;
     //作者
     @BindView(R.id.tv_author)
     TextView tvAuthor;
     //文章日期
     @BindView(R.id.tv_date)
     TextView tvDate;
+    @BindView(R.id.ll_read_count)
+    LinearLayout llReadCount;
     //阅读人数
     @BindView(R.id.tv_read_count)
     TextView tvReadCount;
+
     //文章内容（富文本）
     @BindView(R.id.web_article_content)
     DisplayFinishWebView webArticleContent;
@@ -211,7 +230,8 @@ public class ArticleDetailActivity extends BaseActivity {
     private int totalCount = 0;
 
     //默认Glide配置
-    RequestOptions options;
+    RequestOptions optionsCircle;
+    RequestOptions defaultOptions;
 
     //话题信息
     TopicInfo topicInfo;
@@ -231,10 +251,22 @@ public class ArticleDetailActivity extends BaseActivity {
      *
      * @param articleId
      */
-    public static void startArticleDetailActivity(Context context, String articleId) {
+//    public static void startArticleDetailActivity(Context context, String articleId) {
+//        startArticleDetailActivity(context, articleId, null, null);
+//    }
+
+
+    /**
+     * 开启文章详情页面
+     *
+     * @param articleId
+     */
+    public static void startArticleDetailActivity(Context context, String articleId, String ivMainUrl, String articleTitle) {
         Intent intent = new Intent(context, ArticleDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ARTICLE_ID, articleId);
+        extras.putString(IV_MAIN_URL, ivMainUrl);
+        extras.putString(ARTICLE_TITLE, articleTitle);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -256,7 +288,7 @@ public class ArticleDetailActivity extends BaseActivity {
         setStatusBarColor(ArticleDetailActivity.this, Color.parseColor("#ffffff"));
 
         //正在加载提示
-        xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         //重载点击监听
         xemptyLayout.setOnReloadListener(new View.OnClickListener() {
 
@@ -300,15 +332,30 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         });
 
-        options = new RequestOptions()
+        optionsCircle = new RequestOptions()
                 .circleCrop()//圆形
                 .skipMemoryCache(true)//忽略内存
                 .placeholder(R.drawable.ico_head)//占位图
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
 
+        //默认Glide处理参数
+        defaultOptions = new RequestOptions()
+//                .transform(multi)
+                .centerCrop()
+                .skipMemoryCache(false)//不忽略内存
+                .placeholder(R.drawable.default_image_round_article_list)//占位图
+                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+
         //初始化webView
         initWebView();
+
+        //初始隐藏信息布局
+        llInfo.setVisibility(View.INVISIBLE);
+
+//        svMainBlock.setNestedScrollingEnabled(false);
+//        svMainBlock.setEnabled(false);
     }
 
 
@@ -317,16 +364,33 @@ public class ArticleDetailActivity extends BaseActivity {
      */
     @Override
     public void onInitData() {
-        if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(ArticleDetailActivity.this, "数据传递有误");
-            return;
-        }
-
-        articleId = getIntent().getExtras().getString(ARTICLE_ID);
+        articleId = getIntent().getStringExtra(ARTICLE_ID);
         if (TextUtils.isEmpty(articleId)) {
             ToastUtil.showShort(ArticleDetailActivity.this, "数据传递有误");
             return;
         }
+
+        ivMainUrl = getIntent().getStringExtra(IV_MAIN_URL);
+        articleTitle = getIntent().getStringExtra(ARTICLE_TITLE);
+//        if (TextUtils.isEmpty(ivMainUrl) || TextUtils.isEmpty(articleTitle)) {
+//            ToastUtil.showShort(ArticleDetailActivity.this, "数据传递有误");
+//            return;
+//        }
+
+        //主图
+        /*Glide.with(this)
+                .load(ivMainUrl)
+                .apply(defaultOptions)
+                .into(ivMain);*/
+        //主图
+        if (!TextUtils.isEmpty(ivMainUrl)) {
+            ivMain.setImageURI(ivMainUrl);
+//            ivMain.setImageURI("http://img5.imgtn.bdimg.com/it/u=415293130,2419074865&fm=26&gp=0.jpg");
+        } else {
+            ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
+        }
+        //文章标题
+        tvArticleTitle.setText(articleTitle);
 
         //加载文章详情
         loadArticleDetail(articleId);
@@ -494,18 +558,20 @@ public class ArticleDetailActivity extends BaseActivity {
                 , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
 //        jzVideo.setUp(VideoConstant.videoUrlList[0]
 //                , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, "饺子不信");
-        //默认Glide处理参数
-        RequestOptions defaultOptions = new RequestOptions()
-//                .transform(multi)
-                .skipMemoryCache(false)//不忽略内存
-                .placeholder(R.drawable.default_image_round_article_list)//占位图
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
+
                 ;
-        Glide.with(this)
-                .load(cover)
-                .apply(defaultOptions)
-                .into(jzVideo.thumbImageView);
+//        Glide.with(this)
+//                .load(cover)
+//                .apply(defaultOptions)
+//                .into(jzVideo.thumbImageView);
+
+        //封面图
+        if (!TextUtils.isEmpty(ivMainUrl)) {
+            jzVideo.ivMain.setImageURI(ivMainUrl);
+        } else {
+            jzVideo.ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
+        }
+
 //        播放时4GDialog提示
         JZVideoPlayer.WIFI_TIP_DIALOG_SHOWED=false;
         JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
@@ -928,20 +994,31 @@ public class ArticleDetailActivity extends BaseActivity {
         if (articleEntity == null) return;
         //标题
         tvArticleTitle.setText(articleEntity.getArticleTitle());
+
+        //显示信息布局
+        llInfo.setVisibility(View.VISIBLE);
         //作者（来源）
         if (!TextUtils.isEmpty(articleEntity.getSourceName())) {
+            tvAuthor.setVisibility(View.VISIBLE);
             tvAuthor.setText(articleEntity.getSourceName());
         } else {
             tvAuthor.setVisibility(View.GONE);
         }
         //发布日期
         if (!TextUtils.isEmpty(articleEntity.getPublishDate())) {
+            tvDate.setVisibility(View.VISIBLE);
             tvDate.setText(articleEntity.getPublishDate());
         } else {
             tvDate.setVisibility(View.GONE);
         }
+
         //阅读数
-        tvReadCount.setText(String.valueOf(articleEntity.getPageView()));
+        if (articleEntity.getPageView() > 0) {
+            llReadCount.setVisibility(View.VISIBLE);
+            tvReadCount.setText(String.valueOf(articleEntity.getPageView()));
+        } else {
+            llReadCount.setVisibility(View.GONE);
+        }
 
         //文章内容（富文本）
         //处理图片宽高
@@ -1259,13 +1336,13 @@ public class ArticleDetailActivity extends BaseActivity {
                 Glide.with(ArticleDetailActivity.this)
                         .load(glideUrl)
 //                    .thumbnail(0.5f)
-                        .apply(options)
+                        .apply(optionsCircle)
                         .into(imageView);
             } else {
                 Glide.with(ArticleDetailActivity.this)
                         .load(R.drawable.ico_head)
 //                    .thumbnail(0.5f)
-                        .apply(options)
+                        .apply(optionsCircle)
                         .into(imageView);
             }
 
