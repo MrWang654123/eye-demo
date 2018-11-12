@@ -1,55 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:background="@color/white"
     tools:context=".features.modules.article.activity.ArticleDetailActivity">
 
-    <!--标题栏-->
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/heightSmalltWidget"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:contentInsetStart="0dp"
-        app:title=" ">
-        <!--左侧系统按钮-->
-        <!--app:navigationIcon="?attr/homeAsUpIndicator"-->
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <!--标题栏-->
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+            android:layout_height="@dimen/heightSmalltWidget"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:contentInsetStart="0dp"
+            app:title=" "
+            app:layout_scrollFlags="scroll|enterAlways">
+            <!--左侧系统按钮-->
+            <!--app:navigationIcon="?attr/homeAsUpIndicator"-->
 
-            <ImageView
-                android:id="@+id/iv_left"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:padding="14dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="3dp"
-                android:src="@drawable/back_black"/>
-
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/color_f2f2f2"/>
+                android:layout_height="match_parent"
+                android:background="@color/white">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/iv_left"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:padding="14dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/back_black"/>
 
-    </android.support.v7.widget.Toolbar>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/color_f2f2f2"/>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <!--主体布局-->
         <LinearLayout
@@ -588,4 +596,4 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
