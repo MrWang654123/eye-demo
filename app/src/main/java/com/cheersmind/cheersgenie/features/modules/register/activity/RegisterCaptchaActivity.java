@@ -273,6 +273,9 @@ public class RegisterCaptchaActivity extends BaseActivity {
         rlPassword.setVisibility(View.GONE);
         tvPasswordFormatTip.setVisibility(View.GONE);
 
+        //第三方登录信息
+        thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
+
         //操作类型
         smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
         switch (smsType) {
@@ -286,12 +289,22 @@ public class RegisterCaptchaActivity extends BaseActivity {
             }
             //操作类型：注册用户
             case Dictionary.SmsType_Register: {
-                //设置标题
-                settingTitle("账号注册");
-                //修改按钮文字为“注册”
-                btnConfirm.setText(getResources().getString(R.string.register));
-                //密码编辑框默认提示文本
-                etPassword.setHint("请输入密码");
+                if (thirdLoginDto == null) {
+                    //设置标题
+                    settingTitle("账号注册");
+                    //修改按钮文字为“注册”
+                    btnConfirm.setText(getResources().getString(R.string.register));
+                    //密码编辑框默认提示文本
+                    etPassword.setHint("请输入密码");
+                } else {
+                    //设置标题
+                    settingTitle("绑定手机号");
+                    //修改按钮文字为“绑定”
+                    btnConfirm.setText(getResources().getString(R.string.bind));
+                    //密码编辑框默认提示文本
+                    etPassword.setHint("请输入新密码");
+                }
+
                 //显示密码模块
                 rlPassword.setVisibility(View.VISIBLE);
                 tvPasswordFormatTip.setVisibility(View.VISIBLE);
@@ -311,8 +324,6 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 break;
             }
         }
-
-        thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
 
         //短信验证码
         messageCaptcha = getIntent().getStringExtra(MESSAGE_CAPTCHA);

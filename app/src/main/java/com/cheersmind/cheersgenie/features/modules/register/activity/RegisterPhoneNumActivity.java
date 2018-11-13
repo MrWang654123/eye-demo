@@ -73,6 +73,13 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     //手机号
     String phoneNum;
 
+    //子标题
+    @BindView(R.id.tv_sub_title)
+    TextView tvSubTitle;
+    //子标题：绑定第三方提示
+    @BindView(R.id.tv_sub_title_bind)
+    TextView tvSubTitleBind;
+
     @BindView(R.id.btn_confirm)
     Button btnConfirm;
     @BindView(R.id.et_phonenum)
@@ -186,25 +193,60 @@ public class RegisterPhoneNumActivity extends BaseActivity {
             etPhonenum.setSelection(phoneNum.length());
         }
 
+
         //操作类型
         smsType = getIntent().getIntExtra(SMS_TYPE, Dictionary.SmsType_Register);
+        tvSubTitle.setVisibility(View.GONE);
+        tvSubTitleBind.setVisibility(View.GONE);
         switch (smsType) {
             //操作类型：绑定手机号
             case Dictionary.SmsType_Bind_Phone_Num: {
                 //设置标题
                 settingTitle("绑定手机号");
+                tvSubTitleBind.setVisibility(View.VISIBLE);
+                if (thirdLoginDto != null) {
+                    //微信
+                    if (Dictionary.Plat_Source_Weixin.equals(thirdLoginDto.getPlatSource())) {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "微信"));
+
+                    } else if (Dictionary.Plat_Source_QQ.equals(thirdLoginDto.getPlatSource())) {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "QQ"));
+
+                    } else {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "账号"));
+                    }
+                } else {
+                    tvSubTitleBind.setText(getString(R.string.bind_tip, "账号"));
+                }
                 break;
             }
             //操作类型：注册用户
             case Dictionary.SmsType_Register: {
-                //设置标题
-                settingTitle("账号注册");
+                if (thirdLoginDto == null) {
+                    //设置标题
+                    settingTitle("账号注册");
+                    tvSubTitle.setVisibility(View.VISIBLE);
+                } else {
+                    //设置标题
+                    settingTitle("绑定手机号");
+                    tvSubTitleBind.setVisibility(View.VISIBLE);
+                    //微信
+                    if (Dictionary.Plat_Source_Weixin.equals(thirdLoginDto.getPlatSource())) {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "微信"));
+
+                    } else if (Dictionary.Plat_Source_QQ.equals(thirdLoginDto.getPlatSource())) {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "QQ"));
+                    } else {
+                        tvSubTitleBind.setText(getString(R.string.bind_tip, "账号"));
+                    }
+                }
                 break;
             }
             //操作类型：找回密码
             case Dictionary.SmsType_Retrieve_Password: {
                 //设置标题
                 settingTitle("重置密码");
+                tvSubTitle.setVisibility(View.VISIBLE);
                 break;
             }
         }

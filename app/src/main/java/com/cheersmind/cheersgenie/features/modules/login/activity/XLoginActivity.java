@@ -176,8 +176,8 @@ public class XLoginActivity extends BaseActivity {
 //                }
 
                 //TextView显示html文本带图片
-//                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
+                startActivity(intent);
 
                 //家长角色选择页面
 //                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
@@ -198,7 +198,7 @@ public class XLoginActivity extends BaseActivity {
 //                throw new NullPointerException("666666666666666666666666666我是空啊");
 
                 //积分提示对话框
-                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
+//                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
 
                 break;
             }

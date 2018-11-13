@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         if ("debug".equals(BUILD_TYPE)) {
-            applicationId "com.cheersmind.cheersgenie.debug"
-//            applicationId "com.cheersmind.cheersgenie"
+//            applicationId "com.cheersmind.cheersgenie.debug"
+            applicationId "com.cheersmind.cheersgenie"
         } else {
             applicationId "com.cheersmind.cheersgenie"
         }

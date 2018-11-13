@@ -58,6 +58,12 @@ public class TextViewForHtmlImageActivity extends Activity {
             "\t\t\t\t\n" +
             "\t\t\t\t\n" +
             "<p class=\"show_author\">责任编辑：张建利 </p>\n" +
+            "<h4>一个无序列表：</h4>\n" +
+"<ul>\n" +
+        "<li>咖啡</li>\n" +
+        "<li>茶</li>\n" +
+        "<li>牛奶</li>\n" +
+        "</ul>\n" +
             "\t\t\t\t\n" +
             "\t\t\t\t\n" +
             "\t\t\t</div>";
