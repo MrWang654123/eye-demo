@@ -1,27 +1,21 @@
 package com.cheersmind.cheersgenie.main.view;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.view.material.ProgressView.MaterialProgressView;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.service.BaseService;
-import com.xdandroid.materialprogressview.MaterialProgressView;
 
 /**
- * Created by goodm on 2017/4/15.
+ * 通用加载等待视图
  */
 public class LoadingView {
     private static LoadingView mLoadingView = null;

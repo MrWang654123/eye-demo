@@ -12,7 +12,7 @@
         <!--android:src="@drawable/demo_img_loading"/>-->
     <!--android:src="@mipmap/sysloading"-->
 
-    <com.xdandroid.materialprogressview.MaterialProgressView
+    <com.cheersmind.cheersgenie.features.view.material.ProgressView.MaterialProgressView
         android:layout_width="wrap_content"
         android:id="@+id/progress_view"
         android:layout_height="wrap_content"/>
