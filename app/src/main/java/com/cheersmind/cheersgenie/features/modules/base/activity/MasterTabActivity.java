@@ -22,6 +22,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragmen
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
@@ -271,7 +272,11 @@ public class MasterTabActivity extends BaseActivity {
             // menu item ID. This behaves the same as tapping on an item
             //未找到原因
 
+            //切换底部导航栏
             navigationBar.selectTab(position);
+
+            //关闭软键盘
+            SoftInputUtil.closeSoftInput(MasterTabActivity.this);
         }
 
         @Override
@@ -302,7 +307,7 @@ public class MasterTabActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-
+        //连按退出处理
         if (!canExit) {
             canExit = true;
             ToastUtil.showShort(MasterTabActivity.this, "再按一次退出");

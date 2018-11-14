@@ -81,6 +81,7 @@
         <activity
             android:name=".features.modules.base.activity.MasterTabActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:screenOrientation="portrait">
         </activity>
         <!-- 引导页面 -->

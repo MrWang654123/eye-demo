@@ -3,12 +3,24 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.annotation.SuppressLint;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -20,12 +32,17 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
+import com.cheersmind.cheersgenie.features.interfaces.OnBackPressListener;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
+import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
+import com.cheersmind.cheersgenie.features.interfaces.SearchListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.TopicDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features.view.EditTextPreIme;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
@@ -37,6 +54,7 @@ import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -48,6 +66,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -55,15 +74,20 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * 测评基础页面
  */
-public class ExamBaseFragment extends LazyLoadFragment {
+public class ExamBaseFragment extends LazyLoadFragment implements SearchListener, SearchLayoutControlListener {
 
     //话题状态（默认获取完成的）
     protected int topicStatus = Dictionary.TOPIC_STATUS_COMPLETE;
+
+    //根布局
+    @BindView(R.id.ll_root)
+    LinearLayout llRoot;
 
     @BindView(R.id.recycleView)
     protected RecyclerView recycleView;
@@ -71,6 +95,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
     //话题列表（话题基础数据、孩子话题的信息、量表）
     List<TopicInfoEntity> topicList;
+    List<TopicInfoEntity> topicListSearch;
 
     //适配器
     protected ExamDimensionBaseRecyclerAdapter recyclerAdapter;
@@ -181,6 +206,21 @@ public class ExamBaseFragment extends LazyLoadFragment {
     RecyclerViewScrollListener scrollListener;
 
 
+    //搜索布局
+    @BindView(R.id.ll_search)
+    LinearLayout llSearch;
+    @BindView(R.id.et_search)
+    EditTextPreIme etSearch;
+    @BindView(R.id.iv_clear)
+    ImageView ivClear;
+    //搜索覆盖布局
+    @BindView(R.id.rl_search_overlay)
+    RelativeLayout rlSearchOverlay;
+
+    //最后一次搜索文本
+    String lastSearchText = "";
+
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_report_completed;
@@ -271,6 +311,93 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
+
+
+        //初始隐藏搜索布局
+        llSearch.setVisibility(View.GONE);
+        //初始隐藏搜索覆盖布局
+        rlSearchOverlay.setVisibility(View.GONE);
+
+        //监听搜索输入框的软键盘回车键
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                //当actionId == XX_SEND 或者 XX_DONE时都触发
+                //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
+                //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
+                if (actionId == EditorInfo.IME_ACTION_SEND
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || (keyEvent != null && KeyEvent.KEYCODE_ENTER == keyEvent.getKeyCode() && KeyEvent.ACTION_DOWN == keyEvent.getAction())) {
+                    //搜索
+                    doSearch();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        //清空按钮的显隐
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    if (ivClear.getVisibility() == View.GONE) {
+                        ivClear.setVisibility(View.VISIBLE);
+                    }
+                } else {
+                    if (ivClear.getVisibility() == View.VISIBLE) {
+                        ivClear.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+        //编辑框点击监听
+        etSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOverlay();
+            }
+        });
+
+        //返回键监听
+        etSearch.setBackPressListener(new OnBackPressListener() {
+            @Override
+            public void onBackPress() {
+                //隐藏覆盖层
+                if (rlSearchOverlay.getVisibility() == View.VISIBLE) {
+                    hideOverlay();
+                }
+            }
+        });
+
+        /*rlSearchOverlay.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int rootHeight = rlSearchOverlay.getRootView().getHeight();
+                int curHeight = rlSearchOverlay.getHeight();
+                int heightDiff = rootHeight - curHeight;
+                if (curHeight > 0 ) {
+                    if (getActivity().getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE) {
+                        //hide input method
+                    } else {
+                        hideOverlay();
+                    }
+                }
+            }
+        });*/
+
     }
 
 
@@ -333,6 +460,106 @@ public class ExamBaseFragment extends LazyLoadFragment {
     }
 
 
+    @OnClick({R.id.iv_search, R.id.iv_clear, R.id.rl_search_overlay})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //清空搜索框的按钮
+            case R.id.iv_clear: {
+                etSearch.setText("");
+                break;
+            }
+            //搜索
+            case R.id.iv_search: {
+                doSearch();
+                break;
+            }
+
+            //搜索覆盖图
+            case R.id.rl_search_overlay: {
+                //隐藏软键盘和搜索覆盖层
+                SoftInputUtil.closeSoftInput(getActivity());
+                hideOverlay();
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * 搜索
+     */
+    private void doSearch() {
+        String searchText = etSearch.getText().toString();
+        if (!lastSearchText.equals(searchText)) {
+            //搜索
+            search(searchText);
+            //记录最后一次搜索文本
+            lastSearchText = searchText;
+        }
+
+        //隐藏软键盘和搜索覆盖层
+        SoftInputUtil.closeSoftInput(getActivity());
+        hideOverlay();
+    }
+
+
+    /**
+     * 显示搜索布局
+     */
+    private void showSearchLayout() {
+        llSearch.setVisibility(View.VISIBLE);
+        //初始化搜索框
+        lastSearchText = "";
+        etSearch.setText(lastSearchText);
+        etSearch.requestFocus();
+        //搜索覆盖布局
+        rlSearchOverlay.setVisibility(View.VISIBLE);
+        rlSearchOverlay.setEnabled(true);
+        //打开软键盘
+        SoftInputUtil.openSoftInput(getActivity(), etSearch);
+    }
+
+
+    /**
+     * 隐藏搜索布局
+     */
+    private void hideSearchLayout() {
+        llSearch.setVisibility(View.GONE);
+        //隐藏软键盘和搜索覆盖层
+        SoftInputUtil.closeSoftInput(getActivity());
+        hideOverlay();
+        //清空最后一次搜索文本记录
+        lastSearchText = "";
+
+        //清空话题搜索集合
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            topicListSearch.clear();
+            //重新布局
+            switchLayout(layoutType);
+        }
+    }
+
+
+    /**
+     * 隐藏覆盖物
+     */
+    private void hideOverlay() {
+        //搜索覆盖布局
+        rlSearchOverlay.setVisibility(View.GONE);
+        rlSearchOverlay.setEnabled(false);
+    }
+
+
+    /**
+     * 显示搜索覆盖层
+     */
+    private void showOverlay() {
+        //搜索覆盖布局
+        rlSearchOverlay.setVisibility(View.VISIBLE);
+        rlSearchOverlay.setEnabled(true);
+    }
+
+
     /**
      * 问题提交成功的通知事件
      * @param event 事件
@@ -389,10 +616,7 @@ public class ExamBaseFragment extends LazyLoadFragment {
 
                     //解锁必须先做完的量表id集合
                     String [] dimensionIds = lockedDimension.getPreDimensions().split(",");
-                    Set<String> dimensionSet = new HashSet<>();
-                    for (String dimensionId : dimensionIds) {
-                        dimensionSet.add(dimensionId);
-                    }
+                    Set<String> dimensionSet = new HashSet<>(Arrays.asList(dimensionIds));
 
                     isMeetUnlockCondition = true;
                     //存在一个未做完的量表，则视为不满足解锁条件
@@ -412,11 +636,12 @@ public class ExamBaseFragment extends LazyLoadFragment {
     }
 
     /**
-     * 判断话题（场景）是否完成，完成则刷新header模型对应的列表项
-     * @param headerPosition 列表索引
+     * 判断话题（场景）是否完成，如果完成则设置完成状态
      * @param topicInfo 话题对象
      */
-    protected void refreshHeader(int headerPosition, TopicInfoEntity topicInfo) {
+    protected boolean handleTopicIsComplete(TopicInfoEntity topicInfo) {
+        boolean isComplete = false;
+
         if (topicInfo != null) {
             List<DimensionInfoEntity> dimensions = topicInfo.getDimensions();
             //量表非空
@@ -436,14 +661,27 @@ public class ExamBaseFragment extends LazyLoadFragment {
                 if (isTopicComplete) {
                     //孩子话题非空
                     if (topicInfo.getChildTopic() != null) {
+                        //设置话题为完成状态
                         topicInfo.getChildTopic().setStatus(Dictionary.TOPIC_STATUS_COMPLETE);
-                        int tempHeaderPosition = headerPosition + recyclerAdapter.getHeaderLayoutCount();
-                        recyclerAdapter.notifyItemChanged(tempHeaderPosition);//局部数显列表项，把header计算在内
+                        isComplete = true;
                     }
                 }
             }
         }
+
+        return isComplete;
     }
+
+
+    /**
+     * 刷新header模型对应的列表项
+     * @param headerPosition 列表索引
+     */
+    protected void refreshHeader(int headerPosition) {
+        int tempHeaderPosition = headerPosition + recyclerAdapter.getHeaderLayoutCount();
+        recyclerAdapter.notifyItemChanged(tempHeaderPosition);//局部数显列表项，把header计算在内
+    }
+
 
     /**
      * 重置为第一页
@@ -455,6 +693,10 @@ public class ExamBaseFragment extends LazyLoadFragment {
         topicList = null;
         //总数量
         totalCount = 0;
+        //清空话题搜索集合
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            topicListSearch.clear();
+        }
     }
 
 
@@ -514,8 +756,41 @@ public class ExamBaseFragment extends LazyLoadFragment {
                 return;
             }
 
-            //转成列表的数据项
-            List recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
+            //搜索文本如果不为空，则需要过滤
+            if (!TextUtils.isEmpty(lastSearchText)) {
+                if (ArrayListUtil.isEmpty(topicListSearch)) {
+                    topicListSearch = new ArrayList<>();
+                } else {
+                    topicListSearch.clear();
+                }
+
+                for (TopicInfoEntity topicInfo : dataList) {
+                    if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(lastSearchText)) {
+                        topicListSearch.add(topicInfo);
+                        continue;
+                    }
+
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
+                            if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(lastSearchText)) {
+                                topicListSearch.add(topicInfo);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            List recyclerItem = null;
+            //话题搜索集合不为空，则使用话题搜索集合作为列表数据项
+            if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+                //转成列表的数据项
+                recyclerItem = topicInfoEntityToRecyclerMulti(topicListSearch);
+
+            } else {
+                //转成列表的数据项
+                recyclerItem = topicInfoEntityToRecyclerMulti(dataList);
+            }
 
             //下拉刷新
             recyclerAdapter.setNewData(recyclerItem);
@@ -906,6 +1181,15 @@ public class ExamBaseFragment extends LazyLoadFragment {
      * @param layoutType
      */
     protected void changeRecyclerViewLayout(int layoutType) {
+
+        List topicList = null;
+        //如果话题搜索集合不为空，则赋值话题搜索集合
+        if (ArrayListUtil.isNotEmpty(this.topicListSearch)) {
+            topicList = this.topicListSearch;
+        } else {
+            topicList = this.topicList;
+        }
+
         //线性
         if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR) {
             List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(topicList);
@@ -952,6 +1236,108 @@ public class ExamBaseFragment extends LazyLoadFragment {
         //清除滚动数据
         scrollListener.clearScrollYData();
 
+    }
+
+
+
+    @Override
+    public void search(String searchText) {
+        //搜索文本为空，则清空话题搜索集合
+        if (TextUtils.isEmpty(searchText)) {
+            if (topicListSearch != null) {
+                topicListSearch.clear();
+            }
+
+            //空布局为无数据状态，则置为隐藏
+            if (emptyLayout.getErrorState() == XEmptyLayout.NO_DATA) {
+                //话题集合不为空
+                if (ArrayListUtil.isNotEmpty(topicList)) {
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                }
+            }
+
+        } else {
+            //从topicList的话题名称和量表名称中进行检索
+            if (ArrayListUtil.isNotEmpty(topicList)) {
+                if (ArrayListUtil.isEmpty(topicListSearch)) {
+                    topicListSearch = new ArrayList<>();
+                } else {
+                    topicListSearch.clear();
+                }
+
+                for (TopicInfoEntity topicInfo : topicList) {
+                    if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(searchText)) {
+                        topicListSearch.add(topicInfo);
+                        continue;
+                    }
+
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
+                            if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(searchText)) {
+                                topicListSearch.add(topicInfo);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //搜索结果空处理
+            if (ArrayListUtil.isEmpty(topicListSearch)) {
+                //备份原先的无数据提示
+                String noDataTip = emptyLayout.getNoDataTip();
+                //设置新的无数据提示文本
+                emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_article_for_search));
+                //空布局
+                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                //设置原先的无数据提示文本
+                emptyLayout.setNoDataTip(noDataTip);
+
+                //调整总数
+                if (ArrayListUtil.isNotEmpty(topicList)) {
+                    totalCount = topicList.size();
+                } else {
+                    totalCount = 0;
+                }
+
+                return;
+
+            } else {
+                //隐藏空布局
+                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+            }
+        }
+
+        //调整总数
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            totalCount = topicListSearch.size();
+        } else {
+            if (ArrayListUtil.isNotEmpty(topicList)) {
+                totalCount = topicList.size();
+            } else {
+                totalCount = 0;
+            }
+        }
+
+        switchLayout(layoutType);
+    }
+
+
+    @Override
+    public void searchLayoutControl(boolean show) {
+        if (show) {
+            showSearchLayout();
+        } else {
+            //空布局为无数据状态，则置为隐藏
+            if (emptyLayout.getErrorState() == XEmptyLayout.NO_DATA) {
+                //话题集合不为空
+                if (ArrayListUtil.isNotEmpty(topicList)) {
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                }
+            }
+
+            hideSearchLayout();
+        }
     }
 
 

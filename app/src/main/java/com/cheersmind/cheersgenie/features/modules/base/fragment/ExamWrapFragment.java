@@ -3,15 +3,21 @@ package com.cheersmind.cheersgenie.features.modules.base.fragment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
-import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamBaseFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamFragment;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +44,13 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
     @BindView(R.id.iv_switch_layout)
     ImageView ivSwitchLayout;
 
+    //显示搜索布局的提示图标
+    @BindView(R.id.iv_search_tip)
+    ImageView ivSearchTip;
+    //隐藏搜索布局的提示文字
+    @BindView(R.id.tv_cancel)
+    TextView tvCancel;
+
 
     @Override
     protected int setContentView() {
@@ -59,6 +72,7 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
 
         //初始隐藏布局切换按钮
         ivSwitchLayout.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -85,8 +99,13 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
     //布局类型
     int layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID;
 
-    @OnClick({R.id.iv_switch_layout})
+    @OnClick({R.id.iv_switch_layout,R.id.iv_search_tip,R.id.tv_cancel})
     public void onViewClick(View view) {
+        //切换布局
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        String tag = ExamFragment.class.getSimpleName();
+        Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
+
         switch (view.getId()) {
             //切换列表布局
             case R.id.iv_switch_layout:{
@@ -100,10 +119,6 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
                     layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID;
                 }
 
-                //切换布局
-                FragmentManager childFragmentManager = getChildFragmentManager();
-                String tag = ExamFragment.class.getSimpleName();
-                Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
                 //非空
                 if (fragmentByTag != null) {
                     //调用切换布局
@@ -111,7 +126,43 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
                 }
                 break;
             }
+            //显示搜索布局的提示图标
+            case R.id.iv_search_tip: {
+                showSearchLayout();
+                //显示搜索布局
+                if (fragmentByTag != null) {
+                    ((ExamFragment)fragmentByTag).searchLayoutControl(true);
+                }
+                break;
+            }
+            //隐藏搜索布局的提示文字
+            case R.id.tv_cancel:{
+                hideSearchLayout();
+                //隐藏搜索布局
+                if (fragmentByTag != null) {
+                    ((ExamFragment)fragmentByTag).searchLayoutControl(false);
+                }
+                break;
+            }
         }
+    }
+
+
+    /**
+     * 显示搜索布局
+     */
+    private void showSearchLayout() {
+        ivSearchTip.setVisibility(View.GONE);
+        tvCancel.setVisibility(View.VISIBLE);
+    }
+
+
+    /**
+     * 隐藏搜索布局
+     */
+    private void hideSearchLayout() {
+        ivSearchTip.setVisibility(View.VISIBLE);
+        tvCancel.setVisibility(View.GONE);
     }
 
 

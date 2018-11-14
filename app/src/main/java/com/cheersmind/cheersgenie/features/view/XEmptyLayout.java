@@ -295,6 +295,14 @@ public class XEmptyLayout extends LinearLayout {
         this.noDataTip = noDataTip;
     }
 
+    /**
+     * 获取无数据提示文本
+     * @return
+     */
+    public String getNoDataTip() {
+        return noDataTip;
+    }
+
     @Override
     public void setVisibility(int visibility) {
         if (visibility == View.GONE)

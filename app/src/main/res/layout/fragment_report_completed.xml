@@ -1,47 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <FrameLayout
+    <!--搜索布局-->
+    <LinearLayout
+        android:id="@+id/ll_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginLeft="12dp"
+                android:layout_weight="1"
+                android:background="@color/color_eeeeee"
+                android:orientation="horizontal">
+
+                <com.cheersmind.cheersgenie.features.view.EditTextPreIme
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="36dp"
+                    android:layout_weight="1"
+                    android:background="@color/transpera"
+                    android:hint="@string/search_edit_text_hint"
+                    android:maxLines="1"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@color/color_444444"
+                    android:textSize="15sp"
+                    android:maxLength="15"
+                    android:imeOptions="actionSearch"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/iv_clear"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_clear"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:contentDescription="@string/placeholder_for_item"
+                    android:padding="15dp"
+                    android:src="@drawable/close"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/iv_search"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:padding="12dp"
+                android:src="@drawable/search"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <!--分割线-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#cecece" />
+
+    </LinearLayout>
+
+
+    <!--内容布局-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:paddingLeft="1.5dp"
+                android:paddingRight="1.5dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fabGotoTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_gravity="right|bottom"
+                android:visibility="visible"
+                app:fabSize="mini"
+                android:src="@drawable/goto_top" />
+            <!--android:src="@drawable/ic_start"-->
+
+        </FrameLayout>
+
+        <!--空布局-->
+        <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+            android:id="@+id/emptyLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
-            android:paddingLeft="1.5dp"
-            android:paddingRight="1.5dp">
+            android:visibility="gone"/>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycleView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+        <!--搜索覆盖布局-->
+        <RelativeLayout
+            android:id="@+id/rl_search_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transpera"
+            android:visibility="gone"/>
 
-        </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabGotoTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_gravity="right|bottom"
-            android:visibility="visible"
-            app:fabSize="mini"
-            android:src="@drawable/goto_top" />
-        <!--android:src="@drawable/ic_start"-->
-
-    </FrameLayout>
-
-    <!--空布局-->
-    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
-        android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
-
-</RelativeLayout>
+</LinearLayout>

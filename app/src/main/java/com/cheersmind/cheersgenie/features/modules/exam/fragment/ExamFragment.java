@@ -97,7 +97,8 @@ public class ExamFragment extends ExamDoingFragment {
 //                }
 //            }
 
-
+            //是否在当前列表中（搜索功能可能使得当前量表不在当前列表中）
+            boolean existInList = false;
             //局部刷新量表对应的视图项
             List<MultiItemEntity> data = recyclerAdapter.getData();
             if (ArrayListUtil.isNotEmpty(data)) {
@@ -134,14 +135,55 @@ public class ExamFragment extends ExamDoingFragment {
                                 refreshChildTopList();
 
                             } else {
-                                //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
-                                refreshHeader(headerPosition, topicInfo);
+                                //处理话题是否为完成状态，如果已完成则刷新header模型对应的列表项
+                                if (handleTopicIsComplete(topicInfo)) {
+                                    refreshHeader(headerPosition);
+                                }
                             }
+
+                            //标记当前量表存在当前列表中
+                            existInList = true;
+
                             break;
                         }
 
                     }
                 }
+            }
+
+            //当前量表不存在当前列表中
+            if (!existInList) {
+
+                for (int i = 0; i < topicList.size(); i++) {
+                    TopicInfoEntity topicInfo = topicList.get(i);
+
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity t : topicInfo.getDimensions()) {
+                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                            if (t.getTopicId().equals(dimension.getTopicId())
+                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+
+                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+
+                                //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+                                if (isMeetUnlockCondition(topicInfo)) {
+                                    //重置为第一页
+                                    resetPageInfo();
+                                    //刷新孩子话题
+                                    refreshChildTopList();
+
+                                } else {
+                                    //处理话题是否为完成状态
+                                    handleTopicIsComplete(topicInfo);
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
             }
 
         }

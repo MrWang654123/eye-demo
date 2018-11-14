@@ -5,5 +5,5 @@ package com.cheersmind.cheersgenie.features.interfaces;
  */
 public interface ExamLayoutListener {
     //改变
-    public void change(int layoutType, boolean isShow);
+    void change(int layoutType, boolean isShow);
 }
