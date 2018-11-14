@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.constant;
 
+import com.baidu.tts.client.TtsMode;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.tauth.Tencent;
 
@@ -30,5 +31,12 @@ public class Constant {
     //QQ登录
     public static final String QQ_APP_ID = "1107697503";
     public static Tencent mTencent;
+
+    //百度语音
+    public static final String BAIDU_APP_ID = "14794450";
+    public static final String BAIDU_APP_KEY = "uztB1Hd07a3N5X4E2x5rz6vf";
+    public static final String BAIDU_SECRET_KEY = "y2Yki6mIWHpR1N3enrWbdEwiuNGS8Z5o";
+    // TtsMode.MIX; 离在线融合，在线优先； TtsMode.ONLINE 纯在线； 没有纯离线
+    public static final TtsMode ttsMode = TtsMode.MIX;
 
 }

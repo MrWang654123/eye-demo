@@ -19,6 +19,9 @@
     <uses-permission android:name="android.permission.READ_SETTINGS" />
     <!-- 请求安装未知来源的包 -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!--音频-->
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:name=".main.QSApplication"
@@ -317,6 +320,7 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".features.modules.mine.activity.IntegralDescActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.test.activity.SpannableStringActivity" />
     </application>
 
 </manifest>

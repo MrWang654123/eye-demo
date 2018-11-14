@@ -1,11 +1,14 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -144,6 +147,8 @@ public class MasterTabActivity extends BaseActivity {
 //        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
 //            VersionUpdateUtil.checkUpdate(this,false, false);
 //        }
+
+        initPermission(); // android 6.0以上动态权限申请
     }
 
     @Override
@@ -356,6 +361,36 @@ public class MasterTabActivity extends BaseActivity {
         }
     }
 
+
+    /**
+     * android 6.0 以上需要动态申请权限
+     */
+    private void initPermission() {
+        String[] permissions = {
+//                Manifest.permission.INTERNET,
+//                Manifest.permission.ACCESS_NETWORK_STATE,
+//                Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                Manifest.permission.WRITE_SETTINGS,
+//                Manifest.permission.READ_PHONE_STATE,
+//                Manifest.permission.ACCESS_WIFI_STATE,
+//                Manifest.permission.CHANGE_WIFI_STATE
+        };
+
+        ArrayList<String> toApplyList = new ArrayList<String>();
+
+        for (String perm : permissions) {
+            if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
+                toApplyList.add(perm);
+                // 进入到这里代表没有权限.
+            }
+        }
+        String[] tmpList = new String[toApplyList.size()];
+        if (!toApplyList.isEmpty()) {
+            ActivityCompat.requestPermissions(this, toApplyList.toArray(tmpList), 123);
+        }
+
+    }
 
 }
 

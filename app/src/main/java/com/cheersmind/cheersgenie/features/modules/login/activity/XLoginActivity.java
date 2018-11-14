@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPho
 import com.cheersmind.cheersgenie.features.modules.register.activity.UserInfoInitActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.GifActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.SchemaActivity;
+import com.cheersmind.cheersgenie.features.modules.test.activity.SpannableStringActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.TextViewForHtmlImageActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
@@ -176,8 +177,8 @@ public class XLoginActivity extends BaseActivity {
 //                }
 
                 //TextView显示html文本带图片
-                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(XLoginActivity.this, TextViewForHtmlImageActivity.class);
+//                startActivity(intent);
 
                 //家长角色选择页面
 //                ParentRoleActivity.startParentRoleActivity(XLoginActivity.this, "我是班级号");
@@ -199,6 +200,10 @@ public class XLoginActivity extends BaseActivity {
 
                 //积分提示对话框
 //                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
+
+                //SpannableString测试（文字后面最后一个字跟图标按钮）
+                Intent intent = new Intent(XLoginActivity.this, SpannableStringActivity.class);
+                startActivity(intent);
 
                 break;
             }
