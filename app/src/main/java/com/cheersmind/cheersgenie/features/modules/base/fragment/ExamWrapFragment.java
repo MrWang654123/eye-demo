@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
+import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamFragment;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 
@@ -101,7 +102,6 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
 
     @OnClick({R.id.iv_switch_layout,R.id.iv_search_tip,R.id.tv_cancel})
     public void onViewClick(View view) {
-        //切换布局
         FragmentManager childFragmentManager = getChildFragmentManager();
         String tag = ExamFragment.class.getSimpleName();
         Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
@@ -131,7 +131,9 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
                 showSearchLayout();
                 //显示搜索布局
                 if (fragmentByTag != null) {
-                    ((ExamFragment)fragmentByTag).searchLayoutControl(true);
+                    if (fragmentByTag instanceof SearchLayoutControlListener) {
+                        ((SearchLayoutControlListener) fragmentByTag).searchLayoutControl(true);
+                    }
                 }
                 break;
             }
@@ -140,7 +142,9 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
                 hideSearchLayout();
                 //隐藏搜索布局
                 if (fragmentByTag != null) {
-                    ((ExamFragment)fragmentByTag).searchLayoutControl(false);
+                    if (fragmentByTag instanceof SearchLayoutControlListener) {
+                        ((SearchLayoutControlListener) fragmentByTag).searchLayoutControl(false);
+                    }
                 }
                 break;
             }
@@ -185,6 +189,24 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
 
     }
 
+
+    /**
+     * 视图是否已经对用户可见，系统的方法
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (!isVisibleToUser && hasLoaded) {
+            FragmentManager childFragmentManager = getChildFragmentManager();
+            String tag = ExamFragment.class.getSimpleName();
+            Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
+
+            if (fragmentByTag instanceof SearchLayoutControlListener) {
+                ((SearchLayoutControlListener) fragmentByTag).hideSoftInputAndOverlay();
+            }
+        }
+    }
 
 }
 

@@ -1340,6 +1340,17 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         }
     }
 
+    @Override
+    public void hideSoftInputAndOverlay() {
+        //已经加载过数据
+        if (hasLoaded) {
+            if (rlSearchOverlay.getVisibility() == View.VISIBLE) {
+                //隐藏软键盘和搜索覆盖层
+                SoftInputUtil.closeSoftInput(getActivity());
+                hideOverlay();
+            }
+        }
+    }
 
 }
 

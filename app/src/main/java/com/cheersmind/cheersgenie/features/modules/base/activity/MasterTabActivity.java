@@ -23,6 +23,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
@@ -52,7 +53,7 @@ public class MasterTabActivity extends BaseActivity {
 
     //内容viewpager
     @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    ViewPagerSlide viewPager;
     List<Fragment> listFragment;//存储页面对象
 
     //是否能够退出的标志
@@ -275,8 +276,6 @@ public class MasterTabActivity extends BaseActivity {
             //切换底部导航栏
             navigationBar.selectTab(position);
 
-            //关闭软键盘
-            SoftInputUtil.closeSoftInput(MasterTabActivity.this);
         }
 
         @Override
