@@ -4,9 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
@@ -39,6 +42,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivi
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
+import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.utils.baidu.AutoCheck;
 import com.cheersmind.cheersgenie.features.utils.baidu.OfflineResource;
 import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
@@ -85,6 +89,9 @@ import butterknife.OnClick;
  * 回答问题的页面
  */
 public class ReplyQuestionActivity extends BaseActivity {
+
+    //请求读取外部文件
+    public static final int READ_EXTERNAL_STORAGE = 950;
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
@@ -158,6 +165,10 @@ public class ReplyQuestionActivity extends BaseActivity {
 
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
+    //权限
+    String[] permissions = new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
 
 
     /**
@@ -242,8 +253,17 @@ public class ReplyQuestionActivity extends BaseActivity {
 //        costTime = dimensionInfoEntity.getChildDimension().getCostTime();
         costTime = 0;
 
-//        initPermission(); // android 6.0以上动态权限申请
-        initialTts(); // 初始化TTS引擎
+        // android 6.0以上动态权限申请
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
+                ActivityCompat.requestPermissions(this, permissions, READ_EXTERNAL_STORAGE);
+            } else {
+                initialTts(); // 初始化TTS引擎
+            }
+        } else {
+            initialTts(); // 初始化TTS引擎
+        }
+
     }
 
 
@@ -296,6 +316,23 @@ public class ReplyQuestionActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //请求读取外部文件
+        if (requestCode == READ_EXTERNAL_STORAGE){
+            //授权成功
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //初始化百度语音
+                initialTts();
+
+            } else {//授权失败
+                //友好的提示
+            }
+        }
+    }
+
+
     /**
      * 初始化引擎，需要的参数均在InitConfig类里
      * <p>
@@ -318,20 +355,24 @@ public class ReplyQuestionActivity extends BaseActivity {
 
             // 如果您集成中出错，请将下面一段代码放在和demo中相同的位置，并复制InitConfig 和 AutoCheck到您的项目中
             // 上线时请删除AutoCheck的调用
-            AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    if (msg.what == 100) {
-                        AutoCheck autoCheck = (AutoCheck) msg.obj;
-                        synchronized (autoCheck) {
-                            String message = autoCheck.obtainDebugMessage();
-                            toPrint(message); // 可以用下面一行替代，在logcat中查看代码
-                            // Log.w("AutoCheckMessage", message);
+            //非生产环境
+            String hostType = BuildConfig.HOST_TYPE;
+            if(!"product".equals(hostType)) {
+                AutoCheck.getInstance(getApplicationContext()).check(initConfig, new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        if (msg.what == 100) {
+                            AutoCheck autoCheck = (AutoCheck) msg.obj;
+                            synchronized (autoCheck) {
+                                String message = autoCheck.obtainDebugMessage();
+                                toPrint(message); // 可以用下面一行替代，在logcat中查看代码
+                                // Log.w("AutoCheckMessage", message);
+                            }
                         }
                     }
-                }
 
-            });
+                });
+            }
             SpeechSynthesizer instance = SpeechSynthesizer.getInstance();
             synthesizer = new NonBlockSyntherizer(this, initConfig, mHandler); // 此处可以改为MySyntherizer 了解调用过程
 
@@ -348,6 +389,13 @@ public class ReplyQuestionActivity extends BaseActivity {
      * 需要合成的文本text的长度不能超过1024个GBK字节。
      */
     public void speak(String text) {
+        // android 6.0以上动态权限申请
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
+                ActivityCompat.requestPermissions(this, permissions, READ_EXTERNAL_STORAGE);
+                return;
+            }
+        }
         //先停止
         stop();
         // 合成前可以修改参数：
@@ -362,16 +410,20 @@ public class ReplyQuestionActivity extends BaseActivity {
      * 暂停播放。仅调用speak后生效
      */
     private void pause() {
-        int result = synthesizer.pause();
-        System.out.println("播放语音pause结果码："+ result);
+        if (synthesizer != null) {
+            int result = synthesizer.pause();
+            System.out.println("播放语音pause结果码：" + result);
+        }
     }
 
     /**
      * 继续播放。仅调用speak后生效，调用pause生效
      */
     private void resume() {
-        int result = synthesizer.resume();
-        System.out.println("播放语音resume结果码："+ result);
+        if (synthesizer != null) {
+            int result = synthesizer.resume();
+            System.out.println("播放语音resume结果码：" + result);
+        }
     }
 
 
@@ -379,8 +431,10 @@ public class ReplyQuestionActivity extends BaseActivity {
      * 停止合成引擎。即停止播放，合成，清空内部合成队列。
      */
     private void stop() {
-        int result = synthesizer.stop();
-        System.out.println("播放语音stop结果码："+ result);
+        if (synthesizer != null) {
+            int result = synthesizer.stop();
+            System.out.println("播放语音stop结果码：" + result);
+        }
     }
 
 
@@ -505,6 +559,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
                 } catch (Exception e) {
 //                    onFailure(new QSCustomException("加载问题失败"));
+                    e.printStackTrace();
                     //视为找不到文章数据
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
