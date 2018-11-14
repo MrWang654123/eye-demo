@@ -1419,7 +1419,8 @@ public class ArticleDetailActivity extends BaseActivity {
             "\t\t\t</div>";
 
 
-    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like, R.id.fl_comment_total_count,R.id.iv_comment_edit_tip })
+    @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like,
+            R.id.fl_comment_total_count,R.id.iv_comment_edit_tip, R.id.iv_close })
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //跳转到关联的测评（量表）
@@ -1483,6 +1484,11 @@ public class ArticleDetailActivity extends BaseActivity {
             //铅笔图标（测试）
             case R.id.iv_comment_edit_tip : {
                 svMainBlock.scrollTo(0, 0);
+                break;
+            }
+            //关闭按钮
+            case R.id.iv_close: {
+                finish();
                 break;
             }
         }

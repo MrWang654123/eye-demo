@@ -18,12 +18,13 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/heightSmalltWidget"
+            android:layout_height="0dp"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:contentInsetStart="0dp"
             app:title=" "
             app:layout_scrollFlags="scroll|enterAlways">
+            <!--android:layout_height="@dimen/heightSmalltWidget"-->
             <!--左侧系统按钮-->
             <!--app:navigationIcon="?attr/homeAsUpIndicator"-->
 
@@ -103,6 +104,18 @@
                             app:layout_constraintDimensionRatio="h,16:9"
                             android:visibility="gone"/>
                         <!--app:layout_constraintDimensionRatio="h,16:9"-->
+
+                        <ImageView
+                            android:id="@+id/iv_close"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:padding="10dp"
+                            android:src="@drawable/close_white"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:layout_margin="10dp"
+                            android:background="@drawable/shape_corner_22000000_20dp"
+                            tools:ignore="ContentDescription" />
 
                         <!--<ImageView-->
                             <!--android:id="@+id/iv_main"-->
