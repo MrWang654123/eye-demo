@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.main.constant;
 
 import com.baidu.tts.client.TtsMode;
+import com.cheersmind.cheersgenie.features.utils.baidu.OfflineResource;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.tauth.Tencent;
 
@@ -38,5 +39,9 @@ public class Constant {
     public static final String BAIDU_SECRET_KEY = "y2Yki6mIWHpR1N3enrWbdEwiuNGS8Z5o";
     // TtsMode.MIX; 离在线融合，在线优先； TtsMode.ONLINE 纯在线； 没有纯离线
     public static final TtsMode ttsMode = TtsMode.MIX;
+    // 离线发音选择，VOICE_FEMALE即为离线女声发音。
+    // assets目录下bd_etts_common_speech_m15_mand_eng_high_am-mix_v3.0.0_20170505.dat为离线男声模型；
+    // assets目录下bd_etts_common_speech_f7_mand_eng_high_am-mix_v3.0.0_20170512.dat为离线女声模型
+    public static final String offlineVoice = OfflineResource.VOICE_DUYY;
 
 }

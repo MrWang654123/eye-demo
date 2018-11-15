@@ -158,10 +158,6 @@ public class ReplyQuestionActivity extends BaseActivity {
     boolean hasSubmitSuccess = false;
 
 
-    // 离线发音选择，VOICE_FEMALE即为离线女声发音。
-    // assets目录下bd_etts_common_speech_m15_mand_eng_high_am-mix_v3.0.0_20170505.dat为离线男声模型；
-    // assets目录下bd_etts_common_speech_f7_mand_eng_high_am-mix_v3.0.0_20170512.dat为离线女声模型
-    protected String offlineVoice = OfflineResource.VOICE_MALE;
 
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
@@ -398,9 +394,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         }
         //先停止
         stop();
-        // 合成前可以修改参数：
-        // Map<String, String> params = getParams();
-        // synthesizer.setParams(params);
+
         int result = synthesizer.speak(text);
         System.out.println("播放语音speak结果码："+ result);
     }
@@ -447,7 +441,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         Map<String, String> params = new HashMap<String, String>();
         // 以下参数均为选填
         // 设置在线发声音人： 0 普通女声（默认） 1 普通男声 2 特别男声 3 情感男声<度逍遥> 4 情感儿童声<度丫丫>
-        params.put(SpeechSynthesizer.PARAM_SPEAKER, "0");
+        params.put(SpeechSynthesizer.PARAM_SPEAKER, "4");
         // 设置合成的音量，0-9 ，默认 5
         params.put(SpeechSynthesizer.PARAM_VOLUME, "9");
         // 设置合成的语速，0-9 ，默认 5
@@ -455,7 +449,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         // 设置合成的语调，0-9 ，默认 5
         params.put(SpeechSynthesizer.PARAM_PITCH, "5");
 
-        params.put(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_DEFAULT);
+        params.put(SpeechSynthesizer.PARAM_MIX_MODE, SpeechSynthesizer.MIX_MODE_HIGH_SPEED_SYNTHESIZE);
         // 该参数设置为TtsMode.MIX生效。即纯在线模式不生效。
         // MIX_MODE_DEFAULT 默认 ，wifi状态下使用在线，非wifi离线。在线状态下，请求超时6s自动转离线
         // MIX_MODE_HIGH_SPEED_SYNTHESIZE_WIFI wifi状态下使用在线，非wifi离线。在线状态下， 请求超时1.2s自动转离线
@@ -463,7 +457,7 @@ public class ReplyQuestionActivity extends BaseActivity {
         // MIX_MODE_HIGH_SPEED_SYNTHESIZE, 2G 3G 4G wifi状态下使用在线，其它状态离线。在线状态下，请求超时1.2s自动转离线
 
         // 离线资源文件， 从assets目录中复制到临时目录，需要在initTTs方法前完成
-        OfflineResource offlineResource = createOfflineResource(offlineVoice);
+        OfflineResource offlineResource = createOfflineResource(Constant.offlineVoice);
         // 声学模型文件路径 (离线引擎使用), 请确认下面两个文件存在
         params.put(SpeechSynthesizer.PARAM_TTS_TEXT_MODEL_FILE, offlineResource.getTextFilename());
         params.put(SpeechSynthesizer.PARAM_TTS_SPEECH_MODEL_FILE,
