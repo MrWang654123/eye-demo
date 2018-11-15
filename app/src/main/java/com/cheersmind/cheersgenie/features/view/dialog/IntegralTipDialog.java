@@ -2,6 +2,8 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -54,14 +56,17 @@ public class IntegralTipDialog extends Dialog {
             //设置宽度全屏，要设置在show的后面
             WindowManager.LayoutParams layoutParams = window.getAttributes();
             if (layoutParams != null) {
+                //影响到了状态栏颜色
                 //位于底部
-                layoutParams.gravity = Gravity.CENTER_VERTICAL;
+//                layoutParams.gravity = Gravity.CENTER_VERTICAL;
                 //宽度
-                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+//                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
                 //高度
-                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+//                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+
+
                 //DecorView的内间距（目前测试的机型还没发现有影响）
-//        window.getDecorView().setPadding(0, 0, 0, 0);
+//                window.getDecorView().setPadding(0, 0, 0, 0);
                 //背景灰度
                 layoutParams.dimAmount = 0.0f;
                 //设置属性

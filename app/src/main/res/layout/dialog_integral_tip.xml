@@ -5,14 +5,22 @@
     android:layout_height="match_parent"
     android:background="@color/transpera">
 
-    <TextView
-        android:id="@+id/tv_integral"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"
-        android:text="+16积分"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_integral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_centerInParent="true"
+            android:text="+16积分"/>
+        <!--android:textColor="@color/colorAccent"-->
+
+    </FrameLayout>
 
 </RelativeLayout>

@@ -199,11 +199,11 @@ public class XLoginActivity extends BaseActivity {
 //                throw new NullPointerException("666666666666666666666666666我是空啊");
 
                 //积分提示对话框
-//                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
+                new IntegralTipDialog(XLoginActivity.this, 16,null).show();
 
                 //SpannableString测试（文字后面最后一个字跟图标按钮）
-                Intent intent = new Intent(XLoginActivity.this, SpannableStringActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(XLoginActivity.this, SpannableStringActivity.class);
+//                startActivity(intent);
 
                 break;
             }
