@@ -36,6 +36,7 @@ import com.cheersmind.cheersgenie.features.interfaces.OnBackPressListener;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchListener;
+import com.cheersmind.cheersgenie.features.interfaces.SoftKeyboardStateHelper;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
@@ -379,6 +380,23 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 if (rlSearchOverlay.getVisibility() == View.VISIBLE) {
                     hideOverlay();
                 }
+            }
+        });
+
+
+        //软键盘开关监听
+        SoftKeyboardStateHelper softKeyboardStateHelper = new SoftKeyboardStateHelper(getContext(),llRoot);
+        softKeyboardStateHelper.addSoftKeyboardStateListener(new SoftKeyboardStateHelper.SoftKeyboardStateListener() {
+            @Override
+            public void onSoftKeyboardOpened(int keyboardHeightInPx) {
+                //键盘打开
+                System.out.println("软键盘打开");
+            }
+            @Override
+            public void onSoftKeyboardClosed() {
+                //键盘关闭
+                System.out.println("软键盘关闭");
+                hideOverlay();
             }
         });
 
