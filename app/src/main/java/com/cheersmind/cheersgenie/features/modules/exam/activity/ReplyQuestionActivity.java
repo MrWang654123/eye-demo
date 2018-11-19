@@ -2,26 +2,34 @@ package com.cheersmind.cheersgenie.features.modules.exam.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Pair;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
@@ -163,13 +171,16 @@ public class ReplyQuestionActivity extends BaseActivity {
     boolean hasSubmitSuccess = false;
 
 
-
     // 主控制类，所有合成控制方法从这个类开始
     protected MySyntherizer synthesizer;
     //权限
     String[] permissions = new String[] {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
+
+    //描述悬浮按钮
+    @BindView(R.id.fabDesc)
+    FloatingActionButton fabDesc;
 
 
     /**
@@ -833,7 +844,7 @@ public class ReplyQuestionActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_pre, R.id.fabVoicePlay})
+    @OnClick({R.id.btn_pre, R.id.fabVoicePlay, R.id.fabDesc})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //上一题
@@ -848,6 +859,11 @@ public class ReplyQuestionActivity extends BaseActivity {
                     ((VoiceControlListener)fragment).play();
                 }
 
+                break;
+            }
+            //说明
+            case R.id.fabDesc: {
+                popupDescWindows();
                 break;
             }
         }
@@ -1291,5 +1307,34 @@ public class ReplyQuestionActivity extends BaseActivity {
         dialog.show();
     }
 
+
+    /**
+     * 弹出描述框
+     */
+    void popupDescWindows() {
+        String desc = dimensionInfoEntity.getDescription();
+        if (TextUtils.isEmpty(desc)) {
+            desc = getResources().getString(R.string.empty_tip_question_desc);
+        }
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("须知")
+                .setMessage(desc)
+                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                        //退出操作
+//                    }
+//                })
+                .create();
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
+    }
 
 }
