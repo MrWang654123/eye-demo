@@ -568,12 +568,13 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
                     }
                     texts.add(new Pair<String, String>(tempStem, "-2"));
                     //选项提示
-                    texts.add(new Pair<String, String>("以下是选项" + Dictionary.VOICE_TEXT_END_SYMBOL, "-1"));
+//                    texts.add(new Pair<String, String>("以下是选项" + Dictionary.VOICE_TEXT_END_SYMBOL, "-1"));
                     //选项
                     if (ArrayListUtil.isNotEmpty(optionsList)) {
                         for (int i=0; i<optionsList.size(); i++) {
                             OptionsEntity option = optionsList.get(i);
-                            texts.add(new Pair<String, String>((i+1) + "。" + option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
+//                            texts.add(new Pair<String, String>((i+1) + "。" + option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
+                            texts.add(new Pair<String, String>(option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
                         }
                     }
                 }
