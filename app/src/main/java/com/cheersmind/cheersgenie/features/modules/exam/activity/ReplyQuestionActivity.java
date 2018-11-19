@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.Gravity;
@@ -92,6 +93,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -1316,22 +1318,28 @@ public class ReplyQuestionActivity extends BaseActivity {
         if (TextUtils.isEmpty(desc)) {
             desc = getResources().getString(R.string.empty_tip_question_desc);
         }
+        //内容
+        View view = View.inflate(ReplyQuestionActivity.this, R.layout.text_view_question_desc, null);
+        TextView textViewContent = view.findViewById(R.id.tv_content);
+        textViewContent.setText(Html.fromHtml(desc));
+
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("须知")
-                .setMessage(desc)
-                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-//                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                .setMessage(desc)
+                .setView(textViewContent)
+//                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
 //                        dialog.dismiss();
-//                        //退出操作
 //                    }
 //                })
+                .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //退出操作
+                    }
+                })
                 .create();
         dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
         dialog.show();
