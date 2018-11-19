@@ -140,8 +140,9 @@ public class Dictionary {
     //水平条状图
     public final static int CHART_BAR_H = 4;
 
-
     //RecyclerView最大滑动速度（dp）
     public final static int RECYCLER_VIEW_MAX_VELOCITY = 2000;
 
+    //语音文本结束符
+    public static final String VOICE_TEXT_END_SYMBOL = "。";
 }

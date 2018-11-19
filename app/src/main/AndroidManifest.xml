@@ -322,7 +322,11 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".features.modules.mine.activity.IntegralDescActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".features.modules.test.activity.SpannableStringActivity" />
+        <activity android:name=".features.modules.test.activity.SpannableStringActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.test.activity.EditTextPasteActivity"
+            android:screenOrientation="portrait"/>
+
     </application>
 
 </manifest>

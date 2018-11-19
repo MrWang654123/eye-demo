@@ -20,6 +20,7 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,10 +40,13 @@ import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.BaseFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.SpannableStringActivity;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
@@ -52,12 +56,15 @@ import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifTextView;
 
 /**
  * 默认的问题Fragment
  */
-public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
+public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements VoiceControlListener {
 
     private View contentView;
     //题目文本
@@ -79,8 +86,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
     //题目
     String mStem;
-    //音频播放按钮
-    ImageView ivVoicePlay;
+    //题目音频播放gft提示
+    GifTextView gftVoicePlay;
+    //播放的文字集合Pair<String, String>：1、文字；2、ID
+    List<Pair<String, String>> texts;
+    //播放完整结束
+    boolean isPlayFullEnd = true;
 
 
     //消息处理器
@@ -126,7 +137,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         tvQuestionTitle = contentView.findViewById(R.id.tv_question_title);
         lvQuestion = contentView.findViewById(R.id.lv_question);
         lvQuestion.setAdapter(adapter);
-        ivVoicePlay = contentView.findViewById(R.id.iv_voice_play);
+        gftVoicePlay = contentView.findViewById(R.id.gif_voice_play);
     }
 
     private void initData(){
@@ -180,7 +191,9 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
             mStem = questionInfoEntity.getStem();
         }
 
-        ivVoicePlay.requestFocus();
+        //初始隐藏题目播放提示
+        gftVoicePlay.setVisibility(View.INVISIBLE);
+        /*ivVoicePlay.requestFocus();
         //播放音频监听
         ivVoicePlay.setOnClickListener(new OnMultiClickListener() {
             @Override
@@ -204,7 +217,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
                     e.printStackTrace();
                 }
             }
-        });
+        });*/
 
         //题目点击监听
 //        tvQuestionTitle.setOnClickListener(new View.OnClickListener() {
@@ -372,10 +385,18 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
 
             });
 
+            //语音播放提示
+            if (entity.isVoicePlayingTipShow()) {
+                viewHolder.gifTextView.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.gifTextView.setVisibility(View.INVISIBLE);
+            }
+
             return convertView;
         }
 
     };
+
 
     class ViewHolder{
         //布局容器
@@ -386,11 +407,15 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         private TextView tvOptionTitle;
         //填写的答案
         private TextView tvOptionText;
+        //语音播放提示
+        private GifTextView gifTextView;
+
         void initView(View view){
             llOption = view.findViewById(R.id.ll_option);
             ivIcon = view.findViewById(R.id.iv_icon);
             tvOptionTitle = view.findViewById(R.id.tv_option_title);
             tvOptionText = view.findViewById(R.id.tv_option_text);
+            gifTextView = view.findViewById(R.id.gif_voice_play);
         }
     }
 
@@ -513,11 +538,119 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment {
         activity.toNextQuestion();
     }
 
+    /**
+     * 隐藏软键盘
+     */
     private void hiddenSoft(){
         if(getActivity().getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE){
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
+
+
+    @Override
+    public void play() {
+        //语音播放
+        ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
+        try {
+            if (activity != null) {
+                //空则初始化播放文本集合
+                if (ArrayListUtil.isEmpty(texts)) {
+                    texts = new ArrayList<Pair<String, String>>();
+                    //题目
+                    String tempStem = mStem;
+                    if (!TextUtils.isEmpty(mStem) && !(mStem.substring(mStem.length() - 1)).equals(Dictionary.VOICE_TEXT_END_SYMBOL)) {
+                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                    } else {
+                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                    }
+                    texts.add(new Pair<String, String>(tempStem, "-2"));
+                    //选项提示
+                    texts.add(new Pair<String, String>("以下是选项" + Dictionary.VOICE_TEXT_END_SYMBOL, "-1"));
+                    //选项
+                    if (ArrayListUtil.isNotEmpty(optionsList)) {
+                        for (int i=0; i<optionsList.size(); i++) {
+                            OptionsEntity option = optionsList.get(i);
+                            texts.add(new Pair<String, String>((i+1) + "。" + option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
+                        }
+                    }
+                }
+                //播放语音
+                activity.batchSpeak(texts);
+                //初始化播放完整结束标记为false
+                isPlayFullEnd = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //初始化播放完整结束标记为false
+            isPlayFullEnd = false;
+        }
+    }
+
+
+    @Override
+    public void stop() {
+        //未播放完整就结束
+        if (!isPlayFullEnd) {
+            //隐藏题目语音提示
+            gftVoicePlay.setVisibility(View.INVISIBLE);
+            //还原列表选项语音提示
+            for (OptionsEntity option : optionsList) {
+                option.setVoicePlayingTipShow(false);
+            }
+            adapter.notifyDataSetChanged();
+            //标记播放完整结束
+            isPlayFullEnd = true;
+        }
+    }
+
+
+    @Override
+    public void speechFinish(String utteranceId) {
+        if (!TextUtils.isEmpty(utteranceId)) {
+            int utteranceIdVal = Integer.parseInt(utteranceId);
+
+            //存在选项
+            if (ArrayListUtil.isNotEmpty(optionsList)) {
+                //选项的最后一项
+                if (utteranceIdVal == optionsList.size() - 1) {
+                    optionsList.get(utteranceIdVal).setVoicePlayingTipShow(false);
+                    adapter.notifyDataSetChanged();
+                    //播放完整结束标记为true
+                    isPlayFullEnd = true;
+                }
+            }
+        }
+
+        //隐藏题目语音提示
+        gftVoicePlay.setVisibility(View.INVISIBLE);
+    }
+
+
+    @Override
+    public void speechStart(String utteranceId) {
+        //还原列表选项语音提示
+        for (OptionsEntity option : optionsList) {
+            option.setVoicePlayingTipShow(false);
+        }
+
+        if (!TextUtils.isEmpty(utteranceId)) {
+            int utteranceIdVal = Integer.parseInt(utteranceId);
+            //题目
+            if (utteranceIdVal == -1 || utteranceIdVal == -2) {
+                gftVoicePlay.setVisibility(View.VISIBLE);
+
+            } else {
+                //选项列表
+                optionsList.get(utteranceIdVal).setVoicePlayingTipShow(true);
+            }
+
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
 
 }

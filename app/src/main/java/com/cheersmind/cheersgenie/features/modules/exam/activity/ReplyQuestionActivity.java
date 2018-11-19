@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -33,6 +34,8 @@ import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
+import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
+import com.cheersmind.cheersgenie.features.interfaces.baidu.MainHandlerConstant;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.UiMessageListener;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.control.InitConfig;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherizer;
@@ -146,6 +149,8 @@ public class ReplyQuestionActivity extends BaseActivity {
     List<Fragment> fragments = new ArrayList<>();
     //适配器
     FragmentPagerAdapter adapter;
+    //当前位置
+    int curPosition;
 
     //保存上一次答过的题目，key：问题ID，value：问题对象
     private ArrayMap<String, QuestionInfoEntity> arrayMapBeforeHasedReply = new ArrayMap();
@@ -304,6 +309,7 @@ public class ReplyQuestionActivity extends BaseActivity {
             //释放音频资源
             if (synthesizer != null) {
                 synthesizer.release();
+                synthesizer = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -401,6 +407,30 @@ public class ReplyQuestionActivity extends BaseActivity {
 
 
     /**
+     * 批量播放
+     */
+    public void batchSpeak(List<Pair<String, String>> texts) {
+//        List<Pair<String, String>> texts = new ArrayList<Pair<String, String>>();
+//        texts.add(new Pair<String, String>("开始批量播放，", "a0"));
+//        texts.add(new Pair<String, String>("123456，", "a1"));
+//        texts.add(new Pair<String, String>("欢迎使用百度语音，，，", "a2"));
+//        texts.add(new Pair<String, String>("重(chong2)量这个是多音字示例", "a3"));
+        // android 6.0以上动态权限申请
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
+                ActivityCompat.requestPermissions(this, permissions, READ_EXTERNAL_STORAGE);
+                return;
+            }
+        }
+        //先停止
+        stop();
+
+        int result = synthesizer.batchSpeak(texts);
+        System.out.println("播放语音batchSpeak结果码："+ result);
+    }
+
+
+    /**
      * 暂停播放。仅调用speak后生效
      */
     private void pause() {
@@ -489,6 +519,35 @@ public class ReplyQuestionActivity extends BaseActivity {
     @Override
     public void onHandleMessage(Message msg) {
         super.onHandleMessage(msg);
+        switch (msg.what) {
+            //语音播放结束
+            case MainHandlerConstant.SPEECH_START: {
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener) fragment).speechStart((String)msg.obj);
+                }
+                System.out.println("语音开始播放");
+                break;
+            }
+            //语音播放结束
+            case MainHandlerConstant.SPEECH_FINISH: {
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener) fragment).speechFinish((String)msg.obj);
+                }
+                System.out.println("语音播放结束");
+                break;
+            }
+            //合成或者播放错误
+            case MainHandlerConstant.ERROR: {
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener) fragment).speechFinish(null);
+                }
+                System.out.println("语音合成或者错误");
+                break;
+            }
+        }
     }
 
 
@@ -596,7 +655,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
     /**
      * 排序问题集合，已答的在前面
-     * @param questionList
+     * @param questionList 问题列表
      */
     private void sortForQuestionList(List<QuestionInfoEntity> questionList) {
         if (ArrayListUtil.isEmpty(questionList)) return;
@@ -623,7 +682,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
     /**
      * 添加之前答过的题目到集合中
-     * @param questionInfoEntity
+     * @param questionInfoEntity 问题对象
      */
     private void saveBeforeHasedReply(QuestionInfoEntity questionInfoEntity) {
         if (questionInfoEntity == null) return;
@@ -633,7 +692,7 @@ public class ReplyQuestionActivity extends BaseActivity {
 
     /**
      * 添加当前题目的答案到集合中
-     * @param optionsEntity
+     * @param optionsEntity 选项对象
      */
     public void saveCurHasedReply(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         if (optionsEntity == null) return;
@@ -666,9 +725,9 @@ public class ReplyQuestionActivity extends BaseActivity {
 
     /**
      * 选项转成答案dto
-     * @param childFactorId
-     * @param optionsEntity
-     * @return
+     * @param childFactorId 孩子因子ID
+     * @param optionsEntity 选项对象
+     * @return 答案dto
      */
     private AnswerDto assembleAnswerDto(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         AnswerDto answerDto = new AnswerDto();
@@ -754,6 +813,14 @@ public class ReplyQuestionActivity extends BaseActivity {
 
                 //清空语音
                 stop();
+                //调用离开前的fragment清空处理播放相关视图
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener)fragment).stop();
+                }
+
+                //记录当前位置
+                curPosition = position;
             }
 
             @Override
@@ -766,13 +833,23 @@ public class ReplyQuestionActivity extends BaseActivity {
     }
 
 
-    @OnClick(R.id.btn_pre)
+    @OnClick({R.id.btn_pre, R.id.fabVoicePlay})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //上一题
-            case R.id.btn_pre:
+            case R.id.btn_pre: {
                 toPreQuestion();
                 break;
+            }
+            //语音播放
+            case R.id.fabVoicePlay: {
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener)fragment).play();
+                }
+
+                break;
+            }
         }
     }
 
@@ -1213,5 +1290,6 @@ public class ReplyQuestionActivity extends BaseActivity {
         dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
         dialog.show();
     }
+
 
 }

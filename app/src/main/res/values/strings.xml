@@ -89,7 +89,7 @@
     <string name="placeholder_for_item">######</string>
 
     <!--列表加载更多-->
-    <string name="brvah_loading">正在加载中...</string>
+    <string name="brvah_loading">正在加载中…</string>
     <string name="brvah_load_failed">加载失败，请点我重试</string>
     <string name="brvah_load_end">已经到底了</string>
 
@@ -108,7 +108,8 @@
     <string name="look_report">查看报告</string>
     <string name="cost_time">约%s分钟</string>
     <string name="question_submit_tip">恭喜你，完成所有问题，是否提交结果？</string>
-
+    <string name="pre_question">上一题</string>
+    <string name="submit">提交</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>

@@ -38,6 +38,10 @@ public class OptionsEntity implements Serializable{
     @InjectMap(name = "show_value")
     private int showValue;
 
+    //正在播放语音的提示
+    private boolean voicePlayingTipShow;
+
+
     public String getContent() {
         return content;
     }
@@ -92,5 +96,13 @@ public class OptionsEntity implements Serializable{
 
     public void setShowValue(int showValue) {
         this.showValue = showValue;
+    }
+
+    public boolean isVoicePlayingTipShow() {
+        return voicePlayingTipShow;
+    }
+
+    public void setVoicePlayingTipShow(boolean voicePlayingTipShow) {
+        this.voicePlayingTipShow = voicePlayingTipShow;
     }
 }

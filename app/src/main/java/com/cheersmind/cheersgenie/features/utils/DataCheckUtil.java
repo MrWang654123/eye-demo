@@ -49,6 +49,20 @@ public class DataCheckUtil {
     }
 
     /**
+     * 数字
+     * @param str
+     * @return
+     */
+    public static boolean isNumber(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        } else {
+            String reg = "[0-9]*";
+            return str.matches(reg);
+        }
+    }
+
+    /**
      * 数字和字母
      * @param str
      * @return

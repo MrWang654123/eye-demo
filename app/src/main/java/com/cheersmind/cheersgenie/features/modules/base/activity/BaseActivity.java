@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -84,6 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     protected SessionCreateResult sessionCreateResult;
 
     //消息处理器
+    @SuppressLint("HandlerLeak")
     protected Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
