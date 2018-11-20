@@ -49,6 +49,7 @@ public class UiMessageListener extends MessageListener {
         // sendMessage("onSpeechProgressChanged");
         if (mainHandler != null) {
             mainHandler.sendMessage(mainHandler.obtainMessage(UI_CHANGE_INPUT_TEXT_SELECTION, progress, 0));
+            System.out.println("播放进度：" + progress);
         }
     }
 

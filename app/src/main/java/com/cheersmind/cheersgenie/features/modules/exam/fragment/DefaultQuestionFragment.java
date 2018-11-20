@@ -11,6 +11,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -40,6 +41,7 @@ import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.BaseFragment;
@@ -92,6 +94,8 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     List<Pair<String, String>> texts;
     //播放完整结束
     boolean isPlayFullEnd = true;
+    //是否暂停
+    boolean isPause = false;
 
 
     //消息处理器
@@ -551,43 +555,71 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
 
     @Override
     public void play() {
-        //语音播放
-        ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
-        try {
-            if (activity != null) {
-                //空则初始化播放文本集合
-                if (ArrayListUtil.isEmpty(texts)) {
-                    texts = new ArrayList<Pair<String, String>>();
-                    //题目
-                    String tempStem = mStem;
-                    if (!TextUtils.isEmpty(mStem) && !(mStem.substring(mStem.length() - 1)).equals(Dictionary.VOICE_TEXT_END_SYMBOL)) {
-                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
-                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
-                    } else {
-                        tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
-                    }
-                    texts.add(new Pair<String, String>(tempStem, "-2"));
-                    //选项提示
+        ReplyQuestionActivity activity = (ReplyQuestionActivity) getActivity();
+        //完整播放完
+        if (isPlayFullEnd) {
+            //语音播放
+            try {
+                if (activity != null) {
+                    //空则初始化播放文本集合
+                    if (ArrayListUtil.isEmpty(texts)) {
+                        texts = new ArrayList<Pair<String, String>>();
+                        //题目
+                        String tempStem = mStem;
+                        if (!TextUtils.isEmpty(mStem) && !(mStem.substring(mStem.length() - 1)).equals(Dictionary.VOICE_TEXT_END_SYMBOL)) {
+                            tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                            tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                        } else {
+                            tempStem += Dictionary.VOICE_TEXT_END_SYMBOL;
+                        }
+                        texts.add(new Pair<String, String>(tempStem, "-2"));
+                        //选项提示
 //                    texts.add(new Pair<String, String>("以下是选项" + Dictionary.VOICE_TEXT_END_SYMBOL, "-1"));
-                    //选项
-                    if (ArrayListUtil.isNotEmpty(optionsList)) {
-                        for (int i=0; i<optionsList.size(); i++) {
-                            OptionsEntity option = optionsList.get(i);
+                        //选项
+                        if (ArrayListUtil.isNotEmpty(optionsList)) {
+                            for (int i = 0; i < optionsList.size(); i++) {
+                                OptionsEntity option = optionsList.get(i);
 //                            texts.add(new Pair<String, String>((i+1) + "。" + option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
-                            texts.add(new Pair<String, String>(option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
+                                texts.add(new Pair<String, String>(option.getContent() + Dictionary.VOICE_TEXT_END_SYMBOL, String.valueOf(i)));
+                            }
                         }
                     }
+                    //播放语音
+                    activity.batchSpeak(texts);
+                    //初始化播放完整结束标记为false
+                    isPlayFullEnd = false;
+                    //切换语音按钮为暂停图标
+                    activity.switchToPauseIcon();
                 }
-                //播放语音
-                activity.batchSpeak(texts);
+            } catch (Exception e) {
+                e.printStackTrace();
                 //初始化播放完整结束标记为false
                 isPlayFullEnd = false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            //初始化播放完整结束标记为false
-            isPlayFullEnd = false;
+
+        } else {
+            try {
+                if (activity != null) {
+                    if (isPause) {
+                        //继续播放
+                        activity.resume();
+                        isPause = false;
+                        //切换语音按钮为暂停图标
+                        activity.switchToPauseIcon();
+                    } else {
+                        //暂停
+                        activity.pause();
+                        isPause = true;
+                        //切换语音按钮为播放图标
+                        activity.switchToPlayIcon();
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
 
@@ -605,6 +637,14 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
             //标记播放完整结束
             isPlayFullEnd = true;
         }
+
+        //还原暂停标记
+        isPause = false;
+        //切换语音按钮为播放图标
+        FragmentActivity activity = getActivity();
+        if (activity instanceof VoiceButtonUISwitchListener) {
+            ((VoiceButtonUISwitchListener)activity).switchToPlayIcon();
+        }
     }
 
 
@@ -621,6 +661,13 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
                     adapter.notifyDataSetChanged();
                     //播放完整结束标记为true
                     isPlayFullEnd = true;
+                    //还原暂停标记
+                    isPause = false;
+                    //切换语音按钮为播放图标
+                    FragmentActivity activity = getActivity();
+                    if (activity instanceof VoiceButtonUISwitchListener) {
+                        ((VoiceButtonUISwitchListener)activity).switchToPlayIcon();
+                    }
                 }
             }
         }

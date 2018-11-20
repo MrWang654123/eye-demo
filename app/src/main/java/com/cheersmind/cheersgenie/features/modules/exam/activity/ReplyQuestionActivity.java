@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,21 +14,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.baidu.tts.chainofresponsibility.logger.LoggerProxy;
@@ -38,11 +32,11 @@ import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
+import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.MainHandlerConstant;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.UiMessageListener;
@@ -93,7 +87,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -101,7 +94,7 @@ import butterknife.OnClick;
 /**
  * 回答问题的页面
  */
-public class ReplyQuestionActivity extends BaseActivity {
+public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUISwitchListener {
 
     //请求读取外部文件
     public static final int READ_EXTERNAL_STORAGE = 950;
@@ -180,9 +173,9 @@ public class ReplyQuestionActivity extends BaseActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
-    //描述悬浮按钮
-    @BindView(R.id.fabDesc)
-    FloatingActionButton fabDesc;
+    //语音播放悬浮按钮
+    @BindView(R.id.fabVoicePlay)
+    FloatingActionButton fabVoicePlay;
 
 
     /**
@@ -446,7 +439,7 @@ public class ReplyQuestionActivity extends BaseActivity {
     /**
      * 暂停播放。仅调用speak后生效
      */
-    private void pause() {
+    public void pause() {
         if (synthesizer != null) {
             int result = synthesizer.pause();
             System.out.println("播放语音pause结果码：" + result);
@@ -456,7 +449,7 @@ public class ReplyQuestionActivity extends BaseActivity {
     /**
      * 继续播放。仅调用speak后生效，调用pause生效
      */
-    private void resume() {
+    public void resume() {
         if (synthesizer != null) {
             int result = synthesizer.resume();
             System.out.println("播放语音resume结果码：" + result);
@@ -1311,17 +1304,17 @@ public class ReplyQuestionActivity extends BaseActivity {
 
 
     /**
-     * 弹出描述框
+     * 弹出须知弹窗
      */
     void popupDescWindows() {
-        String desc = dimensionInfoEntity.getDescription();
-        if (TextUtils.isEmpty(desc)) {
-            desc = getResources().getString(R.string.empty_tip_question_desc);
+        String definition = dimensionInfoEntity.getDefinition();
+        if (TextUtils.isEmpty(definition)) {
+            definition = getResources().getString(R.string.empty_tip_question_definition);
         }
         //内容
-        View view = View.inflate(ReplyQuestionActivity.this, R.layout.text_view_question_desc, null);
+        View view = View.inflate(ReplyQuestionActivity.this, R.layout.text_view_question_definition, null);
         TextView textViewContent = view.findViewById(R.id.tv_content);
-        textViewContent.setText(Html.fromHtml(desc));
+        textViewContent.setText(Html.fromHtml(definition));
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("须知")
@@ -1345,4 +1338,15 @@ public class ReplyQuestionActivity extends BaseActivity {
         dialog.show();
     }
 
+    @Override
+    public void switchToPlayIcon() {
+        fabVoicePlay.setImageResource(R.drawable.voice_play_white);
+    }
+
+    @Override
+    public void switchToPauseIcon() {
+        fabVoicePlay.setImageResource(R.drawable.voice_pause);
+    }
+
 }
+

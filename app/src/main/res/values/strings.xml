@@ -178,7 +178,7 @@
     <string name="empty_tip_article_on_category">暂无该分类的文章</string>
     <string name="empty_tip_article_for_search">暂无结果\n换个关键词试试吧~</string>
     <string name="empty_tip_category">暂无分类</string>
-    <string name="empty_tip_question_desc">暂无说明</string>
+    <string name="empty_tip_question_definition">暂无说明</string>
 
     <!--behaver-->
     <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>
