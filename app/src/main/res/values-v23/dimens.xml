@@ -1,0 +1,6 @@
+<resources>
+
+    <!--文章详情-->
+    <dimen name="close_button_margin_top">30dp</dimen><!--关闭按钮顶部外间距-->
+
+</resources>

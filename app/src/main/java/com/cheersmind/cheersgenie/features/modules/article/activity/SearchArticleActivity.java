@@ -166,7 +166,7 @@ public class SearchArticleActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //默认白色
-        setStatusBarColor(SearchArticleActivity.this, Color.parseColor("#ffffff"));
+        setStatusBarBackgroundColor(SearchArticleActivity.this, Color.parseColor("#ffffff"));
 
         //适配器
         recyclerAdapter = new HomeRecyclerAdapter(SearchArticleActivity.this, R.layout.recycleritem_home, null);

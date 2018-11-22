@@ -97,7 +97,7 @@ public class BaseActivity extends AppCompatActivity {
             int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             decorView.setSystemUiVisibility(option);
-//            activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
+//            activity.getWindow().setStatusBarBackgroundColor(Color.TRANSPARENT);
             activity.getWindow().setStatusBarColor(colorStatus);
             //4.4到5.0
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

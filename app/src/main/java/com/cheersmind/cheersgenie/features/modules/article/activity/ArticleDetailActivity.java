@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.article.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,19 +10,17 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.transition.Explode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
@@ -285,7 +284,9 @@ public class ArticleDetailActivity extends BaseActivity {
     @Override
     public void onInitView() {
         //默认白色
-        setStatusBarColor(ArticleDetailActivity.this, Color.parseColor("#ffffff"));
+//        setStatusBarBackgroundColor(ArticleDetailActivity.this, Color.parseColor("#ffffff"));
+        setStatusBarBackgroundColor(this, Color.TRANSPARENT);
+        setStatusBarTextColor();
 
         //正在加载提示
 //        xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
@@ -404,6 +405,99 @@ public class ArticleDetailActivity extends BaseActivity {
 //        webArticleContent.loadDataWithBaseURL(null, tempContent, "text/html","utf-8",null);
 
 //        initVideo();
+    }
+
+
+    /**
+     * 设置状态栏背景颜色
+     * （目前只支持5.0以上，4.4到5.0之间由于各厂商存在兼容问题，故暂不考虑）
+     * @param activity 页面
+     * @param colorStatus 颜色
+     */
+    protected void setStatusBarBackgroundColor(Activity activity, int colorStatus) {
+        //6.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = activity.getWindow();
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            //需要设置这个 flag 才能调用 setStatusBarColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(Color.TRANSPARENT);
+            //底部导航栏
+            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+
+//            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+//            View mChildView = mContentView.getChildAt(0);
+//            if (mChildView != null) {
+//                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+//                mChildView.setFitsSystemWindows(true);
+//            }
+
+            //5.0及以上
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            //需要设置这个 flag 才能调用 setStatusBarBackgroundColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(getResources().getColor(R.color.color_000000));//Color.TRANSPARENT半透明
+            //底部导航栏
+            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+
+            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }
+
+            //4.4到5.0
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            /*Window window = activity.getWindow();
+            ViewGroup decorViewGroup = (ViewGroup) window.getDecorView();
+            View statusBarView = new View(window.getContext());
+            int statusBarHeight = getStatusBarHeight(window.getContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, statusBarHeight);
+            params.gravity = Gravity.TOP;
+            statusBarView.setLayoutParams(params);
+            statusBarView.setBackgroundColor(colorStatus);
+            decorViewGroup.addView(statusBarView);
+
+            ViewGroup mContentView = (ViewGroup) window.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }*/
+        }
+    }
+
+
+    /**
+     * 设置状态栏文字以及图标颜色
+     */
+    protected void setStatusBarTextColor() {
+        //设置状态栏文字颜色及图标为深色
+        //View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN 是从API 16开始启用，实现效果：
+        //视图延伸至状态栏区域，状态栏悬浮于视图之上
+        //View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 是从 API 23开始启用，实现效果：
+        //设置状态栏图标和状态栏文字颜色为深色，为适应状态栏背景为浅色调，该Flag只有在使用了FLAG_DRWS_SYSTEM_BAR_BACKGROUNDS，
+        // 并且没有使用FLAG_TRANSLUCENT_STATUS时才有效，即只有在透明状态栏时才有效。
+        //6.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            //设置状态栏文字颜色及图标为浅色
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+            //4.1及以上
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
     }
 
 

@@ -3,7 +3,6 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -13,12 +12,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +35,6 @@ import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
-import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -47,7 +42,6 @@ import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
-import com.cheersmind.cheersgenie.main.entity.MessageEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -56,7 +50,6 @@ import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.cheersmind.cheersgenie.module.login.UserService;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
@@ -64,7 +57,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * 基础页面
@@ -94,6 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         }
     };
 
+
     /**
      * 设置Activity要显示的布局
      *
@@ -121,12 +114,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         }
 
         //设置状态栏颜色
-        setStatusBarColor(this, getStatusBarColor());
+        setStatusBarBackgroundColor(this, getStatusBarColor());
 
-        //设置状态栏文字颜色及图标为深色
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        //设置状态栏文字颜色及图标为浅色
-//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        //设置状态栏文字以及图标颜色
+        setStatusBarTextColor();
 
         //设置自定义左侧键点击监听
         if (ivLeft != null) {
@@ -199,15 +190,14 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
 
     /**
-     * 设置状态栏颜色
+     * 设置状态栏背景颜色
      * （目前只支持5.0以上，4.4到5.0之间由于各厂商存在兼容问题，故暂不考虑）
-     * （用全屏的方式来强行模拟，感觉没必要）
-     * @param activity
-     * @param colorStatus
+     * @param activity 页面
+     * @param colorStatus 颜色
      */
-    protected void setStatusBarColor(Activity activity, int colorStatus) {
-        //5.0及以上
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    protected void setStatusBarBackgroundColor(Activity activity, int colorStatus) {
+        //6.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = activity.getWindow();
             //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -216,6 +206,26 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             //设置状态栏颜色
             window.setStatusBarColor(colorStatus);
+            //底部导航栏
+            //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
+
+            ViewGroup mContentView = (ViewGroup) activity.findViewById(Window.ID_ANDROID_CONTENT);
+            View mChildView = mContentView.getChildAt(0);
+            if (mChildView != null) {
+                //注意不是设置 ContentView 的 FitsSystemWindows, 而是设置 ContentView 的第一个子 View . 预留出系统 View 的空间.
+                mChildView.setFitsSystemWindows(true);
+            }
+
+            //5.0及以上
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            //取消设置透明状态栏,使 ContentView 内容不再覆盖状态栏
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+            //需要设置这个 flag 才能调用 setStatusBarBackgroundColor 来设置状态栏颜色
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            //设置状态栏颜色
+            window.setStatusBarColor(getResources().getColor(R.color.color_000000));//Color.TRANSPARENT半透明
             //底部导航栏
             //window.setNavigationBarColor(activity.getResources().getColor(colorResId));
 
@@ -250,10 +260,33 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
     /**
      * 用于子页面设置状态栏颜色（目前只支持5.0以后）
-     * @return
+     * @return 颜色数值
      */
     protected int getStatusBarColor() {
         return getResources().getColor(R.color.colorPrimary);
+    }
+
+
+    /**
+     * 设置状态栏文字以及图标颜色
+     */
+    protected void setStatusBarTextColor() {
+        //设置状态栏文字颜色及图标为深色
+        //View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN 是从API 16开始启用，实现效果：
+        //视图延伸至状态栏区域，状态栏悬浮于视图之上
+        //View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 是从 API 23开始启用，实现效果：
+        //设置状态栏图标和状态栏文字颜色为深色，为适应状态栏背景为浅色调，该Flag只有在使用了FLAG_DRWS_SYSTEM_BAR_BACKGROUNDS，
+        // 并且没有使用FLAG_TRANSLUCENT_STATUS时才有效，即只有在透明状态栏时才有效。
+        //6.0及以上
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+            //4.1及以上
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+        //设置状态栏文字颜色及图标为浅色
+//        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     /**

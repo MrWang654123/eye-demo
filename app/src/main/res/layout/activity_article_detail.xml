@@ -1,66 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
+    tools:context=".features.modules.article.activity.ArticleDetailActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".features.modules.article.activity.ArticleDetailActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--标题栏-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:contentInsetStart="0dp"
-            app:title=" "
-            app:layout_scrollFlags="scroll|enterAlways">
-            <!--android:layout_height="@dimen/heightSmalltWidget"-->
-            <!--左侧系统按钮-->
-            <!--app:navigationIcon="?attr/homeAsUpIndicator"-->
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white">
-
-                <ImageView
-                    android:id="@+id/iv_left"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:padding="14dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="3dp"
-                    android:src="@drawable/back_black"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/color_f2f2f2"/>
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-
+    <!--主体布局-->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-        <!--主体布局-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -105,18 +58,6 @@
                             android:visibility="gone"/>
                         <!--app:layout_constraintDimensionRatio="h,16:9"-->
 
-                        <ImageView
-                            android:id="@+id/iv_close"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:padding="10dp"
-                            android:src="@drawable/close_white"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            android:layout_margin="10dp"
-                            android:background="@drawable/shape_corner_22000000_20dp"
-                            tools:ignore="ContentDescription" />
-
                         <!--<ImageView-->
                             <!--android:id="@+id/iv_main"-->
                             <!--android:layout_width="match_parent"-->
@@ -145,13 +86,15 @@
                         android:textColor="@color/color_333333"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:gravity="center_horizontal"
-                        android:layout_marginLeft="45dp"
-                        android:layout_marginRight="45dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="15dp"
                         android:lineSpacingMultiplier="1.2"
                         android:text="如何培养学生的学习习惯水电费水电费快速的开发" />
+                    <!--android:gravity="center_horizontal"-->
+                    <!--android:layout_marginLeft="45dp"-->
+                    <!--android:layout_marginRight="45dp"-->
 
                     <!--android:textColor="@color/color_555555"-->
                     <!--android:textSize="21sp"-->
@@ -167,9 +110,9 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="10dp"
-                        android:gravity="center_horizontal"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp">
+                        <!--android:gravity="center_horizontal"-->
 
                         <TextView
                             android:id="@+id/tv_author"
@@ -598,15 +541,28 @@
 
         </LinearLayout>
 
-        <!--空布局-->
-        <com.cheersmind.cheersgenie.features.view.XEmptyLayout
-            android:id="@+id/emptyLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-        </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+        <!--退出按钮-->
+        <ImageView
+            android:id="@+id/iv_close"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:padding="10dp"
+            android:src="@drawable/close_white"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="@dimen/close_button_margin_top"
+            android:background="@drawable/shape_corner_22000000_20dp"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+    </com.cheersmind.cheersgenie.features.view.XEmptyLayout>
+
+</RelativeLayout>

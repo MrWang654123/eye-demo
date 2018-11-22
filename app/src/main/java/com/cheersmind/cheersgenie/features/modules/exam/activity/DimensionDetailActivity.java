@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,12 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
-import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
@@ -28,7 +23,6 @@ import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -145,17 +139,17 @@ public class DimensionDetailActivity extends BaseActivity {
 //        if (!TextUtils.isEmpty(dimensionInfoEntity.getBackgroundColor())) {
 //            try {
 //                //使用后端返回的颜色
-//                setStatusBarColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
+//                setStatusBarBackgroundColor(DimensionDetailActivity.this, Color.parseColor(dimensionInfoEntity.getBackgroundColor()));
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
 //        } else {
 //            //默认绿色？
-//            setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
+//            setStatusBarBackgroundColor(DimensionDetailActivity.this, Color.parseColor("#87c1b7"));
 //        }
 
         //默认白色
-        setStatusBarColor(DimensionDetailActivity.this, Color.parseColor("#ffffff"));
+        setStatusBarBackgroundColor(DimensionDetailActivity.this, Color.parseColor("#ffffff"));
 
         //标题
         tvToolbarTitle.setText(dimensionInfoEntity.getDimensionName());

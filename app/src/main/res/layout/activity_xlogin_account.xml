@@ -272,13 +272,13 @@
             android:textSize="14sp"
             android:textColor="@color/color_666666"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="15dp"
             android:text="其他登录方式"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
             <!--微信-->
@@ -287,7 +287,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:paddingLeft="40dp"
                 android:orientation="vertical">
 
                 <ImageView
@@ -312,7 +311,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingRight="40dp"
                 android:visibility="visible"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">

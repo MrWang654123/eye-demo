@@ -1,12 +1,4 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="heightDefaultWidget">46dp</dimen> <!-- 默认控件高度 -->
-    <dimen name="heightSmalltWidget">44dp</dimen> <!-- 默认控件高度 -->
-    <dimen name="heightBigWidget">48dp</dimen> <!-- 默认控件高度 -->
-    <dimen name="heightXBigWidget">52dp</dimen> <!-- 默认控件高度 -->
 
     <!--确认按钮的左右外间距-->
     <dimen name="confirm_btn_margin_left">150dp</dimen>

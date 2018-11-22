@@ -239,13 +239,13 @@ public class ArticleListActivity extends BaseActivity {
             if (!TextUtils.isEmpty(category.getBackgroundColor())) {
                 try {
                     //使用后端返回的颜色
-                    setStatusBarColor(ArticleListActivity.this, Color.parseColor(category.getBackgroundColor()));
+                    setStatusBarBackgroundColor(ArticleListActivity.this, Color.parseColor(category.getBackgroundColor()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
                 //默认绿色？
-//                setStatusBarColor(ArticleListActivity.this, Color.parseColor("#87c1b7"));
+//                setStatusBarBackgroundColor(ArticleListActivity.this, Color.parseColor("#87c1b7"));
             }
 
             //主图

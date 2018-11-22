@@ -2,8 +2,6 @@ package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.view.PagerAdapter;
@@ -23,10 +21,8 @@ import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
 
 
@@ -60,7 +56,7 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
     protected void onInitView() {
 
         //修改状态栏颜色
-        setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+        setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
 
         views = new ArrayList<View>();
 
@@ -143,19 +139,19 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
         switch (position){
             case 0:
                 //修改状态栏颜色
-                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
                 break;
             case 1:
                 //修改状态栏颜色
-                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_2));
+                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_2));
                 break;
             case 2:
                 //修改状态栏颜色
-                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_3));
+                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_3));
                 break;
             case 3:
                 //修改状态栏颜色
-                setStatusBarColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_4));
+                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_4));
                 break;
         }
     }

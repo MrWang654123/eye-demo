@@ -12,6 +12,7 @@
     <!--<color name="colorPrimary">#6b82e2</color>-->
     <!--<color name="colorPrimaryDark">#4185cc</color>-->
     <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="color_000000">#000000</color>
     <color name="color_333333">#333333</color>
     <color name="color_444444">#444444</color>
     <color name="color_555555">#555555</color>

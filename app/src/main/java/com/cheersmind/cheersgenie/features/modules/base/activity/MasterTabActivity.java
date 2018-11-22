@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +14,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.view.MenuItem;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
@@ -24,8 +22,6 @@ import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.ReportFragment;
-import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
@@ -196,22 +192,22 @@ public class MasterTabActivity extends BaseActivity {
                 case 0:
                     index = 0;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
+                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 1:
                     index = 1;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
+                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 2:
                     index = 2;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
+                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 3:
                     index = 3;
                     //修改状态栏颜色
-                    setStatusBarColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
+                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
             }
 
