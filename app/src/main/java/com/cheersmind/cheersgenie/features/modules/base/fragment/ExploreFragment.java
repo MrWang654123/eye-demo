@@ -240,8 +240,8 @@ public class ExploreFragment extends LazyLoadFragment {
 //                float density = getResources().getDisplayMetrics().density;
 ////                bannerPageMargin = -(int) (margin/2 * 3 + width*0.01);
 
-                bannerPageMargin = -((int) (margin/2 * 3) + bannerPageMarginExtra);
-                bannerPageMargin = ((int) (margin/2));
+//                bannerPageMargin = -((int) (margin/2 * 3) + bannerPageMarginExtra);
+//                bannerPageMargin = ((int) (margin/2));
                 bannerPageMargin =  -((int)(width * 0.13 - margin/5f*2));
 
 //                ToastUtil.showLong(getContext(), "density：" + density + " margin：" + margin +" 屏宽：" + metrics.widthPixels + "  temp：" + temp + "  bannerPageMargin：" + bannerPageMargin);
