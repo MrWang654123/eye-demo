@@ -61,13 +61,12 @@ public class SoundPlayUtils {
         SharedPreferences soundPreference = mContext.getSharedPreferences("setting_sound", MODE_PRIVATE);
         SharedPreferences.Editor editor = soundPreference.edit();
         editor.putBoolean("is_sound",isSound);
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean getSoundStatus(){
         SharedPreferences soundPreference = mContext.getSharedPreferences("setting_sound", MODE_PRIVATE);
-        boolean isSound = soundPreference.getBoolean("is_sound",false);
-        return isSound;
+        return soundPreference.getBoolean("is_sound",false);
     }
 
 }

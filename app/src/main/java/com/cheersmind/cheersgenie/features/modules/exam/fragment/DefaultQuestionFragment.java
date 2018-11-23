@@ -131,8 +131,10 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     public void onDestroyView() {
         //记录当前选中项
         Bundle arguments = getArguments();
-        arguments.putInt("curSelect", curSelect);
-        arguments.putString("optionText", optionText);
+        if (arguments != null) {
+            arguments.putInt("curSelect", curSelect);
+            arguments.putString("optionText", optionText);
+        }
         super.onDestroyView();
     }
 
@@ -532,14 +534,18 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
 
     /**
      * 保存当前题目的答题
-     * @param optionsEntity
+     * @param childFactorId 孩子因子ID
+     * @param optionsEntity 选项对象
+     * @param optionText 选项填写的文本
      */
     private void saveReplyInfo(String childFactorId, OptionsEntity optionsEntity, String optionText) {
         ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
-        //处理答题信息
-        activity.saveCurHasedReply(childFactorId, optionsEntity, optionText);
-        //跳到下一题
-        activity.toNextQuestion();
+        if (activity != null) {
+            //处理答题信息
+            activity.saveCurHasedReply(childFactorId, optionsEntity, optionText);
+            //跳到下一题
+            activity.toNextQuestion();
+        }
     }
 
     /**

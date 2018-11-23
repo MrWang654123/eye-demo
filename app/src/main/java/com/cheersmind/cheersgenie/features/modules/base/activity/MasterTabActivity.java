@@ -137,7 +137,7 @@ public class MasterTabActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         //初始化声音
-        SoundPlayUtils.init(this);
+//        SoundPlayUtils.init(this);
 
         //检查更新
 //        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {

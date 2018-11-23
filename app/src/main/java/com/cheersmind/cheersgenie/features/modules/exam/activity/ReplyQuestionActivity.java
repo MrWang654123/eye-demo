@@ -760,7 +760,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     private void initQuestionFragment(List<QuestionInfoEntity> questionList) {
         //设置viewpage缓存界面数
 //        vpQuestion.setOffscreenPageLimit(questionList.size());
-//        vpQuestion.setOffscreenPageLimit(5);
+        vpQuestion.setOffscreenPageLimit(3);
         for (int i = 0; i < questionList.size(); i++) {
             QuestionInfoEntity entity = questionList.get(i);
 

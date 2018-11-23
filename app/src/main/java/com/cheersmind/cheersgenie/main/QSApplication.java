@@ -31,6 +31,7 @@ import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
 import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.PhoneUtil;
+import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -159,6 +160,8 @@ public class QSApplication extends LitePalApplication {
         //MediaSystem（默认）
 //        JZVideoPlayer.setMediaInterface(new JZMediaSystem());
 
+        //初始化声音
+        SoundPlayUtils.init(context);
     }
 
     /**
