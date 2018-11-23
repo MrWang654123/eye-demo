@@ -85,7 +85,7 @@ public class MasterTabActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //ButterKnife绑定页面
-        ButterKnife.bind(this);
+//        ButterKnife.bind(this);
         //向ViewPager添加各页面
         listFragment = new ArrayList<>();
         //首页改为探索

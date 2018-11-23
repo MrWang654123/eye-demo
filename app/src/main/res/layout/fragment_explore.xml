@@ -13,8 +13,9 @@
         android:layout_height="@dimen/heightBigWidget"
         android:fitsSystemWindows="true"
         app:contentInsetStart="0dp"
-        android:visibility="visible"
-        android:background="@color/colorPrimary">
+        android:padding="0dp"
+        android:background="@color/colorPrimary"
+        app:title=" ">
         <!--app:navigationIcon="@android:drawable/btn_dialog"-->
         <RelativeLayout
             android:layout_width="match_parent"
