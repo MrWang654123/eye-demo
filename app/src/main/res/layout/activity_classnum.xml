@@ -66,7 +66,7 @@
                 android:layout_marginLeft="35dp"
                 android:layout_marginRight="35dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:textSize="15sp"
                 android:textColor="@color/color_ff8b00"
                 android:text=""/>
@@ -93,9 +93,9 @@
                 android:layout_marginRight="35dp"
                 android:gravity="center_horizontal"
                 android:background="@drawable/shape_corner_f4f5ed_8dp"
-                android:layout_marginTop="10dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="12dp"
+                android:layout_marginTop="15dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -103,18 +103,18 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/color_ff8b00"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:text="@string/class_num_tip_title"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/color_444444"
-                    android:lineSpacingMultiplier="1.2"
+                    android:lineSpacingMultiplier="1.3"
                     android:text="邀请码是由班主任或者学校其他负责人下发的8位数字及英文码，每个班级的邀请码均不相同。
 如果忘记，请询问你的班主任或者同学。"/>
 
