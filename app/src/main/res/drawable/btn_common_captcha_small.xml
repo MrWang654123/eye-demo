@@ -10,10 +10,7 @@
             <!-- <padding android:left="10dp" android:right="10dp"
                    android:top="0dp" android:bottom="0dp"/> -->
             <corners
-                android:topLeftRadius="0dp"
-                android:bottomLeftRadius="0dp"
-                android:topRightRadius="@dimen/common_corner_radius"
-                android:bottomRightRadius="@dimen/common_corner_radius"/>
+                android:radius="@dimen/common_corner_radius_small"/>
         </shape>
     </item>
 
@@ -27,10 +24,7 @@
             <!-- <padding android:left="10dp" android:right="10dp"
                    android:top="0dp" android:bottom="0dp"/> -->
             <corners
-                android:topLeftRadius="0dp"
-                android:bottomLeftRadius="0dp"
-                android:topRightRadius="@dimen/common_corner_radius"
-                android:bottomRightRadius="@dimen/common_corner_radius"/>
+                android:radius="@dimen/common_corner_radius_small"/>
         </shape>
     </item>
 
@@ -44,10 +38,7 @@
             <!-- <padding android:left="10dp" android:right="10dp"
                    android:top="0dp" android:bottom="0dp"/> -->
             <corners
-                android:topLeftRadius="0dp"
-                android:bottomLeftRadius="0dp"
-                android:topRightRadius="@dimen/common_corner_radius"
-                android:bottomRightRadius="@dimen/common_corner_radius"/>
+                android:radius="@dimen/common_corner_radius_small"/>
         </shape>
     </item>
 
@@ -61,10 +52,7 @@
             <!-- <padding android:left="10dp" android:right="10dp"
                    android:top="0dp" android:bottom="0dp"/> -->
             <corners
-                android:topLeftRadius="0dp"
-                android:bottomLeftRadius="0dp"
-                android:topRightRadius="@dimen/common_corner_radius"
-                android:bottomRightRadius="@dimen/common_corner_radius"/>
+                android:radius="@dimen/common_corner_radius_small"/>
         </shape>
     </item>
 </selector>

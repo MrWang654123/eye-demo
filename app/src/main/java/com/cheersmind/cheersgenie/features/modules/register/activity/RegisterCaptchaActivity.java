@@ -205,6 +205,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
             }
         });
 
+        //清空按钮显隐
         etPassword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -393,14 +394,25 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
 
             //点击监听，确保光标总是在末尾
-            et.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText tempEt = (EditText) v;
-//                    tempEt.requestFocus();
-                    tempEt.setSelection(tempEt.getText().length());
-                }
-            });
+//            et.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    EditText tempEt = (EditText) v;
+////                    tempEt.requestFocus();
+//                    tempEt.setSelection(tempEt.getText().length());
+//                }
+//            });
+
+            //聚焦监听，确保光标总是在末尾
+//            et.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View v, boolean hasFocus) {
+//                    if (hasFocus) {
+//                        EditText tempEt = (EditText) v;
+//                        tempEt.setSelection(tempEt.getText().length());
+//                    }
+//                }
+//            });
         }
     }
 

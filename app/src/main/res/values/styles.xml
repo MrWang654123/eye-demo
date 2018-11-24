@@ -105,8 +105,12 @@
         <item name="android:maxLength">2</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@drawable/edit_captcha_round</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/color_333333</item>
         <!--<item name="android:hint">@string/blank</item>-->
         <!--<item name="android:inputType">number</item>-->
+        <!--android:textColor="@color/color_333333"-->
+        <!--android:textSize="16sp"-->
     </style>
 
     <!--班级号-->
@@ -116,7 +120,7 @@
         <item name="android:digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</item>
         <item name="android:inputType">textEmailAddress</item><!--英文输入键盘-->
         <item name="android:textColor">@color/color_333333</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <!--可换行布局的默认风格-->
