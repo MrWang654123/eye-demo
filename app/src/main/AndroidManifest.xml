@@ -110,7 +110,7 @@
         <!-- 手机号输入页面（注册） -->
         <activity
             android:name=".features.modules.register.activity.RegisterPhoneNumActivity"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:screenOrientation="portrait"/>
         <!-- 验证码输入页面（注册） -->
         <activity
