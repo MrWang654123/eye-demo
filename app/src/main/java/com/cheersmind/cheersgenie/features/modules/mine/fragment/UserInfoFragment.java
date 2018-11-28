@@ -323,15 +323,19 @@ public class UserInfoFragment extends TakePhotoFragment {
 
         //出生年月
         String dateStr = childInfo.getBirthDay();//ISO8601 时间字符串
-        SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        try {
-            Date date = formatIso8601.parse(dateStr);
-            SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
-            String normalDateStr = formatNormal.format(date);
-            tvBirthday.setText(normalDateStr);
+        if (!TextUtils.isEmpty(dateStr)) {
+            SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+            try {
+                Date date = formatIso8601.parse(dateStr);
+                SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
+                String normalDateStr = formatNormal.format(date);
+                tvBirthday.setText(normalDateStr);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            tvBirthday.setText("--");
         }
 
         //学校

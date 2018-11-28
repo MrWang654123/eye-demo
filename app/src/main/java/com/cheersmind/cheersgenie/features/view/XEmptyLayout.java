@@ -87,6 +87,13 @@ public class XEmptyLayout extends LinearLayout {
         addView(view);
         changeErrorLayoutBgMode(context);
 
+        //点击响应
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     public void changeErrorLayoutBgMode(Context context1) {

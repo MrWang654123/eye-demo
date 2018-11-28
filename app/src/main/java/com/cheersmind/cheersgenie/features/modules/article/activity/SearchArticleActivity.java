@@ -485,6 +485,7 @@ public class SearchArticleActivity extends BaseActivity {
             //清空搜索框
             case R.id.iv_clear: {
                 etSearch.setText("");
+                SoftInputUtil.openSoftInput(SearchArticleActivity.this, etSearch);
                 break;
             }
             //搜索

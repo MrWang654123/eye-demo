@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,6 +27,8 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
     private ImageView ivIcon;
     private TextView tvExit;
     private TextView tvContinue;
+    //提示内容
+    private TextView tvContent;
 
     private Context context;
     private int type;
@@ -60,17 +63,15 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
         tvExit.setOnClickListener(this);
         tvContinue = (TextView)findViewById(R.id.tv_continue);
         tvContinue.setOnClickListener(this);
+        tvContent = findViewById(R.id.tv_content);
 
-    }
-
-    public void setType(int type) {
-        this.type = type;
-        if(type == QUIT_TYPE_TIMEOUT){
-            ivIcon.setImageResource(R.mipmap.dimension_icon_default);
-        }else{
-            ivIcon.setImageResource(R.mipmap.qs_factor_timeout_icon);
+        if (type == QUIT_TYPE_STOP) {
+            tvContent.setText(context.getResources().getString(R.string.question_stop_tip));
+        } else {
+            tvContent.setText(context.getResources().getString(R.string.question_timeout_tip));
         }
     }
+
 
     @Override
     public void onClick(View v) {

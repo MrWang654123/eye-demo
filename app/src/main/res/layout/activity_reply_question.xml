@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -152,30 +153,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <!--描述-->
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="65dp"
-                android:layout_gravity="right|bottom"
-                android:visibility="visible"
-                app:fabSize="mini"
-                android:src="@drawable/question_mark" />
-
-            <!--语音播放-->
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fabVoicePlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_gravity="right|bottom"
-                android:visibility="visible"
-                app:fabSize="mini"
-                android:src="@drawable/voice_play_white" />
-
         </FrameLayout>
 
 
@@ -210,6 +187,65 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <!--悬浮按钮布局-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--描述-->
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/fabDesc"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginBottom="95dp"-->
+            <!--android:layout_gravity="right|bottom"-->
+            <!--android:visibility="visible"-->
+            <!--app:fabSize="mini"-->
+            <!--android:src="@drawable/question_mark" />-->
+
+        <!--语音播放-->
+        <!--<android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabVoicePlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="40dp"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            app:fabSize="mini"
+            app:borderWidth="0dp"
+            android:src="@drawable/voice_play_white" />-->
+
+        <ImageView
+            android:id="@+id/fabDesc"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="100dp"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            android:padding="10dp"
+            android:background="@drawable/btn_fab"
+            android:src="@drawable/question_mark"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/fabVoicePlay"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="40dp"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            android:src="@drawable/voice_play_white"
+            android:padding="12dp"
+            android:background="@drawable/btn_fab"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
+
 
     <!--空布局-->
     <com.cheersmind.cheersgenie.features.view.XEmptyLayout

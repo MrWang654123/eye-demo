@@ -9,6 +9,7 @@ import android.util.Pair;
 import com.baidu.tts.auth.AuthInfo;
 import com.baidu.tts.client.SpeechSynthesizeBag;
 import com.baidu.tts.client.SpeechSynthesizer;
+import com.baidu.tts.client.SpeechSynthesizerListener;
 import com.baidu.tts.client.TtsMode;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.MainHandlerConstant;
 
@@ -18,14 +19,13 @@ import java.util.Map;
 
 /**
  * 该类是对SpeechSynthesizer的封装
- * <p>
- * Created by fujiayi on 2017/5/24.
+ *
+ * 在新线程中调用initTTs方法。防止UI柱塞
  */
-
 public class MySyntherizer implements MainHandlerConstant {
 
     protected SpeechSynthesizer mSpeechSynthesizer;
-    protected Context context;
+//    protected Context context;
     protected Handler mainHandler;
 
     private static final String TAG = "NonBlockSyntherizer";
@@ -34,19 +34,13 @@ public class MySyntherizer implements MainHandlerConstant {
 
     private boolean isCheckFile = true;
 
-    public MySyntherizer(Context context, InitConfig initConfig, Handler mainHandler) {
-        this(context, mainHandler);
-        init(initConfig);
-    }
 
-
-    protected MySyntherizer(Context context, Handler mainHandler) {
+    public MySyntherizer() {
         if (isInitied) {
             // SpeechSynthesizer.getInstance() 不要连续调用
             throw new RuntimeException("MySynthesizer 类里面 SpeechSynthesizer还未释放，请勿新建一个新类");
         }
-        this.context = context;
-        this.mainHandler = mainHandler;
+//        this.mainHandler = mainHandler;
         isInitied = true;
     }
 
@@ -56,7 +50,7 @@ public class MySyntherizer implements MainHandlerConstant {
      * @param config
      * @return
      */
-    protected boolean init(InitConfig config) {
+    public boolean init(Context context, InitConfig config) {
 
         sendToUiThread("初始化开始");
         boolean isMix = config.getTtsMode().equals(TtsMode.MIX);
@@ -209,4 +203,15 @@ public class MySyntherizer implements MainHandlerConstant {
         msg.obj = message + "\n";
         mainHandler.sendMessage(msg);
     }
+
+    /**
+     * 设置监听器
+     * @param speechSynthesizerListener
+     */
+    public void setSpeechSynthesizerListener(SpeechSynthesizerListener speechSynthesizerListener) {
+        if (mSpeechSynthesizer != null) {
+            mSpeechSynthesizer.setSpeechSynthesizerListener(speechSynthesizerListener);
+        }
+    }
+
 }

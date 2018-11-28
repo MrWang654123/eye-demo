@@ -1,16 +1,20 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,12 +36,14 @@ import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
+import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
@@ -47,7 +53,9 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.umeng.analytics.MobclickAgent;
@@ -62,6 +70,9 @@ import butterknife.ButterKnife;
  * 基础页面
  */
 public abstract class BaseActivity extends AppCompatActivity implements MessageHandlerCallback, View.OnClickListener {
+
+    //请求读取外部文件
+    public static final int READ_EXTERNAL_STORAGE = 950;
 
     //标题栏
     @BindView(R.id.toolbar)
@@ -84,6 +95,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
             //统一回调
             BaseActivity.this.onHandleMessage(msg);
         }
+    };
+
+
+    //权限
+    protected String[] permissions = new String[] {
+            Manifest.permission.READ_EXTERNAL_STORAGE
     };
 
 
@@ -582,6 +599,28 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
                 }
             }
         });
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            //请求读取外部文件
+            case READ_EXTERNAL_STORAGE: {
+                //授权成功
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //初始化百度音频
+                    QSApplication.getSynthesizerManager().initialTts();
+
+                } else {//授权失败
+                    //友好的提示
+                }
+                break;
+            }
+
+        }
+
     }
 
 

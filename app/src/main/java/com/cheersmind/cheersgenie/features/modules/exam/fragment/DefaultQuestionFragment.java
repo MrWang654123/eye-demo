@@ -461,7 +461,12 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
             public void onClick(View v) {
                 dialog.dismiss();
                 //确定答案
-                confirmAnswer(etAnswer.getText().toString(), optionsList.get(curSelect));
+                if (!TextUtils.isEmpty(etAnswer.getText().toString())) {
+                    String text = etAnswer.getText().toString().trim();
+                    if (!TextUtils.isEmpty(text)) {
+                        confirmAnswer(text, optionsList.get(curSelect));
+                    }
+                }
             }
         });
         //关闭按钮
@@ -490,12 +495,24 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
                 if (s.length() == 0) {
                     btnConfirm.setEnabled(false);
                 } else {
-                    btnConfirm.setEnabled(true);
+                    String text = s.toString();
+                    //非空
+                    if (TextUtils.isEmpty(text.trim())) {
+                        btnConfirm.setEnabled(false);
+                    } else {
+                        btnConfirm.setEnabled(true);
+                    }
                 }
             }
         });
 
+        //内容为空，则初始使确认按钮失效
+        if (TextUtils.isEmpty(content)) {
+            btnConfirm.setEnabled(false);
+        }
+
     }
+
 
     /**
      * 确定填写的答案
@@ -559,6 +576,9 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     }
 
 
+    /**
+     * 播放
+     */
     @Override
     public void play() {
         ReplyQuestionActivity activity = (ReplyQuestionActivity) getActivity();
@@ -629,6 +649,9 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     }
 
 
+    /**
+     * 停止
+     */
     @Override
     public void stop() {
         //未播放完整就结束
@@ -654,6 +677,10 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     }
 
 
+    /**
+     * 语音结束
+     * @param utteranceId 标识ID
+     */
     @Override
     public void speechFinish(String utteranceId) {
         if (!TextUtils.isEmpty(utteranceId)) {
@@ -683,6 +710,10 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
     }
 
 
+    /**
+     * 语音开始
+     * @param utteranceId 标识ID
+     */
     @Override
     public void speechStart(String utteranceId) {
         //还原列表选项语音提示

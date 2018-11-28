@@ -1,10 +1,12 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,9 +21,12 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
+import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
+import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
@@ -59,6 +64,7 @@ public class MasterTabActivity extends BaseActivity {
     private boolean canExit = false;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +73,22 @@ public class MasterTabActivity extends BaseActivity {
         if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
             VersionUpdateUtil.checkUpdate(this,false, false);
         }
+
+        // android 6.0以上动态权限申请
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionUtil.lacksPermissions(MasterTabActivity.this, permissions)) {
+                ActivityCompat.requestPermissions(this, permissions, READ_EXTERNAL_STORAGE);
+            } else {
+                //初始化百度音频
+                QSApplication.getSynthesizerManager().initialTts();
+            }
+        } else {
+            //初始化百度音频
+            QSApplication.getSynthesizerManager().initialTts();
+        }
+
     }
+
 
     @Override
     protected int setContentView() {
@@ -144,7 +165,7 @@ public class MasterTabActivity extends BaseActivity {
 //            VersionUpdateUtil.checkUpdate(this,false, false);
 //        }
 
-        initPermission(); // android 6.0以上动态权限申请
+//        initPermission(); // android 6.0以上动态权限申请
     }
 
     @Override
@@ -329,6 +350,9 @@ public class MasterTabActivity extends BaseActivity {
         super.onDestroy();
         //清空toast
         ToastUtil.cancelToast();
+
+        //释放百度音频
+        QSApplication.getSynthesizerManager().release();
     }
 
 
@@ -337,11 +361,13 @@ public class MasterTabActivity extends BaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             //请求安装未知来源的应用的结果
-            case PackageUtils.INSTALL_PACKAGES_REQUESTCODE:
+            case PackageUtils.INSTALL_PACKAGES_REQUESTCODE: {
                 VersionUpdateUtil.handleBackFromRequestInstallPackages(this, grantResults);
                 break;
+            }
 
         }
+
     }
 
 
@@ -387,6 +413,7 @@ public class MasterTabActivity extends BaseActivity {
         }
 
     }
+
 
 }
 

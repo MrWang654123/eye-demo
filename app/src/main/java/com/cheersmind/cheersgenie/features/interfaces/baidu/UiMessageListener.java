@@ -1,10 +1,12 @@
 package com.cheersmind.cheersgenie.features.interfaces.baidu;
 
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.baidu.tts.client.SpeechError;
+import com.cheersmind.cheersgenie.BuildConfig;
 
 /**
  * 在 MessageListener的基础上，和UI配合。
@@ -49,7 +51,9 @@ public class UiMessageListener extends MessageListener {
         // sendMessage("onSpeechProgressChanged");
         if (mainHandler != null) {
             mainHandler.sendMessage(mainHandler.obtainMessage(UI_CHANGE_INPUT_TEXT_SELECTION, progress, 0));
-            System.out.println("播放进度：" + progress);
+            if (BuildConfig.DEBUG) {
+                System.out.println("播放进度：" + progress);
+            }
         }
     }
 

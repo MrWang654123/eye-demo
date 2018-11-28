@@ -108,6 +108,8 @@
     <string name="look_report">查看报告</string>
     <string name="cost_time">约%s分钟</string>
     <string name="question_submit_tip">恭喜你，完成所有问题，是否提交结果？</string>
+    <string name="question_stop_tip">答题还没全部完成确定要退出吗？</string>
+    <string name="question_timeout_tip">需要休息一下吗？</string>
     <string name="pre_question">上一题</string>
     <string name="submit">提交</string>
 

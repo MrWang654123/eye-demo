@@ -244,6 +244,9 @@ public class ArticleDetailActivity extends BaseActivity {
     //失效间隔
     private static final long INVALID_INTERVAL = 30 * 60 * 1000;
 
+    //最后一次未发送的评论
+    private String lastNotSendComment;
+
 
     /**
      * 开启文章详情页面
@@ -1272,7 +1275,12 @@ public class ArticleDetailActivity extends BaseActivity {
         //评论列表header中的评论总数
         tvCommentCount.setText(getResources().getString(R.string.comment_count, totalCount + ""));
         //编辑模块中的评论总数
-        tvCommentTotalCount.setText(String.valueOf(totalCount));
+        if (totalCount > 0) {
+            tvCommentTotalCount.setVisibility(View.VISIBLE);
+            tvCommentTotalCount.setText(String.valueOf(totalCount));
+        } else {
+            tvCommentTotalCount.setVisibility(View.INVISIBLE);
+        }
     }
 
 
@@ -1316,6 +1324,7 @@ public class ArticleDetailActivity extends BaseActivity {
         tvNoComment.setVisibility(View.VISIBLE);
     }
 
+
     /**
      * 弹出评论对话框
      */
@@ -1346,6 +1355,8 @@ public class ArticleDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                //最后一次未发送的评论
+                lastNotSendComment = etComment.getText().toString();
                 //提交评论
                 doComment(articleId, etComment.getText().toString());
             }
@@ -1356,6 +1367,8 @@ public class ArticleDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                //最后一次未发送的评论
+                lastNotSendComment = etComment.getText().toString();
             }
         });
 
@@ -1381,6 +1394,11 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         });
 
+        //初始化最后一次未发送的评论
+        if (!TextUtils.isEmpty(lastNotSendComment)) {
+            etComment.setText(lastNotSendComment);
+            etComment.setSelection(lastNotSendComment.length());
+        }
     }
 
     /**
@@ -1405,8 +1423,12 @@ public class ArticleDetailActivity extends BaseActivity {
                     CommentEntity commentEntity = InjectionWrapperUtil.injectMap(dataMap, CommentEntity.class);
 
                     ToastUtil.showShort(getApplicationContext(), "评论成功");
+                    //清空最后一次未发送的评论
+                    lastNotSendComment = "";
                     //刷新我的评论视图
                     refreshMineComment(commentEntity);
+                    //滚动到我的评论
+                    scrollToMineComment();
 
                 } catch (Exception e) {
                     //操作失败
@@ -1544,13 +1566,7 @@ public class ArticleDetailActivity extends BaseActivity {
             }
             //编辑模块中的评论总数布局
             case R.id.fl_comment_total_count: {
-                svMainBlock.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int temp = llCommentContent.getTop();
-                        svMainBlock.scrollTo(0,  temp);
-                    }
-                });
+                scrollToMineComment();
                 break;
             }
             //触发评论对话框的提示文本
@@ -1587,6 +1603,20 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         }
 
+    }
+
+
+    /**
+     * 滚动到我的评论
+     */
+    private void scrollToMineComment() {
+        svMainBlock.post(new Runnable() {
+            @Override
+            public void run() {
+                int temp = llCommentContent.getTop();
+                svMainBlock.scrollTo(0,  temp);
+            }
+        });
     }
 
 

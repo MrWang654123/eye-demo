@@ -26,6 +26,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
+import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherizer;
+import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -77,6 +79,9 @@ public class QSApplication extends LitePalApplication {
     //状态栏高度
     private static int statusBarHeight;
 
+    //百度音频管理器
+    private static SynthesizerManager synthesizerManager;
+
 
     @Override
     public void onCreate() {
@@ -90,12 +95,12 @@ public class QSApplication extends LitePalApplication {
 
 
         //调试模式下不启用自定义的异常处理类
-        if (!BuildConfig.DEBUG) {
+//        if (!BuildConfig.DEBUG) {
             //把自定义的异常处理类设置 给主线程
             CrashHandler myCrashHandler = CrashHandler.getInstance();
             myCrashHandler.init(getApplicationContext());
             Thread.currentThread().setUncaughtExceptionHandler(myCrashHandler);
-        }
+//        }
 
         //反馈
         FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
@@ -162,6 +167,9 @@ public class QSApplication extends LitePalApplication {
 
         //初始化声音
         SoundPlayUtils.init(context);
+
+        //创建百度音频管理
+        synthesizerManager = new SynthesizerManager(context);
     }
 
     /**
@@ -387,4 +395,13 @@ public class QSApplication extends LitePalApplication {
     public static int getStatusBarHeight() {
         return statusBarHeight;
     }
+
+    /**
+     * 获取百度音频管理器
+     * @return
+     */
+    public static SynthesizerManager getSynthesizerManager() {
+        return synthesizerManager;
+    }
+
 }

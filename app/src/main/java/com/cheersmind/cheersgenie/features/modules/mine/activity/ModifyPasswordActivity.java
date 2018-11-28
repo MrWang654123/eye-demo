@@ -18,18 +18,34 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.man.MANService;
+import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.PasswordInitActivity;
+import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.constant.Constant;
+import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.umeng.analytics.MobclickAgent;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -56,13 +72,7 @@ public class ModifyPasswordActivity extends BaseActivity {
     ImageView ivClearNewPw;
     @BindView(R.id.cbox_new_password)
     CheckBox cboxNewPassword;
-    @BindView(R.id.et_again_password)
-    EditText etAgainPassword;
-    //确认密码的清空按钮
-    @BindView(R.id.iv_clear_again_pw)
-    ImageView ivClearAgainPw;
-    @BindView(R.id.cbox_again_password)
-    CheckBox cboxAgainPassword;
+
 
     @Override
     protected int setContentView() {
@@ -156,48 +166,8 @@ public class ModifyPasswordActivity extends BaseActivity {
             }
         });
 
-        etAgainPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    if (ivClearAgainPw.getVisibility() == View.INVISIBLE) {
-                        ivClearAgainPw.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (ivClearAgainPw.getVisibility() == View.VISIBLE) {
-                        ivClearAgainPw.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
-        //确认密码显隐
-        cboxAgainPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //如果选中，显示密码
-                    etAgainPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                } else {
-                    //否则隐藏密码
-                    etAgainPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }
-                //光标置于末尾
-                etAgainPassword.setSelection(etAgainPassword.getText().length());
-            }
-        });
-
         //监听确认密码输入框的软键盘回车键
-        etAgainPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etNewPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
                 //当actionId == XX_SEND 或者 XX_DONE时都触发
@@ -221,14 +191,13 @@ public class ModifyPasswordActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.et_old_password, R.id.et_new_password, R.id.et_again_password, R.id.btn_confirm,
-            R.id.iv_clear_pw, R.id.iv_clear_new_pw, R.id.iv_clear_again_pw})
+    @OnClick({R.id.et_old_password, R.id.et_new_password, R.id.btn_confirm,
+            R.id.iv_clear_pw, R.id.iv_clear_new_pw})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //确保密码编辑框点击后光标在最后
             case R.id.et_old_password:
             case R.id.et_new_password:
-            case R.id.et_again_password:
 //                ((EditText)view).setSelection(((EditText)view).getText().length());
                 break;
             //确认修改
@@ -246,12 +215,6 @@ public class ModifyPasswordActivity extends BaseActivity {
             case R.id.iv_clear_new_pw: {
                 etNewPassword.setText("");
                 etNewPassword.requestFocus();
-                break;
-            }
-            //确认密码的清空按钮
-            case R.id.iv_clear_again_pw: {
-                etAgainPassword.setText("");
-                etAgainPassword.requestFocus();
                 break;
             }
         }
@@ -274,7 +237,7 @@ public class ModifyPasswordActivity extends BaseActivity {
      * @param passwordOld 旧密码
      * @param passwordNew 新密码
      */
-    private void queryModifyPassword(String passwordOld, String passwordNew) {
+    private void queryModifyPassword(String passwordOld, final String passwordNew) {
         //通信提示
         LoadingView.getInstance().show(this);
         //请求修改密码
@@ -291,16 +254,56 @@ public class ModifyPasswordActivity extends BaseActivity {
                 //修改密码成功后的处理
 
                 //清空密码缓存
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
+                /*SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
                 SharedPreferences.Editor editor = pref.edit();
                 editor.remove("user_password");
-                editor.commit();
+                editor.apply();
 
                 //弹出修改密码成功确认对话框
-                popupConfirmModifySuccessWindows();
+                popupConfirmModifySuccessWindows();*/
+
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    //解析用户数据
+                    final WXUserInfoEntity wxUserInfoEntity = InjectionWrapperUtil.injectMap(dataMap, WXUserInfoEntity.class);
+                    //临时缓存用户数据
+                    UCManager.getInstance().settingUserInfo(wxUserInfoEntity);
+                    //更新密码到缓存中
+                    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("user_password", passwordNew);
+                    editor.apply();
+                    //保存用户数据到数据库
+                    DataSupport.deleteAll(WXUserInfoEntity.class);
+                    wxUserInfoEntity.save();
+
+                    ToastUtil.showLong(getApplicationContext(), "修改成功");
+                    finish();
+
+                } catch (Exception e) {
+                    //完善用户信息（生成孩子）
+//                    gotoPerfectUserInfo(PhoneNumLoginActivity.this);
+                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                }
             }
         });
     }
+
+
+    /**
+     * 本地缓存用户名和密码
+     *
+     * @param userName
+     * @param password
+     */
+    private void saveUserAccount(String userName, String password) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("user_name", userName);
+        editor.putString("user_password", password);
+        editor.apply();
+    }
+
 
     /**
      * 验证数据格式
@@ -312,8 +315,6 @@ public class ModifyPasswordActivity extends BaseActivity {
         String passwordOld = etOldPassword.getText().toString().trim();
         //新密码
         String passwordNew = etNewPassword.getText().toString().trim();
-        //确认密码
-        String passwordAgain = etAgainPassword.getText().toString().trim();
 
         //旧密码长度验证
         if (passwordOld.length() < 6 || passwordOld.length() > 24) {
@@ -327,11 +328,6 @@ public class ModifyPasswordActivity extends BaseActivity {
             return false;
         }
 
-        //确认密码长度验证
-        if (passwordAgain.length() < 6 || passwordAgain.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码长度为6-24位");
-            return false;
-        }
 
         //新旧密码不能相同
         if (passwordOld.equals(passwordNew)) {
@@ -339,11 +335,6 @@ public class ModifyPasswordActivity extends BaseActivity {
             return false;
         }
 
-        //新密码和确认密码一致
-        if (!passwordNew.equals(passwordAgain)) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码不一致");
-            return false;
-        }
 
         return true;
     }
