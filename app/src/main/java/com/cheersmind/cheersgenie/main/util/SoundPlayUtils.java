@@ -40,7 +40,8 @@ public class SoundPlayUtils {
         mSoundPlayer.load(mContext, R.raw.question_click, 1);// 3
         mSoundPlayer.load(mContext, R.raw.page_next, 1);// 4
 
-        setSoundStatus(getSoundStatus());//默认开启声音
+        //初始化声音开关
+        setSoundStatus(getSoundStatus());
 
         return soundPlayUtils;
     }
@@ -66,7 +67,7 @@ public class SoundPlayUtils {
 
     public static boolean getSoundStatus(){
         SharedPreferences soundPreference = mContext.getSharedPreferences("setting_sound", MODE_PRIVATE);
-        return soundPreference.getBoolean("is_sound",false);
+        return soundPreference.getBoolean("is_sound",true);//默认开启声音
     }
 
 }
