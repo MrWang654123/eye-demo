@@ -17,7 +17,7 @@ public class SoundPlayUtils {
 
     // SoundPool对象
     public static SoundPool mSoundPlayer = new SoundPool(10,
-            AudioManager.STREAM_SYSTEM, 5);
+            AudioManager.STREAM_MUSIC, 5);
     public static SoundPlayUtils soundPlayUtils;
     // 上下文
     static Context mContext;
@@ -40,7 +40,7 @@ public class SoundPlayUtils {
         mSoundPlayer.load(mContext, R.raw.question_click, 1);// 3
         mSoundPlayer.load(mContext, R.raw.page_next, 1);// 4
 
-        setSoundStatus(true);//默认开启声音
+        setSoundStatus(getSoundStatus());//默认开启声音
 
         return soundPlayUtils;
     }
