@@ -40,6 +40,9 @@ public class XEmptyLayout extends LinearLayout {
     //没有数据可以点击刷新
     public static final int NO_DATA_ENABLE_CLICK = 5;
 
+    //内容视图
+    private View contentView;
+
     private ProgressBar animProgress;
     //没有数据的时候是否可以点击
     private boolean clickEnableForNoData = false;
@@ -61,6 +64,7 @@ public class XEmptyLayout extends LinearLayout {
     //跳转到相关页面
     private Button btnGotoRelation;
 
+
     public XEmptyLayout(Context context) {
         super(context);
         this.context = context;
@@ -74,27 +78,21 @@ public class XEmptyLayout extends LinearLayout {
     }
 
     private void init() {
-        View view = View.inflate(context, R.layout.layout_xempty, null);
+        contentView = View.inflate(context, R.layout.layout_xempty, null);
 
-        ivLoading = view.findViewById(R.id.iv_loading);
-        ivErrorIcon = view.findViewById(R.id.iv_error_icon);
-        tvErrorTip = view.findViewById(R.id.tv_error_tip);
-        animProgress = view.findViewById(R.id.animProgress);
-        btnReload = view.findViewById(R.id.btn_reload);
-        btnGotoRelation = view.findViewById(R.id.btn_goto_relation);
+        ivLoading = contentView.findViewById(R.id.iv_loading);
+        ivErrorIcon = contentView.findViewById(R.id.iv_error_icon);
+        tvErrorTip = contentView.findViewById(R.id.tv_error_tip);
+        animProgress = contentView.findViewById(R.id.animProgress);
+        btnReload = contentView.findViewById(R.id.btn_reload);
+        btnGotoRelation = contentView.findViewById(R.id.btn_goto_relation);
 
         setBackgroundColor(-1);
-        addView(view);
+        addView(contentView);
         changeErrorLayoutBgMode(context);
 
-        //点击响应
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
+
 
     public void changeErrorLayoutBgMode(Context context1) {
         // mLayout.setBackgroundColor(SkinsUtil.getColor(context1,
@@ -333,6 +331,19 @@ public class XEmptyLayout extends LinearLayout {
         return ((connectivityManager.getActiveNetworkInfo() != null && connectivityManager
                 .getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED) || telephonyManager
                 .getNetworkType() == TelephonyManager.NETWORK_TYPE_UMTS);
+    }
+
+
+    /**
+     * 设置添加空点击监听
+     */
+    public void setAttachBlankClickListener() {
+        contentView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 }

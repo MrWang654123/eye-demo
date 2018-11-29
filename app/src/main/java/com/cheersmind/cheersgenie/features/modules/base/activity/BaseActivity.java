@@ -113,6 +113,12 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //非空表示是恢复流程
+        if (savedInstanceState != null) {
+            restartToSplashActivity();
+            return;
+        }
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);// 隐藏标题栏
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -473,6 +479,17 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         }
         //目前完善用户信息环节是从班级号输入页面开始
         Intent intent = new Intent(from, ClassNumActivity.class);
+        startActivity(intent);
+    }
+
+
+    /**
+     * 重新走欢迎页
+     */
+    private void restartToSplashActivity() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        //清理之前的场景，不然之前的ActivityRecord栈仍然保留在ActivityManagerService中
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 

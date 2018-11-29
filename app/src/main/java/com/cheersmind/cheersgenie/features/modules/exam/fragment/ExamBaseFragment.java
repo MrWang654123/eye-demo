@@ -299,6 +299,8 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         //设置样式刷新显示的位置
         swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
+        //设置添加空点击监听，防止点击渗透到被覆盖的视图
+        emptyLayout.setAttachBlankClickListener();
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_report));
         //空布局重载点击监听

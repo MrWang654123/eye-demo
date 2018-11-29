@@ -310,14 +310,16 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
 
         //限制最大滑动速度
         int maxFlingVelocity = recycleView.getMaxFlingVelocity();
-        RecyclerViewUtil.setMaxFlingVelocity(recycleView,DensityUtil.dip2px(getContext(), Dictionary.RECYCLER_VIEW_MAX_VELOCITY));
+        maxFlingVelocity = getResources().getInteger(R.integer.recycler_view_max_velocity);
+//        ToastUtil.showLong(getContext(), "滑动速度：" + maxFlingVelocity);
+        RecyclerViewUtil.setMaxFlingVelocity(recycleView,DensityUtil.dip2px(getContext(), maxFlingVelocity));
 
         //设置显示时的动画
         mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
         mShowAction.setDuration(500);
 
         //最新测评模块
-        View view = LayoutInflater.from(recycleView.getContext()).inflate(R.layout.recycler_header_home_evaluation, recycleView, false);
+//        View view = LayoutInflater.from(recycleView.getContext()).inflate(R.layout.recycler_header_home_evaluation, recycleView, false);
         evaluationBlock = getLayoutInflater().inflate(R.layout.recycler_header_home_evaluation, null);
         //测评标题
         tvLastDimensionTitle = evaluationBlock.findViewById(R.id.tv_last_dimension_title);

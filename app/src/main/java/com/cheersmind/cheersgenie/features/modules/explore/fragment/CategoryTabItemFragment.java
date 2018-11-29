@@ -28,6 +28,7 @@ import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -38,6 +39,7 @@ import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -220,6 +222,10 @@ public class CategoryTabItemFragment extends LazyLoadFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //限制最大滑动速度
+        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
+        RecyclerViewUtil.setMaxFlingVelocity(recycleView, DensityUtil.dip2px(getContext(), getResources().getInteger(R.integer.recycler_view_max_velocity)));
 
         //重载监听
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {

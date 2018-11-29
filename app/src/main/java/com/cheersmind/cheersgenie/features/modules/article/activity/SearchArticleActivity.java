@@ -31,8 +31,10 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
+import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -41,6 +43,7 @@ import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -200,6 +203,12 @@ public class SearchArticleActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //限制最大滑动速度
+        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
+        maxFlingVelocity = getResources().getInteger(R.integer.recycler_view_max_velocity);
+//        ToastUtil.showLong(getContext(), "滑动速度：" + maxFlingVelocity);
+        RecyclerViewUtil.setMaxFlingVelocity(recycleView, DensityUtil.dip2px(SearchArticleActivity.this, maxFlingVelocity));
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
