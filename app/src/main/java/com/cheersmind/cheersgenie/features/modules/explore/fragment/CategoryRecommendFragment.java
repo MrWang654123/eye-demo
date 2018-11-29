@@ -477,7 +477,11 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        if (recyclerAdapter.getData().size() < Dictionary.HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT) {
+                            recyclerAdapter.loadMoreEnd(true);
+                        } else {
+                            recyclerAdapter.loadMoreEnd(false);
+                        }
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -558,7 +562,11 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        if (recyclerAdapter.getData().size() < Dictionary.HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT) {
+                            recyclerAdapter.loadMoreEnd(true);
+                        } else {
+                            recyclerAdapter.loadMoreEnd(false);
+                        }
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();

@@ -49,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:gravity="center"
-                        android:text="60"
+                        android:text="0"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="@color/color_333333"/>
@@ -82,7 +82,7 @@
                         android:id="@+id/tv_question_cur"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="02"
+                        android:text="0"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/color_333333" />
@@ -97,7 +97,7 @@
                         android:id="@+id/tv_question_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="08"
+                        android:text="0"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/color_333333" />

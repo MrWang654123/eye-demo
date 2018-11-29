@@ -263,7 +263,11 @@ public class MineIntegralActivity extends BaseActivity {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        if (recyclerAdapter.getData().size() < 20) {
+                            recyclerAdapter.loadMoreEnd(true);
+                        } else {
+                            recyclerAdapter.loadMoreEnd(false);
+                        }
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -346,7 +350,11 @@ public class MineIntegralActivity extends BaseActivity {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        if (recyclerAdapter.getData().size() < 20) {
+                            recyclerAdapter.loadMoreEnd(true);
+                        } else {
+                            recyclerAdapter.loadMoreEnd(false);
+                        }
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();

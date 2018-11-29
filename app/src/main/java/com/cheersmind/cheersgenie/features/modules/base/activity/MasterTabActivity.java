@@ -77,7 +77,7 @@ public class MasterTabActivity extends BaseActivity {
         // android 6.0以上动态权限申请
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (PermissionUtil.lacksPermissions(MasterTabActivity.this, permissions)) {
-                ActivityCompat.requestPermissions(this, permissions, READ_EXTERNAL_STORAGE);
+                ActivityCompat.requestPermissions(this, permissions, WRITE_EXTERNAL_STORAGE);
             } else {
                 //初始化百度音频
                 QSApplication.getSynthesizerManager().initialTts();

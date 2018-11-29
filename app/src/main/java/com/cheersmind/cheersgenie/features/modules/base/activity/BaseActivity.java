@@ -71,8 +71,8 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseActivity extends AppCompatActivity implements MessageHandlerCallback, View.OnClickListener {
 
-    //请求读取外部文件
-    public static final int READ_EXTERNAL_STORAGE = 950;
+    //请求读写外部文件
+    public static final int WRITE_EXTERNAL_STORAGE = 950;
 
     //标题栏
     @BindView(R.id.toolbar)
@@ -100,7 +100,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
     //权限
     protected String[] permissions = new String[] {
-            Manifest.permission.READ_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
 
@@ -606,8 +606,8 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            //请求读取外部文件
-            case READ_EXTERNAL_STORAGE: {
+            //请求读写外部文件
+            case WRITE_EXTERNAL_STORAGE: {
                 //授权成功
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //初始化百度音频
