@@ -381,6 +381,8 @@ public class ExploreFragment extends LazyLoadFragment {
 //                    banner.setVisibility(View.GONE);
 //                    convenientBanner.setVisibility(View.GONE);
                     viewPagerBanner.setVisibility(View.GONE);
+                    //发送通信错误消息
+                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
                 }
 
             }
@@ -467,6 +469,8 @@ public class ExploreFragment extends LazyLoadFragment {
                     e.printStackTrace();
                     tabs.setVisibility(View.GONE);
                     viewPager.setVisibility(View.GONE);
+                    //发送通信错误消息
+                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
                 }
             }
         });
