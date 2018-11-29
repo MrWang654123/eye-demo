@@ -501,9 +501,10 @@ public class UserInfoFragment extends TakePhotoFragment {
             }
         });
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
-        }
+        //有弹出软键盘，不用动画
+//        if (dialog.getWindow() != null) {
+//            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+//        }
         dialog.show();
     }
 

@@ -62,8 +62,8 @@ public class ModifyNicknameDialog extends Dialog {
     private String oldNickname;
 
     public ModifyNicknameDialog(@NonNull Context context,String oldNickname, OnOperationListener callback) {
-//        super(context, R.style.dialog_bottom_full);
-        super(context);
+        super(context, R.style.dialog_bottom_full);
+//        super(context);
         this.context = context;
         this.callback = callback;
         this.oldNickname = oldNickname;

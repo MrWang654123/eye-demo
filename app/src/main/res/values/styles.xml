@@ -22,6 +22,12 @@
         <!--去除标题栏（动作栏）阴影-->
         <item name="android:windowContentOverlay">@null</item>
         <item name="elevation">0dp</item>
+
+        <!-- 解决Activity切换时出现白屏问题 -->
+        <!--<item name="android:windowIsTranslucent">true</item>--><!--8.0不兼容全屏半透明页面（欢迎页）-->
+        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+        <item name="android:windowDisablePreview">true</item>
+
     </style>
     <style name="Dialog" parent="android:style/Theme.Dialog">
         <item name="android:background">#00000000</item>
