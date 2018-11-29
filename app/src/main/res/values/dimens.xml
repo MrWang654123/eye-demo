@@ -39,4 +39,7 @@
     <dimen name="common_corner_radius">8dp</dimen>
     <dimen name="common_corner_radius_small">4dp</dimen>
 
+    <!--修改昵称对话框水平外间距-->
+    <dimen name="modify_nickname_dialog_horizontal_margin">20dp</dimen>
+
 </resources>

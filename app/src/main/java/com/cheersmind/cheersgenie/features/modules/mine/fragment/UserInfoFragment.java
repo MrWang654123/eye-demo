@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.modules.mine.fragment;
 
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -179,7 +180,7 @@ public class UserInfoFragment extends TakePhotoFragment {
             //跳转更改昵称
             case R.id.rl_nickname: {
 //                ToastUtil.showShort(getContext(), "跳转更改昵称");
-                showModifyNicknameDialog(getContext());
+                showModifyNicknameDialog(getActivity());
                 break;
             }
         }
@@ -478,7 +479,7 @@ public class UserInfoFragment extends TakePhotoFragment {
      */
     public void showModifyNicknameDialog(final Context context){
         String nickname = tvNickname.getText().toString();
-        new ModifyNicknameDialog(context, nickname, new ModifyNicknameDialog.OnOperationListener() {
+        Dialog dialog = new ModifyNicknameDialog(context, nickname, new ModifyNicknameDialog.OnOperationListener() {
 
             @Override
             public void onModifySuccess(String nickname) {
@@ -498,8 +499,12 @@ public class UserInfoFragment extends TakePhotoFragment {
                 ToastUtil.showShort(context, "修改成功");
 
             }
-        }).show();
+        });
 
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        }
+        dialog.show();
     }
 
 

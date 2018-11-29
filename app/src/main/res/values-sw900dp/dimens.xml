@@ -11,4 +11,7 @@
     <!--banner页之间间距的而外距离-->
     <dimen name="bannerPageMarginExtra">40dp</dimen>
 
+    <!--修改昵称对话框水平外间距-->
+    <dimen name="modify_nickname_dialog_horizontal_margin">220dp</dimen>
+
 </resources>

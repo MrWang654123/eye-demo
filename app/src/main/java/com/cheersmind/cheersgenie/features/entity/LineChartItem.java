@@ -259,6 +259,9 @@ public class LineChartItem extends ChartItem {
                 set1.setDrawCircleHole(true);
             }
 
+            //曲线模式
+            set1.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
             dataSets.add(set1);
 
         }
