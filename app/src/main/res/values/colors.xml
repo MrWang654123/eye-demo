@@ -73,6 +73,6 @@
     <color name="guide_activity_status_bar_color_1">#ffd02d</color>
     <color name="guide_activity_status_bar_color_2">#00ccf0</color>
     <color name="guide_activity_status_bar_color_3">#fc8979</color>
-    <color name="guide_activity_status_bar_color_4">#f7ee2f</color>
+    <color name="guide_activity_status_bar_color_4">#fff100</color>
 
 </resources>
