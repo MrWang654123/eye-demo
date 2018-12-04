@@ -28,6 +28,8 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherizer;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
+import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -80,7 +82,7 @@ public class QSApplication extends LitePalApplication {
     private static int statusBarHeight;
 
     //百度音频管理器
-    private static SynthesizerManager synthesizerManager;
+    private SynthesizerManager synthesizerManager;
 
 
     @Override
@@ -339,6 +341,14 @@ public class QSApplication extends LitePalApplication {
             public void onActivityDestroyed(Activity activity) {
 //                preActivity = activity;
                 LogUtils.w("onActivityDestroyed===", topActivity + "");
+
+                //登录页面和主页面的退出时清空topActivity
+                if (activity != null && topActivity != null) {
+                    if ((activity instanceof MasterTabActivity && topActivity instanceof MasterTabActivity)
+                            || (activity instanceof XLoginActivity && topActivity instanceof XLoginActivity)) {
+                        topActivity = null;
+                    }
+                }
             }
 
             /** Unused implementation **/
@@ -398,9 +408,9 @@ public class QSApplication extends LitePalApplication {
 
     /**
      * 获取百度音频管理器
-     * @return
+     * @return 管理器
      */
-    public static SynthesizerManager getSynthesizerManager() {
+    public SynthesizerManager getSynthesizerManager() {
         return synthesizerManager;
     }
 

@@ -80,11 +80,12 @@ public class MasterTabActivity extends BaseActivity {
                 ActivityCompat.requestPermissions(this, permissions, WRITE_EXTERNAL_STORAGE);
             } else {
                 //初始化百度音频
-                QSApplication.getSynthesizerManager().initialTts();
+                ((QSApplication)getApplication()).getSynthesizerManager().initialTts();
+                getSynthesizerManager().initialTts();
             }
         } else {
             //初始化百度音频
-            QSApplication.getSynthesizerManager().initialTts();
+            getSynthesizerManager().initialTts();
         }
 
     }
@@ -352,7 +353,7 @@ public class MasterTabActivity extends BaseActivity {
         ToastUtil.cancelToast();
 
         //释放百度音频
-        QSApplication.getSynthesizerManager().release();
+        getSynthesizerManager().release();
     }
 
 

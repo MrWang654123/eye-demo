@@ -262,18 +262,18 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         costTime = 0;
 
         //初始设置监听
-        QSApplication.getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(mHandler));
+        getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(mHandler));
         // android 6.0以上动态权限申请
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
                 ActivityCompat.requestPermissions(this, permissions, WRITE_EXTERNAL_STORAGE);
             } else {
                 //初始化百度音频
-                QSApplication.getSynthesizerManager().initialTts();
+                getSynthesizerManager().initialTts();
             }
         } else {
             //初始化百度音频
-            QSApplication.getSynthesizerManager().initialTts();
+            getSynthesizerManager().initialTts();
         }
 
     }
@@ -317,7 +317,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }
 
         //停止任何语音
-        QSApplication.getSynthesizerManager().stop();
+        getSynthesizerManager().stop();
     }
 
 
@@ -335,7 +335,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }
         }
 
-        QSApplication.getSynthesizerManager().speak(text);
+        getSynthesizerManager().speak(text);
     }
 
 
@@ -356,7 +356,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }
         }
 
-        QSApplication.getSynthesizerManager().batchSpeak(texts);
+        getSynthesizerManager().batchSpeak(texts);
     }
 
 
@@ -364,14 +364,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 暂停播放。仅调用speak后生效
      */
     public void pause() {
-        QSApplication.getSynthesizerManager().pause();
+        getSynthesizerManager().pause();
     }
 
     /**
      * 继续播放。仅调用speak后生效，调用pause生效
      */
     public void resume() {
-        QSApplication.getSynthesizerManager().resume();
+        getSynthesizerManager().resume();
     }
 
 
@@ -379,7 +379,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 停止合成引擎。即停止播放，合成，清空内部合成队列。
      */
     private void stop() {
-        QSApplication.getSynthesizerManager().stop();
+        getSynthesizerManager().stop();
     }
 
 

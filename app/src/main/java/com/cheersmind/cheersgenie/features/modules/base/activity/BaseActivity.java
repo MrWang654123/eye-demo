@@ -628,7 +628,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
                 //授权成功
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //初始化百度音频
-                    QSApplication.getSynthesizerManager().initialTts();
+                    getSynthesizerManager().initialTts();
 
                 } else {//授权失败
                     //友好的提示
@@ -638,6 +638,15 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
         }
 
+    }
+
+
+    /**
+     * 获取百度音频管理器
+     * @return 管理器
+     */
+    protected SynthesizerManager getSynthesizerManager() {
+        return ((QSApplication)getApplication()).getSynthesizerManager();
     }
 
 
