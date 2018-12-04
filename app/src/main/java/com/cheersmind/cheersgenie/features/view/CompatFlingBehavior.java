@@ -30,7 +30,7 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
     private int mPosY;
 
     //最小滑动距离
-    int touchSlop;
+    private int touchSlop;
 
 
     public CompatFlingBehavior() {
@@ -65,10 +65,10 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
                 mCurPosY = (int) event.getY();
 //                    System.out.println("mCurPosX = " + mCurPosX + "    mPosX = " + mPosX);
                 //是否往上划
-                isUpSlide = isUpSile(mPosX, mPosY, mCurPosX, mCurPosY);
-                if (BuildConfig.DEBUG) {
-                    System.out.println(isUpSlide ? "isUpSlide: 向上划" : "isUpSlide: No");
-                }
+//                isUpSlide = isUpSile(mPosX, mPosY, mCurPosX, mCurPosY);
+//                if (BuildConfig.DEBUG) {
+//                    System.out.println(isUpSlide ? "isUpSlide: 向上划" : "isUpSlide: No");
+//                }
 
                 //水平滑动
                 if (isHorizontalSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
@@ -91,6 +91,7 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
 //
 //                        return false;
 //                    }
+
                 //水平滑动
                 if (isHorizontalSile(mPosX, mPosY, mCurPosX, mCurPosY)) {
                     return false;
@@ -107,6 +108,12 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
         //注意看ViewCompat.TYPE_TOUCH
         if (BuildConfig.DEBUG) {
             Log.i("CompatFlingBehavior", "onNestedPreScroll:" + child.getTotalScrollRange() + " ,dx:" + dx + " ,dy:" + dy + " ,type:" + type);
+        }
+
+        if (dy > 0) {
+            isUpSlide = true;
+        } else if (dy < 0) {
+            isUpSlide = false;
         }
 
         //返回1时，表示当前target处于非touch的滑动，
@@ -138,6 +145,9 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
                 //往上划
                 if (isUpSlide) {
                     ((RecyclerView) target).stopScroll();
+                    if (BuildConfig.DEBUG) {
+                        System.out.println("停止RecyclerView的Fling");
+                    }
                 }
             }
         }
@@ -150,7 +160,14 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
         super.onStopNestedScroll(coordinatorLayout, abl, target, type);
 //        isFlinging = false;
 //        shouldBlockNestedScroll = false;
+//        if (target instanceof RecyclerView) {
+//            isUpSlide = false;
+//        }
+
         isUpSlide = false;
+        if (BuildConfig.DEBUG) {
+            Log.i("CompatFlingBehavior", "onStopNestedScroll: target:" + target.getClass() + " ," +" 停止滚动");
+        }
     }
 
 
@@ -163,7 +180,7 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
      * @return
      */
     private boolean isUpSile(int oldPosX, int oldPosY, int curPosX, int curPosY) {
-        return curPosY < oldPosY && oldPosY - curPosY > touchSlop;
+        return oldPosY - curPosY > touchSlop && Math.abs(curPosX - oldPosX) < Math.abs(curPosY - oldPosY);
     }
 
 
