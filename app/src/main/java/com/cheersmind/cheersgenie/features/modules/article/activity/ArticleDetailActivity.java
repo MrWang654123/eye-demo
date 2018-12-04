@@ -1592,10 +1592,10 @@ public class ArticleDetailActivity extends BaseActivity {
                 break;
             }
             //铅笔图标（测试）
-            case R.id.iv_comment_edit_tip : {
-                svMainBlock.scrollTo(0, 0);
-                break;
-            }
+//            case R.id.iv_comment_edit_tip : {
+//                svMainBlock.scrollTo(0, 0);
+//                break;
+//            }
             //关闭按钮
             case R.id.iv_close: {
                 finish();
