@@ -16,7 +16,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 27
-        versionCode 3
+        versionCode 4
         versionName APP_VERSION_NAME
         flavorDimensions "versionCode"
         vectorDrawables.useSupportLibrary = true
@@ -187,4 +187,5 @@ dependencies {
     implementation 'com.danikula:videocache:2.7.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
     implementation files('libs/com.baidu.tts_2.3.2.20180713_6101c2a.jar')
+    implementation 'com.github.vipulasri:timelineview:1.0.6'
 }
