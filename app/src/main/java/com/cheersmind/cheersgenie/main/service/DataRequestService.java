@@ -2215,4 +2215,28 @@ public class DataRequestService {
 
     }
 
+
+    /**
+     * 获取任务列表
+     * @param childId 孩子ID
+     * @param callback 回调
+     * @param tag 通信标记
+     */
+    public void getTaskList(String childId, final BaseService.ServiceCallback callback, String tag){
+        String url = HttpConfig.URL_TASK_LIST
+                .replace("{child_id}",childId);
+
+        BaseService.get(url, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                callback.onResponse(obj);
+            }
+        }, tag);
+    }
+
 }

@@ -151,4 +151,11 @@ public class Dictionary {
     //隐藏文章列表的加载更多视图的阈值数量
     public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT_SMALL = 2;
 
+    //任务（专题海报）状态：未激活
+    public static final int TASK_STATUS_INACTIVE = 0;
+    //任务（专题海报）状态：进行中
+    public static final int TASK_STATUS_DOING = 1;
+    //任务（专题海报）状态：已完成
+    public static final int TASK_STATUS_COMPLETE = 2;
+
 }

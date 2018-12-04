@@ -181,6 +181,11 @@
     <string name="empty_tip_article_for_search">暂无结果\n换个关键词试试吧~</string>
     <string name="empty_tip_category">暂无分类</string>
     <string name="empty_tip_question_definition">暂无说明</string>
+    <string name="empty_tip_task_list">暂无任务</string>
+
+    <!--任务列表-->
+    <string name="begin_time_fmt">从 %s</string>
+    <string name="begin_end_fmt">到 %s</string>
 
     <!--behaver-->
     <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>

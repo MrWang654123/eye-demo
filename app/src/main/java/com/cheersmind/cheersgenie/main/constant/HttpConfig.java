@@ -272,6 +272,9 @@ public class HttpConfig {
     //获取孩子的量表对象（某个话题下的量表对象，其中嵌套孩子量表）
     public static String URL_CHILD_DIMENSION = API_HOST + "/v2/api/children/{children}/topics/{topics}/dimensions/{dimensions}";
 
+    //获取任务列表（专题海报）
+    public static String URL_TASK_LIST = API_HOST + "/v2/api/children/{child_id}/seminars";
+
 
     /*----------------文章相关------------------*/
 

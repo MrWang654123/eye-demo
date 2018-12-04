@@ -4,43 +4,78 @@ import android.Manifest;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.TimeLineAdapter;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
+import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.main.entity.TaskItemEntity;
+import com.cheersmind.cheersgenie.main.entity.TaskListEntity;
+import com.cheersmind.cheersgenie.main.entity.TaskListRootEntity;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * 主页面（底部Tab页面）
@@ -49,6 +84,10 @@ public class MasterTabActivity extends BaseActivity {
 
     //viewpager的索引位置
     public static final String VIEWPAGER_POSITION = "viewpager_position";
+
+    //内容容器
+    @BindView(R.id.fl_container)
+    FrameLayout flContainer;
 
 //    @BindView(R.id.message)
 //    TextView message;
@@ -63,6 +102,24 @@ public class MasterTabActivity extends BaseActivity {
     //是否能够退出的标志
     private boolean canExit = false;
 
+    //任务说明按钮
+    @BindView(R.id.fabTask)
+    FloatingActionButton fabTask;
+
+    //通信标记
+    private String httpTag;
+
+    //是否已经第一次访问过了任务列表
+    private boolean hasFirstShowTaskList;
+    //任务弹窗偏移
+    int offset_x;
+    int offset_y;
+    //任务列表
+    private TaskListEntity taskListEntity;
+    //任务列表项
+    private List<TaskItemEntity> taskItems;
+    //任务列表适配器
+    private TimeLineAdapter mTimeLineAdapter;
 
 
     @Override
@@ -88,6 +145,12 @@ public class MasterTabActivity extends BaseActivity {
             getSynthesizerManager().initialTts();
         }
 
+        httpTag = String.valueOf(System.currentTimeMillis());
+        //是否已经第一次访问过了任务列表
+        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+        hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
+        //请求任务列表
+        doGetTaskList(null, null, null, httpTag);
     }
 
 
@@ -167,6 +230,10 @@ public class MasterTabActivity extends BaseActivity {
 //        }
 
 //        initPermission(); // android 6.0以上动态权限申请
+
+        //任务弹窗偏移
+        offset_x = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_x);
+        offset_y = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_y);
     }
 
     @Override
@@ -178,6 +245,11 @@ public class MasterTabActivity extends BaseActivity {
             //发送刷新积分通知
             EventBus.getDefault().post(new RefreshIntegralEvent());
         }
+
+//        //第一次访问默认弹出任务列表弹窗
+//        if (!hasFirstShowTaskList) {
+//            popupTaskWindows();
+//        }
     }
 
     @Override
@@ -415,6 +487,319 @@ public class MasterTabActivity extends BaseActivity {
 
     }
 
+    @OnClick({R.id.fabTask})
+    public void onViewClick(View view) {
+        switch (view.getId()) {
+            //任务说明（分期测评）
+            case R.id.fabTask:{
+//                ToastUtil.showShort(getApplicationContext(), "显示任务");
+                popupTaskWindows();
+//                doGetTaskList(null,null,null, httpTag);
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * 弹出任务弹窗
+     */
+    private void popupTaskWindows() {
+// 一个自定义的布局，作为显示的内容
+        View contentView = LayoutInflater.from(MasterTabActivity.this).inflate(
+                R.layout.popup_window_task, null);
+        //列表
+        final RecyclerView mRecyclerView = contentView.findViewById(R.id.recyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setHasFixedSize(true);
+        //标题
+        final TextView tvTitle = contentView.findViewById(R.id.tv_title);
+        //关闭按钮
+        ImageView btnCloseRight = contentView.findViewById(R.id.iv_close_right);
+        //空布局
+        final XEmptyLayout emptyLayout = contentView.findViewById(R.id.emptyLayout);
+
+        if (ArrayListUtil.isNotEmpty(taskItems)) {
+            //列表数据
+            mTimeLineAdapter = new TimeLineAdapter(taskItems, true);
+            mRecyclerView.setAdapter(mTimeLineAdapter);
+            mRecyclerView.scrollToPosition(getFirstDoingTaskPosition());
+
+            //标题
+            if (taskListEntity != null) {
+                tvTitle.setText(taskListEntity.getSeminar_name());
+            } else {
+                tvTitle.setText("");
+            }
+
+            //隐藏空布局
+            emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+        } else {
+            doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
+        }
+
+//        doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
+
+        //空布局初始化
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_task_list));
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
+            }
+        });
+
+        final PopupWindow popupWindow = new PopupWindow(contentView,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+
+        popupWindow.setAnimationStyle(R.style.popup_window_anim_style);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap)null));//必须设置
+        //popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_bg_goodslist));
+        popupWindow.setFocusable(true);//内容的事件才会响应
+        popupWindow.setOutsideTouchable(true);
+
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+            @Override
+            public void onDismiss() {
+                //取消通信
+                BaseService.cancelTag(httpTag);
+            }
+        });
+
+//        popupWindow.setTouchInterceptor(new OnTouchListener() {
+//
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//
+//                Log.i("mengdd", "onTouch : ");
+//
+//                return false;
+//                // 这里如果返回true的话，touch事件将被拦截
+//                // 拦截后 PopupWindow的onTouchEvent不被调用，这样点击外部区域无法dismiss
+//            }
+//        });
+
+        // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
+        // 我觉得这里是API的一个bug
+//        popupWindow.setBackgroundDrawable(getResources().getDrawable(null));
+
+        // 设置好参数之后再show
+//        popupWindow.showAsDropDown(fabTask);
+//        popupWindow.showAsDropDown(fabTask, 10, 10);
+//        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM,
+//                DensityUtil.dip2px(MasterTabActivity.this, 10),
+//                DensityUtil.dip2px(MasterTabActivity.this, 120));
+//        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM|Gravity.RIGHT,
+//                DensityUtil.dip2px(MasterTabActivity.this, 9),
+//                DensityUtil.dip2px(MasterTabActivity.this, 125));
+        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM|Gravity.RIGHT,
+                offset_x,
+                offset_y);
+
+        //关闭操作
+        btnCloseRight.setOnClickListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                popupWindow.dismiss();
+            }
+        });
+
+    }
+
+
+    /**
+     * 获取第一个正在进行的任务位置
+     * @return 索引
+     */
+    private int getFirstDoingTaskPosition() {
+        int position = 0;
+
+        if (ArrayListUtil.isNotEmpty(taskItems)) {
+            for (int i=0; i<taskItems.size(); i++) {
+                TaskItemEntity taskItem = taskItems.get(i);
+                if (taskItem.getStatus() == Dictionary.TASK_STATUS_DOING) {
+                    position = i;
+                    break;
+                }
+            }
+        }
+
+        return position;
+    }
+
+    /**
+     * 请求任务列表
+     */
+    private void doGetTaskList(final RecyclerView recyclerView, final TextView tvTitle, final XEmptyLayout emptyLayout, String tag) {
+        if (emptyLayout != null) {
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        }
+        //孩子ID
+        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+
+        DataRequestService.getInstance().getTaskList(defaultChildId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //设置空布局：网络错误
+                if (emptyLayout != null) {
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //设置空布局：隐藏
+                    if (emptyLayout != null) {
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//                            }
+//                        },2000);
+                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                    }
+
+//                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
+
+                    int totalCount = taskListRootEntity.getTotal();
+                    List<TaskListEntity> dataList = taskListRootEntity.getItems();
+                    taskListEntity = null;
+                    taskItems = null;
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        if (emptyLayout != null) {
+                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        }
+                        return;
+                    } else {
+                        taskListEntity = dataList.get(0);
+                        taskItems = taskListEntity.getTaskItems();
+                        if (ArrayListUtil.isEmpty(taskItems)) {
+                            if (emptyLayout != null) {
+                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                                return;
+                            }
+                        }
+                    }
+
+//                    popupTaskWindows();
+                    //任务列表
+                    if (recyclerView != null) {
+                        mTimeLineAdapter = new TimeLineAdapter(taskItems, true);
+                        recyclerView.setAdapter(mTimeLineAdapter);
+                        recyclerView.scrollToPosition(getFirstDoingTaskPosition());
+                    }
+
+                    //标题
+                    if (tvTitle != null) {
+                        if (taskListEntity != null) {
+                            tvTitle.setText(taskListEntity.getSeminar_name());
+                        } else {
+                            tvTitle.setText("");
+                        }
+                    }
+
+                    //第一次访问默认弹出任务列表弹窗
+                    if (!hasFirstShowTaskList) {
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                popupTaskWindows();
+                                //设置已经第一次访问过了任务列表
+                                hasFirstShowTaskList = true;
+                                String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+                                setHasFirstShowTaskList(defaultChildId);
+                            }
+                        }, 500);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //设置空布局：没有数据，可重载
+                    if (emptyLayout != null) {
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                    }
+                }
+
+            }
+        }, tag);
+    }
+
+
+    /**
+     * 设置已经第一次显示了任务列表
+     *
+     * @param childId 孩子ID
+     */
+    private void setHasFirstShowTaskList(String childId) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(childId, true);
+        editor.apply();
+    }
+
+
+    /**
+     * 获取是否已经第一次显示了任务列表
+     *
+     * @param childId 孩子ID
+     */
+    private boolean getHasFirstShowTaskList(String childId) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        return sp.getBoolean(childId, false);
+    }
+
+
+    String testTaskStr = "{\n" +
+            "\t\"total\": 1,\n" +
+            "\t\"items\": [{\n" +
+            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
+            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
+            "\t\t\"description\": \"专题描述专题描述\",\n" +
+            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
+            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\t\"status\": 2\n" +
+            "\t\t\t},\n" +
+            "\t\t\t{\n" +
+            "\t\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\t\"status\": 1\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\t\"status\": 0\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\t\"status\": 0\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\t\"status\": 0\n" +
+            "\t\t\t}\n" +
+            "\t\t]\n" +
+            "\t}]\n" +
+            "}";
 
 }
 
