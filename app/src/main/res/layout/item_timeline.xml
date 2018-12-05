@@ -23,6 +23,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_gravity="center_vertical"
+        app:cardBackgroundColor="@color/color_f5f5f5"
         app:cardElevation="1dp"
         app:contentPadding="15dp">
 

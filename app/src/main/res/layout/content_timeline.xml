@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity"
-    tools:showIn="@layout/popup_window_task">
+    tools:showIn="@layout/popup_window_task"
+    android:background="#f7f6f6">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -12,6 +13,6 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:clipToPadding="false"
-        tools:listitem="@layout/item_timeline"/>
+        tools:listitem="@layout/item_timeline_line_padding_custom"/>
 
 </RelativeLayout>

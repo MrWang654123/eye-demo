@@ -32,10 +32,6 @@ public class TaskItemEntity extends DataSupport implements Serializable {
     @InjectMap(name = "status")
     private int status;
 
-    //描述
-    @InjectMap(name = "description")
-    private String description;
-
 
     public String getId() {
         return id;
@@ -77,11 +73,4 @@ public class TaskItemEntity extends DataSupport implements Serializable {
         this.status = status;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

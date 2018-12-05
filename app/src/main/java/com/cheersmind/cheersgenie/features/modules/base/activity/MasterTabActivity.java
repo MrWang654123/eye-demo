@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -27,6 +28,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -505,7 +507,7 @@ public class MasterTabActivity extends BaseActivity {
      * 弹出任务弹窗
      */
     private void popupTaskWindows() {
-// 一个自定义的布局，作为显示的内容
+        // 一个自定义的布局，作为显示的内容
         View contentView = LayoutInflater.from(MasterTabActivity.this).inflate(
                 R.layout.popup_window_task, null);
         //列表
@@ -558,6 +560,14 @@ public class MasterTabActivity extends BaseActivity {
         //popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_bg_goodslist));
         popupWindow.setFocusable(true);//内容的事件才会响应
         popupWindow.setOutsideTouchable(true);
+        //设置背景半透明
+//        WindowManager.LayoutParams lp = getWindow().getAttributes();
+//        lp.alpha = 0.6f; //0.0-1.0
+//        getWindow().setAttributes(lp);
+//        backgroundAlpha(0.6f);
+        //清空所有消息
+        mHandler.removeCallbacksAndMessages(null);
+        Message.obtain(mHandler, MSG_WINDOWS_ALPHA_SUB).sendToTarget();
 
         popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
 
@@ -565,6 +575,31 @@ public class MasterTabActivity extends BaseActivity {
             public void onDismiss() {
                 //取消通信
                 BaseService.cancelTag(httpTag);
+//                mHandler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //清空所有消息
+//                        mHandler.removeCallbacksAndMessages(null);
+////                        //设置背景半透明
+////                        WindowManager.LayoutParams lp = getWindow().getAttributes();
+////                        lp.alpha = 1.0f; //0.0-1.0
+////                        getWindow().setAttributes(lp);
+//
+//                        WindowManager.LayoutParams lp = getWindow().getAttributes();
+//                        lp.alpha = 1.0f;
+//                        getWindow().setAttributes(lp);
+////                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+//                    }
+//                }, 270);
+
+//                mHandler.removeCallbacksAndMessages(null);
+//                Message.obtain(mHandler, MSG_WINDOWS_ALPHA_ADD).sendToTarget();
+
+                //清空所有消息
+                mHandler.removeCallbacksAndMessages(null);
+                WindowManager.LayoutParams lp = getWindow().getAttributes();
+                lp.alpha = 1.0f;
+                getWindow().setAttributes(lp);
             }
         });
 
@@ -653,18 +688,18 @@ public class MasterTabActivity extends BaseActivity {
                 try {
                     //设置空布局：隐藏
                     if (emptyLayout != null) {
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-//                            }
-//                        },2000);
-                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                            }
+                        },2000);
+//                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     }
 
-//                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
+//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
 
                     int totalCount = taskListRootEntity.getTotal();
@@ -754,6 +789,68 @@ public class MasterTabActivity extends BaseActivity {
     private boolean getHasFirstShowTaskList(String childId) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         return sp.getBoolean(childId, false);
+    }
+
+    //windows背景透明度消息
+    private final static int MSG_WINDOWS_ALPHA_ADD = 1;
+    private final static int MSG_WINDOWS_ALPHA_SUB = 2;
+    //延迟间隔
+    private final static int DELAY_INTERVAL = 2;
+    //透明度渐变间隔
+    float intervalAlpha = 0.005f;
+
+    @Override
+    public void onHandleMessage(Message msg) {
+        //屏幕透明度
+        float alpha = getBackgroundAlpha();
+        switch (msg.what) {
+            case MSG_WINDOWS_ALPHA_ADD: {
+                if (alpha < 0.995f) {
+                    alpha += intervalAlpha;
+                    backgroundAlpha(alpha);
+                    mHandler.sendEmptyMessageDelayed(MSG_WINDOWS_ALPHA_ADD, DELAY_INTERVAL);
+
+                } else {
+                    backgroundAlpha(1.0f);
+//                    alpha += intervalAlpha;
+//                    backgroundAlpha(alpha);
+                }
+
+                break;
+            }
+            case MSG_WINDOWS_ALPHA_SUB: {
+                if (alpha > 0.605f) {
+                    alpha -= intervalAlpha;
+                    backgroundAlpha(alpha);
+                    mHandler.sendEmptyMessageDelayed(MSG_WINDOWS_ALPHA_SUB, DELAY_INTERVAL);
+
+                } else {
+                    backgroundAlpha(0.6f);
+                }
+                break;
+            }
+        }
+    }
+
+    /**
+     * 设置添加屏幕的背景透明度
+     * @param bgAlpha [0.0-1.0]
+     */
+    public void backgroundAlpha(float bgAlpha)
+    {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        getWindow().setAttributes(lp);
+//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
+    /**
+     * 获取屏幕的背景透明度
+     */
+    public float getBackgroundAlpha()
+    {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        return lp.alpha;
     }
 
 

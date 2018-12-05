@@ -184,8 +184,8 @@
     <string name="empty_tip_task_list">暂无任务</string>
 
     <!--任务列表-->
-    <string name="begin_time_fmt">从 %s</string>
-    <string name="begin_end_fmt">到 %s</string>
+    <string name="begin_time_fmt">开始时间 %s</string>
+    <string name="begin_end_fmt">结束时间 %s</string>
 
     <!--behaver-->
     <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>
