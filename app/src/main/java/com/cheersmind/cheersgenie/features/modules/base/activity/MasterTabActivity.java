@@ -50,6 +50,7 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
@@ -495,8 +496,9 @@ public class MasterTabActivity extends BaseActivity {
             //任务说明（分期测评）
             case R.id.fabTask:{
 //                ToastUtil.showShort(getApplicationContext(), "显示任务");
-                popupTaskWindows();
+//                popupTaskWindows();
 //                doGetTaskList(null,null,null, httpTag);
+                new TaskListDialog(MasterTabActivity.this, null, null, null).show();
                 break;
             }
         }
@@ -523,7 +525,7 @@ public class MasterTabActivity extends BaseActivity {
 
         if (ArrayListUtil.isNotEmpty(taskItems)) {
             //列表数据
-            mTimeLineAdapter = new TimeLineAdapter(taskItems, true);
+            mTimeLineAdapter = new TimeLineAdapter(MasterTabActivity.this, taskItems, true);
             mRecyclerView.setAdapter(mTimeLineAdapter);
             mRecyclerView.scrollToPosition(getFirstDoingTaskPosition());
 
@@ -727,7 +729,7 @@ public class MasterTabActivity extends BaseActivity {
 //                    popupTaskWindows();
                     //任务列表
                     if (recyclerView != null) {
-                        mTimeLineAdapter = new TimeLineAdapter(taskItems, true);
+                        mTimeLineAdapter = new TimeLineAdapter(MasterTabActivity.this, taskItems, true);
                         recyclerView.setAdapter(mTimeLineAdapter);
                         recyclerView.scrollToPosition(getFirstDoingTaskPosition());
                     }

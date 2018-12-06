@@ -23,9 +23,9 @@
 
         <ImageView
             android:id="@+id/iv_status"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/task_inactive"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="@drawable/task_inactive"
             tools:ignore="ContentDescription" />
 
         <TextView

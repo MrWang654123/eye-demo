@@ -46,7 +46,9 @@
     <dimen name="task_list_popup_window_height">450dp</dimen><!--弹窗高度-->
     <dimen name="task_list_empty_layout_height">360dp</dimen><!--空布局高度-->
     <dimen name="task_list_empty_layout_margin">45dp</dimen><!--空布局外间距-->
-    <dimen name="task_list_horizontal_margin">0dp</dimen><!--内容水平外间距-->
+    <dimen name="task_list_horizontal_margin">15dp</dimen><!--内容水平外间距-->
+    <dimen name="task_list_margin_top">30dp</dimen><!--内容top外间距-->
+    <dimen name="task_list_margin_bottom">30dp</dimen><!--内容bottom外间距-->
     <dimen name="task_list_popup_window_offset_x">20dp</dimen><!--弹窗x偏移-->
     <dimen name="task_list_popup_window_offset_y">140dp</dimen><!--弹窗y偏移-->
 

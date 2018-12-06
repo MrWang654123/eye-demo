@@ -2,5 +2,8 @@
 
     <!--文章详情-->
     <dimen name="close_button_margin_top">30dp</dimen><!--关闭按钮顶部外间距-->
+    <!--任务列表弹窗-->
+    <dimen name="task_list_margin_top">15dp</dimen><!--内容top外间距-->
+    <dimen name="task_list_margin_bottom">30dp</dimen><!--内容bottom外间距-->
 
 </resources>

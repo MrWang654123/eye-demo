@@ -3,18 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/task_list_popup_window_height">
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/task_list_margin_top"
+    android:layout_marginRight="@dimen/task_list_horizontal_margin"
+    android:layout_marginLeft="@dimen/task_list_horizontal_margin"
+    android:layout_marginBottom="@dimen/task_list_margin_bottom">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/task_list_popup_window_height"
-        android:background="@drawable/shape_corner_task_popup_window"
-        android:layout_marginLeft="@dimen/task_list_horizontal_margin"
-        android:layout_marginRight="@dimen/task_list_horizontal_margin">
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_corner_task_popup_window">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/task_list_popup_window_height"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <!--header-->
@@ -63,7 +65,7 @@
         <com.cheersmind.cheersgenie.features.view.XEmptyLayout
             android:id="@+id/emptyLayout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/task_list_popup_window_height"
+            android:layout_height="match_parent"
             android:visibility="gone"/>
 
         <ImageView

@@ -346,4 +346,16 @@ public class XEmptyLayout extends LinearLayout {
         });
     }
 
+    /**
+     * 设置背景
+     * @param drawableId Id
+     */
+    @Override
+    public void setBackgroundResource(int drawableId) {
+        super.setBackgroundResource(drawableId);
+        if (contentView != null) {
+            contentView.setBackgroundResource(drawableId);
+        }
+    }
+
 }
