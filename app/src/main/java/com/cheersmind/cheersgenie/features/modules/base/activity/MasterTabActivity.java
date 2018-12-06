@@ -688,18 +688,18 @@ public class MasterTabActivity extends BaseActivity {
                 try {
                     //设置空布局：隐藏
                     if (emptyLayout != null) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-                            }
-                        },2000);
-//                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//                            }
+//                        },2000);
+                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     }
 
-                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
-//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+//                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
 
                     int totalCount = taskListRootEntity.getTotal();
