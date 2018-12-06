@@ -171,8 +171,8 @@ public class TaskListDialog extends Dialog {
 
                     }
 
-                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
-//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+//                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
 
                     int totalCount = taskListRootEntity.getTotal();
