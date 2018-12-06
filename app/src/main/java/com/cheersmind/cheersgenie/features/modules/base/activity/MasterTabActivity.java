@@ -153,7 +153,10 @@ public class MasterTabActivity extends BaseActivity {
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
         hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
         //请求任务列表
-        doGetTaskList(null, null, null, httpTag);
+//        doGetTaskList(null, null, null, httpTag);
+        if (!hasFirstShowTaskList) {
+            new TaskListDialog(MasterTabActivity.this, null, null, null).show();
+        }
     }
 
 
