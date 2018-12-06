@@ -70,11 +70,11 @@
 
         <ImageView
             android:id="@+id/iv_close_right"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_alignParentRight="true"
-            android:padding="10dp"
-            android:layout_margin="8dp"
+            android:padding="15dp"
+            android:layout_margin="3dp"
             android:layout_gravity="right"
             android:src="@drawable/close"
             tools:ignore="ContentDescription" />
