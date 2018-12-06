@@ -480,8 +480,10 @@ public class LastReportFragment extends LazyLoadFragment {
                     int chartType = reportItem.getChartType();
                     //报告项转图表项
                     ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), chartType, reportItem);
-                    //添加为header的子项
-                    header.addSubItem(chartItem);
+                    if (chartItem != null) {
+                        //添加为header的子项
+                        header.addSubItem(chartItem);
+                    }
                 }
 
                 //footer

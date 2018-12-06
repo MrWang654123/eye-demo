@@ -126,8 +126,8 @@ public class RadarChartItem extends ChartItem {
 
     @Override
     public ChartItem generateChartData(ReportItemEntity reportData) {
-        if(reportData==null || reportData.getItems()==null || reportData.getItems().size()==0){
-            return this;
+        if(reportData == null || reportData.getItems() == null || reportData.getItems().size() == 0){
+            return null;
         }
         List<ReportFactorEntity> items = reportData.getItems();
         xLabels = new ArrayList<>();

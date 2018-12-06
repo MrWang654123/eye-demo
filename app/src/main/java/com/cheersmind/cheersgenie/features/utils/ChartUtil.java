@@ -25,6 +25,10 @@ public class ChartUtil {
     public static ChartItem reportItemToChartItem(Context context, int chartType, ReportItemEntity reportItem) {
         ChartItem chartItem;
 
+        if (reportItem == null || ArrayListUtil.isEmpty(reportItem.getItems())) {
+            return null;
+        }
+
         if(chartType == Dictionary.CHART_RADAR){
             chartItem = new RadarChartItem(context).generateChartData(reportItem);
 

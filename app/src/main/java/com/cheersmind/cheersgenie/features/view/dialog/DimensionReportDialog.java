@@ -657,41 +657,43 @@ public class DimensionReportDialog extends Dialog {
 
             for (ReportItemEntity reportItem : dimensionReports) {
                 ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), reportItem.getChartType(), reportItem);
-                View chartItemView = null;
-                //图表类型
-                switch (chartItem.getItemType()) {
-                    case Dictionary.CHART_RADAR: {
-                        chartItemView = View.inflate(getContext(), R.layout.chart_item_radar, null);
+                if (chartItem != null) {
+                    View chartItemView = null;
+                    //图表类型
+                    switch (chartItem.getItemType()) {
+                        case Dictionary.CHART_RADAR: {
+                            chartItemView = View.inflate(getContext(), R.layout.chart_item_radar, null);
 //                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_radar, null);
 //                            LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_footer, parent, false);
-                        break;
-                    }
-                    case Dictionary.CHART_LINE: {
-                        chartItemView = View.inflate(getContext(), R.layout.chart_item_line, null);
+                            break;
+                        }
+                        case Dictionary.CHART_LINE: {
+                            chartItemView = View.inflate(getContext(), R.layout.chart_item_line, null);
 //                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_line, llChart);
-                        break;
-                    }
-                    case Dictionary.CHART_BAR_V: {
-                        chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_v, null);
+                            break;
+                        }
+                        case Dictionary.CHART_BAR_V: {
+                            chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_v, null);
 //                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_v, null);
-                        break;
-                    }
-                    case Dictionary.CHART_BAR_H: {
-                        chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_h, null);
+                            break;
+                        }
+                        case Dictionary.CHART_BAR_H: {
+                            chartItemView = View.inflate(getContext(), R.layout.chart_item_bar_h, null);
 //                        chartItemView = LayoutInflater.from(getContext()).inflate(R.layout.chart_item_bar_h, null);
-                        break;
+                            break;
+                        }
                     }
-                }
 
-                if (chartItemView != null) {
-                    View charView = chartItemView.findViewById(R.id.chart);
-                    if (charView != null) {
-                        //初始化图表视图
-                        chartItem.initChart(charView);
+                    if (chartItemView != null) {
+                        View charView = chartItemView.findViewById(R.id.chart);
+                        if (charView != null) {
+                            //初始化图表视图
+                            chartItem.initChart(charView);
 //                            chartItem.invalidate();
 //                            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) charView.getLayoutParams();
-                        //添加到容器中
-                        llChart.addView(chartItemView);
+                            //添加到容器中
+                            llChart.addView(chartItemView);
+                        }
                     }
                 }
             }
