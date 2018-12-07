@@ -153,10 +153,10 @@ public class MasterTabActivity extends BaseActivity {
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
         hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
         //请求任务列表
-//        doGetTaskList(null, null, null, httpTag);
-        if (!hasFirstShowTaskList) {
-            new TaskListDialog(MasterTabActivity.this, null, null, null).show();
-        }
+        doGetTaskList(httpTag);
+//        if (!hasFirstShowTaskList) {
+//            new TaskListDialog(MasterTabActivity.this, null, null, null).show();
+//        }
     }
 
 
@@ -217,6 +217,8 @@ public class MasterTabActivity extends BaseActivity {
                 .setFirstSelectedPosition(0)//设置默认选择的按钮
                 .initialise();//所有的设置需在调用该方法前完成
 
+        //初始隐藏悬浮按钮
+        fabTask.setVisibility(View.GONE);
 
         //测试
         DisplayMetrics metrics = QSApplication.getMetrics();
@@ -432,6 +434,9 @@ public class MasterTabActivity extends BaseActivity {
 
         //释放百度音频
         getSynthesizerManager().release();
+
+        //取消通信
+        BaseService.cancelTag(httpTag);
     }
 
 
@@ -501,7 +506,7 @@ public class MasterTabActivity extends BaseActivity {
 //                ToastUtil.showShort(getApplicationContext(), "显示任务");
 //                popupTaskWindows();
 //                doGetTaskList(null,null,null, httpTag);
-                new TaskListDialog(MasterTabActivity.this, null, null, null).show();
+                new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, null).show();
                 break;
             }
         }
@@ -509,200 +514,21 @@ public class MasterTabActivity extends BaseActivity {
 
 
     /**
-     * 弹出任务弹窗
-     */
-    private void popupTaskWindows() {
-        // 一个自定义的布局，作为显示的内容
-        View contentView = LayoutInflater.from(MasterTabActivity.this).inflate(
-                R.layout.popup_window_task, null);
-        //列表
-        final RecyclerView mRecyclerView = contentView.findViewById(R.id.recyclerView);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setHasFixedSize(true);
-        //标题
-        final TextView tvTitle = contentView.findViewById(R.id.tv_title);
-        //关闭按钮
-        ImageView btnCloseRight = contentView.findViewById(R.id.iv_close_right);
-        //空布局
-        final XEmptyLayout emptyLayout = contentView.findViewById(R.id.emptyLayout);
-
-        if (ArrayListUtil.isNotEmpty(taskItems)) {
-            //列表数据
-            mTimeLineAdapter = new TimeLineAdapter(MasterTabActivity.this, taskItems, true);
-            mRecyclerView.setAdapter(mTimeLineAdapter);
-            mRecyclerView.scrollToPosition(getFirstDoingTaskPosition());
-
-            //标题
-            if (taskListEntity != null) {
-                tvTitle.setText(taskListEntity.getSeminar_name());
-            } else {
-                tvTitle.setText("");
-            }
-
-            //隐藏空布局
-            emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-        } else {
-            doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
-        }
-
-//        doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
-
-        //空布局初始化
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_task_list));
-        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                doGetTaskList(mRecyclerView, tvTitle, emptyLayout, httpTag);
-            }
-        });
-
-        final PopupWindow popupWindow = new PopupWindow(contentView,
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-
-        popupWindow.setAnimationStyle(R.style.popup_window_anim_style);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap)null));//必须设置
-        //popupWindow.setBackgroundDrawable(getResources().getDrawable(R.drawable.popup_bg_goodslist));
-        popupWindow.setFocusable(true);//内容的事件才会响应
-        popupWindow.setOutsideTouchable(true);
-        //设置背景半透明
-//        WindowManager.LayoutParams lp = getWindow().getAttributes();
-//        lp.alpha = 0.6f; //0.0-1.0
-//        getWindow().setAttributes(lp);
-//        backgroundAlpha(0.6f);
-        //清空所有消息
-        mHandler.removeCallbacksAndMessages(null);
-        Message.obtain(mHandler, MSG_WINDOWS_ALPHA_SUB).sendToTarget();
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-
-            @Override
-            public void onDismiss() {
-                //取消通信
-                BaseService.cancelTag(httpTag);
-//                mHandler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        //清空所有消息
-//                        mHandler.removeCallbacksAndMessages(null);
-////                        //设置背景半透明
-////                        WindowManager.LayoutParams lp = getWindow().getAttributes();
-////                        lp.alpha = 1.0f; //0.0-1.0
-////                        getWindow().setAttributes(lp);
-//
-//                        WindowManager.LayoutParams lp = getWindow().getAttributes();
-//                        lp.alpha = 1.0f;
-//                        getWindow().setAttributes(lp);
-////                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-//                    }
-//                }, 270);
-
-//                mHandler.removeCallbacksAndMessages(null);
-//                Message.obtain(mHandler, MSG_WINDOWS_ALPHA_ADD).sendToTarget();
-
-                //清空所有消息
-                mHandler.removeCallbacksAndMessages(null);
-                WindowManager.LayoutParams lp = getWindow().getAttributes();
-                lp.alpha = 1.0f;
-                getWindow().setAttributes(lp);
-            }
-        });
-
-//        popupWindow.setTouchInterceptor(new OnTouchListener() {
-//
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//
-//                Log.i("mengdd", "onTouch : ");
-//
-//                return false;
-//                // 这里如果返回true的话，touch事件将被拦截
-//                // 拦截后 PopupWindow的onTouchEvent不被调用，这样点击外部区域无法dismiss
-//            }
-//        });
-
-        // 如果不设置PopupWindow的背景，无论是点击外部区域还是Back键都无法dismiss弹框
-        // 我觉得这里是API的一个bug
-//        popupWindow.setBackgroundDrawable(getResources().getDrawable(null));
-
-        // 设置好参数之后再show
-//        popupWindow.showAsDropDown(fabTask);
-//        popupWindow.showAsDropDown(fabTask, 10, 10);
-//        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM,
-//                DensityUtil.dip2px(MasterTabActivity.this, 10),
-//                DensityUtil.dip2px(MasterTabActivity.this, 120));
-//        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM|Gravity.RIGHT,
-//                DensityUtil.dip2px(MasterTabActivity.this, 9),
-//                DensityUtil.dip2px(MasterTabActivity.this, 125));
-        popupWindow.showAtLocation(flContainer, Gravity.BOTTOM|Gravity.RIGHT,
-                offset_x,
-                offset_y);
-
-        //关闭操作
-        btnCloseRight.setOnClickListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                popupWindow.dismiss();
-            }
-        });
-
-    }
-
-
-    /**
-     * 获取第一个正在进行的任务位置
-     * @return 索引
-     */
-    private int getFirstDoingTaskPosition() {
-        int position = 0;
-
-        if (ArrayListUtil.isNotEmpty(taskItems)) {
-            for (int i=0; i<taskItems.size(); i++) {
-                TaskItemEntity taskItem = taskItems.get(i);
-                if (taskItem.getStatus() == Dictionary.TASK_STATUS_DOING) {
-                    position = i;
-                    break;
-                }
-            }
-        }
-
-        return position;
-    }
-
-    /**
      * 请求任务列表
      */
-    private void doGetTaskList(final RecyclerView recyclerView, final TextView tvTitle, final XEmptyLayout emptyLayout, String tag) {
-        if (emptyLayout != null) {
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
+    private void doGetTaskList(String tag) {
         //孩子ID
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
 
         DataRequestService.getInstance().getTaskList(defaultChildId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //设置空布局：网络错误
-                if (emptyLayout != null) {
-                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                }
+                e.getLocalizedMessage();
             }
 
             @Override
             public void onResponse(Object obj) {
                 try {
-                    //设置空布局：隐藏
-                    if (emptyLayout != null) {
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-//                            }
-//                        },2000);
-                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-                    }
-
 //                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
@@ -714,58 +540,31 @@ public class MasterTabActivity extends BaseActivity {
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
-                        if (emptyLayout != null) {
-                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                        }
+                        fabTask.setVisibility(View.GONE);
                         return;
                     } else {
                         taskListEntity = dataList.get(0);
                         taskItems = taskListEntity.getTaskItems();
                         if (ArrayListUtil.isEmpty(taskItems)) {
-                            if (emptyLayout != null) {
-                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                                return;
-                            }
+                            fabTask.setVisibility(View.GONE);
+                            return;
                         }
                     }
 
-//                    popupTaskWindows();
-                    //任务列表
-                    if (recyclerView != null) {
-                        mTimeLineAdapter = new TimeLineAdapter(MasterTabActivity.this, taskItems, true);
-                        recyclerView.setAdapter(mTimeLineAdapter);
-                        recyclerView.scrollToPosition(getFirstDoingTaskPosition());
-                    }
-
-                    //标题
-                    if (tvTitle != null) {
-                        if (taskListEntity != null) {
-                            tvTitle.setText(taskListEntity.getSeminar_name());
-                        } else {
-                            tvTitle.setText("");
-                        }
-                    }
-
+                    //显示悬浮按钮
+                    fabTask.setVisibility(View.VISIBLE);
                     //第一次访问默认弹出任务列表弹窗
                     if (!hasFirstShowTaskList) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                popupTaskWindows();
-                                //设置已经第一次访问过了任务列表
-                                hasFirstShowTaskList = true;
-                                String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
-                                setHasFirstShowTaskList(defaultChildId);
-                            }
-                        }, 500);
+                        //显示弹窗
+                        new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, null).show();
+                        //设置已经第一次访问过了任务列表
+                        hasFirstShowTaskList = true;
+                        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+                        setHasFirstShowTaskList(defaultChildId);
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    //设置空布局：没有数据，可重载
-                    if (emptyLayout != null) {
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-                    }
                 }
 
             }

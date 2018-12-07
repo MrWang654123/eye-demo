@@ -115,7 +115,12 @@ public class TaskListDialog extends Dialog {
         if (taskListEntity == null && taskItems == null) {
             doGetTaskList(tag);
         } else {
-            //直接刷新页面
+            //刷新视图
+            refreshView(taskListEntity, taskItems);
+
+            //第一次访问默认弹出任务列表弹窗
+            String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+            setHasFirstShowTaskList(defaultChildId);
         }
     }
 
@@ -197,22 +202,8 @@ public class TaskListDialog extends Dialog {
                         }
                     }
 
-//                    popupTaskWindows();
-                    //任务列表
-                    if (recyclerView != null) {
-                        mTimeLineAdapter = new TimeLineAdapter(context, taskItems, true);
-                        recyclerView.setAdapter(mTimeLineAdapter);
-                        recyclerView.scrollToPosition(getFirstDoingTaskPosition(taskItems));
-                    }
-
-                    //标题
-                    if (tvTitle != null) {
-                        if (taskListEntity != null) {
-                            tvTitle.setText(taskListEntity.getSeminar_name());
-                        } else {
-                            tvTitle.setText("");
-                        }
-                    }
+                    //刷新视图
+                    refreshView(taskListEntity, taskItems);
 
                     //第一次访问默认弹出任务列表弹窗
                     String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
@@ -228,6 +219,26 @@ public class TaskListDialog extends Dialog {
 
             }
         }, tag);
+    }
+
+
+    /**
+     * 刷新视图
+     * @param taskListEntity
+     * @param taskItems
+     */
+    private void refreshView(TaskListEntity taskListEntity, List<TaskItemEntity> taskItems) {
+        //任务列表
+        mTimeLineAdapter = new TimeLineAdapter(context, taskItems, true);
+        recyclerView.setAdapter(mTimeLineAdapter);
+        recyclerView.scrollToPosition(getFirstDoingTaskPosition(taskItems));
+
+        //标题
+        if (taskListEntity != null) {
+            tvTitle.setText(taskListEntity.getSeminar_name());
+        } else {
+            tvTitle.setText("");
+        }
     }
 
 
