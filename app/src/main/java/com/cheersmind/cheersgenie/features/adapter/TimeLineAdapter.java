@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     //日期格式
-    private final static String DATETIME_FORMAT = "yyyy-MM月-dd日";////hh:mm a, dd-MMM-yyyy
+    private final static String DATETIME_FORMAT = "yyyy-MM-dd";////hh:mm a, dd-MMM-yyyy
 
     private List<TaskItemEntity> mFeedList;
     private Context mContext;
