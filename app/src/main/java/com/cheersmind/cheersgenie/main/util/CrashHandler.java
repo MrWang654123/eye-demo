@@ -9,9 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.cheersmind.cheersgenie.features.modules.base.activity.SplashActivity;
-import com.cheersmind.cheersgenie.main.activity.StartActivity;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.commonsdk.UMConfigure;
 
 import java.io.File;
 import java.io.FileOutputStream;

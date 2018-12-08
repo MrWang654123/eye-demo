@@ -239,7 +239,7 @@ public class ModifyPasswordActivity extends BaseActivity {
      */
     private void queryModifyPassword(String passwordOld, final String passwordNew) {
         //通信提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
         //请求修改密码
         DataRequestService.getInstance().patchModifyPassword(passwordOld, passwordNew, new BaseService.ServiceCallback() {
             @Override
@@ -286,7 +286,7 @@ public class ModifyPasswordActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 

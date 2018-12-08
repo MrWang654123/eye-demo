@@ -3,10 +3,8 @@ package com.cheersmind.cheersgenie.features.modules.login.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,27 +16,13 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
-import com.cheersmind.cheersgenie.features.modules.register.activity.ParentRoleActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
-import com.cheersmind.cheersgenie.features.modules.register.activity.UserInfoInitActivity;
 import com.cheersmind.cheersgenie.features.modules.test.activity.EditTextPasteActivity;
-import com.cheersmind.cheersgenie.features.modules.test.activity.GifActivity;
-import com.cheersmind.cheersgenie.features.modules.test.activity.SchemaActivity;
-import com.cheersmind.cheersgenie.features.modules.test.activity.SpannableStringActivity;
-import com.cheersmind.cheersgenie.features.modules.test.activity.TextViewForHtmlImageActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
-import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
-import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
-import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.Constant;
-import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
@@ -48,13 +32,10 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.LogUtils;
-import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.cheersmind.cheersgenie.module.login.UserLicenseActivity;
-import com.cheersmind.cheersgenie.module.login.UserService;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -65,22 +46,13 @@ import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.cheersmind.cheersgenie.main.constant.Constant.mTencent;
 
@@ -257,7 +229,7 @@ public class XLoginActivity extends BaseActivity {
             return;
         }
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginActivity.this);
+        LoadingView.getInstance().show(XLoginActivity.this, httpTag);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -324,7 +296,7 @@ public class XLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -354,7 +326,7 @@ public class XLoginActivity extends BaseActivity {
      */
     private void doThirdLogin(final ThirdLoginDto thirdLoginDto) {
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginActivity.this);
+        LoadingView.getInstance().show(XLoginActivity.this, httpTag);
         //第三方登录
         DataRequestService.getInstance().postUcThirdLogin(thirdLoginDto, new BaseService.ServiceCallback() {
             @Override
@@ -416,7 +388,7 @@ public class XLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("登录失败"));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -436,7 +408,7 @@ public class XLoginActivity extends BaseActivity {
 
 
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginActivity.this);
+        LoadingView.getInstance().show(XLoginActivity.this, httpTag);
         new Thread(new Runnable() {
             @Override
             public void run() {

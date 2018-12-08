@@ -8,12 +8,16 @@ import android.support.v4.app.Fragment;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.service.BaseService;
 
 
 /**
  * Fragment基础类
  */
 public class BaseFragment extends Fragment implements MessageHandlerCallback {
+
+    //通信tag
+    protected String httpTag = System.currentTimeMillis() + "";
 
     /**
      * 默认的通信失败处理
@@ -46,4 +50,12 @@ public class BaseFragment extends Fragment implements MessageHandlerCallback {
     public void onHandleMessage(Message msg) {
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //取消当前页面的所有通信
+        BaseService.cancelTag(httpTag);
+    }
+
 }

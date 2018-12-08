@@ -3,24 +3,15 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.ImageSpan;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,30 +24,20 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.BaseFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
-import com.cheersmind.cheersgenie.features.modules.test.activity.SpannableStringActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
-import com.cheersmind.cheersgenie.main.fragment.questype.QuestionTypeBaseFragment;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +47,7 @@ import pl.droidsonroids.gif.GifTextView;
 /**
  * 默认的问题Fragment
  */
-public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements VoiceControlListener {
+public class DefaultQuestionFragment extends Fragment implements VoiceControlListener {
 
     private View contentView;
     //题目文本
@@ -371,7 +352,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
                     //问题类型：只选
                     if (entity.getType()== Dictionary.QUESTION_TYPE_SELECT_ONLY) {
                         notifyDataSetChanged();
-                        SoundPlayUtils.play(3);
+                        SoundPlayUtils.play(getContext(),3);
                         mHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -522,7 +503,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
         optionText = answer;
 
         adapter.notifyDataSetChanged();
-        SoundPlayUtils.play(3);
+        SoundPlayUtils.play(getContext(),3);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -538,7 +519,7 @@ public class DefaultQuestionFragment extends QuestionTypeBaseFragment implements
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
         tv.setVisibility(View.VISIBLE);
-        SoundPlayUtils.play(3);
+        SoundPlayUtils.play(getContext(),3);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -29,6 +29,11 @@ public class MineFeedBackActivity extends BaseActivity {
 
     @Override
     protected void onInitView() {
+
+    }
+
+    @Override
+    protected void onInitData() {
 //        FeedbackAPI.setTitleBarHeight(0);
         FragmentManager fm = getSupportFragmentManager();
         final FragmentTransaction transaction = fm.beginTransaction();
@@ -42,11 +47,6 @@ public class MineFeedBackActivity extends BaseActivity {
                 return null;
             }
         }/*success callback*/, null/*fail callback*/);
-    }
-
-    @Override
-    protected void onInitData() {
-
     }
 
 }

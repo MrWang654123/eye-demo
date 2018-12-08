@@ -192,7 +192,7 @@ public class UserInfoFragment extends TakePhotoFragment {
      */
     private void doPostModifyProfile(final File file) {
         //通信等待提示
-        LoadingView.getInstance().show(getContext());
+        LoadingView.getInstance().show(getContext(), httpTag);
         DataRequestService.getInstance().postModifyProfile(file, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -239,7 +239,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -277,7 +277,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

@@ -185,7 +185,7 @@ public class TopicDetailActivity extends BaseActivity {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

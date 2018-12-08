@@ -244,7 +244,7 @@ public class RetrievePasswordActivity extends BaseActivity {
      */
     private void patchResetPassword(ResetPasswordDto dto) {
         //通信等待提示
-        LoadingView.getInstance().show(RetrievePasswordActivity.this);
+        LoadingView.getInstance().show(RetrievePasswordActivity.this, httpTag);
         //重置密码
         DataRequestService.getInstance().patchResetPassword(dto, new BaseService.ServiceCallback() {
             @Override
@@ -299,7 +299,7 @@ public class RetrievePasswordActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             }
-        });
+        }, httpTag);
     }
 
 

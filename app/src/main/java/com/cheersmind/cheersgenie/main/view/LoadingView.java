@@ -36,10 +36,11 @@ public class LoadingView {
 
     /**
      * 显示
-     * @param context
+     * @param context 上下文
+     * @param httpTag 通信标记
      */
     @SuppressLint("NewApi")
-    public void show(final Context context) {
+    public void show(final Context context, final String httpTag) {
         if (dlg != null && dlg.isShowing()) {
             return;
         }
@@ -80,14 +81,14 @@ public class LoadingView {
                 @Override
                 public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                     if(keyCode==KeyEvent.KEYCODE_BACK){
-                        String tag = QSApplication.getCurrentActivity().getLocalClassName();
-                        BaseService.cancelTag(tag);
+                        BaseService.cancelTag(httpTag);
                     }
                     return false;
                 }
             });
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -107,7 +108,7 @@ public class LoadingView {
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

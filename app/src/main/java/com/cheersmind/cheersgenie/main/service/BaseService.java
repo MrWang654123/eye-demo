@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
@@ -23,13 +22,10 @@ import java.util.Map;
 public class BaseService {
 
     public interface ServiceCallback {
-        public abstract void onFailure(QSCustomException e);
-        public abstract void onResponse(Object obj);
+        void onFailure(QSCustomException e);
+        void onResponse(Object obj);
     }
 
-    public static void get(final String url, final ServiceCallback callback) {
-        get(url, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
 
     public static void get(final String url, final ServiceCallback callback, String tag) {
         BaseRequest.get(url, new BaseRequest.BaseCallback() {
@@ -45,9 +41,6 @@ public class BaseService {
         }, tag);
     }
 
-    public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback) {
-        post(url, params, isFormType, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
 
     public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback, String tag) {
 
@@ -64,7 +57,7 @@ public class BaseService {
         }, tag);
     }
 
-    public static void post(final String url, JSONObject params, final ServiceCallback callback) {
+    public static void post(final String url, JSONObject params, final ServiceCallback callback, String httpTag) {
 
         BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
@@ -76,11 +69,11 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        }, QSApplication.getCurrentActivity().getLocalClassName());
+        }, httpTag);
     }
 
 
-    public static void post(final String url, Map<String,File> params, final ServiceCallback callback) {
+    public static void post(final String url, Map<String,File> params, final ServiceCallback callback, String httpTag) {
 
         BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
@@ -92,13 +85,9 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        }, QSApplication.getCurrentActivity().getLocalClassName());
+        }, httpTag);
     }
 
-
-    public static void patch(String url, Map<String,Object> params,final ServiceCallback callback) {
-        patch(url, params, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
 
     public static void patch(String url, Map<String,Object> params,final ServiceCallback callback, String tag) {
         BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
@@ -114,7 +103,7 @@ public class BaseService {
         }, tag);
     }
 
-    public static void put(String url, Map<String,Object> params,final ServiceCallback callback) {
+    public static void put(String url, Map<String,Object> params,final ServiceCallback callback, String httpTag) {
         BaseRequest.put(url, params, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -125,29 +114,23 @@ public class BaseService {
             public void onResponse(int code, String bodyStr) {
                 onResponseDefault(code, bodyStr, callback);
             }
-        },QSApplication.getCurrentActivity().getLocalClassName());
+        },httpTag);
     }
 
 
     /**
-     *  根据tag取消通信
-     * @param tag
+     *  根据httpTag取消通信
+     * @param httpTag 通信标记
      */
-    public static void cancelTag(String tag) {
-        BaseRequest.cancelTag(tag);
+    public static void cancelTag(String httpTag) {
+        BaseRequest.cancelTag(httpTag);
     }
 
-    /**
-     *  根据tag取消通信
-     */
-//    public static void cancelTag() {
-//        BaseRequest.cancelTag(QSApplication.getPreActivity().getLocalClassName());
-//    }
 
     /**
      * 默认错误处理
-     * @param callback
-     * @param e
+     * @param callback 回调
+     * @param e 异常
      */
     private static void onFailureDefault(final Exception e, final ServiceCallback callback) {
         if (callback != null) {
@@ -172,10 +155,9 @@ public class BaseService {
 
     /**
      * 默认响应处理
-     * @param code
-     * @param bodyStr
-     * @param callback
-     * @throws IOException
+     * @param code http错误码
+     * @param bodyStr 结果字符串
+     * @param callback 回调
      */
     private static void onResponseDefault(final int code, final String bodyStr, final ServiceCallback callback) {
         if (callback != null) {
@@ -214,31 +196,31 @@ public class BaseService {
 
     /**
      * 拼接get参数
-     * @param url
-     * @param params
-     * @return
+     * @param url 访问地址
+     * @param params 参数
+     * @return 拼接结果
      */
     public static String settingGetParams(String url, Map<String, Object> params) {
-        String result = url;
+        StringBuilder result = new StringBuilder(url);
 
         if (params != null && params.size() > 0) {
-            if (result.indexOf("?") == -1) {
-                result += "?";
+            if (!result.toString().contains("?")) {
+                result.append("?");
             }
 
-            if (result.indexOf("&") != -1) {
-                result += "&";
+            if (result.toString().contains("&")) {
+                result.append("&");
             }
 
             for (Map.Entry<String, Object> entry : params.entrySet()) {
-                result += (entry.getKey() + "=" + entry.getValue() + "&");
+                result.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
 
             //删除最后一个&
-            result = result.substring(0, result.length()-1);
+            result = new StringBuilder(result.substring(0, result.length() - 1));
         }
 
-        return result;
+        return result.toString();
     }
 
 

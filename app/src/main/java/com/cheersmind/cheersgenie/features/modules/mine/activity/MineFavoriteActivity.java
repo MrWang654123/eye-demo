@@ -308,7 +308,7 @@ public class MineFavoriteActivity extends BaseActivity {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -400,7 +400,7 @@ public class MineFavoriteActivity extends BaseActivity {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
 
@@ -447,7 +447,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 

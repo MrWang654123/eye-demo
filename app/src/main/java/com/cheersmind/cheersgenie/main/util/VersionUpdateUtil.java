@@ -49,18 +49,18 @@ public class VersionUpdateUtil {
     /**
      * 检查更新
      */
-    public static void checkUpdate(final Activity context,final boolean fromUser) {
-        checkUpdate(context, fromUser, true);
+    public static void checkUpdate(final Activity context,final boolean fromUser, String httpTag) {
+        checkUpdate(context, fromUser, true, httpTag);
     }
 
 
     /**
      * 检查更新
      */
-    public static void checkUpdate(final Activity context,final boolean fromUser,final boolean showLoading) {
+    public static void checkUpdate(final Activity context,final boolean fromUser,final boolean showLoading, String httpTag) {
         String url = HttpConfig.URL_VERSION_UPDATE.replace("{app_id}", Constant.API_APP_ID);
         if (showLoading) {
-            LoadingView.getInstance().show(context);
+            LoadingView.getInstance().show(context, httpTag);
         }
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override
@@ -155,7 +155,7 @@ public class VersionUpdateUtil {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
 

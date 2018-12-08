@@ -112,7 +112,7 @@ public class AccountBindActivity extends BaseActivity {
      * 查询绑定平台
      */
     private void queryBindPlatform() {
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
         DataRequestService.getInstance().getThirdBindPlatform(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -159,7 +159,7 @@ public class AccountBindActivity extends BaseActivity {
                     refreshBindInfoView();
                 }
             }
-        });
+        }, httpTag);
 
     }
 
@@ -259,7 +259,7 @@ public class AccountBindActivity extends BaseActivity {
      * @param bindDto
      */
     private void doThirdPlatUnbind(final ThirdPlatBindDto bindDto) {
-        LoadingView.getInstance().show(AccountBindActivity.this);
+        LoadingView.getInstance().show(AccountBindActivity.this, httpTag);
         //解绑第三方平台账号
         DataRequestService.getInstance().postThirdPlatUnbind(bindDto, new BaseService.ServiceCallback() {
             @Override
@@ -279,7 +279,7 @@ public class AccountBindActivity extends BaseActivity {
                 }
                 refreshBindInfoView();
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -287,7 +287,7 @@ public class AccountBindActivity extends BaseActivity {
      * @param bindDto
      */
     private void doThirdPlatBind(final ThirdPlatBindDto bindDto) {
-        LoadingView.getInstance().show(AccountBindActivity.this);
+        LoadingView.getInstance().show(AccountBindActivity.this, httpTag);
         //绑定第三方平台账号
         DataRequestService.getInstance().postThirdPlatBind(bindDto, new BaseService.ServiceCallback() {
             @Override
@@ -308,7 +308,7 @@ public class AccountBindActivity extends BaseActivity {
                 }
                 refreshBindInfoView();
             }
-        });
+        }, httpTag);
     }
 
 
@@ -328,7 +328,7 @@ public class AccountBindActivity extends BaseActivity {
 
 
         //开启通信等待提示
-        LoadingView.getInstance().show(AccountBindActivity.this);
+        LoadingView.getInstance().show(AccountBindActivity.this, httpTag);
         //请求登录（get_simple_userinfo、all）
         mTencent.login(AccountBindActivity.this, "get_simple_userinfo", loginListener);
     }
@@ -480,7 +480,7 @@ public class AccountBindActivity extends BaseActivity {
             return;
         }
         //开启通信等待提示
-        LoadingView.getInstance().show(AccountBindActivity.this);
+        LoadingView.getInstance().show(AccountBindActivity.this, httpTag);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -541,7 +541,7 @@ public class AccountBindActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -573,7 +573,7 @@ public class AccountBindActivity extends BaseActivity {
      * 获取用户的手机号
      */
     private void getUserPhoneNum () {
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         DataRequestService.getInstance().getUserPhoneNum(new BaseService.ServiceCallback() {
             @Override
@@ -597,7 +597,7 @@ public class AccountBindActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        });
+        }, httpTag);
     }
 
 }

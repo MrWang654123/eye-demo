@@ -243,7 +243,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                     recyclerAdapter.setNewData(null);
                 }
             }
-        });
+        }, httpTag);
 
     }
 
@@ -331,7 +331,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
 
@@ -359,7 +359,7 @@ public class SystemMessageFragment extends LazyLoadFragment {
                 //发送消息读取事件（更新“我的”页面中的数量）
                 EventBus.getDefault().post(new MessageReadEvent());
             }
-        });
+        }, httpTag);
     }
 
 

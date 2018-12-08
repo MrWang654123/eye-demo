@@ -680,9 +680,10 @@ public class ArticleDetailActivity extends BaseActivity {
         if (TextUtils.isEmpty(article.getVideoId())) {
             jzVideo.setVisibility(View.GONE);
         } else {
-            //设置视频ID和标题
+            //设置视频ID和标题、通信标记
             jzVideo.setVideoId(article.getVideoId());
             jzVideo.setTitle(article.getArticleTitle());
+            jzVideo.setHttpTag(httpTag);
         }
 
         //退出全屏监听
@@ -778,7 +779,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(e.getMessage()));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -915,7 +916,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -956,7 +957,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(e.getMessage()));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -986,7 +987,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -1040,7 +1041,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -1265,7 +1266,7 @@ public class ArticleDetailActivity extends BaseActivity {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -1436,7 +1437,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     ToastUtil.showShort(getApplicationContext(), "评论失败");
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

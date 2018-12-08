@@ -317,7 +317,7 @@ public class DimensionDetailActivity extends BaseActivity {
         }
 
         //通信等待提示
-        LoadingView.getInstance().show(DimensionDetailActivity.this);
+        LoadingView.getInstance().show(DimensionDetailActivity.this, httpTag);
 
         DataRequestService.getInstance().startChildDimensionV2(openDimensionDto, new BaseService.ServiceCallback() {
             @Override
@@ -356,7 +356,7 @@ public class DimensionDetailActivity extends BaseActivity {
                     doOpenFailedTip();
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

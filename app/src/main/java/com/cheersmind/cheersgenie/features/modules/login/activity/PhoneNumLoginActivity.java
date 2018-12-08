@@ -306,7 +306,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //账号登录必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话后直接登录
-            LoadingView.getInstance().show(this);
+            LoadingView.getInstance().show(this, httpTag);
             doPostAccountSessionForPhoneNumLogin(false);
             return;
         }
@@ -372,7 +372,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //关闭软键盘
         SoftInputUtil.closeSoftInput(PhoneNumLoginActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+        LoadingView.getInstance().show(PhoneNumLoginActivity.this, httpTag);
         //手机号登录
         DataRequestService.getInstance().postPhoneNumLogin(phoneNumLoginDto, new BaseService.ServiceCallback() {
             @Override
@@ -397,7 +397,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接登录
-                            LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+                            LoadingView.getInstance().show(PhoneNumLoginActivity.this, httpTag);
                             doPostAccountSessionForPhoneNumLogin(false);
 
                             //标记已经处理了异常
@@ -472,7 +472,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("登录失败"));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -481,7 +481,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
      * @param bindDto
      */
     private void doThirdPlatBind(final ThirdPlatBindDto bindDto) {
-        LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+        LoadingView.getInstance().show(PhoneNumLoginActivity.this, httpTag);
         //绑定第三方平台账号
         DataRequestService.getInstance().postThirdPlatBind(bindDto, new BaseService.ServiceCallback() {
             @Override
@@ -502,7 +502,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 //获取孩子信息
                 doGetChildListWrap();
             }
-        });
+        }, httpTag);
     }
 
 
@@ -569,7 +569,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //发送短信验证码必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后发送短信验证码
-            LoadingView.getInstance().show(this);
+            LoadingView.getInstance().show(this, httpTag);
             doPostAccountSessionForSendMessageCaptcha(false);
             return;
         }
@@ -631,7 +631,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         MessageCaptchaDto dto = new MessageCaptchaDto();
         dto.setMobile(phoneNum);
@@ -659,7 +659,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                                 //重新获取会话
                                 sessionCreateResult = null;
                                 //创建会话然后发送短信验证码
-                                LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+                                LoadingView.getInstance().show(PhoneNumLoginActivity.this, httpTag);
                                 doPostAccountSessionForSendMessageCaptcha(false);
 
                                 //标记已经处理了异常
@@ -671,7 +671,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                                     sessionCreateResult.setNormal(false);
                                 }
                                 //开启通信等待
-                                LoadingView.getInstance().show(PhoneNumLoginActivity.this);
+                                LoadingView.getInstance().show(PhoneNumLoginActivity.this, httpTag);
                                 //请求图形验证码
                                 getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
 
@@ -723,7 +723,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     etCaptcha.setText("");
                     etCaptcha.requestFocus();
                 }
-            });
+            }, httpTag);
         } catch (QSCustomException e) {
             e.printStackTrace();
             ToastUtil.showShort(getApplicationContext(), e.getMessage());
@@ -837,7 +837,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     listener.onSuccess();
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

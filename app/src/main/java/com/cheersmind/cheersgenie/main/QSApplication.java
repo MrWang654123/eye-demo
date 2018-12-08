@@ -73,8 +73,8 @@ public class QSApplication extends LitePalApplication {
      */
     public static boolean sNetWorkIsWifi = false;
 
-    //当前顶层activity
-    private static Activity topActivity = null;
+    //当前顶层activity（可能会内存泄漏）
+    private static Activity topActivity;
 
     //屏幕宽高信息
     private static DisplayMetrics metrics;
@@ -83,6 +83,9 @@ public class QSApplication extends LitePalApplication {
 
     //百度音频管理器
     private SynthesizerManager synthesizerManager;
+
+    //测试数量
+    public static int TEST_COUNT = 1;
 
 
     @Override
@@ -167,8 +170,8 @@ public class QSApplication extends LitePalApplication {
         //MediaSystem（默认）
 //        JZVideoPlayer.setMediaInterface(new JZMediaSystem());
 
-        //初始化声音
-        SoundPlayUtils.init(context);
+//        //初始化声音
+//        SoundPlayUtils.init(context);
 
         //创建百度音频管理
         synthesizerManager = new SynthesizerManager(context);
@@ -354,13 +357,13 @@ public class QSApplication extends LitePalApplication {
             /** Unused implementation **/
             @Override
             public void onActivityStarted(Activity activity) {
-                topActivity = activity;
+//                topActivity = activity;
                 LogUtils.w("onActivityStarted===", topActivity + "");
             }
 
             @Override
             public void onActivityResumed(Activity activity) {
-                topActivity = activity;
+//                topActivity = activity;
                 LogUtils.w("onActivityResumed===", topActivity + "");
             }
 

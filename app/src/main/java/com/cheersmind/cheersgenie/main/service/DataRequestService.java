@@ -54,9 +54,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Created by Administrator on 2017/10/28.
+ * 数据请求服务
  */
-
 public class DataRequestService {
 
     private static DataRequestService instance;
@@ -71,63 +70,166 @@ public class DataRequestService {
         return instance;
     }
 
-    //获取首页推荐列表
-    public void loadMainRecommend(String childId,String topicId,String examId,int offset,int limit,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_RECOMMEND_MAIN
-                .replace("{child_id}",childId)
-                .replace("{topic_id}",topicId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit))
-                .replace("{exam_id}",examId);
+    /**
+     * 通用get请求操作
+     * @param url 访问地址
+     * @param callback 回调
+     */
+    private void doGet(String url, final BaseService.ServiceCallback callback, String httpTag) {
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
             }
 
             @Override
             public void onResponse(Object obj) {
-                callback.onResponse(obj);
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
             }
-        });
+        }, httpTag);
     }
 
-    //获取基础主题列表
-    public void loadBaseTopicList(int offset, int limit, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_TOPIC_LIST
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
+
+    /**
+     * 通用post请求（参数map）
+     * @param url 地址
+     * @param params 参数map
+     * @param isFormType 是否form
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    private void doPost(String url, Map<String,Object> params, boolean isFormType, final BaseService.ServiceCallback callback, String httpTag) {
+        BaseService.post(url, params, isFormType, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
             }
 
             @Override
             public void onResponse(Object obj) {
-                callback.onResponse(obj);
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
             }
-        });
+        },httpTag);
     }
+
+    /**
+     * 通用post请求（参数json）
+     * @param url 地址
+     * @param params 参数json
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    private void doPost(String url, JSONObject params, final BaseService.ServiceCallback callback, String httpTag) {
+        BaseService.post(url, params, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
+            }
+        }, httpTag);
+    }
+
+
+    /**
+     * 通用post请求（参数map：value是File）
+     * @param url 地址
+     * @param params 参数map：value是File
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    private void doPost(String url, Map<String,File> params, final BaseService.ServiceCallback callback, String httpTag) {
+        BaseService.post(url, params, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
+            }
+        }, httpTag);
+    }
+
+
+    /**
+     * 通用put请求
+     * @param url 地址
+     * @param params 参数map
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    private void doPut(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, String httpTag) {
+        BaseService.put(url,params, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
+            }
+        }, httpTag);
+    }
+
+    /**
+     * 通用patch请求
+     * @param url 地址
+     * @param params 参数map
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    private void doPatch(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, String httpTag) {
+        BaseService.patch(url,params, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                if (callback != null) {
+                    callback.onResponse(obj);
+                }
+            }
+        }, httpTag);
+    }
+
 
     //获取孩子关注主题列表
-    public void loadChildTopicList(String childId,int offset, int limit, final BaseService.ServiceCallback callback){
+    public void loadChildTopicList(String childId,int offset, int limit, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST
                 .replace("{child_id}", childId)
                 .replace("{page}",String.valueOf(offset))
                 .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
@@ -137,235 +239,32 @@ public class DataRequestService {
      * @param status 状态，0：未完成，1；已完成
      * @param page 页码
      * @param size 页长度
-     * @param callback 回调
+     * @param callback 回调 回调
      */
-    public void loadChildTopicListByStatus(String childId,int status, int page, int size, final BaseService.ServiceCallback callback){
+    public void loadChildTopicListByStatus(String childId,int status, int page, int size, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST_BY_STATUS
                 .replace("{child_id}", childId)
                 .replace("{status}", String.valueOf(status))
                 .replace("{page}",String.valueOf(page))
                 .replace("{size}",String.valueOf(size));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
-
-
-    //获取孩子关注主题列表（报告表头使用）
-    public void loadChildTopicListReport(String childId,int offset, int limit, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_TOPIC_LIST_REPORT
-                .replace("{child_id}", childId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取主题详情
-    public void loadTopicInfo(String childId,String topicId){
-        String url = HttpConfig.URL_CHILD_TOPIC_INFO.replace("{child_id}",childId).replace("{topic_id}",topicId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                if(obj!=null){
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    TopicInfoEntity entity = InjectionWrapperUtil.injectMap(dataMap, TopicInfoEntity.class);
-                    if(entity!=null){
-
-                    }
-                }
-            }
-        });
-    }
-
-    //开始主题
-    public void startTopic(String childId, String topicId,String examId, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_TOPIC_FOLLOW
-                .replace("{child_id}",childId)
-                .replace("{topic_id}",topicId)
-                .replace("{exam_id}",examId);
-        Map<String,Object> map = new HashMap<>();
-        BaseService.post(url, map,false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取主题下基础量表列表
-    public void getBaseDimensions(String topicId, int offset, int limit, final BaseService.ServiceCallback callback) {
-        String url = HttpConfig.URL_DIMENSION_LIST
-                .replace("{topic_id}", topicId)
-                .replace("{page}", String.valueOf(offset))
-                .replace("{size}", String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取主题下孩子量表列表(带基础数据)
-    public void getChildDimensions(String childId, String topicId,String examId, int offset, int limit, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_DIMENSION_LIST
-                .replace("{child_id}",childId)
-                .replace("{topic_id}",topicId)
-                .replace("{exam_id}",examId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
-    }
-
-    //获取所有主题下所有量表列表
-    public void getAllChildDimensions(String childId,int offset,int limit,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_DIMENSION_LIST_ALL
-                .replace("{child_id}",childId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
-    }
-
-    //获取热门量表
-    public void getHotDimension(String childId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_DIMENSION_HOTE_LIST.replace("{child_id}",childId)
-                .replace("{exam_id}", "0");
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
-    }
-
-    //获取孩子最后一次使用量表
-    public void getLatestDimension(String childId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_DIMENSION_LATEST
-                .replace("{child_id}",childId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
+    
 
     //获取孩子最后一次使用量表 V2
-    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback){
-        getLatestDimensionV2(childId, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
-
-    //获取孩子最后一次使用量表 V2
-    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, String tag){
+    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_DIMENSION_LATEST_V2
                 .replace("{child_id}",childId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doGet(url, callback, httpTag);
     }
 
-    //开始孩子某个量表
-    public void startChidlDimension(String childId,String topicId, String dimensionId,String examId, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FDIMENSION_START
-                .replace("{child_id}",childId)
-                .replace("{topic_id}",topicId)
-                .replace("{dimension_id}",dimensionId)
-                .replace("{exam_id}",examId);
-        Map<String,Object> map = new HashMap<>();
-        BaseService.post(url, map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
 
     /**
      * 开始孩子某个量表V2
-     * @param openDimensionDto
-     * @param callback
+     * @param openDimensionDto dto
+     * @param callback 回调
      */
-    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback){
+    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CHILD_DIMENSION_START_V2
                 .replace("{child_id}",openDimensionDto.getChildId())
                 .replace("{exam_id}",openDimensionDto.getExamId())
@@ -373,401 +272,71 @@ public class DataRequestService {
                 .replace("{dimension_id}",openDimensionDto.getDimensionId());
         Map<String,Object> map = new HashMap<>();
 
-        BaseService.post(url, map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
-    //获取基础因子列表
-    public void getBaseFactorList(String dimensionId,int offset,int limit,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_FACTOR_LIST
-                .replace("{dimension_id}",dimensionId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
-    }
-
-    //获取孩子量表下因子列表
-    public void getFactorList(String childId, String dimensionId,String childDimensionId, int offset, int limit, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_LIST
-                .replace("{child_id}",childId)
-                .replace("{dimension_id}",dimensionId)
-                .replace("{child_dimension_id}",childDimensionId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //开始孩子因子测评
-    public void startChildFactor(String childId,String topicId,String dimensionId,String factorId,String examId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_START
-                .replace("{child_id}",childId)
-                .replace("{exam_id}",examId)
-                .replace("{topic_id}",topicId)
-                .replace("{dimension_id}",dimensionId)
-                .replace("{factor_id}",factorId);
-        Map<String,Object> map = new HashMap<>();
-        BaseService.post(url, map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取因子下基础题目列表
-    public void getBaseQuestions(String factorId,int offset,int limit,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_QUESTION_LIST
-                .replace("{factor_id}",factorId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
-    }
-
-    //获取孩子因子题目列表
-    public void getChildQuestions(String childId,String factorId,String childFactorId,int offset,int limit,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_QUESTION
-                .replace("{child_id}",childId)
-                .replace("{factor_id}",factorId)
-                .replace("{child_factor_id}",childFactorId)
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
 
     //获取孩子分量表下的题目列表V2
-    public void getChildQuestionsV2(String child_dimension_id,int page,int size,final BaseService.ServiceCallback callback){
+    public void getChildQuestionsV2(String child_dimension_id,int page,int size,final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CHILD_DIMENSION_QUESTION_V2
                 .replace("{child_dimension_id}",child_dimension_id)
                 .replace("{page}",String.valueOf(page))
                 .replace("{size}",String.valueOf(size));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
-    /**
-     * 提交答题答案
-     * @param childId
-     * @param questionId
-     * @param optionId
-     * @param childFactorId
-     * @param callback
-     */
-    public void commitQuestionSingle(String childId,String questionId,String optionId,String childFactorId,String optionText,int costedTime,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_QUESTION_SAVE_SINGLE
-                .replace("{child_id}",childId)
-                .replace("{question_id}",questionId);
-        Map<String,Object> map = new HashMap<>();
-        map.put("option_id",optionId);
-        map.put("child_factor_id",childFactorId);
-        map.put("option_text",optionText);
-        map.put("costed_time",costedTime);
-        BaseService.post(url, map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    /**
-     * 提交某个孩子因子测评
-     * @param childId
-     * @param childFactorId
-     * @param costedTime
-     * @param costedTimeToken
-     * @param callback
-     */
-    public void commitChildFactor(String childId,String childFactorId,int costedTime,String costedTimeToken,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_COMMIT
-                .replace("{child_id}",childId)
-                .replace("{child_factor_id}",childFactorId);
-        Map<String,Object> map = new HashMap<>();
-        map.put("costed_time",String.valueOf(costedTime));
-        map.put("costed_time_token",costedTimeToken);
-        BaseService.post(url, map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取孩子因子排行数据
-    public void getChildFactorRank(String childId,String topicId,String dimensionId,String factorId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_RANKING
-                .replace("{child_id}",childId)
-                .replace("{topic_id}",topicId)
-                .replace("{dimension_id}",dimensionId)
-                .replace("{factor_id}",factorId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取孩子的因子统计报表数据
-    public void getChildFactorRankReport(String childId,String childFactorId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_CHILD_FACTOR_RANK_REPORT
-                .replace("{child_id}",childId)
-                .replace("{child_factor_id}",childFactorId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取孩子鲜花消费记录
-    public void getChildFlowerRecord(int offset, int limit, final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_FLOWER_CONSUME_RECORD
-                .replace("{page}",String.valueOf(offset))
-                .replace("{size}",String.valueOf(limit));
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取用户详情
-    public void getUserDetails(final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_USER_DETAILS;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    //获取用户项目列表
-    public void getUserProject(String childId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_PROJECTS_LIST .replace("{child_id}",childId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    /**
-     * 获取主题报告(带量表报告）
-     * @param examId
-     * @param topicId
-     */
-    public void getTopicReport(String childId,String examId,String topicId,String sampleId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_TOPIC_REPORT
-                .replace("{exam_id}",examId)
-                .replace("{child_id}", childId)
-                .replace("{topic_id}",topicId)
-                .replace("{sample_id}",sampleId);
-        Log.i("report_url:",url);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
 
     /**
      * 获取主题报告或者量表报告V2
-     * @param childId
-     * @param examId
+     * @param childId 孩子ID
+     * @param examId 测评ID
      * @param relationId 维度ID（必填）topicid,或者dimensionid
      * @param relationType 维度类型（dimension - 主题，topic - 话题 ，必填 ）
-     * @param sampleId
-     * @param callback
+     * @param sampleId 样本ID
+     * @param callback 回调
      */
-    public void getTopicReportByRelation(String childId,String examId,String relationId,String relationType,String sampleId,final BaseService.ServiceCallback callback){
+    public void getTopicReportByRelation(String childId, String examId,
+                                         String relationId, String relationType, String sampleId,
+                                         final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_TOPIC_REPORT_V2
                 .replace("{exam_id}",examId)
                 .replace("{child_id}", childId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{sample_id}", sampleId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
-    public void getDimensionReport(String childId,String examId,String dimensionId,String sampleId,final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_DIMENSION_REPORT
-                .replace("{exam_id}",examId)
-                .replace("{child_id}", childId)
-                .replace("{dimension_id}",dimensionId)
-                .replace("{sample_id}",sampleId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-    }
-
-    public void getUpdateNotification(final BaseService.ServiceCallback callback){
+    /**
+     * 获取公告通知
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getUpdateNotification(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_UPDATE_NOTIFICATION;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
-    public void getServerTime(final BaseService.ServiceCallback callback){
-        String url = HttpConfig.URL_SERVER_TIME;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+    /**
+     * 获取服务器时间
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getServerTime(final BaseService.ServiceCallback callback, String httpTag){
+        String url = HttpConfig.URL_SERVER_TIME;
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取短信验证码
-     * @param dto
-     * @param callback
-     * @throws QSCustomException
+     * @param dto 传参
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @throws QSCustomException 自定义异常
      */
-    public void postSendMessageCaptcha(MessageCaptchaDto dto, final BaseService.ServiceCallback callback) throws QSCustomException {
+    public void postSendMessageCaptcha(MessageCaptchaDto dto, final BaseService.ServiceCallback callback, String httpTag) throws QSCustomException {
         String url = HttpConfig.URL_PHONE_CAPTCHA;
 //        {
 //            "mobile":"15808082221",         //手机号(必填)，检验手机的合法性
@@ -777,7 +346,7 @@ public class DataRequestService {
 //                "session_id":"string",          //会话ID（必填）
 //                "verification_code":"string"    //验证码
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         //手机号
         if (TextUtils.isEmpty(dto.getMobile())) {
             throw new QSCustomException("手机号不能为空");
@@ -805,54 +374,27 @@ public class DataRequestService {
             map.put("verification_code", dto.getImageCaptcha());
         }
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-
-                try {
-                    String result = JsonUtil.toJson(obj);
-                    System.out.println("#### 短信验证码：" + result);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
     /**
      * 根据班级号获取班级信息
-     * @param classNum
-     * @param callback
+     * @param classNum 班级号
+     * @param callback 回调
      */
-    public void getClassInfoByClassNum(String classNum, final BaseService.ServiceCallback callback){
+    public void getClassInfoByClassNum(String classNum, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CLASS_INFO
                 .replace("{group_no}",classNum);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 绑定手机号
-     * @param dto
-     * @param callback
+     * @param dto 传参
+     * @param callback 回调
      */
-    public void putBindPhoneNum(BindPhoneNumDto dto, final BaseService.ServiceCallback callback){
+    public void putBindPhoneNum(BindPhoneNumDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_BIND_PHONE_NUM;
 //        {
 //            "mobile":"string",            //手机号（必填）
@@ -861,32 +403,23 @@ public class DataRequestService {
 //                "area_code":"string",     //手机国际区号(选填)，中国：+86（默认）
 //                "session_id":"string"     //会话ID
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("mobile", dto.getMobile());
         map.put("mobile_code", dto.getMobileCode());
         map.put("tenant", dto.getTenant());
         map.put("area_code", dto.getAreaCode());
         map.put("session_id", dto.getSessionId());
-        BaseService.put(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPut(url, map, callback, httpTag);
     }
 
 
     /**
      * 第三方登录
-     * @param thirdLoginDto
-     * @param callback
+     * @param thirdLoginDto 传参
+     * @param callback 回调
      */
-    public void postUcThirdLogin(ThirdLoginDto thirdLoginDto, final BaseService.ServiceCallback callback){
+    public void postUcThirdLogin(ThirdLoginDto thirdLoginDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_UC_THIRD_LOGIN_V2;
 //        {
 //            "open_id":"",                   //第三方平台ID(必填)
@@ -898,7 +431,7 @@ public class DataRequestService {
 //                "device_desc":"string",         //登录设备机器型号(可选)，如：小米6，苹果8
 //                "device_id":""                  //设备唯一ID    (可选)
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("open_id", thirdLoginDto.getOpenId());
         map.put("plat_source", thirdLoginDto.getPlatSource());
         map.put("third_access_token", thirdLoginDto.getThirdAccessToken());
@@ -911,26 +444,16 @@ public class DataRequestService {
         map.put("device_desc", thirdLoginDto.getDeviceDesc());
         map.put("device_id", thirdLoginDto.getDeviceId());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
 
     /**
      * 手机号登录（“手机号登录”都指的是手机短信登录）
-     * @param phoneNumLoginDto
-     * @param callback
+     * @param phoneNumLoginDto 传参
+     * @param callback 回调
      */
-    public void postPhoneNumLogin(PhoneNumLoginDto phoneNumLoginDto, final BaseService.ServiceCallback callback){
+    public void postPhoneNumLogin(PhoneNumLoginDto phoneNumLoginDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_PHONE_NUM_LOGIN;
 //        {
 //            "mobile":"string",          //手机号（必填）
@@ -941,7 +464,7 @@ public class DataRequestService {
 //                "device_id":"string",         //设备ID（必填）
 //                "session_id":"string"       //会话ID
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("mobile", phoneNumLoginDto.getMobile());
         map.put("mobile_code", phoneNumLoginDto.getMobile_code());
         map.put("tenant", phoneNumLoginDto.getTenant());
@@ -950,25 +473,15 @@ public class DataRequestService {
         map.put("device_id", phoneNumLoginDto.getDeviceId());
         map.put("session_id", phoneNumLoginDto.getSessionId());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
     /**
      * 账号登录（用户名可以是手机号）
-     * @param accountLoginDto
-     * @param callback
+     * @param accountLoginDto 传参
+     * @param callback 回调
      */
-    public void postAccountLogin(AccountLoginDto accountLoginDto, final BaseService.ServiceCallback callback){
+    public void postAccountLogin(AccountLoginDto accountLoginDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_ACCOUNT_LOGIN;
 //        {
 //            "account":"",               //用户名或工号
@@ -982,7 +495,7 @@ public class DataRequestService {
 //        }
         //密码加密
         String pwdMd5 = EncryptUtil.encryptMD5_QS(accountLoginDto.getPassword());
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("account", accountLoginDto.getAccount());
         map.put("password", pwdMd5);
         map.put("session_id", accountLoginDto.getSessionId());
@@ -995,26 +508,16 @@ public class DataRequestService {
         map.put("device_desc", accountLoginDto.getDeviceDesc());
         map.put("device_id", accountLoginDto.getDeviceId());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
 
     /**
      * 账号注册
-     * @param dto,
-     * @param callback
+     * @param dto 传参
+     * @param callback 回调
      */
-    public void postRegister(RegisterDto dto, final BaseService.ServiceCallback callback){
+    public void postRegister(RegisterDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_PHONE_MESSAGE_REGISTER;
 //        {
 //            "mobile":"string",            //手机号(必填)
@@ -1029,7 +532,7 @@ public class DataRequestService {
 //                "session_id":"string"       //会话ID（必填）
 //        }
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("mobile", dto.getMobile());
         map.put("mobile_code", dto.getMobileCode());
         //密码加密
@@ -1049,36 +552,17 @@ public class DataRequestService {
         }
         map.put("session_id", dto.getSessionId());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
-
+    
 
     /**
      * 获取文章列表
      * @param dto 文章dto
-     * @param callback
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
      */
-    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback){
-        getArticles(dto, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
-
-    /**
-     * 获取文章列表
-     * @param dto 文章dto
-     * @param callback 回调
-     * @param tag 通信标记
-     */
-    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback, String tag){
+    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_ARTICLES;
 
         Map<String, Object> params = new HashMap<>();
@@ -1102,205 +586,122 @@ public class DataRequestService {
         //拼接参数
         url = BaseService.settingGetParams(url, params);
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取热门文章列表
      * @param baseDto 通用dto
-     * @param callback
+     * @param callback 回调
      */
-    public void getHotArticles(BaseDto baseDto, final BaseService.ServiceCallback callback){
+    public void getHotArticles(BaseDto baseDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_HOT_ARTICLES
                 .replace("{page}", baseDto.getPage() +"")
                 .replace("{size}", baseDto.getSize() + "");
 //        参数：page、size
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取我的收藏
      * @param dto “我的”dto
-     * @param callback
+     * @param callback 回调
      */
-    public void getMyFavorite(MineDto dto, final BaseService.ServiceCallback callback){
+    public void getMyFavorite(MineDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MINE_FAVORITE
                 .replace("{user_id}", dto.getUserId() +"")
                 .replace("{page}", dto.getPage() +"")
                 .replace("{size}", dto.getSize() + "");
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取文章详情
      * @param articleId 文章ID
-     * @param callback
+     * @param callback 回调
      */
-    public void getArticleDetail(String articleId, final BaseService.ServiceCallback callback){
+    public void getArticleDetail(String articleId, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_ARTICLE_DETAIL
                 .replace("{articleId}", articleId);
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取评论列表
      * @param dto 评论dto
-     * @param callback
+     * @param callback 回调
      */
-    public void getCommentList(CommentDto dto, final BaseService.ServiceCallback callback){
+    public void getCommentList(CommentDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_ARTICLE_COMMENT
                 .replace("{id}", dto.getId())
                 .replace("{type}", dto.getType()+"")
                 .replace("{page}", dto.getPage() +"")
                 .replace("{size}", dto.getSize() + "");
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
+    
 
     /**
      * 收藏
      * @param articleId 文章ID
-     * @param callback
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
      */
-    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback){
-        postDoFavorite(articleId, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
-
-    /**
-     * 收藏
-     * @param articleId 文章ID
-     * @param callback 回调
-     * @param tag 通信标记
-     */
-    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback, String tag){
+    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_FAVORITE
                 .replace("{articleId}", articleId);
 
-        BaseService.post(url,new HashMap<String, Object>(), false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
     }
 
     /**
      * 点赞
      * @param articleId 文章ID
-     * @param callback
+     * @param callback 回调
      */
-    public void postDoLike(String articleId, final BaseService.ServiceCallback callback){
+    public void postDoLike(String articleId, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_LIKE
                 .replace("{articleId}", articleId);
 
-        BaseService.post(url,new HashMap<String, Object>(), false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
     }
 
 
     /**
      * 提交评论
-     * @param
-     * @param callback
+     * @param articleId 文章ID
+     * @param content 评论内容
+     * @param callback 回调
+     * @param httpTag 通信标记
      */
-    public void postDoComment(String articleId, String content, final BaseService.ServiceCallback callback){
+    public void postDoComment(String articleId, String content, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_DO_COMMENT
                 .replace("{articleId}", articleId);
 //        {
 //            "comment_info":""
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("comment_info", content);
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
 
     /**
      * 提交答题答案（分量表下的所有问题）
-     * @param childDimensionId
-     * @param costedTime
-     * @param answerDtos
-     * @param callback
+     * @param childDimensionId 孩子量表ID
+     * @param costedTime 耗时
+     * @param answerDtos 答案dto
+     * @param callback 回调
+     * @param httpTag 通信标记
      */
-    public void postQuestionAnswersSubmit(String childDimensionId, int costedTime, Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback){
+    public void postQuestionAnswersSubmit(String childDimensionId, int costedTime,
+                                          Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback,
+                                          String httpTag){
         String url = HttpConfig.URL_QUESTIONS_ANSWERS_SUBMIT
                 .replace("{child_dimension_id}",childDimensionId);
         Map<String,Object> map = new HashMap<>();
@@ -1317,28 +718,21 @@ public class DataRequestService {
             return;
         }
 
-        BaseService.post(url, jsonObject, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, jsonObject, callback, httpTag);
     }
 
 
     /**
      * 保存答题答案（分量表下的部分问题）
-     * @param childDimensionId
-     * @param costedTime
-     * @param answerDtos
-     * @param callback
+     * @param childDimensionId 孩子量表ID
+     * @param costedTime 耗时
+     * @param answerDtos 答案dto
+     * @param callback 回调
+     * @param httpTag 通信标记
      */
-    public void postQuestionAnswersSave(String childDimensionId, int costedTime, Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback){
+    public void postQuestionAnswersSave(String childDimensionId, int costedTime,
+                                        Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback,
+                                        String httpTag){
         String url = HttpConfig.URL_QUESTIONS_ANSWERS_SAVE
                 .replace("{child_dimension_id}",childDimensionId);
         Map<String,Object> map = new HashMap<>();
@@ -1355,96 +749,56 @@ public class DataRequestService {
             return;
         }
 
-        BaseService.post(url, jsonObject, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, jsonObject, callback, httpTag);
     }
 
     /**
      * 获取用户详情V2
-     * @param callback
+     * @param callback 回调
      */
-    public void getUserInfoV2 (final BaseService.ServiceCallback callback){
+    public void getUserInfoV2 (final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_USER_INFO_V2;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取孩子列表V2
-     * @param callback
+     * @param callback 回调
      */
-    public void getChildListV2(final BaseService.ServiceCallback callback) {
+    public void getChildListV2(final BaseService.ServiceCallback callback, String httpTag) {
         String url = HttpConfig.URL_CHILD_LIST_V2;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                if (callback != null) {
-                    callback.onFailure(e);
-                }
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                if (callback != null) {
-                    callback.onResponse(obj);
-                }
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 获取孩子的量表对象
-     * @param callback
+     * @param childId 孩子ID
+     * @param topicId 话题ID
+     * @param dimensionId 量表ID
+     * @param callback 回调
+     * @param httpTag 通信标记
      */
-    public void getChildDimension(String childId, String topicId, String dimensionId, final BaseService.ServiceCallback callback) {
+    public void getChildDimension(String childId, String topicId, String dimensionId,
+                                  final BaseService.ServiceCallback callback, String httpTag) {
         String url = HttpConfig.URL_CHILD_DIMENSION
                 .replace("{children}", childId)
                 .replace("{topics}", topicId)
                 .replace("{dimensions}", dimensionId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                if (callback != null) {
-                    callback.onFailure(e);
-                }
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                if (callback != null) {
-                    callback.onResponse(obj);
-                }
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 修改密码
-     * @param passwordOld
-     * @param passwordNew
-     * @param callback
+     * @param passwordOld 旧密码
+     * @param passwordNew 新密码
+     * @param callback 回调
+     * @param httpTag 通信标记
      */
-    public void patchModifyPassword(String passwordOld, String passwordNew, final BaseService.ServiceCallback callback){
+    public void patchModifyPassword(String passwordOld, String passwordNew,
+                                    final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MODIFY_PASSWORD;
 //        {
 //            "old_password":"",      //旧密码，加密
@@ -1453,30 +807,20 @@ public class DataRequestService {
         String passwordOldMd5 = EncryptUtil.encryptMD5_QS(passwordOld);
         String passwordNewMd5 = EncryptUtil.encryptMD5_QS(passwordNew);
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("old_password", passwordOldMd5);
         map.put("new_password", passwordNewMd5);
 
-        BaseService.patch(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPatch(url, map, callback, httpTag);
     }
 
 
     /**
      * 重置密码
-     * @param dto
-     * @param callback
+     * @param dto 传参
+     * @param callback 回调
      */
-    public void patchResetPassword(ResetPasswordDto dto, final BaseService.ServiceCallback callback){
+    public void patchResetPassword(ResetPasswordDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_RESET_PASSWORD;
 //        {
 //            "mobile":"string",            //手机号（必填）
@@ -1488,7 +832,7 @@ public class DataRequestService {
 //        }
         String passwordNewMd5 = EncryptUtil.encryptMD5_QS(dto.getNew_password());
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("mobile", dto.getMobile());
         map.put("mobile_code", dto.getMobile_code());
         map.put("tenant", dto.getTenant());
@@ -1496,48 +840,28 @@ public class DataRequestService {
         map.put("area_code", dto.getArea_code());
         map.put("session_id", dto.getSessionId());
 
-        BaseService.patch(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPatch(url, map, callback, httpTag);
     }
 
 
     /**
      * 查询已绑定的第三方平台
-     * @param callback
+     * @param callback 回调
      */
-    public void getThirdBindPlatform(final BaseService.ServiceCallback callback){
+    public void getThirdBindPlatform(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_THIRD_PLATPORM
                 .replace("{tenant}", Dictionary.Tenant_CheersMind);
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 第三方平台账号绑定
-     * @param bindDto
-     * @param callback
+     * @param bindDto 传参
+     * @param callback 回调
      */
-    public void postThirdPlatBind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback){
+    public void postThirdPlatBind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_BIND_THIRD_PLATPORM;
 //        {
 //            "open_id":"",               //第三方平台给用户分配的Id,如微信、QQ的openId
@@ -1545,7 +869,7 @@ public class DataRequestService {
 //                "app_id":"",                //QQ平台必填
 //                "third_access_token":""      //第三方的access_token
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("open_id", bindDto.getOpenId());
         map.put("plat_source", bindDto.getPlatSource());
         map.put("third_access_token", bindDto.getThirdAccessToken());
@@ -1555,152 +879,75 @@ public class DataRequestService {
         }
         map.put("tenant", bindDto.getTenant());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
 
     /**
      * 第三方平台账号解绑
-     * @param bindDto
-     * @param callback
+     * @param bindDto 传参
+     * @param callback 回调
      */
-    public void postThirdPlatUnbind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback){
+    public void postThirdPlatUnbind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_UNBIND_THIRD_PLATPORM;
 //        {
 //            "open_id":"",               //第三方平台给用户分配的Id,如微信、QQ的openId
 //                "source_plat":"qq",          //第三方登录来源，目前支持：1-qq 2-weixin
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("open_id", bindDto.getOpenId());
         map.put("plat_source", bindDto.getPlatSource());
 
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
     /**
      * 获取分类列表
-     * @param callback
+     * @param callback 回调
      */
-    public void getCategories(final BaseService.ServiceCallback callback){
+    public void getCategories(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CATEGORIES;
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 查询当前签到状态
-     * @param callback
+     * @param callback 回调
      */
-    public void getDailySignInStatus(final BaseService.ServiceCallback callback){
+    public void getDailySignInStatus(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_DAILY_SIGN_IN_STATUS;
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 签到
-     * @param callback
+     * @param callback 回调
      */
-    public void postDailySignIn(final BaseService.ServiceCallback callback){
+    public void postDailySignIn(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_DAILY_SIGN_IN;
-
-        Map<String, Object> params = new HashMap<String, Object>();
-
-        BaseService.post(url, params, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
     }
 
     /**
      * 获取总积分
-     * @param callback
+     * @param callback 回调
      */
-    public void getIntegralTotalScore(final BaseService.ServiceCallback callback){
+    public void getIntegralTotalScore(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_INTEGRAL_TOTAL_SCORE;
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取积分列表
-     * @param callback
+     * @param callback 回调
      */
-    public void getIntegralList(int page, int size, final BaseService.ServiceCallback callback){
+    public void getIntegralList(int page, int size, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_INTEGRALS
                 .replace("{page}", page + "")
                 .replace("{size}", size + "");
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
-
+    
 
     /**
      * 获取报告V2
@@ -1708,38 +955,16 @@ public class DataRequestService {
      * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
      * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
      * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
-     * @param callback
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
      */
-    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback){
-        getReportV2(childExamId, relationId, relationType, compareId, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
-
-    /**
-     * 获取报告V2
-     * @param childExamId 孩子测评ID
-     * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
-     * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
-     * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
-     * @param tag 通信标记
-     * @param callback 回调
-     */
-    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String tag){
+    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_REPORT_V2
                 .replace("{child_exam_id}",childExamId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{compare_id}", compareId +"");
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doGet(url, callback, httpTag);
     }
 
     /**
@@ -1748,26 +973,17 @@ public class DataRequestService {
      * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
      * @param relationType 维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
      * @param compareId 对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
-     * @param tag 通信标记
-     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
      */
-    public void getReportRecommendArticle(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String tag){
+    public void getReportRecommendArticle(String childExamId,String relationId,String relationType,int compareId,
+                                          final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_REPORT_RECOMMEND_ARTICLE
                 .replace("{child_exam_id}",childExamId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{compare_id}", compareId +"");
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doGet(url, callback, httpTag);
     }
 
 
@@ -1775,158 +991,97 @@ public class DataRequestService {
      * 获取话题的历史报告
      * @param topicId 话题ID
      * @param childId 孩子ID
-     * @param callback
+     * @param callback 回调
      */
-    public void getHistoryReport(String topicId,String childId,final BaseService.ServiceCallback callback){
+    public void getHistoryReport(String topicId,String childId,
+                                 final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_HISTORY_REPORT
                 .replace("{topic_id}",topicId)
                 .replace("{child_id}", childId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 获取话题详情
-     * @param topicId
-     * @param callback
+     * @param topicId 话题ID
+     * @param callback 回调
      */
-    public void getTopicDetail(String topicId,final BaseService.ServiceCallback callback){
+    public void getTopicDetail(String topicId,final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_TOPIC_INFO
                 .replace("{topic_id}",topicId);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
     /**
      * 获取消息列表
-     * @param page
-     * @param size
-     * @param callback
+     * @param page 页码
+     * @param size 页长
+     * @param callback 回调
      */
-    public void getMessage(int page, int size, final BaseService.ServiceCallback callback){
+    public void getMessage(int page, int size, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MESSAGE
                 .replace("{page}", page + "")
                 .replace("{size}", size + "");
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 获取新消息条数
-     * @param callback
+     * @param callback 回调
      */
-    public void getNewMessageCount(final BaseService.ServiceCallback callback){
+    public void getNewMessageCount(final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_NEW_MESSAGE_COUNT;
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 标记消息为已读
-     * @param messageId
-     * @param callback
+     * @param messageId 消息ID
+     * @param callback 回调
      */
-    public void putMarkRead(long messageId, final BaseService.ServiceCallback callback){
+    public void putMarkRead(long messageId, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MARK_READ
                 .replace("{message_id}", messageId +"");
-        Map<String, Object> map = new HashMap<String, Object>();
-        BaseService.put(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPut(url, new HashMap<String, Object>(), callback, httpTag);
     }
 
 
     /**
      * 创建会话
-     * @param dto
-     * @param callback
+     * @param dto 传参
+     * @param callback 回调
      */
-    public void postAccountsSessions(CreateSessionDto dto, final BaseService.ServiceCallback callback){
+    public void postAccountsSessions(CreateSessionDto dto, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_CREATE_SESSION;
 //        {
 //            "session_type":"int",   //会话类型，0：注册(手机)，1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)，4:下发短信验证码
 //                "device_id":"string",   //设备唯一ID
 //                "tenant":"string"       //租户名称（选填）
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("session_type", dto.getSessionType());
         map.put("device_id", dto.getDeviceId());
         map.put("tenant", dto.getTenant());
-        BaseService.post(url,map, false, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, false, callback, httpTag);
     }
 
 
     /**
      * 获取图形验证码
-     * @param sessionId
+     * @param sessionId 会话ID
      */
-    public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback) {
+    public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback, String httpTag) {
         String url = HttpConfig.URL_IMAGE_CAPTCHA
                 .replace("{session_id}", sessionId);
 
         OkHttpUtils
                 .get()
                 .url(url)
-                .tag(QSApplication.getCurrentActivity().getLocalClassName())
+                .tag(httpTag)
 //                .addParams("username", "hyman")
                 .build()
                 .execute(new ResponseByteCallback() {
@@ -1974,9 +1129,8 @@ public class DataRequestService {
                                         callback.onResponse(bodyBytes);
 
                                     } else if (code == 400) {
-                                        JSONObject respObj = null;
                                         try {
-                                            respObj = new JSONObject(new String(bodyBytes));
+                                            JSONObject respObj = new JSONObject(new String(bodyBytes));
                                             callback.onFailure(new QSCustomException(respObj.toString()));
 
                                         } catch (JSONException e) {
@@ -2077,30 +1231,20 @@ public class DataRequestService {
 
     /**
      * 获取用户的手机号
-     * @param callback
+     * @param callback 回调
      */
-    public void getUserPhoneNum (final BaseService.ServiceCallback callback){
+    public void getUserPhoneNum (final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_USER_PHONE_NUM;
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 修改用户头像
      * @param file 图片文件
-     * @param callback
+     * @param callback 回调
      */
-    public void postModifyProfile(File file, final BaseService.ServiceCallback callback){
+    public void postModifyProfile(File file, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MODIFY_PROFILE;
 
 //        （multipart/form-data）
@@ -2108,84 +1252,43 @@ public class DataRequestService {
 //            "image"：图片文件
 //        }
 
-        Map<String, File> map = new HashMap<String, File>();
+        Map<String, File> map = new HashMap<>();
         map.put("image", file);
 
-        BaseService.post(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doPost(url, map, callback, httpTag);
     }
 
     /**
      * 获取微信token
-     * @param appId
-     * @param appSecret
-     * @param code
-     * @param callback
+     * @param appId appId
+     * @param appSecret appSecret
+     * @param code code
+     * @param callback 回调
      */
-    public void getWeChartToken(String appId,String appSecret,String code,final BaseService.ServiceCallback callback){
+    public void getWeChartToken(String appId,String appSecret,String code,final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_WX_GET_TOKEN
                 .replace("{appid}", appId)
                 .replace("{secret}", appSecret)
                 .replace("{code}", code);
 
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 修改昵称
      * @param nickname 昵称
-     * @param callback
+     * @param callback 回调
      */
-    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback){
-        patchModifyNickname(nickname, callback, QSApplication.getCurrentActivity().getLocalClassName());
-    }
-
-
-    /**
-     * 修改昵称
-     * @param nickname 昵称
-     * @param callback
-     */
-    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback, String tag){
+    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_MODIFY_USER_INFO;
 //        {
 //            "nick_name":"string"        //用户昵称（必填），3-8位，数字、英文、中文
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("nick_name", nickname);
 
-        BaseService.patch(url,map, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doPatch(url, map, callback, httpTag);
     }
 
 
@@ -2194,49 +1297,29 @@ public class DataRequestService {
      * @param videoId 视频ID
      * @param sign 签名
      * @param curTimestamp 当前时间戳
-     * @param callback 回调
+     * @param callback 回调 回调
      */
-    public void getVideoRealUrl(String videoId, String sign, String curTimestamp, final BaseService.ServiceCallback callback){
+    public void getVideoRealUrl(String videoId, String sign, String curTimestamp,
+                                final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_VIDEO_REAL_URL
                 .replace("{video_id}",videoId)
                 .replace("{sign}",sign)
                 .replace("{t}",curTimestamp);
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
 
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        });
-
+        doGet(url, callback, httpTag);
     }
 
 
     /**
      * 获取任务列表
      * @param childId 孩子ID
-     * @param callback 回调
-     * @param tag 通信标记
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
      */
-    public void getTaskList(String childId, final BaseService.ServiceCallback callback, String tag){
+    public void getTaskList(String childId, final BaseService.ServiceCallback callback, String httpTag){
         String url = HttpConfig.URL_TASK_LIST
                 .replace("{child_id}",childId);
-
-        BaseService.get(url, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                callback.onFailure(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                callback.onResponse(obj);
-            }
-        }, tag);
+        doGet(url, callback, httpTag);
     }
 
 }

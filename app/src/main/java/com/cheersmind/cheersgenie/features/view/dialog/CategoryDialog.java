@@ -53,6 +53,10 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
     //操作监听
     private OnOperationListener listener;
 
+    //通信tag
+    protected String httpTag = System.currentTimeMillis() + "";
+
+
     public CategoryDialog(@NonNull Context context, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
 
@@ -166,7 +170,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        });
+        }, httpTag);
     }
 
     @Override
@@ -189,6 +193,16 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
 
         void onQuesContinue();
     }
+
+
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        //取消当前对话框的所有通信
+        BaseService.cancelTag(httpTag);
+    }
+
 
     @Override
     public void show() {

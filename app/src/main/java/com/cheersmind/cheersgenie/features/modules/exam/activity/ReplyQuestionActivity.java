@@ -292,7 +292,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     @Override
     protected void onPause() {
         super.onPause();
-        //释放计时器
+        //释放所有计时器
         releaseAllTimer();
     }
 
@@ -305,8 +305,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //释放计时器
-        releaseTimeTask();
+        //释放所有计时器
+        releaseAllTimer();
 
         try {
             //注销事件
@@ -490,7 +490,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        });
+        }, httpTag);
 
     }
 
@@ -696,7 +696,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 curPosition = position;
 
                 //重启限时计时器
-                releaseLimitCountTimer();
                 startLimitCountTimer();
             }
 
@@ -706,7 +705,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }
         });
 
-//        startTimeTask();
     }
 
 
@@ -827,7 +825,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 提交所有问题答案
      */
     private void doPostSubmitQuestions() {
-        LoadingView.getInstance().show(ReplyQuestionActivity.this);
+        LoadingView.getInstance().show(ReplyQuestionActivity.this, httpTag);
         DataRequestService.getInstance().postQuestionAnswersSubmit(
                 dimensionInfoEntity.getChildDimension().getChildDimensionId(),
                 costTime,
@@ -844,8 +842,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //                        ToastUtil.showShort(getApplicationContext(), "提交问题成功，继续下一步？？");
                         //标记问题提交成功
                         hasSubmitSuccess = true;
-                        //释放计时器
-                        releaseTimeTask();
+                        //释放所有计时器
+                        releaseAllTimer();
 
                         try {
                             //提交分量表返回添加了topic_id和topic_dimension_id
@@ -916,7 +914,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             onFailure(new QSCustomException("获取报告失败"));
                         }
                     }
-                });
+                }, httpTag);
     }
 
     /**
@@ -1009,7 +1007,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                         //发送最新操作测评通知：更新操作
                         EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
                     }
-                });
+                }, httpTag);
     }
 
     /**
@@ -1076,7 +1074,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                         }
                         if(timeCout==1){
                             tvTimeGo.setText("GO");
-                            SoundPlayUtils.play(2);
+                            SoundPlayUtils.play(ReplyQuestionActivity.this, 2);
                             showTimeAnim();
                             timeCout --;
                         }else{
@@ -1135,6 +1133,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 开启计时
      */
     private void startTimeTask(){
+        releaseTimeTask();
         if (timer == null) {
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -1173,6 +1172,27 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             countTimer.cancel();
             countTimer = null;
         }
+    }
+
+
+    /**
+     * 开启所有计时器
+     */
+    private void startAllTimer() {
+        //开启计时器
+        startTimeTask();
+        //开启限时计时器
+        startLimitCountTimer();
+    }
+
+    /**
+     * 释放所有计时器
+     */
+    private void releaseAllTimer() {
+        //释放计时器
+        releaseTimeTask();
+        //释放限时计时器
+        releaseLimitCountTimer();
     }
 
 
@@ -1232,26 +1252,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
         }
         dialog.show();
-    }
-
-    /**
-     * 开启所有计时器
-     */
-    private void startAllTimer() {
-        //开启计时器
-        startTimeTask();
-        //开启限时计时器
-        startLimitCountTimer();
-    }
-
-    /**
-     * 释放所有计时器
-     */
-    private void releaseAllTimer() {
-        //释放计时器
-        releaseTimeTask();
-        //释放限时计时器
-        releaseLimitCountTimer();
     }
 
 
@@ -1333,7 +1333,11 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         @Override
         public void onFinish() {
-            showQuestionQuitDialog(QuestionQuitDialog.QUIT_TYPE_TIMEOUT);
+            try {
+                showQuestionQuitDialog(QuestionQuitDialog.QUIT_TYPE_TIMEOUT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

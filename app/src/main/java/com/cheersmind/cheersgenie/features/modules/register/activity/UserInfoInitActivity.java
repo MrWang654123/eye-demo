@@ -17,31 +17,21 @@ import com.bigkoo.pickerview.TimePickerView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
-import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.cheersmind.cheersgenie.module.login.UserService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -347,7 +337,7 @@ public class UserInfoInitActivity extends BaseActivity {
      */
     private void postUserInfo(String classNum, String gender, String username, String nickName, String birthday, int parentRole) {
         //通信等待提示
-        LoadingView.getInstance().show(UserInfoInitActivity.this);
+        LoadingView.getInstance().show(UserInfoInitActivity.this, httpTag);
         String url = HttpConfig.URL_REGISTER_SUBMIT_USERINFO;
 //        {
 //            "group_no":"string",        //班级群号
@@ -382,7 +372,7 @@ public class UserInfoInitActivity extends BaseActivity {
                     }
                 });
             }
-        });
+        }, httpTag);
     }
 
 

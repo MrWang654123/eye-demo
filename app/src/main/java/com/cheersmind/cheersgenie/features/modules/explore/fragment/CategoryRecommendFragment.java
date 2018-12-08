@@ -695,7 +695,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
 
                     } else {
                         //没数据或者数据异常
-                        throw new Exception();
+                        throw new QSCustomException("无最新操作测评");
                     }
 
                     evaluationBlock.setVisibility(View.VISIBLE);

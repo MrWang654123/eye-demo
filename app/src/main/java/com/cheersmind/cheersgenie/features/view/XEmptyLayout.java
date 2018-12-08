@@ -323,14 +323,22 @@ public class XEmptyLayout extends LinearLayout {
      * @return
      */
     public static boolean isConnectivity(Context context) {
-
-        ConnectivityManager connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        TelephonyManager telephonyManager = (TelephonyManager) context
-                .getSystemService(Context.TELEPHONY_SERVICE);
-        return ((connectivityManager.getActiveNetworkInfo() != null && connectivityManager
-                .getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED) || telephonyManager
-                .getNetworkType() == TelephonyManager.NETWORK_TYPE_UMTS);
+        try {
+            if (context != null) {
+                ConnectivityManager connectivityManager = (ConnectivityManager) context
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+                TelephonyManager telephonyManager = (TelephonyManager) context
+                        .getSystemService(Context.TELEPHONY_SERVICE);
+                return ((connectivityManager.getActiveNetworkInfo() != null && connectivityManager
+                        .getActiveNetworkInfo().getState() == NetworkInfo.State.CONNECTED) || telephonyManager
+                        .getNetworkType() == TelephonyManager.NETWORK_TYPE_UMTS);
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 

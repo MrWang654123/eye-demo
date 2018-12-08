@@ -268,7 +268,7 @@ public class PasswordInitActivity extends BaseActivity {
         //关闭软键盘
         SoftInputUtil.closeSoftInput(PasswordInitActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(PasswordInitActivity.this);
+        LoadingView.getInstance().show(PasswordInitActivity.this, httpTag);
         //请求注册
         DataRequestService.getInstance().postRegister(dto, new BaseService.ServiceCallback() {
             @Override
@@ -330,7 +330,7 @@ public class PasswordInitActivity extends BaseActivity {
                     onFailure(new QSCustomException("注册异常，请稍后再试"));
                 }
             }
-        });
+        }, httpTag);
 
     }
 

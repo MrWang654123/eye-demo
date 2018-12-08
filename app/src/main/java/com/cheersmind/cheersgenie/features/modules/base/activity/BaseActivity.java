@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -37,13 +39,22 @@ import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFeedBackActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
@@ -104,6 +115,10 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     };
 
 
+    //通信tag
+    protected String httpTag = System.currentTimeMillis() + "";
+
+
     /**
      * 设置Activity要显示的布局
      *
@@ -111,19 +126,15 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      */
     protected abstract int setContentView();
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //非空表示是恢复流程
-        if (savedInstanceState != null) {
-            restartToSplashActivity();
-            return;
-        }
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);// 隐藏标题栏
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 //                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         super.onCreate(savedInstanceState);
+
 //        getSupportActionBar().hide();
         //设置布局的layoutId
         setContentView(setContentView());
@@ -154,6 +165,28 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
         //初始化视图控件
         onInitView();
+
+//        //测试恢复流程
+//        if (this instanceof UserInfoActivity) {
+//            //判断是否是第一次启动，是否可以自动登录
+//            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+//            int featureVersion = pref.getInt("feature_version",0);
+//            boolean showNewFeature = featureVersion == Constant.VERSION_FEATURE;
+//            if (showNewFeature) {
+//                restartToSplashActivity();
+//                SharedPreferences.Editor edit = pref.edit();
+//                edit.putInt("feature_version", 1000);
+//                edit.apply();
+//                return;
+//            }
+//        }
+
+        //非空表示是恢复流程
+        if (savedInstanceState != null) {
+            restartToSplashActivity();
+            return;
+        }
+
         //初始化数据
         onInitData();
     }
@@ -167,7 +200,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      * 设置title
      */
     protected void settingTitle(String title) {
-        tvToolbarTitle.setText(title);
+        if (tvToolbarTitle != null) {
+            tvToolbarTitle.setText(title);
+        }
     }
 
     /**
@@ -207,8 +242,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         super.onDestroy();
 
         //取消当前页面的所有通信
-        String tag = getLocalClassName();
-        BaseService.cancelTag(tag);
+        BaseService.cancelTag(httpTag);
     }
 
 
@@ -510,7 +544,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         SoftInputUtil.closeSoftInput(BaseActivity.this);
         if (showLoading) {
             //开启通信等待提示
-            LoadingView.getInstance().show(BaseActivity.this);
+            LoadingView.getInstance().show(BaseActivity.this, httpTag);
         }
 
         DataRequestService.getInstance().getChildListV2(new BaseService.ServiceCallback() {
@@ -559,7 +593,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
                 }
             }
 
-        });
+        }, httpTag);
     }
 
 
@@ -572,7 +606,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
      */
     protected void doPostAccountSession(int type, final boolean showLoading, final OnResultListener listener) {
         if (showLoading) {
-            LoadingView.getInstance().show(BaseActivity.this);
+            LoadingView.getInstance().show(BaseActivity.this, httpTag);
         }
 
         CreateSessionDto dto = new CreateSessionDto();
@@ -615,7 +649,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 

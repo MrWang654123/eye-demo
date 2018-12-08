@@ -400,7 +400,7 @@ public class SearchArticleActivity extends BaseActivity {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -488,7 +488,7 @@ public class SearchArticleActivity extends BaseActivity {
                 }
 
             }
-        });
+        }, httpTag);
     }
 
 
@@ -595,7 +595,7 @@ public class SearchArticleActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 

@@ -185,10 +185,6 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //初始化文本监听
         initEditTextListener();
 
-        //初始化计时器
-        countTimer = new CountTimer(COUNT_DOWN, 1000);
-        countTimer.start();
-
         //密码显隐
         cboxPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -249,6 +245,11 @@ public class RegisterCaptchaActivity extends BaseActivity {
             }
         });
 
+        //初始隐藏验证码模块
+        rlImageCaptcha.setVisibility(View.GONE);
+        //初始隐藏密码模块
+        rlPassword.setVisibility(View.GONE);
+        tvPasswordFormatTip.setVisibility(View.GONE);
     }
 
     @Override
@@ -265,14 +266,12 @@ public class RegisterCaptchaActivity extends BaseActivity {
             return;
         }
 
+        //初始化计时器
+        countTimer = new CountTimer(COUNT_DOWN, 1000);
+        countTimer.start();
+
         //发送号码提示
         tvSendPhonenumTip.setText(phoneNum);
-
-        //初始隐藏验证码模块
-        rlImageCaptcha.setVisibility(View.GONE);
-        //初始隐藏密码模块
-        rlPassword.setVisibility(View.GONE);
-        tvPasswordFormatTip.setVisibility(View.GONE);
 
         //第三方登录信息
         thirdLoginDto = (ThirdLoginDto) getIntent().getSerializableExtra(THIRD_LOGIN_DTO);
@@ -530,7 +529,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //绑定手机号必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话后直接绑定手机号
-            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
             doPostAccountSessionForBindPhoneNum(false);
             return;
         }
@@ -556,7 +555,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         DataRequestService.getInstance().putBindPhoneNum(dto, new BaseService.ServiceCallback() {
             @Override
@@ -573,7 +572,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接绑定手机号
-                            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+                            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
                             doPostAccountSessionForBindPhoneNum(false);
 
                             //标记已经处理了异常
@@ -597,7 +596,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //获取孩子列表信息
                 doGetChildListWrap();
             }
-        });
+        }, httpTag);
     }
 
 
@@ -634,7 +633,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //重置密码必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话后直接重置密码
-            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
             doPostAccountSessionForRetrievePassword(false);
             return;
         }
@@ -660,7 +659,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
      */
     private void patchResetPassword(ResetPasswordDto dto) {
         //通信等待提示
-        LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+        LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
         //重置密码
         DataRequestService.getInstance().patchResetPassword(dto, new BaseService.ServiceCallback() {
             @Override
@@ -677,7 +676,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接重置密码
-                            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+                            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
                             doPostAccountSessionForRetrievePassword(false);
 
                             //标记已经处理了异常
@@ -714,7 +713,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //这时候如果需要图形验证码，则跳转到登录主页面
                 doPostAccountSessionForAccountLogin(false);
             }
-        });
+        }, httpTag);
     }
 
 
@@ -751,7 +750,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //关闭软键盘
         SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
         //账号登录
         DataRequestService.getInstance().postAccountLogin(accountLoginDto, new BaseService.ServiceCallback() {
             @Override
@@ -813,7 +812,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -851,7 +850,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //账号注册必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话后直接注册
-            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
             doPostAccountSessionForRegister(false);
             return;
         }
@@ -882,7 +881,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //关闭软键盘
         SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+        LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
         //请求注册
         DataRequestService.getInstance().postRegister(dto, new BaseService.ServiceCallback() {
             @Override
@@ -899,7 +898,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接注册
-                            LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+                            LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
                             doPostAccountSessionForRegister(false);
 
                             //标记已经处理了异常
@@ -949,7 +948,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     onFailure(new QSCustomException("注册异常，请稍后再试"));
                 }
             }
-        });
+        }, httpTag);
 
     }
 
@@ -1215,7 +1214,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //发送短信验证码必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后发送短信验证码
-            LoadingView.getInstance().show(this);
+            LoadingView.getInstance().show(this, httpTag);
             doPostAccountSessionForSendMessageCaptcha(false);
             return;
         }
@@ -1242,7 +1241,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         MessageCaptchaDto dto = new MessageCaptchaDto();
         dto.setMobile(phoneNum);
@@ -1264,7 +1263,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                                 //重新获取会话
                                 sessionCreateResult = null;
                                 //创建会话然后发送短信验证码
-                                LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+                                LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
                                 doPostAccountSessionForSendMessageCaptcha(false);
 
                                 //标记已经处理了异常
@@ -1276,7 +1275,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                                     sessionCreateResult.setNormal(false);
                                 }
                                 //开启通信等待
-                                LoadingView.getInstance().show(RegisterCaptchaActivity.this);
+                                LoadingView.getInstance().show(RegisterCaptchaActivity.this, httpTag);
                                 //请求图形验证码
                                 getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
 
@@ -1326,7 +1325,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     //清空短信验证码
                     clearMessageCaptcha();
                 }
-            });
+            }, httpTag);
         } catch (QSCustomException e) {
             e.printStackTrace();
             ToastUtil.showShort(getApplicationContext(), e.getMessage());
@@ -1501,7 +1500,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     listener.onSuccess();
                 }
             }
-        });
+        }, httpTag);
     }
 
 

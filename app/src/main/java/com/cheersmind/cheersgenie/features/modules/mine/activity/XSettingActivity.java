@@ -3,16 +3,11 @@ package com.cheersmind.cheersgenie.features.modules.mine.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Build;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -22,14 +17,11 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.activity.MainActivity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.util.DataCleanCacheUtils;
-import com.cheersmind.cheersgenie.main.util.SharedPreferencesUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
-import com.cheersmind.cheersgenie.module.login.LoginActivity;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.cheersmind.cheersgenie.module.login.UserLicenseActivity;
 import com.cheersmind.cheersgenie.module.mine.AboutActivity;
@@ -65,12 +57,12 @@ public class XSettingActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //声音切换器初始化
-        stMusic.setChecked(SoundPlayUtils.getSoundStatus());
+        stMusic.setChecked(SoundPlayUtils.getSoundStatus(XSettingActivity.this));
         //声音切换器切换监听
         stMusic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                SoundPlayUtils.setSoundStatus(isChecked);
+                SoundPlayUtils.setSoundStatus(XSettingActivity.this, isChecked);
             }
         });
 
@@ -111,7 +103,7 @@ public class XSettingActivity extends BaseActivity {
             }
             //检查更新
             case R.id.rl_update: {
-                VersionUpdateUtil.checkUpdate(this, true);
+                VersionUpdateUtil.checkUpdate(this, true, httpTag);
                 break;
             }
             //清除缓存

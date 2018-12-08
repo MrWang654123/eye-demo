@@ -317,7 +317,7 @@ public class MineFragment extends TakePhotoFragment {
                     e.printStackTrace();
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -347,7 +347,7 @@ public class MineFragment extends TakePhotoFragment {
                     settingSignInStatus(false);
                 }
             }
-        });
+        }, httpTag);
     }
 
     @Override
@@ -448,7 +448,7 @@ public class MineFragment extends TakePhotoFragment {
      * 签到
      */
     private void doSignIn() {
-        LoadingView.getInstance().show(getActivity());
+        LoadingView.getInstance().show(getActivity(), httpTag);
 
         DataRequestService.getInstance().postDailySignIn(new BaseService.ServiceCallback() {
             @Override
@@ -470,7 +470,7 @@ public class MineFragment extends TakePhotoFragment {
                     IntegralUtil.showIntegralTipDialog(getContext(), obj, null);
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -517,7 +517,7 @@ public class MineFragment extends TakePhotoFragment {
                     e.printStackTrace();
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -712,7 +712,7 @@ public class MineFragment extends TakePhotoFragment {
      */
     private void doPostModifyProfile(final File file) {
         //通信等待提示
-        LoadingView.getInstance().show(getContext());
+        LoadingView.getInstance().show(getContext(), httpTag);
         DataRequestService.getInstance().postModifyProfile(file, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -757,7 +757,7 @@ public class MineFragment extends TakePhotoFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -845,7 +845,7 @@ public class MineFragment extends TakePhotoFragment {
                     tvUsableIntegralVal.setVisibility(View.INVISIBLE);
                 }
             }
-        });
+        }, httpTag);
     }
 
 

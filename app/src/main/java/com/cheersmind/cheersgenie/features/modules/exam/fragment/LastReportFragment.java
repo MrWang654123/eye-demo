@@ -833,7 +833,7 @@ public class LastReportFragment extends LazyLoadFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 }

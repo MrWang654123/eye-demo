@@ -294,7 +294,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(RegisterPhoneNumActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         MessageCaptchaDto dto = new MessageCaptchaDto();
         dto.setMobile(phoneNum);
@@ -356,7 +356,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                 //重新获取会话
                                 sessionCreateResult = null;
                                 //创建会话然后发送短信验证码
-                                LoadingView.getInstance().show(RegisterPhoneNumActivity.this);
+                                LoadingView.getInstance().show(RegisterPhoneNumActivity.this, httpTag);
                                 doPostAccountSessionForSendMessageCaptcha(false);
 
                                 //标记已经处理了异常
@@ -368,7 +368,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                     sessionCreateResult.setNormal(false);
                                 }
                                 //开启通信等待
-                                LoadingView.getInstance().show(RegisterPhoneNumActivity.this);
+                                LoadingView.getInstance().show(RegisterPhoneNumActivity.this, httpTag);
                                 //请求图形验证码
                                 getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
 
@@ -427,7 +427,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                     //跳转验证码输入页面
                     RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto, messageCaptcha);
                 }
-            });
+            }, httpTag);
         } catch (QSCustomException e) {
             e.printStackTrace();
             ToastUtil.showShort(getApplicationContext(), e.getMessage());
@@ -447,7 +447,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
         //发送短信验证码必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后发送短信验证码
-            LoadingView.getInstance().show(this);
+            LoadingView.getInstance().show(this, httpTag);
             doPostAccountSessionForSendMessageCaptcha(false);
             return;
         }
@@ -589,7 +589,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                     listener.onSuccess();
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -622,7 +622,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                 getImageCaptcha(sessionCreateResult.getSessionId(), null);*/
 
                 //开启通信等待
-                LoadingView.getInstance().show(RegisterPhoneNumActivity.this);
+                LoadingView.getInstance().show(RegisterPhoneNumActivity.this, httpTag);
                 //请求图形验证码
                 getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
 

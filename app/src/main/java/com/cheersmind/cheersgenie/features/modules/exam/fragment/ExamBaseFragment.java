@@ -746,7 +746,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 onRefreshChildTopListSuccess(obj);
 
             }
-        });
+        },httpTag);
     }
 
 
@@ -900,7 +900,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             public void onResponse(Object obj) {
                 onLoadMoreChildTopicListSuccess(obj);
             }
-        });
+        }, httpTag);
     }
 
 

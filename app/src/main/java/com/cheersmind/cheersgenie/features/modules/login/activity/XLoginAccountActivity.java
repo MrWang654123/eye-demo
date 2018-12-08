@@ -418,7 +418,7 @@ public class XLoginAccountActivity extends BaseActivity {
         //账号登录必须要有sessionId
         if (sessionCreateResult == null || TextUtils.isEmpty(sessionCreateResult.getSessionId())) {
             //创建会话然后直接登录
-            LoadingView.getInstance().show(this);
+            LoadingView.getInstance().show(this, httpTag);
             doPostAccountSessionForAccountLogin(false);
             return;
         }
@@ -484,7 +484,7 @@ public class XLoginAccountActivity extends BaseActivity {
         //关闭软键盘
         SoftInputUtil.closeSoftInput(XLoginAccountActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
         //账号登录
         DataRequestService.getInstance().postAccountLogin(accountLoginDto, new BaseService.ServiceCallback() {
             @Override
@@ -517,7 +517,7 @@ public class XLoginAccountActivity extends BaseActivity {
                             //重新获取会话
                             sessionCreateResult = null;
                             //创建会话后直接登录
-                            LoadingView.getInstance().show(XLoginAccountActivity.this);
+                            LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
                             doPostAccountSessionForAccountLogin(false);
 
                             //标记已经处理了异常
@@ -529,7 +529,7 @@ public class XLoginAccountActivity extends BaseActivity {
                                 sessionCreateResult.setNormal(false);
                             }
                             //开启通信等待
-                            LoadingView.getInstance().show(XLoginAccountActivity.this);
+                            LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
                             //请求图形验证码
                             getImageCaptcha(sessionCreateResult.getSessionId(), new OnResultListener() {
 
@@ -638,7 +638,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -647,7 +647,7 @@ public class XLoginAccountActivity extends BaseActivity {
      * @param bindDto
      */
     private void doThirdPlatBind(final ThirdPlatBindDto bindDto) {
-        LoadingView.getInstance().show(XLoginAccountActivity.this);
+        LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
         //绑定第三方平台账号
         DataRequestService.getInstance().postThirdPlatBind(bindDto, new BaseService.ServiceCallback() {
             @Override
@@ -668,7 +668,7 @@ public class XLoginAccountActivity extends BaseActivity {
                 //获取孩子信息
                 doGetChildListWrap();
             }
-        });
+        }, httpTag);
     }
 
 
@@ -721,7 +721,7 @@ public class XLoginAccountActivity extends BaseActivity {
             return;
         }
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginAccountActivity.this);
+        LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -791,7 +791,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**
@@ -823,7 +823,7 @@ public class XLoginAccountActivity extends BaseActivity {
      */
     private void doThirdLogin(final ThirdLoginDto thirdLoginDto) {
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginAccountActivity.this);
+        LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
         //第三方登录
         DataRequestService.getInstance().postUcThirdLogin(thirdLoginDto, new BaseService.ServiceCallback() {
             @Override
@@ -886,7 +886,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException(errorStr));
                 }
             }
-        });
+        }, httpTag);
     }
 
 
@@ -906,7 +906,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
 
         //开启通信等待提示
-        LoadingView.getInstance().show(XLoginAccountActivity.this);
+        LoadingView.getInstance().show(XLoginAccountActivity.this, httpTag);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1123,7 +1123,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     listener.onSuccess();
                 }
             }
-        });
+        }, httpTag);
     }
 
 

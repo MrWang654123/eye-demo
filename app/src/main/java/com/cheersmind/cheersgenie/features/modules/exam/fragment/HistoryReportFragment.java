@@ -184,7 +184,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                });
+                }, httpTag);
     }
 
 }

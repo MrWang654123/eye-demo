@@ -38,6 +38,8 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     String videoId;
     //视频标题
     String title;
+    //通信tag
+    protected String httpTag;
 
     //视频真实url
     String videoRealUrl;
@@ -320,6 +322,14 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     }
 
     /**
+     * 设置通信标记
+     * @param httpTag 标记
+     */
+    public void setHttpTag(String httpTag) {
+        this.httpTag = httpTag;
+    }
+
+    /**
      * 地址有效性验证
      * @return true：有效
      */
@@ -409,7 +419,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                     }
                 }
             }
-        });
+        }, httpTag);
     }
 
 

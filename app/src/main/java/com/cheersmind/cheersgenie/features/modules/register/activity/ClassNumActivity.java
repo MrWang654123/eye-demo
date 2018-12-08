@@ -333,7 +333,7 @@ public class ClassNumActivity extends BaseActivity {
         //隐藏软键盘
         SoftInputUtil.closeSoftInput(ClassNumActivity.this);
         //开启通信等待提示
-        LoadingView.getInstance().show(this);
+        LoadingView.getInstance().show(this, httpTag);
 
         DataRequestService.getInstance().getClassInfoByClassNum(classNum, new BaseService.ServiceCallback() {
             @Override
@@ -380,7 +380,7 @@ public class ClassNumActivity extends BaseActivity {
                     onFailure(new QSCustomException("获取班级信息失败"));
                 }
             }
-        });
+        }, httpTag);
     }
 
     /**

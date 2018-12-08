@@ -126,41 +126,6 @@ public class MasterTabActivity extends BaseActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //检查更新
-        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
-            VersionUpdateUtil.checkUpdate(this,false, false);
-        }
-
-        // android 6.0以上动态权限申请
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PermissionUtil.lacksPermissions(MasterTabActivity.this, permissions)) {
-                ActivityCompat.requestPermissions(this, permissions, WRITE_EXTERNAL_STORAGE);
-            } else {
-                //初始化百度音频
-                ((QSApplication)getApplication()).getSynthesizerManager().initialTts();
-                getSynthesizerManager().initialTts();
-            }
-        } else {
-            //初始化百度音频
-            getSynthesizerManager().initialTts();
-        }
-
-        httpTag = String.valueOf(System.currentTimeMillis());
-        //是否已经第一次访问过了任务列表
-        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
-        hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
-        //请求任务列表
-        doGetTaskList(httpTag);
-//        if (!hasFirstShowTaskList) {
-//            new TaskListDialog(MasterTabActivity.this, null, null, null).show();
-//        }
-    }
-
-
-    @Override
     protected int setContentView() {
         return R.layout.activity_master_tab;
     }
@@ -229,19 +194,37 @@ public class MasterTabActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
-        //初始化声音
-//        SoundPlayUtils.init(this);
-
         //检查更新
-//        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
-//            VersionUpdateUtil.checkUpdate(this,false, false);
-//        }
+        if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
+            VersionUpdateUtil.checkUpdate(this,false, false, httpTag);
+        }
 
-//        initPermission(); // android 6.0以上动态权限申请
+        // android 6.0以上动态权限申请
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionUtil.lacksPermissions(MasterTabActivity.this, permissions)) {
+                ActivityCompat.requestPermissions(this, permissions, WRITE_EXTERNAL_STORAGE);
+            } else {
+                //初始化百度音频
+                getSynthesizerManager().initialTts();
+            }
+        } else {
+            //初始化百度音频
+            getSynthesizerManager().initialTts();
+        }
+
+        httpTag = String.valueOf(System.currentTimeMillis());
+        //是否已经第一次访问过了任务列表
+        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+        hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
+        //请求任务列表
+        doGetTaskList(httpTag);
 
         //任务弹窗偏移
         offset_x = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_x);
         offset_y = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_y);
+
+        //初始化声音
+        SoundPlayUtils.init(this);
     }
 
     @Override
@@ -249,7 +232,7 @@ public class MasterTabActivity extends BaseActivity {
         super.onStart();
 
         //如果当前是“我的”，则刷新积分
-        if (viewPager.getCurrentItem() == 2) {
+        if (viewPager != null && viewPager.getCurrentItem() == 2) {
             //发送刷新积分通知
             EventBus.getDefault().post(new RefreshIntegralEvent());
         }
@@ -437,6 +420,9 @@ public class MasterTabActivity extends BaseActivity {
 
         //取消通信
         BaseService.cancelTag(httpTag);
+
+        //释放声音资源
+//        SoundPlayUtils.release();
     }
 
 
