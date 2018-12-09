@@ -411,6 +411,23 @@ public class ArticleDetailActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //滚动监听
+        svMainBlock.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
+        //退出全屏监听
+        JZVideoPlayerStandardHorizontal.exitFullScreenListener = null;
+        //加载更多监听
+        recyclerAdapter.setOnLoadMoreListener(null, null);
+        requestLoadMoreListener = null;
+        //webViewClient监听
+        webArticleContent.setWebViewClient(null);
+        //重载点击
+        xemptyLayout.setOnReloadListener(null);
+    }
+
+
     /**
      * 设置状态栏背景颜色
      * （目前只支持5.0以上，4.4到5.0之间由于各厂商存在兼容问题，故暂不考虑）
@@ -538,12 +555,12 @@ public class ArticleDetailActivity extends BaseActivity {
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 //        webArticleContent.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
 
-        webArticleContent.setListener(new DisplayFinishWebView.DisplayFinishListener() {
-            @Override
-            public void onDisplayFinish() {
-
-            }
-        });
+//        webArticleContent.setListener(new DisplayFinishWebView.DisplayFinishListener() {
+//            @Override
+//            public void onDisplayFinish() {
+//
+//            }
+//        });
 
         webArticleContent.setWebViewClient(new WebViewClient() {
 
@@ -580,7 +597,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     } else {
                         delay = 400;
                     }
-                    mHandler.postDelayed(new Runnable() {
+                    getHandler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
 //                                tvInitContent.setVisibility(View.GONE);
@@ -594,19 +611,19 @@ public class ArticleDetailActivity extends BaseActivity {
             }
         });
 
-        webArticleContent.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                super.onProgressChanged(view, newProgress);
-
-                //会被调用多次
-                if (newProgress == 100) {
-
-                }
-            }
-
-
-        });
+//        webArticleContent.setWebChromeClient(new WebChromeClient(){
+//            @Override
+//            public void onProgressChanged(WebView view, int newProgress) {
+//                super.onProgressChanged(view, newProgress);
+//
+//                //会被调用多次
+//                if (newProgress == 100) {
+//
+//                }
+//            }
+//
+//
+//        });
 
     }
 
@@ -891,7 +908,7 @@ public class ArticleDetailActivity extends BaseActivity {
                             delay = 500;
                         }
                     }
-                    mHandler.postDelayed(new Runnable() {
+                    getHandler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //有关联的测评，则刷新关联测评的视图
@@ -1515,25 +1532,25 @@ public class ArticleDetailActivity extends BaseActivity {
 
 
     //测试的文章内容
-    String testArticleContent = "<div class=\"article\" id=\"article\">\t\t\t\t\n" +
-            "<p>　　原标题：外交部今天再谈中非“全家福”，说了一句意味深长的话</p>\n" +
-//            "<div class=\"img_wrapper\"><img style=\"max-width: 500px;\" src=\"http://n.sinaimg.cn/translate/784/w500h284/20180821/OHhj-hhzsnea3625408.jpg\" alt=\"\"></div>\n" +
-            "<img style=\"max-width: 500px;\" src=\"http://n.sinaimg.cn/translate/784/w500h284/20180821/OHhj-hhzsnea3625408.jpg\" alt=\"\">" +
-            "<p>　　[环球网综合报道]2018年8月21日外交部发言人陆慷主持例行记者会，有记者问到，问：第一，台湾方面认为中国与萨尔瓦多建交与大陆“金元外交”有关。外交部发言人对此有何回应？第二，今年年初，王毅国务委员兼外长表示希望在中非合作论坛北京峰会期间拍一张中非“全家福”。这次斯威士兰是否将与会？</p>\n" +
-//            "<p>　　陆慷回应，关于第一个问题，相信你已经关注到了今天上午王毅国务委员兼外长与卡斯塔内达外长共见记者的详细情况。按说对台湾岛内某些人的表态，应由中央政府主管部门作回应，不是外交部的职责。但就这一问题而言，我可以强调一下，中国和萨尔瓦多建立外交关系是政治决断，绝不是台湾方面某些人想象的所谓“交易筹码”。萨尔瓦多政府决定同中国建交，是出于对一个中国原则的认同，是一项政治决断，没有任何经济前提。中方高度赞赏萨方的立场。</p>\n" +
-//            "<p>　　我也想提醒台湾方面某些人，世界各国同中华人民共和国建立和发展正常友好的国家关系是大势所趋、民心所向，希望岛内某些人能够看清世界大势，不要把任何问题都理解为钱的问题。</p>\n" +
-            "<p>　　至于你提到现在还有一个非洲国家仍然没有放弃同台湾的所谓“外交关系”，我们已经多次表明，中国政府有意愿在和平共处五项原则和一个中国原则基础上，同世界上所有国家发展友好合作关系。我们相信这样的关系符合彼此利益，希望有关国家能够认清世界大势。</p>\n" +
-            "\t\t\t\t\n" +
-            "\t\t\t\t<div class=\"wap_special\" data-sudaclick=\"content_relativetopics_p\">\n" +
-            "        <div class=\"tlt\">点击进入专题：</div>\n" +
-            "\t<a href=\"http://news.sina.cn/zt_d/zfhzlt\" target=\"_blank\">习近平将主持2018年中非合作论坛北京峰会</a></div>\n" +
-            "  \n" +
-            "\t\t\t\t\n" +
-            "\t\t\t\t\n" +
-            "<p class=\"show_author\">责任编辑：张建利 </p>\n" +
-            "\t\t\t\t\n" +
-            "\t\t\t\t\n" +
-            "\t\t\t</div>";
+//    String testArticleContent = "<div class=\"article\" id=\"article\">\t\t\t\t\n" +
+//            "<p>　　原标题：外交部今天再谈中非“全家福”，说了一句意味深长的话</p>\n" +
+////            "<div class=\"img_wrapper\"><img style=\"max-width: 500px;\" src=\"http://n.sinaimg.cn/translate/784/w500h284/20180821/OHhj-hhzsnea3625408.jpg\" alt=\"\"></div>\n" +
+//            "<img style=\"max-width: 500px;\" src=\"http://n.sinaimg.cn/translate/784/w500h284/20180821/OHhj-hhzsnea3625408.jpg\" alt=\"\">" +
+//            "<p>　　[环球网综合报道]2018年8月21日外交部发言人陆慷主持例行记者会，有记者问到，问：第一，台湾方面认为中国与萨尔瓦多建交与大陆“金元外交”有关。外交部发言人对此有何回应？第二，今年年初，王毅国务委员兼外长表示希望在中非合作论坛北京峰会期间拍一张中非“全家福”。这次斯威士兰是否将与会？</p>\n" +
+////            "<p>　　陆慷回应，关于第一个问题，相信你已经关注到了今天上午王毅国务委员兼外长与卡斯塔内达外长共见记者的详细情况。按说对台湾岛内某些人的表态，应由中央政府主管部门作回应，不是外交部的职责。但就这一问题而言，我可以强调一下，中国和萨尔瓦多建立外交关系是政治决断，绝不是台湾方面某些人想象的所谓“交易筹码”。萨尔瓦多政府决定同中国建交，是出于对一个中国原则的认同，是一项政治决断，没有任何经济前提。中方高度赞赏萨方的立场。</p>\n" +
+////            "<p>　　我也想提醒台湾方面某些人，世界各国同中华人民共和国建立和发展正常友好的国家关系是大势所趋、民心所向，希望岛内某些人能够看清世界大势，不要把任何问题都理解为钱的问题。</p>\n" +
+//            "<p>　　至于你提到现在还有一个非洲国家仍然没有放弃同台湾的所谓“外交关系”，我们已经多次表明，中国政府有意愿在和平共处五项原则和一个中国原则基础上，同世界上所有国家发展友好合作关系。我们相信这样的关系符合彼此利益，希望有关国家能够认清世界大势。</p>\n" +
+//            "\t\t\t\t\n" +
+//            "\t\t\t\t<div class=\"wap_special\" data-sudaclick=\"content_relativetopics_p\">\n" +
+//            "        <div class=\"tlt\">点击进入专题：</div>\n" +
+//            "\t<a href=\"http://news.sina.cn/zt_d/zfhzlt\" target=\"_blank\">习近平将主持2018年中非合作论坛北京峰会</a></div>\n" +
+//            "  \n" +
+//            "\t\t\t\t\n" +
+//            "\t\t\t\t\n" +
+//            "<p class=\"show_author\">责任编辑：张建利 </p>\n" +
+//            "\t\t\t\t\n" +
+//            "\t\t\t\t\n" +
+//            "\t\t\t</div>";
 
 
     @OnClick({R.id.btn_goto_evaluation, R.id.tv_comment_tip, R.id.iv_favorite, R.id.iv_like,

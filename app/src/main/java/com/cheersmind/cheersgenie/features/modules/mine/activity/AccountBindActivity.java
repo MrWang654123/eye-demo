@@ -516,7 +516,7 @@ public class AccountBindActivity extends BaseActivity {
         DataRequestService.getInstance().getWeChartToken(Constant.WX_APP_ID, Constant.WX_APP_SECTET, code, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();

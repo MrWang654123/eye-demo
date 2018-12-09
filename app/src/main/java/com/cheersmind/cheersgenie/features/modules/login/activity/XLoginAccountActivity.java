@@ -466,7 +466,7 @@ public class XLoginAccountActivity extends BaseActivity {
             String imageCaptcha = etImageCaptcha.getText().toString();
             if (TextUtils.isEmpty(imageCaptcha)) {
                 //需要图形验证码
-                Message.obtain(mHandler, MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
+                Message.obtain(getHandler(), MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
                 return false;
             }
         }
@@ -740,7 +740,7 @@ public class XLoginAccountActivity extends BaseActivity {
         EventBus.getDefault().cancelEventDelivery(event);
 
         if ("error".equals(event.getCode())) {
-            mHandler.post(new Runnable() {
+            getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     //关闭通信等待提示
@@ -766,7 +766,7 @@ public class XLoginAccountActivity extends BaseActivity {
         DataRequestService.getInstance().getWeChartToken(Constant.WX_APP_ID, Constant.WX_APP_SECTET, code, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();
@@ -1116,7 +1116,7 @@ public class XLoginAccountActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //通过handler更新UI
-                Message.obtain(mHandler, MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
+                Message.obtain(getHandler(), MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
 
                 //成功回调
                 if (listener != null) {

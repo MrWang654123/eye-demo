@@ -3,12 +3,24 @@ package com.cheersmind.cheersgenie.main.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 
+import com.alibaba.sdk.android.man.MANService;
+import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.SplashActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
+import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.umeng.analytics.MobclickAgent;
+
+import org.litepal.crud.DataSupport;
 
 /**
  * token超时视图
@@ -46,8 +58,10 @@ public class TokenTimeOutView {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                //前往登录主页面
-                                gotoLoginPage(context);
+//                                //前往登录主页面
+//                                gotoLoginPage(context);
+                                //退出操作
+                                doExit(context);
                             }
                         })
                         .create();
@@ -67,6 +81,37 @@ public class TokenTimeOutView {
         } catch (Exception e) {
         }
     }
+
+
+    /**
+     * 退出操作
+     */
+    private void doExit(Context context) {
+        //清空用户名、密码
+//        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(QSApplication.getContext());
+//        SharedPreferences.Editor editor = pref.edit();
+////        editor.remove("user_name");
+//        editor.remove("user_password");
+//        editor.apply();
+        //删除数据库中的用户对象
+        DataSupport.deleteAll(WXUserInfoEntity.class);
+        //删除数据库中的孩子对象
+        DataSupport.deleteAll(ChildInfoEntity.class);
+        //清空登录信息的临时缓存
+        UCManager.getInstance().clearToken();
+//                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);
+
+        // 用户注销埋点
+        MANService manService = MANServiceProvider.getService();
+        manService.getMANAnalytics().updateUserAccount("", "");
+
+        //友盟统计：登出
+        MobclickAgent.onProfileSignOff();
+
+        //前往登录主页面
+        gotoLoginPage(context);
+    }
+
 
     public void dismiss() {
         try {

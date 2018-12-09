@@ -25,7 +25,7 @@ public class HistoryReportRecyclerAdapter extends BaseMultiItemQuickAdapter<Hist
         switch (helper.getItemViewType()) {
             //表格head
             case HistoryReportItemEntity.HEAD: {
-                helper.setText(R.id.tv_patch, "测评批次");
+                helper.setText(R.id.tv_patch, "测评时间");
                 helper.setText(R.id.tv_result_simple, "测评结果");
                 helper.setText(R.id.tv_goto_detail, "明细");
                 break;

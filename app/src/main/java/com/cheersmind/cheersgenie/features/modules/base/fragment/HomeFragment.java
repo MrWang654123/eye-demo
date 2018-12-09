@@ -389,7 +389,7 @@ public class HomeFragment extends LazyLoadFragment {
 //                banner.setVisibility(View.GONE);
                 convenientBanner.setVisibility(View.GONE);
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
 
             @Override
@@ -460,7 +460,7 @@ public class HomeFragment extends LazyLoadFragment {
                 lastDimension = null;
                 evaluationBlock.setVisibility(View.GONE);
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
 
             @Override
@@ -514,7 +514,7 @@ public class HomeFragment extends LazyLoadFragment {
             @Override
             public void onFailure(QSCustomException e) {
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
 
                 //开启上拉加载功能
                 recyclerAdapter.setEnableLoadMore(true);
@@ -563,7 +563,7 @@ public class HomeFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //发送通信错误消息
-                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
                     //加载失败处理
@@ -586,7 +586,7 @@ public class HomeFragment extends LazyLoadFragment {
             @Override
             public void onFailure(QSCustomException e) {
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
 
                 //开启下拉刷新功能
                 swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
@@ -638,7 +638,7 @@ public class HomeFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     //发送通信错误消息
-                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
                     //加载失败处理
                     recyclerAdapter.loadMoreFail();
                 }

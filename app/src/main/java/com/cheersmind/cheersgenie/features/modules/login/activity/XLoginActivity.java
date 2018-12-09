@@ -245,7 +245,7 @@ public class XLoginActivity extends BaseActivity {
     @Subscribe
     public void onWXTokenEntity(WXLoginEvent event) {
         if("error".equals(event.getCode())){
-            mHandler.post(new Runnable() {
+            getHandler().post(new Runnable() {
                 @Override
                 public void run() {
                     //关闭通信等待提示
@@ -271,7 +271,7 @@ public class XLoginActivity extends BaseActivity {
         DataRequestService.getInstance().getWeChartToken(Constant.WX_APP_ID, Constant.WX_APP_SECTET, code, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                mHandler.post(new Runnable() {
+                getHandler().post(new Runnable() {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();

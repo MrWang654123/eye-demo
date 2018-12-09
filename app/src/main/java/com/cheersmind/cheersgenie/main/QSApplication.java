@@ -30,6 +30,7 @@ import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherize
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
+import com.cheersmind.cheersgenie.features.utils.fresco.ImagePipelineConfigFactory;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -95,8 +96,9 @@ public class QSApplication extends LitePalApplication {
         mHandler = new Handler();
 
         //初始化Fresco（图片加载库）
-        Fresco.initialize(this);
-        ImagePipelineConfig.newBuilder(this).setBitmapsConfig(Bitmap.Config.RGB_565);
+//        Fresco.initialize(this);
+//        ImagePipelineConfig.newBuilder(this).setBitmapsConfig(Bitmap.Config.RGB_565);
+        Fresco.initialize(this, ImagePipelineConfigFactory.getImagePipelineConfig(this));
 
 
         //调试模式下不启用自定义的异常处理类

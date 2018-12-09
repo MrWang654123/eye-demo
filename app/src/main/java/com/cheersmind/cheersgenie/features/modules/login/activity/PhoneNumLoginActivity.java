@@ -613,7 +613,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
             String imageCaptcha = etImageCaptcha.getText().toString();
             if (TextUtils.isEmpty(imageCaptcha)) {
                 //需要图形验证码
-                Message.obtain(mHandler, MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
+                Message.obtain(getHandler(), MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
                 return false;
             }
         }
@@ -830,7 +830,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //通过handler更新UI
-                Message.obtain(mHandler, MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
+                Message.obtain(getHandler(), MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
 
                 //成功回调
                 if (listener != null) {

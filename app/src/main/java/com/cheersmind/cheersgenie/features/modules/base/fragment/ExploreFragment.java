@@ -306,7 +306,7 @@ public class ExploreFragment extends LazyLoadFragment {
 //                convenientBanner.setVisibility(View.GONE);
                 viewPagerBanner.setVisibility(View.GONE);
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
 
             @Override
@@ -382,7 +382,7 @@ public class ExploreFragment extends LazyLoadFragment {
 //                    convenientBanner.setVisibility(View.GONE);
                     viewPagerBanner.setVisibility(View.GONE);
                     //发送通信错误消息
-                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
                 }
 
             }
@@ -400,7 +400,7 @@ public class ExploreFragment extends LazyLoadFragment {
                 tabs.setVisibility(View.GONE);
                 viewPager.setVisibility(View.GONE);
                 //发送通信错误消息
-                mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
             }
 
             @Override
@@ -470,7 +470,7 @@ public class ExploreFragment extends LazyLoadFragment {
                     tabs.setVisibility(View.GONE);
                     viewPager.setVisibility(View.GONE);
                     //发送通信错误消息
-                    mHandler.sendEmptyMessage(MSG_ERROR_QUANTITY);
+                    getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
                 }
             }
         }, httpTag);

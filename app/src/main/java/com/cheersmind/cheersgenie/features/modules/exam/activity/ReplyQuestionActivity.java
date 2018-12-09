@@ -262,7 +262,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         costTime = 0;
 
         //初始设置监听
-        getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(mHandler));
+        getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(getHandler()));
         // android 6.0以上动态权限申请
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
@@ -795,7 +795,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             curPageIndex++;
 
             final int tempCurPageIndex = curPageIndex;
-            mHandler.postDelayed(new Runnable() {
+            getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     vpQuestion.setCurrentItem(tempCurPageIndex, true);
@@ -940,7 +940,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 返回主页面
      */
     private void gotoMainPage() {
-        mHandler.postDelayed(new Runnable() {
+        getHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 //返回主页面

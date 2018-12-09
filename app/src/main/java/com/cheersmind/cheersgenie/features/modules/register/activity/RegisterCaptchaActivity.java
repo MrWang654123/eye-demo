@@ -424,7 +424,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //隐藏软键盘
 //        SoftInputUtil.closeSoftInput(RegisterCaptchaActivity.this);
 
-        mHandler.postDelayed(new Runnable() {
+        getHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 //自动操作下一步
@@ -1184,7 +1184,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
             String imageCaptcha = etImageCaptcha.getText().toString();
             if (TextUtils.isEmpty(imageCaptcha)) {
                 //需要图形验证码
-                Message.obtain(mHandler, MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
+                Message.obtain(getHandler(), MSG_REQUIRED_IMAGE_CAPTCHA).sendToTarget();
                 return false;
             }
         }
@@ -1493,7 +1493,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 //通过handler更新UI
-                Message.obtain(mHandler, MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
+                Message.obtain(getHandler(), MSG_REFRESH_IMAGE_CAPTCHA, obj).sendToTarget();
 
                 //成功回调
                 if (listener != null) {

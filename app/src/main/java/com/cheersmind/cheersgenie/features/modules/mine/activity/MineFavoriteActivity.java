@@ -222,7 +222,13 @@ public class MineFavoriteActivity extends BaseActivity {
         loadMoreFavoriteData();
     }
 
-//    @OnClick({R.id.fabGotoTop})
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        recycleView.clearOnScrollListeners();
+    }
+
+    //    @OnClick({R.id.fabGotoTop})
 //    public void onViewClick(View view) {
 //        switch (view.getId()) {
 //            //置顶按钮

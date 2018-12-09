@@ -74,7 +74,7 @@ public class SplashActivity extends BaseActivity {
         boolean conAutoLogin = true;
         //是否显示信功能
         if (showNewFeature) {
-            mHandler.postDelayed(new Runnable() {
+            getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     //引导页面
@@ -83,7 +83,7 @@ public class SplashActivity extends BaseActivity {
             }, WAIT_TIME);
 
         } else if (conAutoLogin) {
-            mHandler.postDelayed(new Runnable() {
+            getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     //处理自动登录
@@ -93,7 +93,7 @@ public class SplashActivity extends BaseActivity {
 
         } else {
             //登录主页面
-            mHandler.postDelayed(new Runnable() {
+            getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     //登录页面

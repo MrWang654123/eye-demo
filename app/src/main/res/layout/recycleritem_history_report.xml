@@ -10,8 +10,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
+        android:minHeight="46dp"
         android:orientation="horizontal"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:gravity="center_vertical">
 
         <TextView
@@ -32,6 +35,7 @@
             android:gravity="center"
             android:textColor="@color/color_333333"
             android:textSize="14sp"
+            android:lineSpacingMultiplier="1.2"
             android:text="物理、地理、生物"/>
 
         <TextView

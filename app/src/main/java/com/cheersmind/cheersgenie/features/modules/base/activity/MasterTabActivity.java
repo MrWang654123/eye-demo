@@ -109,9 +109,6 @@ public class MasterTabActivity extends BaseActivity {
     @BindView(R.id.fabTask)
     FloatingActionButton fabTask;
 
-    //通信标记
-    private String httpTag;
-
     //是否已经第一次访问过了任务列表
     private boolean hasFirstShowTaskList;
     //任务弹窗偏移
@@ -121,8 +118,6 @@ public class MasterTabActivity extends BaseActivity {
     private TaskListEntity taskListEntity;
     //任务列表项
     private List<TaskItemEntity> taskItems;
-    //任务列表适配器
-    private TimeLineAdapter mTimeLineAdapter;
 
 
     @Override
@@ -396,7 +391,7 @@ public class MasterTabActivity extends BaseActivity {
         if (!canExit) {
             canExit = true;
             ToastUtil.showShort(MasterTabActivity.this, "再按一次退出");
-            mHandler.postDelayed(new Runnable() {
+            getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     canExit = false;
@@ -490,7 +485,6 @@ public class MasterTabActivity extends BaseActivity {
             //任务说明（分期测评）
             case R.id.fabTask:{
 //                ToastUtil.showShort(getApplicationContext(), "显示任务");
-//                popupTaskWindows();
 //                doGetTaskList(null,null,null, httpTag);
                 new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, null).show();
                 break;
@@ -581,112 +575,7 @@ public class MasterTabActivity extends BaseActivity {
         return sp.getBoolean(childId, false);
     }
 
-    //windows背景透明度消息
-    private final static int MSG_WINDOWS_ALPHA_ADD = 1;
-    private final static int MSG_WINDOWS_ALPHA_SUB = 2;
-    //延迟间隔
-    private final static int DELAY_INTERVAL = 2;
-    //透明度渐变间隔
-    float intervalAlpha = 0.005f;
 
-    @Override
-    public void onHandleMessage(Message msg) {
-        //屏幕透明度
-        float alpha = getBackgroundAlpha();
-        switch (msg.what) {
-            case MSG_WINDOWS_ALPHA_ADD: {
-                if (alpha < 0.995f) {
-                    alpha += intervalAlpha;
-                    backgroundAlpha(alpha);
-                    mHandler.sendEmptyMessageDelayed(MSG_WINDOWS_ALPHA_ADD, DELAY_INTERVAL);
-
-                } else {
-                    backgroundAlpha(1.0f);
-//                    alpha += intervalAlpha;
-//                    backgroundAlpha(alpha);
-                }
-
-                break;
-            }
-            case MSG_WINDOWS_ALPHA_SUB: {
-                if (alpha > 0.605f) {
-                    alpha -= intervalAlpha;
-                    backgroundAlpha(alpha);
-                    mHandler.sendEmptyMessageDelayed(MSG_WINDOWS_ALPHA_SUB, DELAY_INTERVAL);
-
-                } else {
-                    backgroundAlpha(0.6f);
-                }
-                break;
-            }
-        }
-    }
-
-    /**
-     * 设置添加屏幕的背景透明度
-     * @param bgAlpha [0.0-1.0]
-     */
-    public void backgroundAlpha(float bgAlpha)
-    {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.alpha = bgAlpha; //0.0-1.0
-        getWindow().setAttributes(lp);
-//        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
-
-    /**
-     * 获取屏幕的背景透明度
-     */
-    public float getBackgroundAlpha()
-    {
-        WindowManager.LayoutParams lp = getWindow().getAttributes();
-        return lp.alpha;
-    }
-
-
-    String testTaskStr = "{\n" +
-            "\t\"total\": 1,\n" +
-            "\t\"items\": [{\n" +
-            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
-            "\t\t\"description\": \"专题描述专题描述\",\n" +
-            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
-            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
-            "\t\t\"items\": [{\n" +
-            "\t\t\t\t\"exam_id\": \"10001\",\n" +
-            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-            "\t\t\t\t\"status\": 2\n" +
-            "\t\t\t},\n" +
-            "\t\t\t{\n" +
-            "\t\t\t\t\"exam_id\": \"10001\",\n" +
-            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-            "\t\t\t\t\"status\": 1\n" +
-            "\t\t\t}, {\n" +
-            "\t\t\t\t\"exam_id\": \"10001\",\n" +
-            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-            "\t\t\t\t\"status\": 0\n" +
-            "\t\t\t}, {\n" +
-            "\t\t\t\t\"exam_id\": \"10001\",\n" +
-            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-            "\t\t\t\t\"status\": 0\n" +
-            "\t\t\t}, {\n" +
-            "\t\t\t\t\"exam_id\": \"10001\",\n" +
-            "\t\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-            "\t\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-            "\t\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-            "\t\t\t\t\"status\": 0\n" +
-            "\t\t\t}\n" +
-            "\t\t]\n" +
-            "\t}]\n" +
-            "}";
 
 }
 

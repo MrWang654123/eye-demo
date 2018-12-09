@@ -827,7 +827,11 @@ public class MineFragment extends TakePhotoFragment {
         DataRequestService.getInstance().getIntegralTotalScore(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                tvUsableIntegralVal.setVisibility(View.INVISIBLE);
+                try {
+                    tvUsableIntegralVal.setVisibility(View.INVISIBLE);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
 
             @Override

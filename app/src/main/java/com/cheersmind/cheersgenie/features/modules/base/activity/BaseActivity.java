@@ -71,6 +71,7 @@ import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.umeng.analytics.MobclickAgent;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
@@ -98,15 +99,8 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     //Session创建结果
     protected SessionCreateResult sessionCreateResult;
 
-    //消息处理器
-    @SuppressLint("HandlerLeak")
-    protected Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            //统一回调
-            BaseActivity.this.onHandleMessage(msg);
-        }
-    };
+    //new Handler对象处理消息
+    private Handler mHandler;
 
 
     //权限
@@ -243,6 +237,11 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
         //取消当前页面的所有通信
         BaseService.cancelTag(httpTag);
+        //清空mHandler
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
     }
 
 
@@ -683,6 +682,42 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         return ((QSApplication)getApplication()).getSynthesizerManager();
     }
 
+
+    //内部类解决可能存在的内存溢出
+    /*
+    *1、静态和非静态内部类的区别是非静态内部类持有外部类的引用。
+2、内部类实例的持有对象的生命周期大于其外部类对象，那么就有可能导致内存泄露。
+比如,要实例化一个超出activity生命周期的内部类对象，
+避免使用非静态的内部类。建议使用静态内部类并且在内部类中持有外部类的弱引用。
+    *
+    * */
+    //静态内部类
+    private static class MyHandler extends Handler {
+        private final WeakReference<BaseActivity> mActivity;
+        //构造方法
+        MyHandler(BaseActivity activity) {
+            mActivity = new WeakReference<BaseActivity>(activity);//对外部类的弱引用
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            BaseActivity activity = mActivity.get();
+            //统一回调
+            if (activity != null) {
+                activity.onHandleMessage(msg);
+            }
+        }
+    }
+
+    /**
+     * 获取handler
+     * @return handler
+     */
+    public Handler getHandler() {
+        if (mHandler == null) {
+            mHandler = new MyHandler(this);
+        }
+        return mHandler;
+    }
 
 }
 
