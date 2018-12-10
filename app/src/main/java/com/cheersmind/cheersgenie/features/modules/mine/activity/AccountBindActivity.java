@@ -8,13 +8,10 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
-import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
-import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
-import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
 import com.cheersmind.cheersgenie.main.event.WXLoginEvent;
@@ -25,7 +22,6 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
-import com.google.gson.JsonElement;
 import com.tencent.connect.common.Constants;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -39,17 +35,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.cheersmind.cheersgenie.main.constant.Constant.mTencent;
 
@@ -322,7 +311,7 @@ public class AccountBindActivity extends BaseActivity {
 
         //检查网络
         if(!NetworkUtil.isConnectivity(AccountBindActivity.this)){
-            ToastUtil.showShort(getApplication(),"网络连接异常");
+            ToastUtil.showShort(getApplication(),getResources().getString(R.string.network_no));
             return;
         }
 
@@ -470,7 +459,7 @@ public class AccountBindActivity extends BaseActivity {
     private void startWxLogin(){
         //检查网络
         if(!NetworkUtil.isConnectivity(AccountBindActivity.this)){
-            ToastUtil.showShort(getApplication(),"网络连接异常");
+            ToastUtil.showShort(getApplication(),getResources().getString(R.string.network_no));
             return;
         }
 

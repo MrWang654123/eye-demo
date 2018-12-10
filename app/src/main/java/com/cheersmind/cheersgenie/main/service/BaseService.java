@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.request.BaseRequest;
@@ -29,93 +30,114 @@ public class BaseService {
 
 
     public static void get(final String url, final ServiceCallback callback, String tag, final Context context) {
-        BaseRequest.get(url, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.get(url, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        }, tag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            }, tag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
 
     public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback, String tag, final Context context) {
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.post(url, params, isFormType, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-        BaseRequest.post(url, params, isFormType, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
-
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        }, tag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            }, tag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
     public static void post(final String url, JSONObject params, final ServiceCallback callback, String httpTag, final Context context) {
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-        BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
-
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        }, httpTag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            }, httpTag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
 
     public static void post(final String url, Map<String,File> params, final ServiceCallback callback, String httpTag, final Context context) {
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-        BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
-
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        }, httpTag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            }, httpTag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
 
     public static void patch(String url, Map<String,Object> params,final ServiceCallback callback, String tag, final Context context) {
-        BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        }, tag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            }, tag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
     public static void put(String url, Map<String,Object> params,final ServiceCallback callback, String httpTag, final Context context) {
-        BaseRequest.put(url, params, new BaseRequest.BaseCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                onFailureDefault(e, callback);
-            }
+        if (NetworkUtil.isConnectivity(context)) {
+            BaseRequest.put(url, params, new BaseRequest.BaseCallback() {
+                @Override
+                public void onFailure(Exception e) {
+                    onFailureDefault(e, callback);
+                }
 
-            @Override
-            public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback, context);
-            }
-        },httpTag);
+                @Override
+                public void onResponse(int code, String bodyStr) {
+                    onResponseDefault(code, bodyStr, callback, context);
+                }
+            },httpTag);
+        } else {
+            onFailureDefault(new QSCustomException("网络异常， 请检查网络"), callback);
+        }
     }
 
 
@@ -144,6 +166,9 @@ public class BaseService {
                     }else if (e instanceof ConnectException) {
                         //判断连接异常
                         callback.onFailure(new QSCustomException("网络连接异常"));
+                    } else if (e instanceof QSCustomException) {
+                        //自定义异常
+                        callback.onFailure((QSCustomException)e);
                     } else {
                         //默认处理
 //                                callback.onFailure(new QSCustomException(e.getMessage()));

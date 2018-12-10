@@ -162,6 +162,9 @@
     <string name="input_phone_num">请输入手机号</string>
     <string name="default_area_code">+86</string>
 
+    <!--网络-->
+    <string name="network_no">网络异常， 请检查网络</string><!--无网络-->
+
     <!--登录-->
     <string name="bind_phone_num_tip">绑定手机号：%s</string>
     <string name="login">登    录</string>

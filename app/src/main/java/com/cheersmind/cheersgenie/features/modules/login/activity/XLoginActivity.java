@@ -219,7 +219,7 @@ public class XLoginActivity extends BaseActivity {
     private void startWxLogin(){
         //检查网络
         if(!NetworkUtil.isConnectivity(XLoginActivity.this)){
-            ToastUtil.showShort(getApplication(),"网络连接异常");
+            ToastUtil.showShort(getApplication(),getResources().getString(R.string.network_no));
             return;
         }
 
@@ -402,7 +402,7 @@ public class XLoginActivity extends BaseActivity {
 
         //检查网络
         if(!NetworkUtil.isConnectivity(XLoginActivity.this)){
-            ToastUtil.showShort(getApplication(),"网络连接异常");
+            ToastUtil.showShort(getApplication(),getResources().getString(R.string.network_no));
             return;
         }
 

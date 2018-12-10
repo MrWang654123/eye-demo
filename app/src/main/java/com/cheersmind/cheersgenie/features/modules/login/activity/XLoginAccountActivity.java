@@ -32,20 +32,16 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
-import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
-import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.AccountBindActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.RegisterPhoneNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
-import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
@@ -71,18 +67,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.cheersmind.cheersgenie.main.constant.Constant.mTencent;
 
@@ -723,7 +711,7 @@ public class XLoginAccountActivity extends BaseActivity {
     private void startWxLogin() {
         //检查网络
         if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
-            ToastUtil.showShort(getApplication(), "网络连接异常");
+            ToastUtil.showShort(getApplication(), getResources().getString(R.string.network_no));
             return;
         }
 
@@ -912,7 +900,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
         //检查网络
         if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
-            ToastUtil.showShort(getApplication(), "网络连接异常");
+            ToastUtil.showShort(getApplication(), getResources().getString(R.string.network_no));
             return;
         }
 
