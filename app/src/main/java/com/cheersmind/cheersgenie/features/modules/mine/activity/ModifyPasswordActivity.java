@@ -277,7 +277,7 @@ public class ModifyPasswordActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
-                    ToastUtil.showLong(getApplicationContext(), "修改成功");
+                    ToastUtil.showLong(getApplication(), "修改成功");
                     finish();
 
                 } catch (Exception e) {
@@ -286,7 +286,7 @@ public class ModifyPasswordActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, ModifyPasswordActivity.this);
     }
 
 
@@ -318,20 +318,20 @@ public class ModifyPasswordActivity extends BaseActivity {
 
         //旧密码长度验证
         if (passwordOld.length() < 6 || passwordOld.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "旧密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "旧密码长度为6-24位");
             return false;
         }
 
         //新密码长度验证
         if (passwordNew.length() < 6 || passwordNew.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "新密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "新密码长度为6-24位");
             return false;
         }
 
 
         //新旧密码不能相同
         if (passwordOld.equals(passwordNew)) {
-            ToastUtil.showShort(getApplicationContext(), "新旧密码不能相同");
+            ToastUtil.showShort(getApplication(), "新旧密码不能相同");
             return false;
         }
 

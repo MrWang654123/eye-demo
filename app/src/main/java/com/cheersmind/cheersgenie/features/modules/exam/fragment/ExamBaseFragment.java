@@ -746,7 +746,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 onRefreshChildTopListSuccess(obj);
 
             }
-        },httpTag);
+        },httpTag, getActivity());
     }
 
 
@@ -900,7 +900,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             public void onResponse(Object obj) {
                 onLoadMoreChildTopicListSuccess(obj);
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 
@@ -1109,7 +1109,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
      */
     protected void operateClickDimension(final DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
         if( dimensionInfoEntity == null ){
-            ToastUtil.showShort(getContext(), "打开测评失败，请稍后再试");
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), "打开测评失败，请稍后再试");
+            }
             return;
         }
 
@@ -1150,7 +1152,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             new DimensionReportDialog(getContext(), dimensionInfo, null).show();
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getContext(), e.getMessage());
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), e.getMessage());
+            }
         }
     }
 
@@ -1177,7 +1181,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 }
                 if(!TextUtils.isEmpty(stringBuffer.toString())){
                     String str = getActivity().getResources().getString(R.string.lock_tip,stringBuffer.toString());
-                    ToastUtil.showLong(getActivity(),str);
+                    if (getActivity() != null) {
+                        ToastUtil.showLong(getActivity().getApplication(), str);
+                    }
                 }
             }
         }

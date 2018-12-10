@@ -186,7 +186,7 @@ public class UserInfoInitActivity extends BaseActivity {
         //班级号
         classNum = getIntent().getStringExtra(CLASS_NUM);
         if (TextUtils.isEmpty(classNum))  {
-            ToastUtil.showShort(getApplicationContext(), "班级号不能为空");
+            ToastUtil.showShort(getApplication(), "班级号不能为空");
             return;
         }
 
@@ -372,7 +372,7 @@ public class UserInfoInitActivity extends BaseActivity {
                     }
                 });
             }
-        }, httpTag);
+        }, httpTag, UserInfoInitActivity.this);
     }
 
 
@@ -388,24 +388,24 @@ public class UserInfoInitActivity extends BaseActivity {
 
         //用户名非空
         if (TextUtils.isEmpty(username)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入姓名");
+            ToastUtil.showShort(getApplication(), "请输入姓名");
             return false;
         }
 
         //昵称非空
         if (TextUtils.isEmpty(nickName)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入昵称");
+            ToastUtil.showShort(getApplication(), "请输入昵称");
             return false;
         }
         //昵称格式验证
         if (!DataCheckUtil.isNickname(nickName)) {
-            ToastUtil.showShort(getApplicationContext(), getResources().getString(R.string.nickname_format_error));
+            ToastUtil.showShort(getApplication(), getResources().getString(R.string.nickname_format_error));
             return false;
         }
 
         //生日非空
         if (TextUtils.isEmpty(birthday)) {
-            ToastUtil.showShort(getApplicationContext(), "请选择出生日期");
+            ToastUtil.showShort(getApplication(), "请选择出生日期");
             return false;
         }
 

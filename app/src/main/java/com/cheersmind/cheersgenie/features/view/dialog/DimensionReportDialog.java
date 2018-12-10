@@ -121,9 +121,6 @@ public class DimensionReportDialog extends Dialog {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
-    //上下文
-    private Context context;
-
     //量表对象
     private DimensionInfoEntity dimension;
 
@@ -136,89 +133,87 @@ public class DimensionReportDialog extends Dialog {
     private String tag = System.currentTimeMillis() + "";
 
 
-    private String testReportStr = "{\n" +
-            "\t\"chart_datas\": [{\n" +
-            "\t\t\"topic\": false,\n" +
-            "\t\t\"report_result\": null,\n" +
-            "\t\t\"score_type\": 1,\n" +
-            "\t\t\"items\": [{\n" +
-            "\t\t\t\"child_score\": 38.11,\n" +
-            "\t\t\t\"item_name\": \"组织材料\",\n" +
-            "\t\t\t\"item_id\": \"6952bdb0-aa21-c3c8-7bfe-3848412c9120\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 38.84,\n" +
-            "\t\t\t\"item_name\": \"重复学习\",\n" +
-            "\t\t\t\"item_id\": \"88b322b0-831b-238a-3080-2fde1020061d\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 39.61,\n" +
-            "\t\t\t\"item_name\": \"精细化\",\n" +
-            "\t\t\t\"item_id\": \"a462ad75-e3e4-81aa-bc76-c48d599c9e2e\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 40.47,\n" +
-            "\t\t\t\"item_name\": \"批判性思维\",\n" +
-            "\t\t\t\"item_id\": \"aef73be2-3c7c-cd29-19f2-b7ddb611d94d\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 42.18,\n" +
-            "\t\t\t\"item_name\": \"自我调节\",\n" +
-            "\t\t\t\"item_id\": \"c75a1ada-ee38-516c-d223-432c937d3aac\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}],\n" +
-            "\t\t\"min_score\": 0,\n" +
-            "\t\t\"chart_item_id\": \"cef7f249-5c27-4813-9e53-10896c562777\",\n" +
-            "\t\t\"chart_show_item_name\": false,\n" +
-            "\t\t\"chart_type\": 1,\n" +
-            "\t\t\"max_score\": 100,\n" +
-            "\t\t\"chart_description\": \"测量学生在各门课程学习中采取各类学习策略的程度。\\r\\n\",\n" +
-            "\t\t\"chart_item_name\": \"我的学习策略\"\n" +
-            "\t}, {\n" +
-            "\t\t\"topic\": false,\n" +
-            "\t\t\"report_result\": null,\n" +
-            "\t\t\"score_type\": 1,\n" +
-            "\t\t\"items\": [{\n" +
-            "\t\t\t\"child_score\": 58.71,\n" +
-            "\t\t\t\"item_name\": \"努力指向调节\",\n" +
-            "\t\t\t\"item_id\": \"33ea9258-440a-7a9f-723f-1bb50cf0d965\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 47,\n" +
-            "\t\t\t\"item_name\": \"同伴学习\",\n" +
-            "\t\t\t\"item_id\": \"38b7da76-8495-ec8b-51d8-167e54718036\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 47.23,\n" +
-            "\t\t\t\"item_name\": \"寻求帮助\",\n" +
-            "\t\t\t\"item_id\": \"a5fcaaa4-57b0-19a7-1cf9-b8aaf2e80ed8\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"child_score\": 39.25,\n" +
-            "\t\t\t\"item_name\": \"时间\\/学习环境管理\",\n" +
-            "\t\t\t\"item_id\": \"ff4f9c3c-5196-ef8c-3d40-efbfe975a71d\",\n" +
-            "\t\t\t\"compare_score\": 50\n" +
-            "\t\t}],\n" +
-            "\t\t\"min_score\": 0,\n" +
-            "\t\t\"chart_item_id\": \"cef7f249-5c27-4813-9e53-10896c562777\",\n" +
-            "\t\t\"chart_show_item_name\": false,\n" +
-            "\t\t\"chart_type\": 4,\n" +
-            "\t\t\"max_score\": 100,\n" +
-            "\t\t\"chart_description\": \"测量学生在各门课程学习中采取各类学习策略的程度。\\r\\n\",\n" +
-            "\t\t\"chart_item_name\": \"我的学习策略\"\n" +
-            "\t}],\n" +
-            "\t\"report_results\": [],\n" +
-            "\t\"compare_name\": \"全国\"\n" +
-            "}";
+//    private String testReportStr = "{\n" +
+//            "\t\"chart_datas\": [{\n" +
+//            "\t\t\"topic\": false,\n" +
+//            "\t\t\"report_result\": null,\n" +
+//            "\t\t\"score_type\": 1,\n" +
+//            "\t\t\"items\": [{\n" +
+//            "\t\t\t\"child_score\": 38.11,\n" +
+//            "\t\t\t\"item_name\": \"组织材料\",\n" +
+//            "\t\t\t\"item_id\": \"6952bdb0-aa21-c3c8-7bfe-3848412c9120\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 38.84,\n" +
+//            "\t\t\t\"item_name\": \"重复学习\",\n" +
+//            "\t\t\t\"item_id\": \"88b322b0-831b-238a-3080-2fde1020061d\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 39.61,\n" +
+//            "\t\t\t\"item_name\": \"精细化\",\n" +
+//            "\t\t\t\"item_id\": \"a462ad75-e3e4-81aa-bc76-c48d599c9e2e\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 40.47,\n" +
+//            "\t\t\t\"item_name\": \"批判性思维\",\n" +
+//            "\t\t\t\"item_id\": \"aef73be2-3c7c-cd29-19f2-b7ddb611d94d\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 42.18,\n" +
+//            "\t\t\t\"item_name\": \"自我调节\",\n" +
+//            "\t\t\t\"item_id\": \"c75a1ada-ee38-516c-d223-432c937d3aac\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}],\n" +
+//            "\t\t\"min_score\": 0,\n" +
+//            "\t\t\"chart_item_id\": \"cef7f249-5c27-4813-9e53-10896c562777\",\n" +
+//            "\t\t\"chart_show_item_name\": false,\n" +
+//            "\t\t\"chart_type\": 1,\n" +
+//            "\t\t\"max_score\": 100,\n" +
+//            "\t\t\"chart_description\": \"测量学生在各门课程学习中采取各类学习策略的程度。\\r\\n\",\n" +
+//            "\t\t\"chart_item_name\": \"我的学习策略\"\n" +
+//            "\t}, {\n" +
+//            "\t\t\"topic\": false,\n" +
+//            "\t\t\"report_result\": null,\n" +
+//            "\t\t\"score_type\": 1,\n" +
+//            "\t\t\"items\": [{\n" +
+//            "\t\t\t\"child_score\": 58.71,\n" +
+//            "\t\t\t\"item_name\": \"努力指向调节\",\n" +
+//            "\t\t\t\"item_id\": \"33ea9258-440a-7a9f-723f-1bb50cf0d965\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 47,\n" +
+//            "\t\t\t\"item_name\": \"同伴学习\",\n" +
+//            "\t\t\t\"item_id\": \"38b7da76-8495-ec8b-51d8-167e54718036\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 47.23,\n" +
+//            "\t\t\t\"item_name\": \"寻求帮助\",\n" +
+//            "\t\t\t\"item_id\": \"a5fcaaa4-57b0-19a7-1cf9-b8aaf2e80ed8\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"child_score\": 39.25,\n" +
+//            "\t\t\t\"item_name\": \"时间\\/学习环境管理\",\n" +
+//            "\t\t\t\"item_id\": \"ff4f9c3c-5196-ef8c-3d40-efbfe975a71d\",\n" +
+//            "\t\t\t\"compare_score\": 50\n" +
+//            "\t\t}],\n" +
+//            "\t\t\"min_score\": 0,\n" +
+//            "\t\t\"chart_item_id\": \"cef7f249-5c27-4813-9e53-10896c562777\",\n" +
+//            "\t\t\"chart_show_item_name\": false,\n" +
+//            "\t\t\"chart_type\": 4,\n" +
+//            "\t\t\"max_score\": 100,\n" +
+//            "\t\t\"chart_description\": \"测量学生在各门课程学习中采取各类学习策略的程度。\\r\\n\",\n" +
+//            "\t\t\"chart_item_name\": \"我的学习策略\"\n" +
+//            "\t}],\n" +
+//            "\t\"report_results\": [],\n" +
+//            "\t\"compare_name\": \"全国\"\n" +
+//            "}";
 
     public DimensionReportDialog(@NonNull Context context) {
         super(context, R.style.loading_dialog);
-        this.context = context;
     }
 
     public DimensionReportDialog(@NonNull Context context, DimensionInfoEntity dimension, OnOperationListener listener) throws Exception {
         super(context, R.style.loading_dialog);
-        this.context = context;
         this.dimension = dimension;
 
         //量表非空
@@ -269,7 +264,7 @@ public class DimensionReportDialog extends Dialog {
 
         if (dimension == null) {
             //测试用
-            testInitView();
+//            testInitView();
         } else {
             //加载报告
             loadReport(compareType);
@@ -379,7 +374,7 @@ public class DimensionReportDialog extends Dialog {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                }, tag);
+                }, tag, getContext());
     }
 
     /**
@@ -770,45 +765,45 @@ public class DimensionReportDialog extends Dialog {
     /**
      * 测试用
      */
-    private void testInitView() {
-        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-        try {
-            Map dataMap = JsonUtil.fromJson(testReportStr, Map.class);
-            ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ReportRootEntity.class);
-            if (data != null && data.getChartDatas() != null) {
-
-                if (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0) {
-//                                    ToastUtil.showShort(context,"感谢您的信息搜集");
-                    tvNone.setVisibility(View.VISIBLE);
-                    return;
-                }
-
-                //报告结果
-                List<ReportResultEntity> reportResultEntities = data.getReportResults();
-                //报告图表数据
-                List<ReportItemEntity> dimensionReports = data.getChartDatas();
-                //把报告结果置于报告图表对象中
-                if (ArrayListUtil.isNotEmpty(dimensionReports)) {
-                    for (int i = 0; i < dimensionReports.size(); i++) {
-                        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
-                            //图表对象中的报告结果为空，且报告结果集合中对应索引的对象不为空，则赋值
-                            if (dimensionReports.get(i).getReportResult() == null
-                                    && reportResultEntities.get(i) != null) {
-                                dimensionReports.get(i).setReportResult(reportResultEntities.get(i));
-                            }
-                        }
-                    }
-                }
-
-                //刷新报告视图
-                refreshReportView(dimensionReports);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            //加载失败
-            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-        }
-    }
+//    private void testInitView() {
+//        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//
+//        try {
+//            Map dataMap = JsonUtil.fromJson(testReportStr, Map.class);
+//            ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ReportRootEntity.class);
+//            if (data != null && data.getChartDatas() != null) {
+//
+//                if (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0) {
+////                                    ToastUtil.showShort(context,"感谢您的信息搜集");
+//                    tvNone.setVisibility(View.VISIBLE);
+//                    return;
+//                }
+//
+//                //报告结果
+//                List<ReportResultEntity> reportResultEntities = data.getReportResults();
+//                //报告图表数据
+//                List<ReportItemEntity> dimensionReports = data.getChartDatas();
+//                //把报告结果置于报告图表对象中
+//                if (ArrayListUtil.isNotEmpty(dimensionReports)) {
+//                    for (int i = 0; i < dimensionReports.size(); i++) {
+//                        if (ArrayListUtil.isNotEmpty(reportResultEntities)) {
+//                            //图表对象中的报告结果为空，且报告结果集合中对应索引的对象不为空，则赋值
+//                            if (dimensionReports.get(i).getReportResult() == null
+//                                    && reportResultEntities.get(i) != null) {
+//                                dimensionReports.get(i).setReportResult(reportResultEntities.get(i));
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                //刷新报告视图
+//                refreshReportView(dimensionReports);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            //加载失败
+//            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+//        }
+//    }
 
 }

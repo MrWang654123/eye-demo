@@ -304,6 +304,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".features.modules.test.activity.EditTextPasteActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.base.activity.CleanLeakActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

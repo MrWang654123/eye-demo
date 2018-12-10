@@ -109,15 +109,13 @@ public class LastReportFragment extends LazyLoadFragment {
 
     //比较范围：默认全国
     private int compareType = Dictionary.REPORT_COMPARE_AREA_COUNTRY;
-    //通信tag
-    private String tag = System.currentTimeMillis() + "";
 
     //比较范围切换监听
     private RadioGroup.OnCheckedChangeListener  compareChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             //取消当前对话框的所有通信
-            BaseService.cancelTag(tag);
+            BaseService.cancelTag(httpTag);
 
             switch (checkedId) {
                 //比较范围国家
@@ -179,7 +177,9 @@ public class LastReportFragment extends LazyLoadFragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getContext(), "数据传递有误");
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), "数据传递有误");
+            }
             if (getActivity() != null) {
                 getActivity().finish();
             }
@@ -248,7 +248,7 @@ public class LastReportFragment extends LazyLoadFragment {
         unbinder.unbind();
 
         //取消当前对话框的所有通信
-        BaseService.cancelTag(tag);
+        BaseService.cancelTag(httpTag);
     }
 
 
@@ -326,7 +326,7 @@ public class LastReportFragment extends LazyLoadFragment {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                }, tag);
+                }, httpTag, getActivity());
     }
 
 
@@ -610,7 +610,9 @@ public class LastReportFragment extends LazyLoadFragment {
 
                                             ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
                                         } else {
-                                            ToastUtil.showShort(getContext(), "暂无详情");
+                                            if (getActivity() != null) {
+                                                ToastUtil.showShort(getActivity().getApplication(), "暂无详情");
+                                            }
                                         }
                                     }
                                 });
@@ -624,7 +626,9 @@ public class LastReportFragment extends LazyLoadFragment {
                                         if (!TextUtils.isEmpty(articleId)) {
                                             doFavorite(articleId, (ImageView) view);
                                         } else {
-                                            ToastUtil.showShort(getContext(), getResources().getString(R.string.operate_fail));
+                                            if (getActivity() != null) {
+                                                ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.operate_fail));
+                                            }
                                         }
                                     }
                                 });
@@ -638,7 +642,7 @@ public class LastReportFragment extends LazyLoadFragment {
                             footerReportView.setVisibility(View.GONE);
                         }
                     }
-                }, tag);
+                }, httpTag, getActivity());
     }
 
 
@@ -833,7 +837,7 @@ public class LastReportFragment extends LazyLoadFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 }

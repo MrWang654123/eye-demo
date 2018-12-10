@@ -1,7 +1,13 @@
 package com.cheersmind.cheersgenie.features.modules.mine.activity;
 
+import android.content.Context;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+
+import java.lang.reflect.Field;
 
 /**
  * 用户信息页面
@@ -27,5 +33,6 @@ public class UserInfoActivity extends BaseActivity {
     protected void onInitData() {
 
     }
+
 
 }

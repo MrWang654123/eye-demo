@@ -151,6 +151,58 @@ public class XLoginAccountActivity extends BaseActivity {
     private boolean hasBindSuccess;
 
 
+    TextWatcher textWatcherEtUserName = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                if (ivClear.getVisibility() == View.INVISIBLE) {
+                    ivClear.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (ivClear.getVisibility() == View.VISIBLE) {
+                    ivClear.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    };
+
+
+    TextWatcher textWatcherEtPwd = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length() > 0) {
+                if (ivClearPw.getVisibility() == View.INVISIBLE) {
+                    ivClearPw.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (ivClearPw.getVisibility() == View.VISIBLE) {
+                    ivClearPw.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    };
+
+
     /**
      * 打开账号登录页面（无第三方登录信息就是正常登录操作，有则是绑定账号操作）
      * @param context
@@ -181,55 +233,9 @@ public class XLoginAccountActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //用户名的文本输入监听
-        etUsername.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        etUsername.addTextChangedListener(textWatcherEtUserName);
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    if (ivClear.getVisibility() == View.INVISIBLE) {
-                        ivClear.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (ivClear.getVisibility() == View.VISIBLE) {
-                        ivClear.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
-
-        etPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    if (ivClearPw.getVisibility() == View.INVISIBLE) {
-                        ivClearPw.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (ivClearPw.getVisibility() == View.VISIBLE) {
-                        ivClearPw.setVisibility(View.INVISIBLE);
-                    }
-                }
-            }
-        });
+        etPassword.addTextChangedListener(textWatcherEtPwd);
 
         //密码显隐
         cboxPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -295,7 +301,7 @@ public class XLoginAccountActivity extends BaseActivity {
 
             if (thirdLoginDto != null) {
                 if (TextUtils.isEmpty(phoneNum)) {
-                    ToastUtil.showShort(getApplicationContext(), "绑定操作，手机号不能为空");
+                    ToastUtil.showShort(getApplication(), "绑定操作，手机号不能为空");
                     finish();
                     return;
                 }
@@ -341,6 +347,12 @@ public class XLoginAccountActivity extends BaseActivity {
         super.onDestroy();
         //注销事件
         EventBus.getDefault().unregister(this);
+        //移除监听器
+        etUsername.removeTextChangedListener(textWatcherEtUserName);
+        etPassword.removeTextChangedListener(textWatcherEtPwd);
+//        cboxPassword.setOnCheckedChangeListener
+        cboxPassword.setOnCheckedChangeListener(null);
+        etPassword.setOnEditorActionListener(null);
     }
 
 
@@ -438,7 +450,7 @@ public class XLoginAccountActivity extends BaseActivity {
         accountLoginDto.setDeviceType("android");//设备类型
 //        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
         accountLoginDto.setDeviceDesc("android phone");//设备描述（华为 XXXX）
-        accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplication()));//设备ID
         doAccountLogin(accountLoginDto);
     }
 
@@ -450,14 +462,14 @@ public class XLoginAccountActivity extends BaseActivity {
         //用户名
         String userName = etUsername.getText().toString();
         if (TextUtils.isEmpty(userName)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入用户名");
+            ToastUtil.showShort(getApplication(), "请输入用户名");
             return false;
         }
 
         //密码
         String password = etPassword.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入密码");
+            ToastUtil.showShort(getApplication(), "请输入密码");
             return false;
         }
 
@@ -496,7 +508,7 @@ public class XLoginAccountActivity extends BaseActivity {
                         //账号不存在、密码不正确
                         if (ErrorCode.AC_ACCOUNT_NOT_EXIST.equals(errorCode)
                                 || ErrorCode.AC_WRONG_PASSWORD.equals(errorCode)) {
-                            ToastUtil.showShort(getApplicationContext(), "用户名或密码错误");
+                            ToastUtil.showShort(getApplication(), "用户名或密码错误");
                             //重新获取会话，处理是否需要图形验证码
 //                            sessionCreateResult = null;
 //                            doPostAccountSessionForImageCaptcha(false);
@@ -638,7 +650,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, XLoginAccountActivity.this);
     }
 
 
@@ -659,7 +671,7 @@ public class XLoginAccountActivity extends BaseActivity {
             public void onResponse(Object obj) {
                 //关闭通信等待
 //                LoadingView.getInstance().dismiss();
-                ToastUtil.showShort(getApplicationContext(), "绑定成功");
+                ToastUtil.showShort(getApplication(), "绑定成功");
                 //标记已经绑定成功
                 hasBindSuccess = true;
                 //按钮显示为登录
@@ -668,7 +680,7 @@ public class XLoginAccountActivity extends BaseActivity {
                 //获取孩子信息
                 doGetChildListWrap();
             }
-        }, httpTag);
+        }, httpTag, XLoginAccountActivity.this);
     }
 
 
@@ -701,7 +713,7 @@ public class XLoginAccountActivity extends BaseActivity {
         if (Constant.wx_api.isWXAppInstalled()) {
             startWxLogin();
         } else {
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
         }
     }
 
@@ -711,13 +723,13 @@ public class XLoginAccountActivity extends BaseActivity {
     private void startWxLogin() {
         //检查网络
         if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
-            ToastUtil.showShort(XLoginAccountActivity.this, "网络连接异常");
+            ToastUtil.showShort(getApplication(), "网络连接异常");
             return;
         }
 
         //微信必须已经安装
         if (!Constant.wx_api.isWXAppInstalled()) {
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
             return;
         }
         //开启通信等待提示
@@ -745,7 +757,7 @@ public class XLoginAccountActivity extends BaseActivity {
                 public void run() {
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
-                    ToastUtil.showShort(XLoginAccountActivity.this, "微信授权失败！");
+                    ToastUtil.showShort(getApplication(), "微信授权失败！");
                 }
             });
             return;
@@ -770,7 +782,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();
-                        ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                        ToastUtil.showShort(getApplication(), "微信授权失败..");
                     }
                 });
             }
@@ -791,7 +803,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        }, httpTag);
+        }, httpTag, XLoginAccountActivity.this);
     }
 
     /**
@@ -810,7 +822,7 @@ public class XLoginAccountActivity extends BaseActivity {
             thirdLoginDto.setTenant(Dictionary.Tenant_CheersMind);//租户名
             thirdLoginDto.setDeviceType("android");//设备类型
             thirdLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
-            thirdLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+            thirdLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplication()));//设备ID
             //请求第三方登录
             doThirdLogin(thirdLoginDto);
         }
@@ -886,7 +898,7 @@ public class XLoginAccountActivity extends BaseActivity {
                     onFailure(new QSCustomException(errorStr));
                 }
             }
-        }, httpTag);
+        }, httpTag, XLoginAccountActivity.this);
     }
 
 
@@ -895,12 +907,12 @@ public class XLoginAccountActivity extends BaseActivity {
      */
     private void doQQLogin() {
         if (mTencent == null) {
-            mTencent = Tencent.createInstance(Constant.QQ_APP_ID, getApplicationContext());
+            mTencent = Tencent.createInstance(Constant.QQ_APP_ID, getApplication());
         }
 
         //检查网络
         if (!NetworkUtil.isConnectivity(XLoginAccountActivity.this)) {
-            ToastUtil.showShort(XLoginAccountActivity.this, "网络连接异常");
+            ToastUtil.showShort(getApplication(), "网络连接异常");
             return;
         }
 
@@ -1000,16 +1012,16 @@ public class XLoginAccountActivity extends BaseActivity {
 //            LoadingView.getInstance().dismiss();
 
             if (null == response) {
-                ToastUtil.showShort(getApplicationContext(), "登录失败");
+                ToastUtil.showShort(getApplication(), "登录失败");
                 return;
             }
             JSONObject jsonResponse = (JSONObject) response;
             if (null != jsonResponse && jsonResponse.length() == 0) {
-                ToastUtil.showShort(getApplicationContext(), "未返回数据，登录失败");
+                ToastUtil.showShort(getApplication(), "未返回数据，登录失败");
                 return;
             }
 
-//            ToastUtil.showShort(getApplicationContext(), "登录成功");
+//            ToastUtil.showShort(getApplication(), "登录成功");
             doComplete(jsonResponse);
         }
 
@@ -1021,14 +1033,14 @@ public class XLoginAccountActivity extends BaseActivity {
         public void onError(UiError e) {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-            ToastUtil.showShort(getApplicationContext(), "QQ登录失败");
+            ToastUtil.showShort(getApplication(), "QQ登录失败");
         }
 
         @Override
         public void onCancel() {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-//            ToastUtil.showShort(getApplicationContext(), "取消登录");
+//            ToastUtil.showShort(getApplication(), "取消登录");
         }
     }
 
@@ -1160,7 +1172,7 @@ public class XLoginAccountActivity extends BaseActivity {
             } else {
                 //聚焦图形验证码
                 etImageCaptcha.requestFocus();
-                ToastUtil.showShort(getApplicationContext(), "请输入图形验证码");
+                ToastUtil.showShort(getApplication(), "请输入图形验证码");
             }
         }
     }
@@ -1170,7 +1182,7 @@ public class XLoginAccountActivity extends BaseActivity {
      * 需要图形验证码，才能登录的提示处理
      */
     private void requiredImageCaptchaForSendError() {
-        ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新登录");
+        ToastUtil.showShort(getApplication(),"请输入图形验证码后，重新登录");
 
         //清空图形验证码，并聚焦图形验证码
         etImageCaptcha.setText("");

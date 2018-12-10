@@ -70,7 +70,7 @@ public class VideoActivity extends BaseActivity {
         JZVideoPlayer.NORMAL_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(VideoActivity.this, "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 

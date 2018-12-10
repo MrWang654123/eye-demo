@@ -182,7 +182,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <com.cheersmind.cheersgenie.features.view.DisplayFinishWebView
+                        <WebView
                             android:id="@+id/web_article_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                             android:layout_marginLeft="6dp"
                             android:layout_marginRight="6dp"
                             android:scrollbars="none">
-                        </com.cheersmind.cheersgenie.features.view.DisplayFinishWebView>
+                        </WebView>
 
                         <!--加载提示布局-->
                         <LinearLayout

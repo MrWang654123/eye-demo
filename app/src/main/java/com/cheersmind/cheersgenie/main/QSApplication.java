@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.main;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -26,6 +27,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZMediaIjkplayer;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherizer;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
@@ -46,8 +48,11 @@ import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.litepal.LitePalApplication;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+import cn.jzvd.JZMediaSystem;
 import cn.jzvd.JZVideoPlayer;
 import okhttp3.OkHttpClient;
 
@@ -75,7 +80,7 @@ public class QSApplication extends LitePalApplication {
     public static boolean sNetWorkIsWifi = false;
 
     //当前顶层activity（可能会内存泄漏）
-    private static Activity topActivity;
+//    private static Activity topActivity;
 
     //屏幕宽高信息
     private static DisplayMetrics metrics;
@@ -144,8 +149,8 @@ public class QSApplication extends LitePalApplication {
             .diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
 
 
-        //初始化全局的Activity
-        initGlobeActivity();
+        //初始化全局的Activity（可能会内存泄漏）
+//        initGlobeActivity();
 
         //屏幕信息
         metrics = context.getResources().getDisplayMetrics();
@@ -168,7 +173,7 @@ public class QSApplication extends LitePalApplication {
         //IjkPlayer
 //        JZVideoPlayer.setMediaInterface(new JZMediaIjkplayer());
         //ExoPlayer
-        JZVideoPlayer.setMediaInterface(new JZExoPlayer());
+//        JZVideoPlayer.setMediaInterface(new JZExoPlayer());
         //MediaSystem（默认）
 //        JZVideoPlayer.setMediaInterface(new JZMediaSystem());
 
@@ -177,6 +182,9 @@ public class QSApplication extends LitePalApplication {
 
         //创建百度音频管理
         synthesizerManager = new SynthesizerManager(context);
+
+        //初始化三星手机ClipboardUIManager
+        samSungClipboardUIManagerInit();
     }
 
     /**
@@ -334,65 +342,65 @@ public class QSApplication extends LitePalApplication {
     /**
      * 监听Activity生命周期
      */
-    private void initGlobeActivity() {
-        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                topActivity = activity;
-                LogUtils.w("onActivityCreated===", topActivity + "");
-            }
-
-            @Override
-            public void onActivityDestroyed(Activity activity) {
-//                preActivity = activity;
-                LogUtils.w("onActivityDestroyed===", topActivity + "");
-
-                //登录页面和主页面的退出时清空topActivity
-                if (activity != null && topActivity != null) {
-                    if ((activity instanceof MasterTabActivity && topActivity instanceof MasterTabActivity)
-                            || (activity instanceof XLoginActivity && topActivity instanceof XLoginActivity)) {
-                        topActivity = null;
-                    }
-                }
-            }
-
-            /** Unused implementation **/
-            @Override
-            public void onActivityStarted(Activity activity) {
+//    private void initGlobeActivity() {
+//        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+//            @Override
+//            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 //                topActivity = activity;
-                LogUtils.w("onActivityStarted===", topActivity + "");
-            }
-
-            @Override
-            public void onActivityResumed(Activity activity) {
-//                topActivity = activity;
-                LogUtils.w("onActivityResumed===", topActivity + "");
-            }
-
-            @Override
-            public void onActivityPaused(Activity activity) {
-//                topActivity = activity;
-                LogUtils.w("onActivityPaused===", topActivity + "");
-            }
-
-            @Override
-            public void onActivityStopped(Activity activity) {
-//                topActivity = activity;
-                LogUtils.w("onActivityStopped===", topActivity + "");
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-            }
-        });
-    }
-
-    /**
-     * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到当前最上层的activity
-     */
-    public static Activity getCurrentActivity() {
-        return topActivity;
-    }
+//                LogUtils.w("onActivityCreated===", topActivity + "");
+//            }
+//
+//            @Override
+//            public void onActivityDestroyed(Activity activity) {
+////                preActivity = activity;
+//                LogUtils.w("onActivityDestroyed===", topActivity + "");
+//
+//                //登录页面和主页面的退出时清空topActivity
+//                if (activity != null && topActivity != null) {
+//                    if ((activity instanceof MasterTabActivity && topActivity instanceof MasterTabActivity)
+//                            || (activity instanceof XLoginActivity && topActivity instanceof XLoginActivity)) {
+//                        topActivity = null;
+//                    }
+//                }
+//            }
+//
+//            /** Unused implementation **/
+//            @Override
+//            public void onActivityStarted(Activity activity) {
+////                topActivity = activity;
+//                LogUtils.w("onActivityStarted===", topActivity + "");
+//            }
+//
+//            @Override
+//            public void onActivityResumed(Activity activity) {
+////                topActivity = activity;
+//                LogUtils.w("onActivityResumed===", topActivity + "");
+//            }
+//
+//            @Override
+//            public void onActivityPaused(Activity activity) {
+////                topActivity = activity;
+//                LogUtils.w("onActivityPaused===", topActivity + "");
+//            }
+//
+//            @Override
+//            public void onActivityStopped(Activity activity) {
+////                topActivity = activity;
+//                LogUtils.w("onActivityStopped===", topActivity + "");
+//            }
+//
+//            @Override
+//            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 公开方法，外部可通过 MyApplication.getInstance().getCurrentActivity() 获取到当前最上层的activity
+//     */
+//    public static Activity getCurrentActivity() {
+//        return topActivity;
+//    }
 
 
     /**
@@ -417,6 +425,46 @@ public class QSApplication extends LitePalApplication {
      */
     public SynthesizerManager getSynthesizerManager() {
         return synthesizerManager;
+    }
+
+    /**
+     * 初始化三星手机ClipboardUIManager，避免内存泄漏
+     */
+    private void samSungClipboardUIManagerInit() {
+        try {
+            Class cls = Class.forName("android.sec.clipboard.ClipboardUIManager");
+            Method m = cls.getDeclaredMethod("getInstance", Context.class);
+            m.setAccessible(true);
+            m.invoke(null, this);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+//            ClipboardManager;
+            Class cls = Class.forName("com.samsung.android.content.clipboard.SemClipboardManager");
+            Method m = cls.getDeclaredMethod("getInstance", Context.class);
+            m.setAccessible(true);
+            m.invoke(null, this);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

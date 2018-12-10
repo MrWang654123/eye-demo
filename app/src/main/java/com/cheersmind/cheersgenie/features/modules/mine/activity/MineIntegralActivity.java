@@ -198,7 +198,7 @@ public class MineIntegralActivity extends BaseActivity {
                     refreshIntegralTotalScoreView(new TotalIntegralEntity());
                 }
             }
-        }, httpTag);
+        }, httpTag, MineIntegralActivity.this);
     }
 
     /**
@@ -285,7 +285,7 @@ public class MineIntegralActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, MineIntegralActivity.this);
     }
 
     /**
@@ -375,7 +375,7 @@ public class MineIntegralActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, MineIntegralActivity.this);
     }
 
 }

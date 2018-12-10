@@ -22,7 +22,7 @@ public class LoadingView {
     private AlertDialog dlg;
 
     //通信等待视图
-    MaterialProgressView materialProgressView;
+//    MaterialProgressView materialProgressView;
 
     private LoadingView() {
     }
@@ -73,8 +73,8 @@ public class LoadingView {
 //                }
 //            }, 50) ;
 
-            materialProgressView = window.findViewById(R.id.progress_view);
-            materialProgressView.setVisibility(View.VISIBLE);
+//            materialProgressView = window.findViewById(R.id.progress_view);
+//            materialProgressView.setVisibility(View.VISIBLE);
 
             //监听回退
             dlg.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -103,9 +103,10 @@ public class LoadingView {
                 dlg = null;
             }
 
-            if (materialProgressView != null) {
-                materialProgressView.setVisibility(View.GONE);
-            }
+//            if (materialProgressView != null) {
+//                materialProgressView.setVisibility(View.GONE);
+//                materialProgressView = null;
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

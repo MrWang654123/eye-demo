@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
@@ -47,7 +50,7 @@ public class ModifyNicknameDialog extends Dialog {
 
     //昵称
     @BindView(R.id.et_nickname)
-    EditText etNickname;
+    AppCompatEditText etNickname;
     //昵称的清空按钮
     @BindView(R.id.iv_clear_nickname)
     ImageView ivClearNickname;
@@ -55,16 +58,16 @@ public class ModifyNicknameDialog extends Dialog {
     @BindView(R.id.tv_confirm)
     TextView tvConfirm;
 
-    private Context context;
     private OnOperationListener callback;
 
     //旧的昵称
     private String oldNickname;
 
+    private Toast mToast;
+
     public ModifyNicknameDialog(@NonNull Context context,String oldNickname, OnOperationListener callback) {
         super(context, R.style.dialog_bottom_full);
 //        super(context);
-        this.context = context;
         this.callback = callback;
         this.oldNickname = oldNickname;
     }
@@ -86,43 +89,47 @@ public class ModifyNicknameDialog extends Dialog {
 
         initView();
 
+//        BaseActivity.fixFocusedViewLeak(((FragmentActivity)getContext()).getApplication());
     }
+
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            //清除按钮显隐
+            if (s.length() > 0) {
+                if (ivClearNickname.getVisibility() == View.INVISIBLE) {
+                    ivClearNickname.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (ivClearNickname.getVisibility() == View.VISIBLE) {
+                    ivClearNickname.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            //控制确定按钮的激活、失效
+            String curNickname = s.toString();
+            if (TextUtils.isEmpty(curNickname) || curNickname.equals(oldNickname)) {
+                tvConfirm.setEnabled(false);
+            } else {
+                tvConfirm.setEnabled(true);
+            }
+        }
+    };
 
     private void initView() {
         //昵称的文本输入监听
-        etNickname.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //清除按钮显隐
-                if (s.length() > 0) {
-                    if (ivClearNickname.getVisibility() == View.INVISIBLE) {
-                        ivClearNickname.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    if (ivClearNickname.getVisibility() == View.VISIBLE) {
-                        ivClearNickname.setVisibility(View.INVISIBLE);
-                    }
-                }
-
-                //控制确定按钮的激活、失效
-                String curNickname = s.toString();
-                if (TextUtils.isEmpty(curNickname) || curNickname.equals(oldNickname)) {
-                    tvConfirm.setEnabled(false);
-                } else {
-                    tvConfirm.setEnabled(true);
-                }
-            }
-        });
+        etNickname.addTextChangedListener(textWatcher);
 
         //初始化旧的昵称
         etNickname.setText(oldNickname);
@@ -136,8 +143,23 @@ public class ModifyNicknameDialog extends Dialog {
     public void dismiss() {
         super.dismiss();
 
+        if (mToast != null) {
+            try {
+                mToast.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mToast = null;
+        }
         //取消当前对话框的所有通信
         BaseService.cancelTag(HTTP_TAG);
+
+        //昵称的文本输入监听
+//        etNickname.addTextChangedListener(textWatcher);
+        etNickname.removeTextChangedListener(textWatcher);
+        textWatcher = null;
+
+        BaseActivity.fixInputMethodManagerLeak(getContext());
     }
 
 
@@ -152,7 +174,7 @@ public class ModifyNicknameDialog extends Dialog {
             //确定
             case R.id.tv_confirm: {
                 //修改昵称
-                doModifyNicknameWrap(context);
+                doModifyNicknameWrap(getContext());
                 break;
             }
             //昵称的清空按钮
@@ -181,12 +203,22 @@ public class ModifyNicknameDialog extends Dialog {
 
         //昵称非空
         if (TextUtils.isEmpty(nickName)) {
-            ToastUtil.showShort(getContext(), "请输入昵称");
+            if (mToast == null) {
+                mToast = Toast.makeText(getContext(), "请输入昵称", Toast.LENGTH_SHORT);
+            } else {
+                mToast.setText("请输入昵称");
+            }
+            mToast.show();
             return false;
         }
         //昵称格式验证
         if (!DataCheckUtil.isNickname(nickName)) {
-            ToastUtil.showShort(getContext(), getContext().getResources().getString(R.string.nickname_format_error));
+            if (mToast == null) {
+                mToast = Toast.makeText(getContext(), getContext().getResources().getString(R.string.nickname_format_error), Toast.LENGTH_SHORT);
+            } else {
+                mToast.setText(getContext().getResources().getString(R.string.nickname_format_error));
+            }
+            mToast.show();
             return false;
         }
 
@@ -249,7 +281,7 @@ public class ModifyNicknameDialog extends Dialog {
                 //关闭对话框
                 dismiss();
             }
-        }, HTTP_TAG);
+        }, HTTP_TAG, getContext());
     }
 
 
@@ -309,7 +341,12 @@ public class ModifyNicknameDialog extends Dialog {
         } finally {
             //回调方法没有处理该异常，则走默认提示流程
             if (!callBackHandleTheError) {
-                ToastUtil.showShort(getContext(), message);
+                if (mToast == null) {
+                    mToast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+                } else {
+                    mToast.setText(message);
+                }
+                mToast.show();
             }
         }
     }

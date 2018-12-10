@@ -216,7 +216,7 @@ public class ExamFragment extends ExamDoingFragment {
             public void onResponse(Object obj) {
                 onRefreshChildTopListSuccess(obj);
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 
@@ -244,7 +244,7 @@ public class ExamFragment extends ExamDoingFragment {
             public void onResponse(Object obj) {
                 onLoadMoreChildTopicListSuccess(obj);
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 

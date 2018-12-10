@@ -180,7 +180,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
@@ -318,7 +318,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                 if (smsType == Dictionary.SmsType_Bind_Phone_Num) {
                                     //显示可以直接跳转到账号登录页面的按钮
                                     tvGotoLogin.setVisibility(View.VISIBLE);
-                                    ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+                                    ToastUtil.showShort(getApplication(), "该手机号已注册，请登录");
                                     //重新请求图形验证码
                                     requestImageCaptchaAgainWhenVisible();
 
@@ -327,7 +327,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                     if (thirdLoginDto == null) {
                                         //显示可以直接跳转到账号登录页面的按钮
                                         tvGotoLogin.setVisibility(View.VISIBLE);
-                                        ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+                                        ToastUtil.showShort(getApplication(), "该手机号已注册，请登录");
                                         //重新请求图形验证码
                                         requestImageCaptchaAgainWhenVisible();
 
@@ -338,7 +338,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                                         //直接进入绑定环节
                                         PhoneNumLoginActivity.startPhoneNumLoginActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
 //                                        XLoginAccountActivity.startXLoginAccountActivity(RegisterPhoneNumActivity.this, thirdLoginDto, phoneNum);
-//                                        ToastUtil.showShort(getApplicationContext(), "该手机号已注册，请登录");
+//                                        ToastUtil.showShort(getApplication(), "该手机号已注册，请登录");
                                     }
                                 }
 
@@ -427,10 +427,11 @@ public class RegisterPhoneNumActivity extends BaseActivity {
                     //跳转验证码输入页面
                     RegisterCaptchaActivity.startRegisterCaptchaActivity(RegisterPhoneNumActivity.this, phoneNum, smsType, thirdLoginDto, messageCaptcha);
                 }
-            }, httpTag);
+            }, httpTag, RegisterPhoneNumActivity.this);
+
         } catch (QSCustomException e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 
@@ -476,14 +477,14 @@ public class RegisterPhoneNumActivity extends BaseActivity {
         String phoneNum = etPhonenum.getText().toString();
         //非空
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入手机号");
+            ToastUtil.showShort(getApplication(), "请输入手机号");
             etPhonenum.requestFocus();
             return false;
 
         } else {
             //手机号格式
             if (!DataCheckUtil.isMobileNO(phoneNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入正确的手机号");
+                ToastUtil.showShort(getApplication(), "请输入正确的手机号");
                 etPhonenum.requestFocus();
                 return  false;
             }
@@ -646,7 +647,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
 
                 //聚焦图形验证码
                 etImageCaptcha.requestFocus();
-                ToastUtil.showShort(getApplicationContext(), "请输入图形验证码");
+                ToastUtil.showShort(getApplication(), "请输入图形验证码");
             }
         }
     }
@@ -655,7 +656,7 @@ public class RegisterPhoneNumActivity extends BaseActivity {
      * 需要图形验证码，才能发送短信的提示处理
      */
     private void requiredImageCaptchaForSendError() {
-        ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新操作");
+        ToastUtil.showShort(getApplication(),"请输入图形验证码后，重新操作");
 
         //清空图形验证码，并聚焦
         etImageCaptcha.setText("");

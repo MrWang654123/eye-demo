@@ -70,7 +70,9 @@ public class HistoryReportFragment extends LazyLoadFragment {
                         new TopicReportDialog().setTopicInfo(topicInfo).show(getChildFragmentManager(), "报告");
                     } catch (Exception e) {
                         e.printStackTrace();
-                        ToastUtil.showShort(getContext(), e.getMessage());
+                        if (getActivity() != null) {
+                            ToastUtil.showShort(getActivity().getApplication(), e.getMessage());
+                        }
                     }
                     break;
                 }
@@ -98,7 +100,9 @@ public class HistoryReportFragment extends LazyLoadFragment {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getContext(), "数据传递有误");
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), "数据传递有误");
+            }
             getActivity().finish();
         }
 
@@ -184,7 +188,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
                             emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                         }
                     }
-                }, httpTag);
+                }, httpTag, getActivity());
     }
 
 }

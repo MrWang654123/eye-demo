@@ -155,7 +155,7 @@ public class VersionUpdateUtil {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
 
@@ -221,7 +221,7 @@ public class VersionUpdateUtil {
             if (b) {
                 PackageUtils.checkIsAndroidO(activity);
             } else {
-                ToastUtil.showShort(activity, "用户拒绝了安装授权");
+                ToastUtil.showShort(activity.getApplication(), "用户拒绝了安装授权");
 
                 //清除缓存
                 new AlertDialog.Builder(activity)

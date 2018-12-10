@@ -118,7 +118,7 @@ public class DimensionDetailActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(DimensionDetailActivity.this, "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
         topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
@@ -279,14 +279,14 @@ public class DimensionDetailActivity extends BaseActivity {
      * 显示量表报告
      */
     private void showDimensionReport() {
-        ToastUtil.showShort(getApplicationContext(), "请返回查看该量表报告");
+        ToastUtil.showShort(getApplication(), "请返回查看该量表报告");
     }
 
     /**
      * 量表被锁定的提示
      */
     private void lockedDimensionTip() {
-        ToastUtil.showShort(getApplicationContext(), "该测评被锁定，请先完成其他测评");
+        ToastUtil.showShort(getApplication(), "该测评被锁定，请先完成其他测评");
     }
 
     /**
@@ -356,14 +356,14 @@ public class DimensionDetailActivity extends BaseActivity {
                     doOpenFailedTip();
                 }
             }
-        }, httpTag);
+        }, httpTag, DimensionDetailActivity.this);
     }
 
     /**
      * 开启量表失败的提示
      */
     private void doOpenFailedTip() {
-        ToastUtil.showShort(getApplicationContext(),"开启测评失败");
+        ToastUtil.showShort(getApplication(),"开启测评失败");
     }
 
 }

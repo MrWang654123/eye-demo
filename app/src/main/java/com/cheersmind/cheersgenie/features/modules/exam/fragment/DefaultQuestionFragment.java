@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
+import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
@@ -491,6 +493,13 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         if (TextUtils.isEmpty(content)) {
             btnConfirm.setEnabled(false);
         }
+
+//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface iDialog) {
+//                BaseActivity.fixInputMethodManagerLeak(dialog.getContext());
+//            }
+//        });
 
     }
 

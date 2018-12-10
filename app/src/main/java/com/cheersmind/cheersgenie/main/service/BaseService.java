@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.service;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
@@ -27,7 +28,7 @@ public class BaseService {
     }
 
 
-    public static void get(final String url, final ServiceCallback callback, String tag) {
+    public static void get(final String url, final ServiceCallback callback, String tag, final Context context) {
         BaseRequest.get(url, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -36,13 +37,13 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         }, tag);
     }
 
 
-    public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback, String tag) {
+    public static void post(final String url, Map<String,Object> params, boolean isFormType, final ServiceCallback callback, String tag, final Context context) {
 
         BaseRequest.post(url, params, isFormType, new BaseRequest.BaseCallback() {
             @Override
@@ -52,12 +53,12 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         }, tag);
     }
 
-    public static void post(final String url, JSONObject params, final ServiceCallback callback, String httpTag) {
+    public static void post(final String url, JSONObject params, final ServiceCallback callback, String httpTag, final Context context) {
 
         BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
@@ -67,13 +68,13 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         }, httpTag);
     }
 
 
-    public static void post(final String url, Map<String,File> params, final ServiceCallback callback, String httpTag) {
+    public static void post(final String url, Map<String,File> params, final ServiceCallback callback, String httpTag, final Context context) {
 
         BaseRequest.post(url, params, new BaseRequest.BaseCallback() {
             @Override
@@ -83,13 +84,13 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         }, httpTag);
     }
 
 
-    public static void patch(String url, Map<String,Object> params,final ServiceCallback callback, String tag) {
+    public static void patch(String url, Map<String,Object> params,final ServiceCallback callback, String tag, final Context context) {
         BaseRequest.patch(url, params, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -98,12 +99,12 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         }, tag);
     }
 
-    public static void put(String url, Map<String,Object> params,final ServiceCallback callback, String httpTag) {
+    public static void put(String url, Map<String,Object> params,final ServiceCallback callback, String httpTag, final Context context) {
         BaseRequest.put(url, params, new BaseRequest.BaseCallback() {
             @Override
             public void onFailure(Exception e) {
@@ -112,7 +113,7 @@ public class BaseService {
 
             @Override
             public void onResponse(int code, String bodyStr) {
-                onResponseDefault(code, bodyStr, callback);
+                onResponseDefault(code, bodyStr, callback, context);
             }
         },httpTag);
     }
@@ -159,7 +160,7 @@ public class BaseService {
      * @param bodyStr 结果字符串
      * @param callback 回调
      */
-    private static void onResponseDefault(final int code, final String bodyStr, final ServiceCallback callback) {
+    private static void onResponseDefault(final int code, final String bodyStr, final ServiceCallback callback, final Context context) {
         if (callback != null) {
                 QSApplication.getHandler().post(new Runnable() {
                     @Override
@@ -179,7 +180,7 @@ public class BaseService {
                             } else {
                                 //无效的权限令牌
                                 if(!TextUtils.isEmpty(bodyStr) && bodyStr.contains(ErrorCode.AC_AUTH_INVALID_TOKEN)){
-                                    TokenTimeOutView.getInstance().show(QSApplication.getCurrentActivity());
+                                    TokenTimeOutView.getInstance().show(context);
                                 }
 
                                 callback.onFailure(new QSCustomException(bodyStr));

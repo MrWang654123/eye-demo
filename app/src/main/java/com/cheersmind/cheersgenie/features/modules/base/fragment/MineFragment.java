@@ -177,6 +177,14 @@ public class MineFragment extends TakePhotoFragment {
         super.onDestroy();
         //注销事件
         EventBus.getDefault().unregister(this);
+
+        try {
+            //释放Activity
+            FeedbackAPI.setActivityCallback(null);
+            FeedbackAPI.cleanActivity();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -317,7 +325,7 @@ public class MineFragment extends TakePhotoFragment {
                     e.printStackTrace();
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -347,7 +355,7 @@ public class MineFragment extends TakePhotoFragment {
                     settingSignInStatus(false);
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     @Override
@@ -470,7 +478,7 @@ public class MineFragment extends TakePhotoFragment {
                     IntegralUtil.showIntegralTipDialog(getContext(), obj, null);
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -517,7 +525,7 @@ public class MineFragment extends TakePhotoFragment {
                     e.printStackTrace();
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -757,7 +765,7 @@ public class MineFragment extends TakePhotoFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 
@@ -849,7 +857,7 @@ public class MineFragment extends TakePhotoFragment {
                     tvUsableIntegralVal.setVisibility(View.INVISIBLE);
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 

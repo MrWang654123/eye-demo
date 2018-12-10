@@ -329,7 +329,7 @@ public class ArticleListActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, ArticleListActivity.this);
     }
 
     /**
@@ -413,7 +413,7 @@ public class ArticleListActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, ArticleListActivity.this);
     }
 
 
@@ -448,7 +448,7 @@ public class ArticleListActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, ArticleListActivity.this);
     }
 
 

@@ -75,7 +75,7 @@ public class SpannableStringActivity extends Activity {
         spannable.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                ToastUtil.showShort(getApplicationContext(), "点击了");
+                ToastUtil.showShort(getApplication(), "点击了");
             }
         }, s.length() - 2, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -93,7 +93,7 @@ public class SpannableStringActivity extends Activity {
         spanString2.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                ToastUtil.showShort(getApplicationContext(), "点击了");
+                ToastUtil.showShort(getApplication(), "点击了");
             }
 
             @Override

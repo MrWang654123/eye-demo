@@ -292,7 +292,7 @@ public class ClassNumActivity extends BaseActivity {
             //获取班级信息成功之后就赋值了该次的班级号
             String classNum = ClassNumActivity.this.classNum;
             if (TextUtils.isEmpty(classNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入班级号");
+                ToastUtil.showShort(getApplication(), "请输入班级号");
                 return;
             }
 
@@ -380,7 +380,7 @@ public class ClassNumActivity extends BaseActivity {
                     onFailure(new QSCustomException("获取班级信息失败"));
                 }
             }
-        }, httpTag);
+        }, httpTag, ClassNumActivity.this);
     }
 
     /**
@@ -442,7 +442,7 @@ public class ClassNumActivity extends BaseActivity {
         switchFocus(position);
         SoftInputUtil.openSoftInput(ClassNumActivity.this, etCaptchaNumList.get(position));
 
-        ToastUtil.showShort(getApplicationContext(), "格式不正确，请重新输入");
+        ToastUtil.showShort(getApplication(), "格式不正确，请重新输入");
     }
 
     /**

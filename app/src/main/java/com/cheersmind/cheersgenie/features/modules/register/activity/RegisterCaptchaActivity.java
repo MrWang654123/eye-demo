@@ -255,14 +255,14 @@ public class RegisterCaptchaActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
 //        topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
         phoneNum = getIntent().getStringExtra(PHONE_NUM);
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
@@ -499,14 +499,14 @@ public class RegisterCaptchaActivity extends BaseActivity {
         String phoneNum = this.phoneNum;
         //非空
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入手机号");
+            ToastUtil.showShort(getApplication(), "请输入手机号");
             finish();
             return false;
 
         } else {
             //手机号格式
             if (!DataCheckUtil.isMobileNO(phoneNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入正确的手机号");
+                ToastUtil.showShort(getApplication(), "请输入正确的手机号");
                 finish();
                 return  false;
             }
@@ -596,7 +596,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //获取孩子列表信息
                 doGetChildListWrap();
             }
-        }, httpTag);
+        }, httpTag, RegisterCaptchaActivity.this);
     }
 
 
@@ -614,7 +614,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
         //密码长度验证
         if (password.length() < 6 || password.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "新密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "新密码长度为6-24位");
             return false;
         }
 
@@ -713,7 +713,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //这时候如果需要图形验证码，则跳转到登录主页面
                 doPostAccountSessionForAccountLogin(false);
             }
-        }, httpTag);
+        }, httpTag, RegisterCaptchaActivity.this);
     }
 
 
@@ -736,7 +736,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         accountLoginDto.setDeviceType("android");//设备类型
 //        accountLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
         accountLoginDto.setDeviceDesc("android phone");//设备描述（华为 XXXX）
-        accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+        accountLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplication()));//设备ID
         doAccountLogin(accountLoginDto);
     }
 
@@ -759,7 +759,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                 //关闭通信等待提示
                 LoadingView.getInstance().dismiss();
 
-//                ToastUtil.showShort(getApplicationContext(), "重置密码成功，请重新登录");
+//                ToastUtil.showShort(getApplication(), "重置密码成功，请重新登录");
                 //跳转到登录主页面（作为根activity）
 //                gotoLoginPage(RegisterCaptchaActivity.this);
 
@@ -812,7 +812,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, RegisterCaptchaActivity.this);
     }
 
 
@@ -830,7 +830,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
 
         //密码长度验证
         if (password.length() < 6 || password.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "密码长度为6-24位");
             return false;
         }
 
@@ -948,7 +948,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     onFailure(new QSCustomException("注册异常，请稍后再试"));
                 }
             }
-        }, httpTag);
+        }, httpTag, RegisterCaptchaActivity.this);
 
     }
 
@@ -1012,7 +1012,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
         //初始编辑框的焦点
         switchFocus(position);
         SoftInputUtil.openSoftInput(RegisterCaptchaActivity.this, etCaptchaNumList.get(position));
-        ToastUtil.showShort(getApplicationContext(), "请输入短信验证码");
+        ToastUtil.showShort(getApplication(), "请输入短信验证码");
     }
 
     /**
@@ -1166,14 +1166,14 @@ public class RegisterCaptchaActivity extends BaseActivity {
         String phoneNum = this.phoneNum;
         //非空
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入手机号");
+            ToastUtil.showShort(getApplication(), "请输入手机号");
             finish();
             return false;
 
         } else {
             //手机号格式
             if (!DataCheckUtil.isMobileNO(phoneNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入正确的手机号");
+                ToastUtil.showShort(getApplication(), "请输入正确的手机号");
                 finish();
                 return  false;
             }
@@ -1325,10 +1325,10 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     //清空短信验证码
                     clearMessageCaptcha();
                 }
-            }, httpTag);
+            }, httpTag, RegisterCaptchaActivity.this);
         } catch (QSCustomException e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 
@@ -1537,7 +1537,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
             } else {
                 //聚焦图形验证码
                 etImageCaptcha.requestFocus();
-                ToastUtil.showShort(getApplicationContext(), "请输入图形验证码");
+                ToastUtil.showShort(getApplication(), "请输入图形验证码");
             }
         }
     }
@@ -1546,7 +1546,7 @@ public class RegisterCaptchaActivity extends BaseActivity {
      * 需要图形验证码，才能发送短信的提示处理
      */
     private void requiredImageCaptchaForSendError() {
-        ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新发送");
+        ToastUtil.showShort(getApplication(),"请输入图形验证码后，重新发送");
 
         //清空短信验证码、清空并聚焦图形验证码、还原发送按钮
         clearCaptchaAndSendButton();

@@ -83,7 +83,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
 
     //通信标记
     public static final String TAG = "tag";
-    String tag;
+    String httpTag;
 
     private ArticleDto articleDto;
 
@@ -364,9 +364,11 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 category = (CategoryEntity) bundle.getSerializable(CATEGORY);
-                tag = bundle.getString(TAG);
-                if (TextUtils.isEmpty(tag)) {
-                    ToastUtil.showShort(getContext(), "tag不能为空");
+                httpTag = bundle.getString(TAG);
+                if (TextUtils.isEmpty(httpTag)) {
+                    if (getActivity() != null) {
+                        ToastUtil.showShort(getActivity().getApplication(), "tag不能为空");
+                    }
                 }
             }
         } catch (Exception e) {
@@ -405,7 +407,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
        totalCount = 0;
 
         //取消当前页面的所有通信
-        BaseService.cancelTag(tag);
+        BaseService.cancelTag(httpTag);
     }
 
 
@@ -501,7 +503,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                 }
 
             }
-        }, tag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -589,7 +591,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                 }
 
             }
-        }, tag);
+        }, httpTag, getActivity());
     }
 
 
@@ -624,7 +626,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, tag);
+        }, httpTag, getActivity());
     }
 
 
@@ -710,7 +712,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                 }
 
             }
-        }, tag);
+        }, httpTag, getActivity());
     }
 
 

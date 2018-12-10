@@ -209,7 +209,7 @@ public class XLoginActivity extends BaseActivity {
         if(Constant.wx_api.isWXAppInstalled()){
             startWxLogin();
         }else{
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
         }
     }
 
@@ -219,13 +219,13 @@ public class XLoginActivity extends BaseActivity {
     private void startWxLogin(){
         //检查网络
         if(!NetworkUtil.isConnectivity(XLoginActivity.this)){
-            ToastUtil.showShort(XLoginActivity.this,"网络连接异常");
+            ToastUtil.showShort(getApplication(),"网络连接异常");
             return;
         }
 
         //微信必须已经安装
         if (!Constant.wx_api.isWXAppInstalled()) {
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
             return;
         }
         //开启通信等待提示
@@ -250,7 +250,7 @@ public class XLoginActivity extends BaseActivity {
                 public void run() {
                     //关闭通信等待提示
                     LoadingView.getInstance().dismiss();
-                    ToastUtil.showShort(XLoginActivity.this,"微信授权失败！");
+                    ToastUtil.showShort(getApplication(),"微信授权失败！");
                 }
             });
             return;
@@ -275,7 +275,7 @@ public class XLoginActivity extends BaseActivity {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();
-                        ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                        ToastUtil.showShort(getApplication(), "微信授权失败..");
                     }
                 });
             }
@@ -296,7 +296,7 @@ public class XLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        }, httpTag);
+        }, httpTag, XLoginActivity.this);
     }
 
     /**
@@ -314,7 +314,7 @@ public class XLoginActivity extends BaseActivity {
             thirdLoginDto.setTenant(Dictionary.Tenant_CheersMind);//租户名
             thirdLoginDto.setDeviceType("android");//设备类型
             thirdLoginDto.setDeviceDesc(Build.MODEL);//设备描述（华为 XXXX）
-            thirdLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplicationContext()));//设备ID
+            thirdLoginDto.setDeviceId(DeviceUtil.getDeviceId(getApplication()));//设备ID
             //请求第三方登录
             doThirdLogin(thirdLoginDto);
         }
@@ -388,7 +388,7 @@ public class XLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("登录失败"));
                 }
             }
-        }, httpTag);
+        }, httpTag, XLoginActivity.this);
     }
 
 
@@ -397,12 +397,12 @@ public class XLoginActivity extends BaseActivity {
      */
     private void doQQLogin() {
         if (mTencent == null) {
-            mTencent = Tencent.createInstance(Constant.QQ_APP_ID,getApplicationContext());
+            mTencent = Tencent.createInstance(Constant.QQ_APP_ID,getApplication());
         }
 
         //检查网络
         if(!NetworkUtil.isConnectivity(XLoginActivity.this)){
-            ToastUtil.showShort(XLoginActivity.this,"网络连接异常");
+            ToastUtil.showShort(getApplication(),"网络连接异常");
             return;
         }
 
@@ -499,16 +499,16 @@ public class XLoginActivity extends BaseActivity {
 //            LoadingView.getInstance().dismiss();
 
             if (null == response) {
-                ToastUtil.showShort(getApplicationContext(), "登录失败");
+                ToastUtil.showShort(getApplication(), "登录失败");
                 return;
             }
             JSONObject jsonResponse = (JSONObject) response;
             if (null != jsonResponse && jsonResponse.length() == 0) {
-                ToastUtil.showShort(getApplicationContext(), "未返回数据，登录失败");
+                ToastUtil.showShort(getApplication(), "未返回数据，登录失败");
                 return;
             }
 
-//            ToastUtil.showShort(getApplicationContext(), "登录成功");
+//            ToastUtil.showShort(getApplication(), "登录成功");
             doComplete(jsonResponse);
         }
 
@@ -520,14 +520,14 @@ public class XLoginActivity extends BaseActivity {
         public void onError(UiError e) {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-            ToastUtil.showShort(getApplicationContext(), "QQ登录失败");
+            ToastUtil.showShort(getApplication(), "QQ登录失败");
         }
 
         @Override
         public void onCancel() {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-//            ToastUtil.showShort(getApplicationContext(), "取消登录");
+//            ToastUtil.showShort(getApplication(), "取消登录");
         }
     }
 

@@ -203,7 +203,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
 
             if (thirdLoginDto != null) {
                 if (TextUtils.isEmpty(phoneNum)) {
-                    ToastUtil.showShort(getApplicationContext(), "绑定操作，手机号不能为空");
+                    ToastUtil.showShort(getApplication(), "绑定操作，手机号不能为空");
                     finish();
                     return;
                 }
@@ -333,14 +333,14 @@ public class PhoneNumLoginActivity extends BaseActivity {
         String phoneNum = etPhonenum.getText().toString().trim();
         //非空
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入手机号");
+            ToastUtil.showShort(getApplication(), "请输入手机号");
             etPhonenum.requestFocus();
             return false;
 
         } else {
             //手机号格式
             if (!DataCheckUtil.isMobileNO(phoneNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入正确的手机号");
+                ToastUtil.showShort(getApplication(), "请输入正确的手机号");
                 etPhonenum.requestFocus();
                 return  false;
             }
@@ -350,13 +350,13 @@ public class PhoneNumLoginActivity extends BaseActivity {
         String captcha = etCaptcha.getText().toString().trim();
         //非空
         if (TextUtils.isEmpty(captcha)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入短信验证码");
+            ToastUtil.showShort(getApplication(), "请输入短信验证码");
             etCaptcha.requestFocus();
             return false;
         }
         //长度（目前验证码长度为6）
         if (captcha.length() < 6) {
-            ToastUtil.showShort(getApplicationContext(), "请完整输入短信验证码");
+            ToastUtil.showShort(getApplication(), "请完整输入短信验证码");
             etCaptcha.requestFocus();
             return false;
         }
@@ -383,7 +383,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                         String errorCode = errorCodeEntity.getCode();
                         //账号不存在
                         if (ErrorCode.AC_ACCOUNT_NOT_EXIST.equals(errorCode)) {
-                            ToastUtil.showShort(getApplicationContext(), "该手机号未注册");
+                            ToastUtil.showShort(getApplication(), "该手机号未注册");
                             //走手机注册页面流程
 //                            RegisterPhoneNumActivity.startRegisterPhoneNumActivity(PhoneNumLoginActivity.this, Dictionary.SmsType_Register, thirdLoginDto);
                             //标记已经处理了异常
@@ -472,7 +472,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     onFailure(new QSCustomException("登录失败"));
                 }
             }
-        }, httpTag);
+        }, httpTag, PhoneNumLoginActivity.this);
     }
 
 
@@ -493,7 +493,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
             public void onResponse(Object obj) {
                 //关闭通信等待
 //                LoadingView.getInstance().dismiss();
-                ToastUtil.showShort(getApplicationContext(), "绑定成功");
+                ToastUtil.showShort(getApplication(), "绑定成功");
                 //标记已经绑定成功
                 hasBindSuccess = true;
                 //按钮显示为登录
@@ -502,7 +502,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                 //获取孩子信息
                 doGetChildListWrap();
             }
-        }, httpTag);
+        }, httpTag, PhoneNumLoginActivity.this);
     }
 
 
@@ -595,14 +595,14 @@ public class PhoneNumLoginActivity extends BaseActivity {
         String phoneNum = etPhonenum.getText().toString().trim();
         //非空
         if (TextUtils.isEmpty(phoneNum)) {
-            ToastUtil.showShort(getApplicationContext(), "请输入手机号");
+            ToastUtil.showShort(getApplication(), "请输入手机号");
             etPhonenum.requestFocus();
             return false;
 
         } else {
             //手机号格式
             if (!DataCheckUtil.isMobileNO(phoneNum)) {
-                ToastUtil.showShort(getApplicationContext(), "请输入正确的手机号");
+                ToastUtil.showShort(getApplication(), "请输入正确的手机号");
                 etPhonenum.requestFocus();
                 return  false;
             }
@@ -651,7 +651,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
                             String errorCode = errorCodeEntity.getCode();
                             //账号不存在
                             if (ErrorCode.AC_USER_NOT_EXIST.equals(errorCode)) {
-                                ToastUtil.showShort(getApplicationContext(), "该手机号未注册");
+                                ToastUtil.showShort(getApplication(), "该手机号未注册");
                                 //标记已经处理了异常
                                 return true;
 
@@ -723,10 +723,10 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     etCaptcha.setText("");
                     etCaptcha.requestFocus();
                 }
-            }, httpTag);
+            }, httpTag, PhoneNumLoginActivity.this);
         } catch (QSCustomException e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 
@@ -873,7 +873,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
             } else {
                 //聚焦图形验证码
                 etImageCaptcha.requestFocus();
-                ToastUtil.showShort(getApplicationContext(), "请输入图形验证码");
+                ToastUtil.showShort(getApplication(), "请输入图形验证码");
             }
         }
     }
@@ -882,7 +882,7 @@ public class PhoneNumLoginActivity extends BaseActivity {
      * 需要图形验证码，才能发送短信的提示处理
      */
     private void requiredImageCaptchaForSendError() {
-        ToastUtil.showShort(getApplicationContext(),"请输入图形验证码后，重新发送");
+        ToastUtil.showShort(getApplication(),"请输入图形验证码后，重新发送");
         //清空短信验证码、清空并聚焦图形验证码、还原发送按钮
         clearCaptchaAndSendButton();
     }

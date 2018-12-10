@@ -386,7 +386,7 @@ public class ExploreFragment extends LazyLoadFragment {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 
@@ -473,7 +473,7 @@ public class ExploreFragment extends LazyLoadFragment {
                     getHandler().sendEmptyMessage(MSG_ERROR_QUANTITY);
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 
@@ -509,7 +509,9 @@ public class ExploreFragment extends LazyLoadFragment {
             }
             //FAB
             case R.id.fab: {
-                ToastUtil.showShort(getContext(), "点击FAB");
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), "点击FAB");
+                }
                 break;
             }
         }

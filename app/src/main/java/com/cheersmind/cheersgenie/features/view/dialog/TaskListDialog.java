@@ -48,9 +48,6 @@ import butterknife.OnClick;
  */
 public class TaskListDialog extends Dialog {
 
-    //上下文
-    private Context context;
-
     @BindView(R.id.tv_title)
     TextView tvTitle;
     @BindView(R.id.recyclerView)
@@ -75,12 +72,10 @@ public class TaskListDialog extends Dialog {
 
     public TaskListDialog(@NonNull Context context) {
         super(context, R.style.loading_dialog);
-        this.context = context;
     }
 
     public TaskListDialog(@NonNull Context context, TaskListEntity taskListEntity, List<TaskItemEntity> taskItems, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
-        this.context = context;
         this.taskListEntity = taskListEntity;
         this.taskItems = taskItems;
 
@@ -128,9 +123,9 @@ public class TaskListDialog extends Dialog {
      * 初始化视图
      */
     private void initView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 //        mRecyclerView.setHasFixedSize(true);
-        emptyLayout.setNoDataTip(context.getString(R.string.empty_tip_task_list));
+        emptyLayout.setNoDataTip(getContext().getString(R.string.empty_tip_task_list));
         //点击重载监听
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
@@ -218,7 +213,7 @@ public class TaskListDialog extends Dialog {
                 }
 
             }
-        }, tag);
+        }, tag, getContext());
     }
 
 
@@ -229,7 +224,7 @@ public class TaskListDialog extends Dialog {
      */
     private void refreshView(TaskListEntity taskListEntity, List<TaskItemEntity> taskItems) {
         //任务列表
-        mTimeLineAdapter = new TimeLineAdapter(context, taskItems, true);
+        mTimeLineAdapter = new TimeLineAdapter(getContext(), taskItems, true);
         recyclerView.setAdapter(mTimeLineAdapter);
         recyclerView.scrollToPosition(getFirstDoingTaskPosition(taskItems));
 
@@ -248,7 +243,7 @@ public class TaskListDialog extends Dialog {
      * @param childId 孩子ID
      */
     private void setHasFirstShowTaskList(String childId) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = sp.edit();
         editor.putBoolean(childId, true);
         editor.apply();
@@ -261,7 +256,7 @@ public class TaskListDialog extends Dialog {
      * @param childId 孩子ID
      */
     private boolean getHasFirstShowTaskList(String childId) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
         return sp.getBoolean(childId, false);
     }
 

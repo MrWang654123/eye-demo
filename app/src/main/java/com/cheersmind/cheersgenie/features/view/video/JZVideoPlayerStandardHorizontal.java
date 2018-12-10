@@ -34,6 +34,7 @@ import cn.jzvd.JZVideoPlayerStandard;
  * 只能全屏且横屏播放（饺子视频播放器）
  */
 public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
+
     //视频ID
     String videoId;
     //视频标题
@@ -419,7 +420,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
                     }
                 }
             }
-        }, httpTag);
+        }, httpTag, getContext());
     }
 
 

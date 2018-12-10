@@ -1,8 +1,11 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -11,7 +14,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Message;
+import android.os.MessageQueue;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,11 +29,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -72,6 +80,9 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +130,8 @@ public class MasterTabActivity extends BaseActivity {
     //任务列表项
     private List<TaskItemEntity> taskItems;
 
+    ViewPageChangeListener pageChangeListener = new ViewPageChangeListener();
+
 
     @Override
     protected int setContentView() {
@@ -147,7 +160,7 @@ public class MasterTabActivity extends BaseActivity {
         listFragment.add(new MineFragment());
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);
-        viewPager.addOnPageChangeListener(new ViewPageChangeListener());
+        viewPager.addOnPageChangeListener(pageChangeListener);
         //缓存1+3页
         viewPager.setOffscreenPageLimit(3);
 
@@ -390,7 +403,7 @@ public class MasterTabActivity extends BaseActivity {
         //连按退出处理
         if (!canExit) {
             canExit = true;
-            ToastUtil.showShort(MasterTabActivity.this, "再按一次退出");
+            ToastUtil.showShort(getApplication(), "再按一次退出");
             getHandler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -401,6 +414,11 @@ public class MasterTabActivity extends BaseActivity {
         }
 
         super.onBackPressed();
+
+        //防止InputMethodManager内存泄漏
+//        super.onBackPressed();
+//        startActivity(new Intent(this, CleanLeakActivity.class));
+//        finish();
     }
 
 
@@ -418,6 +436,10 @@ public class MasterTabActivity extends BaseActivity {
 
         //释放声音资源
 //        SoundPlayUtils.release();
+
+        //释放监听器
+        viewPager.removeOnPageChangeListener(pageChangeListener);
+        pageChangeListener = null;
     }
 
 
@@ -548,7 +570,7 @@ public class MasterTabActivity extends BaseActivity {
                 }
 
             }
-        }, tag);
+        }, tag, MasterTabActivity.this);
     }
 
 
@@ -574,7 +596,6 @@ public class MasterTabActivity extends BaseActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         return sp.getBoolean(childId, false);
     }
-
 
 
 }

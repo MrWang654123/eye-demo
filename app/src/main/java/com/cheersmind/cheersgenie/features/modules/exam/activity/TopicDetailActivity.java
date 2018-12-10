@@ -140,13 +140,13 @@ public class TopicDetailActivity extends BaseActivity {
                 .diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
 
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
         topicId = getIntent().getExtras().getString(TOPIC_ID);
         if (TextUtils.isEmpty(topicId)) {
-            ToastUtil.showShort(getApplicationContext(), "话题ID不能为空");
+            ToastUtil.showShort(getApplication(), "话题ID不能为空");
             return;
         }
 
@@ -185,7 +185,7 @@ public class TopicDetailActivity extends BaseActivity {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                 }
             }
-        }, httpTag);
+        }, httpTag, TopicDetailActivity.this);
     }
 
     /**
@@ -328,7 +328,7 @@ public class TopicDetailActivity extends BaseActivity {
      * 开启量表失败的提示
      */
     private void doOpenFailedTip() {
-        ToastUtil.showShort(getApplicationContext(),"开启测评失败");
+        ToastUtil.showShort(getApplication(),"开启测评失败");
     }
 
 

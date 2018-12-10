@@ -79,7 +79,7 @@ public class ReportActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(ReportActivity.this, "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             //关闭页面
             finish();
             return;

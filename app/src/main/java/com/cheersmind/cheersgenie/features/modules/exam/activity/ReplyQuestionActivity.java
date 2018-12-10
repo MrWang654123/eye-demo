@@ -233,7 +233,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(ReplyQuestionActivity.this, "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
@@ -242,7 +242,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         if (dimensionInfoEntity == null
                 || dimensionInfoEntity.getChildDimension() == null
                 || TextUtils.isEmpty(dimensionInfoEntity.getChildDimension().getChildDimensionId())) {
-            ToastUtil.showShort(ReplyQuestionActivity.this, "数据传递有误..");
+            ToastUtil.showShort(getApplication(), "数据传递有误..");
             return;
         }
 
@@ -490,7 +490,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        }, httpTag);
+        }, httpTag, ReplyQuestionActivity.this);
 
     }
 
@@ -914,7 +914,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             onFailure(new QSCustomException("获取报告失败"));
                         }
                     }
-                }, httpTag);
+                }, httpTag, ReplyQuestionActivity.this);
     }
 
     /**
@@ -932,7 +932,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }).show(getSupportFragmentManager(), "报告");
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(ReplyQuestionActivity.this, e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 
@@ -966,7 +966,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }).show();
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 
@@ -998,7 +998,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     @Override
                     public void onFailure(QSCustomException e) {
 //                        onFailureDefault(e);
-                        ToastUtil.showShort(getApplicationContext(), "网络错误，保存答案失败");
+                        ToastUtil.showShort(getApplication(), "网络错误，保存答案失败");
                     }
 
                     @Override
@@ -1007,7 +1007,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                         //发送最新操作测评通知：更新操作
                         EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));
                     }
-                }, httpTag);
+                }, httpTag, ReplyQuestionActivity.this);
     }
 
     /**

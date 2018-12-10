@@ -400,7 +400,7 @@ public class SearchArticleActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, SearchArticleActivity.this);
     }
 
     /**
@@ -488,7 +488,7 @@ public class SearchArticleActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, SearchArticleActivity.this);
     }
 
 
@@ -560,7 +560,7 @@ public class SearchArticleActivity extends BaseActivity {
      * 通用的搜索文本错误提示
      */
     private void commonSearchContentErrorTip(int resId) {
-        ToastUtil.customToastGravity(getApplicationContext(), getResources().getString(resId), Toast.LENGTH_SHORT, Gravity.CENTER_VERTICAL, 0, 0);
+        ToastUtil.customToastGravity(getApplication(), getResources().getString(resId), Toast.LENGTH_SHORT, Gravity.CENTER_VERTICAL, 0, 0);
     }
 
 
@@ -595,7 +595,7 @@ public class SearchArticleActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, SearchArticleActivity.this);
     }
 
 

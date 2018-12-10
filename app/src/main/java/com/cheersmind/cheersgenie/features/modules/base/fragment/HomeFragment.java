@@ -446,7 +446,7 @@ public class HomeFragment extends LazyLoadFragment {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -497,7 +497,7 @@ public class HomeFragment extends LazyLoadFragment {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -571,7 +571,7 @@ public class HomeFragment extends LazyLoadFragment {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -644,7 +644,7 @@ public class HomeFragment extends LazyLoadFragment {
                 }
 
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     //获取首页数据列表（目前是热门文章）
@@ -798,7 +798,7 @@ public class HomeFragment extends LazyLoadFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
 

@@ -75,18 +75,18 @@ public class SchemaActivity extends Activity {
 //        startActivity(intent);// 现在只能跳转到APP2的入口界面
 
 //        if (isUriValid(uriStr)) {
-//            ToastUtil.showShort(getApplicationContext(), "启动第三方页面");
+//            ToastUtil.showShort(getApplication(), "启动第三方页面");
 //            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uriStr));
 //            startActivity(intent);
 //        } else {
-//            ToastUtil.showShort(getApplicationContext(), "无效的uri");
+//            ToastUtil.showShort(getApplication(), "无效的uri");
 //        }
 
         if (isUriValid(uriStr)) {
-            ToastUtil.showShort(getApplicationContext(), "启动第三方页面");
+            ToastUtil.showShort(getApplication(), "启动第三方页面");
 
         } else {
-            ToastUtil.showShort(getApplicationContext(), "无效的uri");
+            ToastUtil.showShort(getApplication(), "无效的uri");
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uriStr));

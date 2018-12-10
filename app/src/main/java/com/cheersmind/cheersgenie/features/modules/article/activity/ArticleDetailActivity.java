@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.article.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -41,6 +42,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
+import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZMediaIjkplayer;
 import com.cheersmind.cheersgenie.features.adapter.BaseAdapter;
 import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -71,6 +74,8 @@ import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.video.VideoFrameReleaseTimeHelper;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.jsoup.Jsoup;
@@ -84,6 +89,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.JZMediaManager;
 import cn.jzvd.JZVideoPlayer;
 import cn.jzvd.JZVideoPlayerStandard;
 
@@ -140,7 +146,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
     //文章内容（富文本）
     @BindView(R.id.web_article_content)
-    DisplayFinishWebView webArticleContent;
+    WebView webArticleContent;
     //正在初始化富文本的提示
     @BindView(R.id.tv_init_content)
     TextView tvInitContent;
@@ -246,6 +252,9 @@ public class ArticleDetailActivity extends BaseActivity {
 
     //最后一次未发送的评论
     private String lastNotSendComment;
+
+    //播放器
+    JZExoPlayer jzExoPlayer;
 
 
     /**
@@ -370,7 +379,7 @@ public class ArticleDetailActivity extends BaseActivity {
     public void onInitData() {
         articleId = getIntent().getStringExtra(ARTICLE_ID);
         if (TextUtils.isEmpty(articleId)) {
-            ToastUtil.showShort(ArticleDetailActivity.this, "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
@@ -425,6 +434,25 @@ public class ArticleDetailActivity extends BaseActivity {
         webArticleContent.setWebViewClient(null);
         //重载点击
         xemptyLayout.setOnReloadListener(null);
+
+        //释放资源
+//        if (JZMediaManager.instance().jzMediaInterface != null && JZMediaManager.instance().jzMediaInterface instanceof JZExoPlayer) {
+//            JZMediaManager.instance().jzMediaInterface.release();
+//        }
+
+        if (jzExoPlayer != null) {
+            try {
+                jzExoPlayer.release();
+                jzExoPlayer = null;
+                JZVideoPlayer.setMediaInterface(null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+//        if (JZMediaManager.instance().jzMediaInterface != null && JZMediaManager.instance().jzMediaInterface instanceof JZExoPlayer) {
+//            JZMediaManager.instance().jzMediaInterface.release();
+//        }
     }
 
 
@@ -553,14 +581,7 @@ public class ArticleDetailActivity extends BaseActivity {
         webSettings.setBlockNetworkImage(true);
         //开启硬件加速
         webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-//        webArticleContent.setLayerType(View.LAYER_TYPE_SOFTWARE,null);
 
-//        webArticleContent.setListener(new DisplayFinishWebView.DisplayFinishListener() {
-//            @Override
-//            public void onDisplayFinish() {
-//
-//            }
-//        });
 
         webArticleContent.setWebViewClient(new WebViewClient() {
 
@@ -639,6 +660,12 @@ public class ArticleDetailActivity extends BaseActivity {
         } else {
             jzVideo.setVisibility(View.VISIBLE);
         }
+
+        //初始化播放引擎
+        if (jzExoPlayer == null) {
+            jzExoPlayer = new JZExoPlayer();
+        }
+        JZVideoPlayer.setMediaInterface(jzExoPlayer);
 
         //视频地址
         String videoUrl = article.getArticleVideo();
@@ -796,7 +823,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(e.getMessage()));
                 }
             }
-        }, httpTag);
+        }, httpTag, ArticleDetailActivity.this);
     }
 
     /**
@@ -838,7 +865,10 @@ public class ArticleDetailActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        JZVideoPlayer.releaseAllVideos();
+
+        if (jzExoPlayer != null) {
+            JZVideoPlayer.releaseAllVideos();
+        }
 
         //Change these two variables back
         JZVideoPlayer.FULLSCREEN_ORIENTATION = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
@@ -933,7 +963,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
 
@@ -974,7 +1004,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(e.getMessage()));
                 }
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
 
@@ -1004,7 +1034,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
     /**
@@ -1058,7 +1088,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
 
@@ -1283,7 +1313,7 @@ public class ArticleDetailActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
     /**
@@ -1417,6 +1447,15 @@ public class ArticleDetailActivity extends BaseActivity {
             etComment.setText(lastNotSendComment);
             etComment.setSelection(lastNotSendComment.length());
         }
+
+//        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface iDialog) {
+//                btnClose.setOnClickListener(null);
+//                btnSend.setOnClickListener(null);
+//                BaseActivity.fixInputMethodManagerLeak(dialog.getContext());
+//            }
+//        });
     }
 
     /**
@@ -1440,7 +1479,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     CommentEntity commentEntity = InjectionWrapperUtil.injectMap(dataMap, CommentEntity.class);
 
-                    ToastUtil.showShort(getApplicationContext(), "评论成功");
+                    ToastUtil.showShort(getApplication(), "评论成功");
                     //清空最后一次未发送的评论
                     lastNotSendComment = "";
                     //刷新我的评论视图
@@ -1451,10 +1490,10 @@ public class ArticleDetailActivity extends BaseActivity {
                 } catch (Exception e) {
                     //操作失败
                     e.printStackTrace();
-                    ToastUtil.showShort(getApplicationContext(), "评论失败");
+                    ToastUtil.showShort(getApplication(), "评论失败");
                 }
             }
-        }, httpTag);
+        }, httpTag,ArticleDetailActivity.this);
     }
 
     /**
@@ -1577,7 +1616,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     }
                 } else {
                     //已锁定
-                    ToastUtil.showShort(ArticleDetailActivity.this, "该测评被锁定");
+                    ToastUtil.showShort(getApplication(), "该测评被锁定");
                 }
 
                 break;
@@ -1652,7 +1691,7 @@ public class ArticleDetailActivity extends BaseActivity {
             }).show();
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplicationContext(), e.getMessage());
+            ToastUtil.showShort(getApplication(), e.getMessage());
         }
     }
 

@@ -159,7 +159,7 @@ public class AccountBindActivity extends BaseActivity {
                     refreshBindInfoView();
                 }
             }
-        }, httpTag);
+        }, httpTag, AccountBindActivity.this);
 
     }
 
@@ -269,7 +269,7 @@ public class AccountBindActivity extends BaseActivity {
 
             @Override
             public void onResponse(Object obj) {
-                ToastUtil.showShort(getApplicationContext(), "解绑成功");
+                ToastUtil.showShort(getApplication(), "解绑成功");
 
                 //刷新绑定信息视图
                 if (bindDto.getPlatSource().equals("qq")) {
@@ -279,7 +279,7 @@ public class AccountBindActivity extends BaseActivity {
                 }
                 refreshBindInfoView();
             }
-        }, httpTag);
+        }, httpTag, AccountBindActivity.this);
     }
 
     /**
@@ -298,7 +298,7 @@ public class AccountBindActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 LoadingView.getInstance().dismiss();
-                ToastUtil.showShort(getApplicationContext(), "绑定成功");
+                ToastUtil.showShort(getApplication(), "绑定成功");
 
                 //刷新绑定信息视图
                 if (bindDto.getPlatSource().equals("qq")) {
@@ -308,7 +308,7 @@ public class AccountBindActivity extends BaseActivity {
                 }
                 refreshBindInfoView();
             }
-        }, httpTag);
+        }, httpTag, AccountBindActivity.this);
     }
 
 
@@ -317,12 +317,12 @@ public class AccountBindActivity extends BaseActivity {
      */
     private void doQQLogin() {
         if (mTencent == null) {
-            mTencent = Tencent.createInstance(Constant.QQ_APP_ID,getApplicationContext());
+            mTencent = Tencent.createInstance(Constant.QQ_APP_ID,getApplication());
         }
 
         //检查网络
         if(!NetworkUtil.isConnectivity(AccountBindActivity.this)){
-            ToastUtil.showShort(AccountBindActivity.this,"网络连接异常");
+            ToastUtil.showShort(getApplication(),"网络连接异常");
             return;
         }
 
@@ -413,16 +413,16 @@ public class AccountBindActivity extends BaseActivity {
 //            LoadingView.getInstance().dismiss();
 
             if (null == response) {
-                ToastUtil.showShort(getApplicationContext(), "登录失败");
+                ToastUtil.showShort(getApplication(), "登录失败");
                 return;
             }
             JSONObject jsonResponse = (JSONObject) response;
             if (null != jsonResponse && jsonResponse.length() == 0) {
-                ToastUtil.showShort(getApplicationContext(), "未返回数据，登录失败");
+                ToastUtil.showShort(getApplication(), "未返回数据，登录失败");
                 return;
             }
 
-//            ToastUtil.showShort(getApplicationContext(), "登录成功");
+//            ToastUtil.showShort(getApplication(), "登录成功");
             doComplete(jsonResponse);
         }
 
@@ -434,14 +434,14 @@ public class AccountBindActivity extends BaseActivity {
         public void onError(UiError e) {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-            ToastUtil.showShort(getApplicationContext(), "QQ登录失败");
+            ToastUtil.showShort(getApplication(), "QQ登录失败");
         }
 
         @Override
         public void onCancel() {
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-//            ToastUtil.showShort(getApplicationContext(), "取消登录");
+//            ToastUtil.showShort(getApplication(), "取消登录");
         }
     }
 
@@ -460,7 +460,7 @@ public class AccountBindActivity extends BaseActivity {
         if(Constant.wx_api.isWXAppInstalled()){
             startWxLogin();
         }else{
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
         }
     }
 
@@ -470,13 +470,13 @@ public class AccountBindActivity extends BaseActivity {
     private void startWxLogin(){
         //检查网络
         if(!NetworkUtil.isConnectivity(AccountBindActivity.this)){
-            ToastUtil.showShort(getApplicationContext(),"网络连接异常");
+            ToastUtil.showShort(getApplication(),"网络连接异常");
             return;
         }
 
         //微信必须已经安装
         if (!Constant.wx_api.isWXAppInstalled()) {
-            ToastUtil.showShort(getApplicationContext(), "您还未安装微信客户端");
+            ToastUtil.showShort(getApplication(), "您还未安装微信客户端");
             return;
         }
         //开启通信等待提示
@@ -497,7 +497,7 @@ public class AccountBindActivity extends BaseActivity {
         if("error".equals(event.getCode())){
             //关闭通信等待提示
             LoadingView.getInstance().dismiss();
-            ToastUtil.showShort(getApplicationContext(),"微信授权失败！");
+            ToastUtil.showShort(getApplication(),"微信授权失败！");
             return;
         }
         //成功
@@ -520,7 +520,7 @@ public class AccountBindActivity extends BaseActivity {
                     @Override
                     public void run() {
                         LoadingView.getInstance().dismiss();
-                        ToastUtil.showShort(getApplicationContext(), "微信授权失败..");
+                        ToastUtil.showShort(getApplication(), "微信授权失败..");
                     }
                 });
             }
@@ -541,7 +541,7 @@ public class AccountBindActivity extends BaseActivity {
                     onFailure(new QSCustomException("微信授权失败..."));
                 }
             }
-        }, httpTag);
+        }, httpTag, AccountBindActivity.this);
     }
 
     /**
@@ -597,7 +597,7 @@ public class AccountBindActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-        }, httpTag);
+        }, httpTag, AccountBindActivity.this);
     }
 
 }

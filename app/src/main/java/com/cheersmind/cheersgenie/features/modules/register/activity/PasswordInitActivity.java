@@ -164,14 +164,14 @@ public class PasswordInitActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         if (getIntent() == null || getIntent().getExtras() == null) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
         phoneNum = getIntent().getExtras().getString(PHONE_NUM);
         captcha = getIntent().getExtras().getString(CAPTCHA);
         if (TextUtils.isEmpty(phoneNum) || TextUtils.isEmpty(captcha)) {
-            ToastUtil.showShort(getApplicationContext(), "数据传递有误");
+            ToastUtil.showShort(getApplication(), "数据传递有误");
             return;
         }
 
@@ -202,20 +202,20 @@ public class PasswordInitActivity extends BaseActivity {
 
         //密码长度验证
         if (password.length() < 6 || password.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "密码长度为6-24位");
             return false;
         }
 
         //确认密码长度验证
         //密码长度验证
         if (passwordAgain.length() < 6 || passwordAgain.length() > 24) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码长度为6-24位");
+            ToastUtil.showShort(getApplication(), "确认密码长度为6-24位");
             return false;
         }
 
         //两次密码是否一致
         if (!password.equals(passwordAgain)) {
-            ToastUtil.showShort(getApplicationContext(), "确认密码不一致");
+            ToastUtil.showShort(getApplication(), "确认密码不一致");
             return false;
         }
 
@@ -330,7 +330,7 @@ public class PasswordInitActivity extends BaseActivity {
                     onFailure(new QSCustomException("注册异常，请稍后再试"));
                 }
             }
-        }, httpTag);
+        }, httpTag, PasswordInitActivity.this);
 
     }
 

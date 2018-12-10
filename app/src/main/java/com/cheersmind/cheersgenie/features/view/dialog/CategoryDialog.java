@@ -170,7 +170,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        }, httpTag);
+        }, httpTag, getContext());
     }
 
     @Override

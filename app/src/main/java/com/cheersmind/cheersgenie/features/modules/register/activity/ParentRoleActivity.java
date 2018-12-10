@@ -80,7 +80,7 @@ public class ParentRoleActivity extends BaseActivity {
     protected void onInitData() {
         classNum = getIntent().getStringExtra(CLASS_NUM);
         if (TextUtils.isEmpty(classNum))  {
-            ToastUtil.showShort(getApplicationContext(), "班级号不能为空");
+            ToastUtil.showShort(getApplication(), "班级号不能为空");
             return;
         }
     }
@@ -154,7 +154,7 @@ public class ParentRoleActivity extends BaseActivity {
     private void doNext() {
         //家长角色非自己
         if (parentRole == Dictionary.PARENT_ROLE_MYSELF) {
-            ToastUtil.showShort(getApplicationContext(), "请选择您的身份");
+            ToastUtil.showShort(getApplication(), "请选择您的身份");
             return;
         }
 

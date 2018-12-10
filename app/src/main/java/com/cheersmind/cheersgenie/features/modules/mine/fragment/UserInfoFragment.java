@@ -239,7 +239,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                     onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -277,7 +277,7 @@ public class UserInfoFragment extends TakePhotoFragment {
                     emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
             }
-        }, httpTag);
+        }, httpTag, getActivity());
     }
 
     /**
@@ -496,7 +496,9 @@ public class UserInfoFragment extends TakePhotoFragment {
                 EventBus.getDefault().post(new ModifyNicknameEvent(userInfo));
 
                 //提示
-                ToastUtil.showShort(context, "修改成功");
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), "修改成功");
+                }
 
             }
         });

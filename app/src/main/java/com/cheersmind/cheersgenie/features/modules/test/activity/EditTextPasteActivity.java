@@ -130,7 +130,7 @@ public class EditTextPasteActivity extends Activity {
                         }
 
                     } else {
-                        ToastUtil.showShort(getApplicationContext(), "您粘贴的内容不符合格式【"+ pasteContent +"】");
+                        ToastUtil.showShort(getApplication(), "您粘贴的内容不符合格式【"+ pasteContent +"】");
                     }
                 }
             });
@@ -218,7 +218,7 @@ public class EditTextPasteActivity extends Activity {
                     CharSequence content =
                             mClipboardManager.getPrimaryClip().getItemAt(0).getText();
 //                    Log.d("TAG", "复制、剪切的内容为：" + content);
-                    ToastUtil.showShort(getApplicationContext(), "内容：" + content);
+                    ToastUtil.showShort(getApplication(), "内容：" + content);
                     System.out.println("内容：" + content);
                     pasteContent = content.toString();
                 }
@@ -268,7 +268,7 @@ public class EditTextPasteActivity extends Activity {
                             //验证码输入结束的处理
                             if (position == etCaptchaNumList.size() - 1) {
 //                                captchaInputComplete();
-                                ToastUtil.showShort(getApplicationContext(), "输入完成");
+                                ToastUtil.showShort(getApplication(), "输入完成");
                             } else {
                                 //跳转到下一个数字编辑框
                                 toNextEdit();

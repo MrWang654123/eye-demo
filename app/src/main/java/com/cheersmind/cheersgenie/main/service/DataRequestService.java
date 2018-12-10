@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.service;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -75,7 +76,7 @@ public class DataRequestService {
      * @param url 访问地址
      * @param callback 回调
      */
-    private void doGet(String url, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doGet(String url, final BaseService.ServiceCallback callback, String httpTag, final Context context) {
         BaseService.get(url, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -90,7 +91,7 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
 
@@ -102,7 +103,8 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, Map<String,Object> params, boolean isFormType, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doPost(String url, Map<String,Object> params, boolean isFormType, 
+                        final BaseService.ServiceCallback callback, String httpTag, final Context context) {
         BaseService.post(url, params, isFormType, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -117,7 +119,7 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        },httpTag);
+        },httpTag, context);
     }
 
     /**
@@ -127,7 +129,8 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, JSONObject params, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doPost(String url, JSONObject params, final BaseService.ServiceCallback callback, 
+                        String httpTag, final Context context) {
         BaseService.post(url, params, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -142,7 +145,7 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
 
@@ -153,7 +156,8 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, Map<String,File> params, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doPost(String url, Map<String,File> params, final BaseService.ServiceCallback callback, 
+                        String httpTag, final Context context) {
         BaseService.post(url, params, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -168,7 +172,7 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
 
@@ -179,7 +183,8 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPut(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doPut(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, 
+                       String httpTag, final Context context) {
         BaseService.put(url,params, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -194,7 +199,7 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
     /**
@@ -204,7 +209,8 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPatch(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, String httpTag) {
+    private void doPatch(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, 
+                         String httpTag, final Context context) {
         BaseService.patch(url,params, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -219,17 +225,18 @@ public class DataRequestService {
                     callback.onResponse(obj);
                 }
             }
-        }, httpTag);
+        }, httpTag, context);
     }
 
 
     //获取孩子关注主题列表
-    public void loadChildTopicList(String childId,int offset, int limit, final BaseService.ServiceCallback callback, String httpTag){
+    public void loadChildTopicList(String childId,int offset, int limit, 
+                                   final BaseService.ServiceCallback callback, String httpTag, final Context context){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST
                 .replace("{child_id}", childId)
                 .replace("{page}",String.valueOf(offset))
                 .replace("{size}",String.valueOf(limit));
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -241,21 +248,23 @@ public class DataRequestService {
      * @param size 页长度
      * @param callback 回调 回调
      */
-    public void loadChildTopicListByStatus(String childId,int status, int page, int size, final BaseService.ServiceCallback callback, String httpTag){
+    public void loadChildTopicListByStatus(String childId,int status, int page, int size, 
+                                           final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST_BY_STATUS
                 .replace("{child_id}", childId)
                 .replace("{status}", String.valueOf(status))
                 .replace("{page}",String.valueOf(page))
                 .replace("{size}",String.valueOf(size));
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
     
 
     //获取孩子最后一次使用量表 V2
-    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, String httpTag){
+    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, 
+                                     String httpTag, Context context){
         String url = HttpConfig.URL_DIMENSION_LATEST_V2
                 .replace("{child_id}",childId);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -264,7 +273,8 @@ public class DataRequestService {
      * @param openDimensionDto dto
      * @param callback 回调
      */
-    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback, 
+                                      String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_DIMENSION_START_V2
                 .replace("{child_id}",openDimensionDto.getChildId())
                 .replace("{exam_id}",openDimensionDto.getExamId())
@@ -272,17 +282,17 @@ public class DataRequestService {
                 .replace("{dimension_id}",openDimensionDto.getDimensionId());
         Map<String,Object> map = new HashMap<>();
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
     //获取孩子分量表下的题目列表V2
-    public void getChildQuestionsV2(String child_dimension_id,int page,int size,final BaseService.ServiceCallback callback, String httpTag){
+    public void getChildQuestionsV2(String child_dimension_id,int page,int size,final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_DIMENSION_QUESTION_V2
                 .replace("{child_dimension_id}",child_dimension_id)
                 .replace("{page}",String.valueOf(page))
                 .replace("{size}",String.valueOf(size));
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -297,14 +307,14 @@ public class DataRequestService {
      */
     public void getTopicReportByRelation(String childId, String examId,
                                          String relationId, String relationType, String sampleId,
-                                         final BaseService.ServiceCallback callback, String httpTag){
+                                         final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_TOPIC_REPORT_V2
                 .replace("{exam_id}",examId)
                 .replace("{child_id}", childId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{sample_id}", sampleId);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -313,9 +323,9 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void getUpdateNotification(final BaseService.ServiceCallback callback, String httpTag){
+    public void getUpdateNotification(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_UPDATE_NOTIFICATION;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -324,9 +334,9 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void getServerTime(final BaseService.ServiceCallback callback, String httpTag){
+    public void getServerTime(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_SERVER_TIME;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -336,7 +346,7 @@ public class DataRequestService {
      * @param httpTag 通信标记
      * @throws QSCustomException 自定义异常
      */
-    public void postSendMessageCaptcha(MessageCaptchaDto dto, final BaseService.ServiceCallback callback, String httpTag) throws QSCustomException {
+    public void postSendMessageCaptcha(MessageCaptchaDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context) throws QSCustomException {
         String url = HttpConfig.URL_PHONE_CAPTCHA;
 //        {
 //            "mobile":"15808082221",         //手机号(必填)，检验手机的合法性
@@ -374,7 +384,7 @@ public class DataRequestService {
             map.put("verification_code", dto.getImageCaptcha());
         }
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
     /**
@@ -382,10 +392,10 @@ public class DataRequestService {
      * @param classNum 班级号
      * @param callback 回调
      */
-    public void getClassInfoByClassNum(String classNum, final BaseService.ServiceCallback callback, String httpTag){
+    public void getClassInfoByClassNum(String classNum, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CLASS_INFO
                 .replace("{group_no}",classNum);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -394,7 +404,7 @@ public class DataRequestService {
      * @param dto 传参
      * @param callback 回调
      */
-    public void putBindPhoneNum(BindPhoneNumDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void putBindPhoneNum(BindPhoneNumDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_BIND_PHONE_NUM;
 //        {
 //            "mobile":"string",            //手机号（必填）
@@ -410,7 +420,7 @@ public class DataRequestService {
         map.put("area_code", dto.getAreaCode());
         map.put("session_id", dto.getSessionId());
 
-        doPut(url, map, callback, httpTag);
+        doPut(url, map, callback, httpTag, context);
     }
 
 
@@ -419,7 +429,7 @@ public class DataRequestService {
      * @param thirdLoginDto 传参
      * @param callback 回调
      */
-    public void postUcThirdLogin(ThirdLoginDto thirdLoginDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postUcThirdLogin(ThirdLoginDto thirdLoginDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_UC_THIRD_LOGIN_V2;
 //        {
 //            "open_id":"",                   //第三方平台ID(必填)
@@ -444,7 +454,7 @@ public class DataRequestService {
         map.put("device_desc", thirdLoginDto.getDeviceDesc());
         map.put("device_id", thirdLoginDto.getDeviceId());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
@@ -453,7 +463,7 @@ public class DataRequestService {
      * @param phoneNumLoginDto 传参
      * @param callback 回调
      */
-    public void postPhoneNumLogin(PhoneNumLoginDto phoneNumLoginDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postPhoneNumLogin(PhoneNumLoginDto phoneNumLoginDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_PHONE_NUM_LOGIN;
 //        {
 //            "mobile":"string",          //手机号（必填）
@@ -473,7 +483,7 @@ public class DataRequestService {
         map.put("device_id", phoneNumLoginDto.getDeviceId());
         map.put("session_id", phoneNumLoginDto.getSessionId());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
     /**
@@ -481,7 +491,7 @@ public class DataRequestService {
      * @param accountLoginDto 传参
      * @param callback 回调
      */
-    public void postAccountLogin(AccountLoginDto accountLoginDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postAccountLogin(AccountLoginDto accountLoginDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_ACCOUNT_LOGIN;
 //        {
 //            "account":"",               //用户名或工号
@@ -508,7 +518,7 @@ public class DataRequestService {
         map.put("device_desc", accountLoginDto.getDeviceDesc());
         map.put("device_id", accountLoginDto.getDeviceId());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
@@ -517,7 +527,7 @@ public class DataRequestService {
      * @param dto 传参
      * @param callback 回调
      */
-    public void postRegister(RegisterDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postRegister(RegisterDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_PHONE_MESSAGE_REGISTER;
 //        {
 //            "mobile":"string",            //手机号(必填)
@@ -552,7 +562,7 @@ public class DataRequestService {
         }
         map.put("session_id", dto.getSessionId());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
     
 
@@ -562,7 +572,7 @@ public class DataRequestService {
      * @param callback 回调 回调
      * @param httpTag 通信标记
      */
-    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void getArticles(ArticleDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_ARTICLES;
 
         Map<String, Object> params = new HashMap<>();
@@ -586,7 +596,7 @@ public class DataRequestService {
         //拼接参数
         url = BaseService.settingGetParams(url, params);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -594,13 +604,13 @@ public class DataRequestService {
      * @param baseDto 通用dto
      * @param callback 回调
      */
-    public void getHotArticles(BaseDto baseDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void getHotArticles(BaseDto baseDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_HOT_ARTICLES
                 .replace("{page}", baseDto.getPage() +"")
                 .replace("{size}", baseDto.getSize() + "");
 //        参数：page、size
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -608,13 +618,13 @@ public class DataRequestService {
      * @param dto “我的”dto
      * @param callback 回调
      */
-    public void getMyFavorite(MineDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void getMyFavorite(MineDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MINE_FAVORITE
                 .replace("{user_id}", dto.getUserId() +"")
                 .replace("{page}", dto.getPage() +"")
                 .replace("{size}", dto.getSize() + "");
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -622,11 +632,11 @@ public class DataRequestService {
      * @param articleId 文章ID
      * @param callback 回调
      */
-    public void getArticleDetail(String articleId, final BaseService.ServiceCallback callback, String httpTag){
+    public void getArticleDetail(String articleId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_ARTICLE_DETAIL
                 .replace("{articleId}", articleId);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -634,14 +644,14 @@ public class DataRequestService {
      * @param dto 评论dto
      * @param callback 回调
      */
-    public void getCommentList(CommentDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void getCommentList(CommentDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_ARTICLE_COMMENT
                 .replace("{id}", dto.getId())
                 .replace("{type}", dto.getType()+"")
                 .replace("{page}", dto.getPage() +"")
                 .replace("{size}", dto.getSize() + "");
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
     
 
@@ -651,11 +661,11 @@ public class DataRequestService {
      * @param callback 回调 回调
      * @param httpTag 通信标记
      */
-    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback, String httpTag){
+    public void postDoFavorite(String articleId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_FAVORITE
                 .replace("{articleId}", articleId);
 
-        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag, context);
     }
 
     /**
@@ -663,11 +673,11 @@ public class DataRequestService {
      * @param articleId 文章ID
      * @param callback 回调
      */
-    public void postDoLike(String articleId, final BaseService.ServiceCallback callback, String httpTag){
+    public void postDoLike(String articleId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_LIKE
                 .replace("{articleId}", articleId);
 
-        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag, context);
     }
 
 
@@ -678,7 +688,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void postDoComment(String articleId, String content, final BaseService.ServiceCallback callback, String httpTag){
+    public void postDoComment(String articleId, String content, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_DO_COMMENT
                 .replace("{articleId}", articleId);
 //        {
@@ -687,7 +697,7 @@ public class DataRequestService {
         Map<String, Object> map = new HashMap<>();
         map.put("comment_info", content);
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
@@ -701,7 +711,7 @@ public class DataRequestService {
      */
     public void postQuestionAnswersSubmit(String childDimensionId, int costedTime,
                                           Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback,
-                                          String httpTag){
+                                          String httpTag, Context context){
         String url = HttpConfig.URL_QUESTIONS_ANSWERS_SUBMIT
                 .replace("{child_dimension_id}",childDimensionId);
         Map<String,Object> map = new HashMap<>();
@@ -718,7 +728,7 @@ public class DataRequestService {
             return;
         }
 
-        doPost(url, jsonObject, callback, httpTag);
+        doPost(url, jsonObject, callback, httpTag, context);
     }
 
 
@@ -732,7 +742,7 @@ public class DataRequestService {
      */
     public void postQuestionAnswersSave(String childDimensionId, int costedTime,
                                         Collection<AnswerDto> answerDtos, final BaseService.ServiceCallback callback,
-                                        String httpTag){
+                                        String httpTag, Context context){
         String url = HttpConfig.URL_QUESTIONS_ANSWERS_SAVE
                 .replace("{child_dimension_id}",childDimensionId);
         Map<String,Object> map = new HashMap<>();
@@ -749,25 +759,25 @@ public class DataRequestService {
             return;
         }
 
-        doPost(url, jsonObject, callback, httpTag);
+        doPost(url, jsonObject, callback, httpTag, context);
     }
 
     /**
      * 获取用户详情V2
      * @param callback 回调
      */
-    public void getUserInfoV2 (final BaseService.ServiceCallback callback, String httpTag){
+    public void getUserInfoV2 (final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_USER_INFO_V2;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
      * 获取孩子列表V2
      * @param callback 回调
      */
-    public void getChildListV2(final BaseService.ServiceCallback callback, String httpTag) {
+    public void getChildListV2(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_LIST_V2;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -780,13 +790,13 @@ public class DataRequestService {
      * @param httpTag 通信标记
      */
     public void getChildDimension(String childId, String topicId, String dimensionId,
-                                  final BaseService.ServiceCallback callback, String httpTag) {
+                                  final BaseService.ServiceCallback callback, String httpTag, Context context) {
         String url = HttpConfig.URL_CHILD_DIMENSION
                 .replace("{children}", childId)
                 .replace("{topics}", topicId)
                 .replace("{dimensions}", dimensionId);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -798,7 +808,7 @@ public class DataRequestService {
      * @param httpTag 通信标记
      */
     public void patchModifyPassword(String passwordOld, String passwordNew,
-                                    final BaseService.ServiceCallback callback, String httpTag){
+                                    final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MODIFY_PASSWORD;
 //        {
 //            "old_password":"",      //旧密码，加密
@@ -811,7 +821,7 @@ public class DataRequestService {
         map.put("old_password", passwordOldMd5);
         map.put("new_password", passwordNewMd5);
 
-        doPatch(url, map, callback, httpTag);
+        doPatch(url, map, callback, httpTag, context);
     }
 
 
@@ -820,7 +830,7 @@ public class DataRequestService {
      * @param dto 传参
      * @param callback 回调
      */
-    public void patchResetPassword(ResetPasswordDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void patchResetPassword(ResetPasswordDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_RESET_PASSWORD;
 //        {
 //            "mobile":"string",            //手机号（必填）
@@ -840,7 +850,7 @@ public class DataRequestService {
         map.put("area_code", dto.getArea_code());
         map.put("session_id", dto.getSessionId());
 
-        doPatch(url, map, callback, httpTag);
+        doPatch(url, map, callback, httpTag, context);
     }
 
 
@@ -848,11 +858,11 @@ public class DataRequestService {
      * 查询已绑定的第三方平台
      * @param callback 回调
      */
-    public void getThirdBindPlatform(final BaseService.ServiceCallback callback, String httpTag){
+    public void getThirdBindPlatform(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_THIRD_PLATPORM
                 .replace("{tenant}", Dictionary.Tenant_CheersMind);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -861,7 +871,7 @@ public class DataRequestService {
      * @param bindDto 传参
      * @param callback 回调
      */
-    public void postThirdPlatBind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postThirdPlatBind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_BIND_THIRD_PLATPORM;
 //        {
 //            "open_id":"",               //第三方平台给用户分配的Id,如微信、QQ的openId
@@ -879,7 +889,7 @@ public class DataRequestService {
         }
         map.put("tenant", bindDto.getTenant());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
@@ -888,7 +898,7 @@ public class DataRequestService {
      * @param bindDto 传参
      * @param callback 回调
      */
-    public void postThirdPlatUnbind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postThirdPlatUnbind(ThirdPlatBindDto bindDto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_UNBIND_THIRD_PLATPORM;
 //        {
 //            "open_id":"",               //第三方平台给用户分配的Id,如微信、QQ的openId
@@ -898,54 +908,54 @@ public class DataRequestService {
         map.put("open_id", bindDto.getOpenId());
         map.put("plat_source", bindDto.getPlatSource());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
     /**
      * 获取分类列表
      * @param callback 回调
      */
-    public void getCategories(final BaseService.ServiceCallback callback, String httpTag){
+    public void getCategories(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CATEGORIES;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
      * 查询当前签到状态
      * @param callback 回调
      */
-    public void getDailySignInStatus(final BaseService.ServiceCallback callback, String httpTag){
+    public void getDailySignInStatus(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_DAILY_SIGN_IN_STATUS;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
      * 签到
      * @param callback 回调
      */
-    public void postDailySignIn(final BaseService.ServiceCallback callback, String httpTag){
+    public void postDailySignIn(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_DAILY_SIGN_IN;
-        doPost(url, new HashMap<String, Object>(), false, callback, httpTag);
+        doPost(url, new HashMap<String, Object>(), false, callback, httpTag, context);
     }
 
     /**
      * 获取总积分
      * @param callback 回调
      */
-    public void getIntegralTotalScore(final BaseService.ServiceCallback callback, String httpTag){
+    public void getIntegralTotalScore(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_INTEGRAL_TOTAL_SCORE;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
      * 获取积分列表
      * @param callback 回调
      */
-    public void getIntegralList(int page, int size, final BaseService.ServiceCallback callback, String httpTag){
+    public void getIntegralList(int page, int size, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_INTEGRALS
                 .replace("{page}", page + "")
                 .replace("{size}", size + "");
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
     
 
@@ -958,13 +968,13 @@ public class DataRequestService {
      * @param httpTag 通信标记
      * @param callback 回调 回调
      */
-    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String httpTag){
+    public void getReportV2(String childExamId,String relationId,String relationType,int compareId,final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_REPORT_V2
                 .replace("{child_exam_id}",childExamId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{compare_id}", compareId +"");
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -977,13 +987,13 @@ public class DataRequestService {
      * @param callback 回调 回调
      */
     public void getReportRecommendArticle(String childExamId,String relationId,String relationType,int compareId,
-                                          final BaseService.ServiceCallback callback, String httpTag){
+                                          final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_REPORT_RECOMMEND_ARTICLE
                 .replace("{child_exam_id}",childExamId)
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{compare_id}", compareId +"");
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -994,11 +1004,11 @@ public class DataRequestService {
      * @param callback 回调
      */
     public void getHistoryReport(String topicId,String childId,
-                                 final BaseService.ServiceCallback callback, String httpTag){
+                                 final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_HISTORY_REPORT
                 .replace("{topic_id}",topicId)
                 .replace("{child_id}", childId);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1007,10 +1017,10 @@ public class DataRequestService {
      * @param topicId 话题ID
      * @param callback 回调
      */
-    public void getTopicDetail(String topicId,final BaseService.ServiceCallback callback, String httpTag){
+    public void getTopicDetail(String topicId,final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_TOPIC_INFO
                 .replace("{topic_id}",topicId);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
     /**
@@ -1019,11 +1029,11 @@ public class DataRequestService {
      * @param size 页长
      * @param callback 回调
      */
-    public void getMessage(int page, int size, final BaseService.ServiceCallback callback, String httpTag){
+    public void getMessage(int page, int size, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MESSAGE
                 .replace("{page}", page + "")
                 .replace("{size}", size + "");
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1031,9 +1041,9 @@ public class DataRequestService {
      * 获取新消息条数
      * @param callback 回调
      */
-    public void getNewMessageCount(final BaseService.ServiceCallback callback, String httpTag){
+    public void getNewMessageCount(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_NEW_MESSAGE_COUNT;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1042,10 +1052,10 @@ public class DataRequestService {
      * @param messageId 消息ID
      * @param callback 回调
      */
-    public void putMarkRead(long messageId, final BaseService.ServiceCallback callback, String httpTag){
+    public void putMarkRead(long messageId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MARK_READ
                 .replace("{message_id}", messageId +"");
-        doPut(url, new HashMap<String, Object>(), callback, httpTag);
+        doPut(url, new HashMap<String, Object>(), callback, httpTag, context);
     }
 
 
@@ -1054,7 +1064,7 @@ public class DataRequestService {
      * @param dto 传参
      * @param callback 回调
      */
-    public void postAccountsSessions(CreateSessionDto dto, final BaseService.ServiceCallback callback, String httpTag){
+    public void postAccountsSessions(CreateSessionDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CREATE_SESSION;
 //        {
 //            "session_type":"int",   //会话类型，0：注册(手机)，1：登录(帐号、密码登录)，2：手机找回密码，3：登录(短信登录)，4:下发短信验证码
@@ -1066,7 +1076,7 @@ public class DataRequestService {
         map.put("device_id", dto.getDeviceId());
         map.put("tenant", dto.getTenant());
 
-        doPost(url, map, false, callback, httpTag);
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 
@@ -1233,9 +1243,9 @@ public class DataRequestService {
      * 获取用户的手机号
      * @param callback 回调
      */
-    public void getUserPhoneNum (final BaseService.ServiceCallback callback, String httpTag){
+    public void getUserPhoneNum (final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_USER_PHONE_NUM;
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1244,7 +1254,7 @@ public class DataRequestService {
      * @param file 图片文件
      * @param callback 回调
      */
-    public void postModifyProfile(File file, final BaseService.ServiceCallback callback, String httpTag){
+    public void postModifyProfile(File file, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MODIFY_PROFILE;
 
 //        （multipart/form-data）
@@ -1255,7 +1265,7 @@ public class DataRequestService {
         Map<String, File> map = new HashMap<>();
         map.put("image", file);
 
-        doPost(url, map, callback, httpTag);
+        doPost(url, map, callback, httpTag, context);
     }
 
     /**
@@ -1265,13 +1275,13 @@ public class DataRequestService {
      * @param code code
      * @param callback 回调
      */
-    public void getWeChartToken(String appId,String appSecret,String code,final BaseService.ServiceCallback callback, String httpTag){
+    public void getWeChartToken(String appId,String appSecret,String code,final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_WX_GET_TOKEN
                 .replace("{appid}", appId)
                 .replace("{secret}", appSecret)
                 .replace("{code}", code);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1280,7 +1290,7 @@ public class DataRequestService {
      * @param nickname 昵称
      * @param callback 回调
      */
-    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback, String httpTag){
+    public void patchModifyNickname(String nickname, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_MODIFY_USER_INFO;
 //        {
 //            "nick_name":"string"        //用户昵称（必填），3-8位，数字、英文、中文
@@ -1288,7 +1298,7 @@ public class DataRequestService {
         Map<String, Object> map = new HashMap<>();
         map.put("nick_name", nickname);
 
-        doPatch(url, map, callback, httpTag);
+        doPatch(url, map, callback, httpTag, context);
     }
 
 
@@ -1300,13 +1310,13 @@ public class DataRequestService {
      * @param callback 回调 回调
      */
     public void getVideoRealUrl(String videoId, String sign, String curTimestamp,
-                                final BaseService.ServiceCallback callback, String httpTag){
+                                final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_VIDEO_REAL_URL
                 .replace("{video_id}",videoId)
                 .replace("{sign}",sign)
                 .replace("{t}",curTimestamp);
 
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 
@@ -1316,10 +1326,10 @@ public class DataRequestService {
      * @param callback 回调 回调
      * @param httpTag 通信标记
      */
-    public void getTaskList(String childId, final BaseService.ServiceCallback callback, String httpTag){
+    public void getTaskList(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_TASK_LIST
                 .replace("{child_id}",childId);
-        doGet(url, callback, httpTag);
+        doGet(url, callback, httpTag, context);
     }
 
 }
