@@ -193,7 +193,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
         //初始化数据
         onInitData();
 
-        fixFocusedViewLeak(getApplication());
+//        fixFocusedViewLeak(getApplication());
     }
 
     /**

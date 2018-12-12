@@ -56,7 +56,7 @@ android {
             manifestPlaceholders = [CHANNEL_NAME: "QIHU360"]
         }
         tencent {
-                manifestPlaceholders = [CHANNEL_NAME: "TENCENT"]
+            manifestPlaceholders = [CHANNEL_NAME: "TENCENT"]
         }
         huawei {
             manifestPlaceholders = [CHANNEL_NAME: "HUAWEI"]
