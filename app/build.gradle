@@ -52,13 +52,27 @@ android {
         normal {
             manifestPlaceholders = [CHANNEL_NAME: "NORMAL"]
         }
-        umeng {
-            manifestPlaceholders = [CHANNEL_NAME: "UMENG"]
-        }
         qihu360 {
             manifestPlaceholders = [CHANNEL_NAME: "QIHU360"]
         }
-
+        tencent {
+                manifestPlaceholders = [CHANNEL_NAME: "TENCENT"]
+        }
+        huawei {
+            manifestPlaceholders = [CHANNEL_NAME: "HUAWEI"]
+        }
+        vivo {
+            manifestPlaceholders = [CHANNEL_NAME: "VIVO"]
+        }
+        oppo {
+            manifestPlaceholders = [CHANNEL_NAME: "OPPO"]
+        }
+        xiaomi {
+            manifestPlaceholders = [CHANNEL_NAME: "XIAOMI"]
+        }
+//        umeng {
+//            manifestPlaceholders = [CHANNEL_NAME: "UMENG"]
+//        }
     }
 
     buildTypes {
