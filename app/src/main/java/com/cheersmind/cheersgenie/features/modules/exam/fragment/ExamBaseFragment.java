@@ -173,6 +173,15 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
                 //查看话题报告
                 ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+
+            } else if (view.getId() == R.id.iv_expand) {//伸缩按钮
+                if (topicInfoEntity != null) {
+                    if (topicInfoEntity.isExpanded()) {
+                        adapter.collapse(position);
+                    } else {
+                        adapter.expand(position);
+                    }
+                }
             }
 
         }

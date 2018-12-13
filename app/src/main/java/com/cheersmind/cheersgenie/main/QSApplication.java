@@ -435,7 +435,7 @@ public class QSApplication extends LitePalApplication {
             Class cls = Class.forName("android.sec.clipboard.ClipboardUIManager");
             Method m = cls.getDeclaredMethod("getInstance", Context.class);
             m.setAccessible(true);
-            m.invoke(null, this);
+            m.invoke(null, context);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

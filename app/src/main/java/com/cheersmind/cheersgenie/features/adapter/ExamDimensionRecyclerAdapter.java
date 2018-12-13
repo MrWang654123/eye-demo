@@ -28,7 +28,6 @@ import java.util.List;
  */
 public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapter {
 
-
     public ExamDimensionRecyclerAdapter(Fragment fragment, List<MultiItemEntity> data) throws QSCustomException {
         super(fragment, data);
 
@@ -74,10 +73,8 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 
                 //有效期
                 String dateStr = topicInfo.getEndTime();//ISO8601 时间字符串
-                SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 try {
                     Date date = formatIso8601.parse(dateStr);
-                    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
                     String normalDateStr = formatNormal.format(date);
                     helper.setText(R.id.tv_end_date, fragment.getResources().getString(R.string.exam_topic_endtime,normalDateStr));
 
@@ -102,21 +99,19 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 //伸缩按钮（网格模式隐藏）
                 helper.getView(R.id.iv_expand).setVisibility(View.GONE);
                 helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
-                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        int pos = helper.getAdapterPosition();
-                        if (topicInfo.isExpanded()) {
-                            collapse(pos);
-                        } else {
-//                            if (pos % 3 == 0) {
-//                                expandAll(pos, false);
-//                            } else {
-                            expand(pos);
-//                            }
-                        }
-                    }
-                });
+                //伸缩按钮监听
+                helper.addOnClickListener(R.id.iv_expand);
+//                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        int pos = helper.getAdapterPosition();
+//                        if (topicInfo.isExpanded()) {
+//                            collapse(pos);
+//                        } else {
+//                            expand(pos);
+//                        }
+//                    }
+//                });
 
                 break;
             }

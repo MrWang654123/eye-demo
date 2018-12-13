@@ -49,15 +49,18 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
     //默认Glide处理参数
     protected RequestOptions defaultOptions;
 
-    protected RequestOptions blurOptions;
+    private RequestOptions blurOptions;
 
     //标题最大宽度
-    protected int titleMaxWidth;
+    int titleMaxWidth;
+
+    SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
      * 初始化默认Glide处理参数
      */
-    protected void initRequestOptions(Context context) {
+    private void initRequestOptions(Context context) {
         MultiTransformation<Bitmap> multi = new MultiTransformation<>(
                 new CenterCrop(),
                 new RoundedCornersTransformation(DensityUtil.dip2px(context, 3), 0, RoundedCornersTransformation.CornerType.ALL));
