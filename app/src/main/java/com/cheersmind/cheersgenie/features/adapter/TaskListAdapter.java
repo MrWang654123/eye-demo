@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class TaskListAdapter extends BaseQuickAdapter<TaskItemEntity, BaseViewHolder> {
     //日期格式
-    private final static String DATETIME_FORMAT = "yyyy-MM-dd";////hh:mm a, dd-MMM-yyyy
+    private final static String DATETIME_FORMAT = "yyyy年 MM月 dd日";////hh:mm a, dd-MMM-yyyy
 
 
     public TaskListAdapter(int layoutResId, List<TaskItemEntity> feedList) {

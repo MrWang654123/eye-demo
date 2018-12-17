@@ -35,8 +35,8 @@
                     android:layout_marginTop="45dp"
                     android:layout_marginBottom="10dp"
                     android:lineSpacingMultiplier="1.2"
-                    android:textColor="@color/color_666666"
-                    android:textStyle="bold"
+                    android:textColor="@color/color_333333"
+                    android:textStyle="normal"
                     android:gravity="center_horizontal"
                     android:text="升级到封建时代减肥就受到副食店解放江苏大丰"/>
                 <!--升级到封建时代减肥就受到副食店解放江苏大丰-->

@@ -84,12 +84,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_333333"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginBottom="20dp"
                         android:lineSpacingMultiplier="1.2"
                         android:text="如何培养学生的学习习惯水电费水电费快速的开发" />
                     <!--android:gravity="center_horizontal"-->
@@ -109,7 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="25dp"
+                        android:layout_marginBottom="30dp"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp">
                         <!--android:gravity="center_horizontal"-->
@@ -180,14 +180,14 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="30dp">
 
                         <WebView
                             android:id="@+id/web_article_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="10dp"
-                            android:layout_marginTop="5dp"
                             android:layout_marginLeft="6dp"
                             android:layout_marginRight="6dp"
                             android:scrollbars="none">
@@ -198,20 +198,24 @@
                             android:id="@+id/ll_init_content_tip"
                             android:layout_width="match_parent"
                             android:layout_height="1000dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
                             android:background="@color/white"
                             android:gravity="center_horizontal"
+                            android:paddingBottom="15dp"
                             android:paddingTop="35dp"
-                            android:paddingBottom="15dp">
+                            android:visibility="visible">
 
                             <com.wang.avi.AVLoadingIndicatorView
                                 android:id="@+id/ldv_init_count_tip"
+                                style="@style/AVLoadingIndicatorView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
-                                style="@style/AVLoadingIndicatorView"
                                 android:visibility="visible"
-                                app:indicatorName="BallPulseIndicator"
-                                app:indicatorColor="@color/colorAccent"/>
+                                app:indicatorColor="@color/colorAccent"
+                                app:indicatorName="BallPulseIndicator" />
 
                         </LinearLayout>
 
@@ -234,7 +238,7 @@
                         android:id="@+id/rl_evaluation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="30dp"
                         android:background="#4ec4d2"
                         android:layerType="hardware"><!--使用硬件加速-->
 
@@ -483,7 +487,7 @@
                                 android:layout_height="15dp"
                                 android:layout_marginLeft="23dp"
                                 android:layout_marginTop="6dp"
-                                android:background="@drawable/shape_corner_ffcc00_8dp"
+                                android:background="@drawable/shape_corner_fe8c00_8dp"
                                 android:gravity="center"
                                 android:paddingLeft="6dp"
                                 android:paddingRight="6dp"
@@ -530,7 +534,7 @@
                             android:gravity="center"
                             android:textSize="11sp"
                             android:textColor="@color/white"
-                            android:background="@drawable/shape_corner_ffcc00_8dp"
+                            android:background="@drawable/shape_corner_fe8c00_8dp"
                             android:text="0" />
 
                     </FrameLayout>

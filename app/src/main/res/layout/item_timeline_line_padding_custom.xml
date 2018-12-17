@@ -52,23 +52,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/color_666666"
-                android:textSize="18sp"
-                android:lineSpacingMultiplier="1.2"
                 android:layout_marginRight="45dp"
-                android:textStyle="bold"
-                tools:text="刷卡机大富科技涉及到福建省地方时电费束带结发"/>
+                android:layout_marginTop="5dp"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/color_333333"
+                android:textSize="17sp"
+                android:textStyle="normal"
+                tools:text="刷卡机大富科技涉及到福建省地方时电费束带结发" />
 
             <LinearLayout
                 android:id="@+id/ll_begin_time"
@@ -81,23 +81,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_corner_ffd604_3dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/color_666666"
+                    android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    android:text="开始"/>
+                    android:text="开始"
+                    android:textColor="@color/color_333333"
+                    android:textSize="13sp" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_begin_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_666666"
                     android:layout_marginLeft="10dp"
-                    android:textStyle="bold"
-                    tools:text="2018-9月-23 12:00"/>
+                    android:textColor="@color/color_333333"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    tools:text="2018-9月-23 12:00" />
 
             </LinearLayout>
 
@@ -112,23 +112,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_corner_ffd604_3dp"
-                    android:textSize="13sp"
-                    android:textColor="@color/color_666666"
+                    android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="3dp"
-                    android:paddingBottom="3dp"
-                    android:text="结束"/>
+                    android:text="结束"
+                    android:textColor="@color/color_333333"
+                    android:textSize="13sp" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_end_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/color_666666"
                     android:layout_marginLeft="10dp"
-                    android:textStyle="bold"
-                    tools:text="2018-9月-23 12:00"/>
+                    android:textColor="@color/color_333333"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    tools:text="2018-9月-23 12:00" />
 
             </LinearLayout>
 
