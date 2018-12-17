@@ -35,7 +35,6 @@ import com.cheersmind.cheersgenie.main.entity.FactorResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
-import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;

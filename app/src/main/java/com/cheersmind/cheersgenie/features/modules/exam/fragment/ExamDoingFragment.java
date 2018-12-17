@@ -91,9 +91,91 @@ public class ExamDoingFragment extends ExamBaseFragment {
 //                    }
 //                }
 
+                /*-------------------------------------------*/
 
-                //是否在当前列表中（搜索功能可能使得当前量表不在当前列表中）
-                boolean existInList = false;
+//                //是否在当前列表中（搜索功能可能使得当前量表不在当前列表中）
+//                boolean existInList = false;
+//                //局部刷新量表对应的视图项
+//                List<MultiItemEntity> data = recyclerAdapter.getData();
+//                if (ArrayListUtil.isNotEmpty(data)) {
+//                    //header模型位置
+////                    int headerPosition = 0;
+//                    TopicInfoEntity topicInfo = null;
+//                    DimensionInfoEntity t = null;
+//
+//                    for (int i = 0; i < data.size(); i++) {
+//                        MultiItemEntity item = data.get(i);
+//                        if (item instanceof TopicInfoEntity) {
+//                            topicInfo = (TopicInfoEntity) item;
+////                            headerPosition = i;
+//
+//                        } else if (item instanceof DimensionInfoEntity) {
+//                            t = (DimensionInfoEntity) item;
+//                        }
+//
+//                        //t不为空
+//                        if (t != null) {
+//                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                            if (t.getTopicId().equals(dimension.getTopicId())
+//                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+//                                //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+//                                //（目前用于开始答题了，但未做答案完成的提交就进入了话题详情页面，判断话题是否开始做过）
+//                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                                if (childTopic == null) {
+//                                    childTopic = new TopicInfoChildEntity();
+//                                    childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+//                                    topicInfo.setChildTopic(childTopic);
+//                                }
+//
+//                                //刷新对应量表的列表项
+//                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+//                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+//
+//                                //标记当前量表存在当前列表中
+//                                existInList = true;
+//
+//                                break;
+//                            }
+//
+//                        }
+//
+//                    }
+//                }
+//
+//                //当前量表不存在当前列表中
+//                if (!existInList) {
+//
+//                    for (int i = 0; i < topicList.size(); i++) {
+//                        TopicInfoEntity topicInfo = topicList.get(i);
+//
+//                        if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+//                            for (DimensionInfoEntity t : topicInfo.getDimensions()) {
+//
+//                                //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                                if (t.getTopicId().equals(dimension.getTopicId())
+//                                        && t.getDimensionId().equals(dimension.getDimensionId())) {
+//
+//                                    //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+//                                    //（目前用于开始答题了，但未做答案完成的提交就进入了话题详情页面，判断话题是否开始做过）
+//                                    TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                                    if (childTopic == null) {
+//                                        childTopic = new TopicInfoChildEntity();
+//                                        childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+//                                        topicInfo.setChildTopic(childTopic);
+//                                    }
+//
+//                                    t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//
+//                                    break;
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+
+                /*-------------------------------------------*/
+
                 //局部刷新量表对应的视图项
                 List<MultiItemEntity> data = recyclerAdapter.getData();
                 if (ArrayListUtil.isNotEmpty(data)) {
@@ -104,6 +186,7 @@ public class ExamDoingFragment extends ExamBaseFragment {
 
                     for (int i = 0; i < data.size(); i++) {
                         MultiItemEntity item = data.get(i);
+
                         if (item instanceof TopicInfoEntity) {
                             topicInfo = (TopicInfoEntity) item;
 //                            headerPosition = i;
@@ -131,9 +214,6 @@ public class ExamDoingFragment extends ExamBaseFragment {
                                 int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
                                 recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
 
-                                //标记当前量表存在当前列表中
-                                existInList = true;
-
                                 break;
                             }
 
@@ -141,38 +221,6 @@ public class ExamDoingFragment extends ExamBaseFragment {
 
                     }
                 }
-
-                //当前量表不存在当前列表中
-                if (!existInList) {
-
-                    for (int i = 0; i < topicList.size(); i++) {
-                        TopicInfoEntity topicInfo = topicList.get(i);
-
-                        if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
-                            for (DimensionInfoEntity t : topicInfo.getDimensions()) {
-
-                                //找出同一个量表，设置孩子量表，然后局部刷新列表项
-                                if (t.getTopicId().equals(dimension.getTopicId())
-                                        && t.getDimensionId().equals(dimension.getDimensionId())) {
-
-                                    //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
-                                    //（目前用于开始答题了，但未做答案完成的提交就进入了话题详情页面，判断话题是否开始做过）
-                                    TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
-                                    if (childTopic == null) {
-                                        childTopic = new TopicInfoChildEntity();
-                                        childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
-                                        topicInfo.setChildTopic(childTopic);
-                                    }
-
-                                    t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
-
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
             }
         }
     }

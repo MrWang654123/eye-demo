@@ -41,8 +41,9 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  */
 public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder> {
 
-    public final static int LAYOUT_TYPE_HEADER = 1;
-    public final static int LAYOUT_TYPE_BODY = 2;
+    public final static int LAYOUT_TYPE_EXAM = 1;//测评
+    public final static int LAYOUT_TYPE_TOPIC = 2;//话题
+    public final static int LAYOUT_TYPE_DIMENSION = 3;//量表
 
     protected Fragment fragment;
 
@@ -55,7 +56,7 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
     int titleMaxWidth;
 
     SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy/MM/dd");
 
     /**
      * 初始化默认Glide处理参数

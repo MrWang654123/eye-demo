@@ -22,6 +22,7 @@ public class ReportRootEntity implements Serializable {
     @InjectMap(name = "report_results")
     private List<ReportResultEntity> reportResults;
 
+    //话题名称
     @InjectMap(name = "topic_name")
     private String topicName;
 

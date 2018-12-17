@@ -1612,7 +1612,10 @@ public class ArticleDetailActivity extends BaseActivity {
                         topicInfoEntity.setTopicId(topicInfo.getTopicId());
                         //测评ID
                         topicInfoEntity.setExamId(dimension.getExamId());
-                        DimensionDetailActivity.startDimensionDetailActivity(ArticleDetailActivity.this, dimension, topicInfoEntity);
+                        DimensionDetailActivity.startDimensionDetailActivity(
+                                ArticleDetailActivity.this, dimension,
+                                topicInfoEntity,
+                                Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
                     }
                 } else {
                     //已锁定

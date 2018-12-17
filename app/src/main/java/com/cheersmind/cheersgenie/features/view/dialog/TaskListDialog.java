@@ -2,24 +2,21 @@ package com.cheersmind.cheersgenie.features.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.TimeLineAdapter;
+import com.cheersmind.cheersgenie.features.adapter.TaskListAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -60,8 +57,6 @@ public class TaskListDialog extends Dialog {
     private TaskListEntity taskListEntity;
     //任务列表项
     private List<TaskItemEntity> taskItems;
-    //任务列表适配器
-    private TimeLineAdapter mTimeLineAdapter;
 
     //操作监听
     private OnOperationListener listener;
@@ -69,10 +64,19 @@ public class TaskListDialog extends Dialog {
     //通信tag
     private String tag = System.currentTimeMillis() + "";
 
+    //recycler子项的点击监听
+    protected BaseQuickAdapter.OnItemClickListener recyclerItemClickListener =  new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            Object item = ((TaskListAdapter) adapter).getItem(position);
+            if (item != null && listener != null) {
+                listener.onOnClickItem(position, ((TaskItemEntity) item).getId());
+                //点击完直接关闭对话框
+                dismiss();
+            }
+        }
+    };
 
-    public TaskListDialog(@NonNull Context context) {
-        super(context, R.style.loading_dialog);
-    }
 
     public TaskListDialog(@NonNull Context context, TaskListEntity taskListEntity, List<TaskItemEntity> taskItems, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
@@ -81,16 +85,6 @@ public class TaskListDialog extends Dialog {
 
 
         this.listener = listener;
-        if (this.listener != null) {
-            //设置对话框cancel监听
-            setOnDismissListener(new OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    TaskListDialog.this.listener.onExit();
-                }
-            });
-        }
-
     }
 
     @Override
@@ -219,13 +213,15 @@ public class TaskListDialog extends Dialog {
 
     /**
      * 刷新视图
-     * @param taskListEntity
-     * @param taskItems
+     * @param taskListEntity 任务列表总数据
+     * @param taskItems 任务子项集合
      */
     private void refreshView(TaskListEntity taskListEntity, List<TaskItemEntity> taskItems) {
         //任务列表
-        mTimeLineAdapter = new TimeLineAdapter(getContext(), taskItems, true);
-        recyclerView.setAdapter(mTimeLineAdapter);
+        TaskListAdapter taskListAdapter = new TaskListAdapter(R.layout.item_timeline_line_padding_custom, taskItems);
+        //设置子项点击监听
+        taskListAdapter.setOnItemClickListener(recyclerItemClickListener);
+        recyclerView.setAdapter(taskListAdapter);
         recyclerView.scrollToPosition(getFirstDoingTaskPosition(taskItems));
 
         //标题
@@ -282,11 +278,6 @@ public class TaskListDialog extends Dialog {
     }
 
 
-    @Override
-    public void setOnDismissListener(@Nullable OnDismissListener listener) {
-        super.setOnDismissListener(listener);
-    }
-
     @OnClick({R.id.iv_close_right})
     public void onViewClick(View v) {
         if (!RepetitionClickUtil.isFastClick()) {
@@ -296,9 +287,6 @@ public class TaskListDialog extends Dialog {
         switch (v.getId()) {
             //右侧关闭按钮
             case R.id.iv_close_right: {
-//                if (listener != null) {
-//                    listener.onExit();
-//                }
                 dismiss();
                 break;
             }
@@ -316,8 +304,8 @@ public class TaskListDialog extends Dialog {
     //操作监听
     public interface OnOperationListener {
 
-        //退出操作
-        void onExit();
+        //点击列表项
+        void onOnClickItem(int position, String id);
     }
 
     @Override
@@ -346,64 +334,64 @@ public class TaskListDialog extends Dialog {
     }
 
 
-    String testTaskStr = "{\n" +
-            "\t\"total\": 1,\n" +
-            "\t\"items\": [{\n" +
-            "\t\t\"seminar_id\": \"b985b695-f773-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\"seminar_name\": \"中学生成长之路\",\n" +
-            "\t\t\"description\": \"中学生成长之路\",\n" +
-            "\t\t\"start_time\": \"2018-12-01T00:00:00.000+0800\",\n" +
-            "\t\t\"end_time\": \"2019-04-19T23:59:59.000+0800\",\n" +
-            "\t\t\"items\": [{\n" +
-            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
-            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 1\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
-            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 0\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
-            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 1\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
-            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 0\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
-            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 1\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
-            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 0\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
-            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 0\n" +
-            "\t\t}, {\n" +
-            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
-            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
-            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
-            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
-            "\t\t\t\"status\": 1\n" +
-            "\t\t}]\n" +
-            "\t}]\n" +
-            "}";
+//    String testTaskStr = "{\n" +
+//            "\t\"total\": 1,\n" +
+//            "\t\"items\": [{\n" +
+//            "\t\t\"seminar_id\": \"b985b695-f773-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\"seminar_name\": \"中学生成长之路\",\n" +
+//            "\t\t\"description\": \"中学生成长之路\",\n" +
+//            "\t\t\"start_time\": \"2018-12-01T00:00:00.000+0800\",\n" +
+//            "\t\t\"end_time\": \"2019-04-19T23:59:59.000+0800\",\n" +
+//            "\t\t\"items\": [{\n" +
+//            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 1\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 0\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 1\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 0\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 1\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 0\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 0\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
+//            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
+//            "\t\t\t\"status\": 1\n" +
+//            "\t\t}]\n" +
+//            "\t}]\n" +
+//            "}";
 
 }

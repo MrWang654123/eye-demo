@@ -40,6 +40,14 @@ public class Dictionary {
 
     //报告数据比较的范围：全国
     public static final int REPORT_COMPARE_AREA_COUNTRY = 0;
+    //报告数据比较的范围：8大区
+    public static final int REPORT_COMPARE_AREA_8_DISTRICT = 1;
+    //报告数据比较的范围：省
+    public static final int REPORT_COMPARE_AREA_PROVINCE = 2;
+    //报告数据比较的范围：市
+    public static final int REPORT_COMPARE_AREA_CITY = 3;
+    //报告数据比较的范围：区
+    public static final int REPORT_COMPARE_AREA_DISTRICT = 4;
     //报告数据比较的范围：学校
     public static final int REPORT_COMPARE_AREA_SCHOOL = 5;
     //报告数据比较的范围：年级
@@ -150,6 +158,8 @@ public class Dictionary {
     public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT = 5;
     //隐藏文章列表的加载更多视图的阈值数量
     public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT_SMALL = 2;
+    //隐藏历史测评列表的加载更多视图的阈值数量
+    public static final int HIDE_HISTORY_EXAM_LOAD_MORE_VIEW_COUNT = 10;
 
     //任务（专题海报）状态：未激活
     public static final int TASK_STATUS_INACTIVE = 0;
@@ -158,4 +168,16 @@ public class Dictionary {
     //任务（专题海报）状态：已完成
     public static final int TASK_STATUS_COMPLETE = 2;
 
+    //从主页进入答题页
+    public static final int FROM_ACTIVITY_TO_QUESTION_MAIN = 1;
+    //从我的智评页进入答题页
+    public static final int FROM_ACTIVITY_TO_QUESTION_MINE = 2;
+
+
+    //报告图表比较ID：全国
+    public static final String REPORT_CHART_COMPARE_ID_COUNTRY = "0";
+    //报告图表比较ID：年级
+    public static final String REPORT_CHART_COMPARE_ID_GRADE = "1";
+    //报告图表比较ID：我
+    public static final String REPORT_CHART_COMPARE_ID_MINE = "2";
 }

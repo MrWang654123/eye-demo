@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_margin_top"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="@color/white"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/exam_list_title_bg">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h,1081:325"
+            fresco:placeholderImage="@drawable/exam_list_title_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            fresco:actualImageScaleType="centerCrop"
+            />
+
+
+        <com.cheersmind.cheersgenie.features.view.CircleProgressBar
+            android:id="@+id/circleProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHeight_percent="0.5"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintVertical_bias="0.5"
+            android:layout_marginLeft="20dp"
+            app:circleWidth="6dp"
+            app:firstColor="#d3d3d3"
+            app:secondColor="#f6de29"
+            app:thirdColor="#f6ae29"/>
+        <!--app:secondColor="#f6de29"-->
+        <!--app:thirdColor="#f6ae29"-->
+        <!--app:secondColor="#3B95C8"-->
+
+        <!--app:layout_constraintHorizontal_bias="0.3"
+            app:layout_constraintVertical_bias="0.2"-->
+        <!--app:layout_constraintWidth_percent=".5"-->
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@+id/circleProgressBar"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/color_666666"
+            android:textSize="20sp"
+            android:text="升级到封建时代肌肤接收对"/>
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+            app:layout_constraintRight_toRightOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintHorizontal_bias="0"
+            android:textSize="14sp"
+            android:textColor="@color/color_666666"
+            android:text="有效期 2018/09/02 - 2018/10-20"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
+
+

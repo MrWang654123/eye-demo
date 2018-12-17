@@ -5,6 +5,10 @@ import android.graphics.Color;
 import android.view.View;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.main.entity.ChartCompareItem;
+import com.cheersmind.cheersgenie.main.entity.ChartScoreItem;
 import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.mpcharts.Formmart.MyMarkerView;
@@ -204,45 +208,127 @@ public class VBarChartItem extends ChartItem {
     }
 
 
+//    @Override
+//    public ChartItem generateChartData(ReportItemEntity reportData) {
+//
+//        if(reportData==null || reportData.getItems()==null || reportData.getItems().size()==0){
+//            return this;
+//        }
+//        List<ReportFactorEntity> items = reportData.getItems();
+//        xLabels = new ArrayList<>();
+//
+//        int chartCounts = 1;
+//        if(items.get(0).getCompareScore()>0){
+//            chartCounts = 2;
+//        }
+//
+//        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+//        for(int j=0;j<chartCounts;j++) {
+//            ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
+//            for (int i = 0; i < items.size(); i++) {
+//                ReportFactorEntity rfe = items.get(i);
+//                if (j == 0) {
+//                    xLabels.add(rfe.getItemName());
+//                    yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
+//                } else if (j == 1) {
+//                    yValues.add(new BarEntry(i, (float) rfe.getCompareScore()));
+//                }
+//            }
+//
+//            BarDataSet set1;
+//            if(j == 0){
+//                set1 = new BarDataSet(yValues, "我");
+//                set1.setDrawIcons(false);
+//                set1.setColors(Color.parseColor(dataSetColor_1));
+//            }else{
+//                set1 = new BarDataSet(yValues, reportData.getCompareName());
+//                set1.setDrawIcons(false);
+//                set1.setColors(Color.parseColor(dataSetColor_2));
+//            }
+//            dataSets.add(set1);
+//        }
+//
+//        mChartData = new BarData(dataSets);
+//
+//        return super.generateChartData(reportData);
+//    }
+
+
     @Override
     public ChartItem generateChartData(ReportItemEntity reportData) {
 
         if(reportData==null || reportData.getItems()==null || reportData.getItems().size()==0){
-            return this;
+            return null;
         }
-        List<ReportFactorEntity> items = reportData.getItems();
+        List<ChartCompareItem> items = reportData.getItems();
         xLabels = new ArrayList<>();
 
-        int chartCounts = 1;
-        if(items.get(0).getCompareScore()>0){
-            chartCounts = 2;
-        }
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        boolean first = true;
+        //比较项
+        if (ArrayListUtil.isNotEmpty(items)) {
+            for (ChartCompareItem compareItem : items) {
+                //分数项
+                List<ChartScoreItem> scoreItems = compareItem.getScoreItems();
+                if (ArrayListUtil.isNotEmpty(scoreItems)) {
+                    ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
+                    for (int i=0; i<scoreItems.size(); i++) {
+                        ChartScoreItem scoreItem = scoreItems.get(i);
+                        yValues.add(new BarEntry(i, (float) scoreItem.getScore()));
+                        //第一次循环添加X轴文本
+                        if (first) {
+                            xLabels.add(scoreItem.getItemName());
+                        }
+                    }
+                    first = false;
 
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        for(int j=0;j<chartCounts;j++) {
-            ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
-            for (int i = 0; i < items.size(); i++) {
-                ReportFactorEntity rfe = items.get(i);
-                if (j == 0) {
-                    xLabels.add(rfe.getItemName());
-                    yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
-                } else if (j == 1) {
-                    yValues.add(new BarEntry(i, (float) rfe.getCompareScore()));
+                    BarDataSet set1;
+                    set1 = new BarDataSet(yValues, compareItem.getCompareName());
+                    set1.setDrawIcons(false);
+                    if (Dictionary.REPORT_CHART_COMPARE_ID_MINE.equals(compareItem.getCompareId())) {//我
+                        set1.setColor(Color.parseColor(dataSetColor_1));
+
+                    } else if (Dictionary.REPORT_CHART_COMPARE_ID_COUNTRY.equals(compareItem.getCompareId())) {//全国
+                        set1.setColor(Color.parseColor(dataSetColor_2));
+
+                    } else if (Dictionary.REPORT_CHART_COMPARE_ID_GRADE.equals(compareItem.getCompareId())) {//年级
+                        set1.setColor(Color.parseColor(dataSetColor_3));
+                    }
+                    dataSets.add(set1);
                 }
             }
-
-            BarDataSet set1;
-            if(j == 0){
-                set1 = new BarDataSet(yValues, "我");
-                set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor(dataSetColor_1));
-            }else{
-                set1 = new BarDataSet(yValues, reportData.getCompareName());
-                set1.setDrawIcons(false);
-                set1.setColors(Color.parseColor(dataSetColor_2));
-            }
-            dataSets.add(set1);
         }
+
+//        int chartCounts = 1;
+//        if(items.get(0).getCompareScore()>0){
+//            chartCounts = 2;
+//        }
+//
+//        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+//        for(int j=0;j<chartCounts;j++) {
+//            ArrayList<BarEntry> yValues = new ArrayList<BarEntry>();
+//            for (int i = 0; i < items.size(); i++) {
+//                ReportFactorEntity rfe = items.get(i);
+//                if (j == 0) {
+//                    xLabels.add(rfe.getItemName());
+//                    yValues.add(new BarEntry(i, (float) rfe.getChildScore()));
+//                } else if (j == 1) {
+//                    yValues.add(new BarEntry(i, (float) rfe.getCompareScore()));
+//                }
+//            }
+//
+//            BarDataSet set1;
+//            if(j == 0){
+//                set1 = new BarDataSet(yValues, "我");
+//                set1.setDrawIcons(false);
+//                set1.setColors(Color.parseColor(dataSetColor_1));
+//            }else{
+//                set1 = new BarDataSet(yValues, reportData.getCompareName());
+//                set1.setDrawIcons(false);
+//                set1.setColors(Color.parseColor(dataSetColor_2));
+//            }
+//            dataSets.add(set1);
+//        }
 
         mChartData = new BarData(dataSets);
 

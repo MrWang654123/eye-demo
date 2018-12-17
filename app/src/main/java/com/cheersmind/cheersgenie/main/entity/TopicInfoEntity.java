@@ -68,6 +68,9 @@ public class TopicInfoEntity extends AbstractExpandableItem<DimensionInfoEntity>
     @InjectMap(name = "child_topic")
     private TopicInfoChildEntity childTopic;
 
+    //是否是测评中的第一个话题
+    private boolean isFirstInExam;
+
 
     public String getTopicId() {
         return topicId;
@@ -212,6 +215,14 @@ public class TopicInfoEntity extends AbstractExpandableItem<DimensionInfoEntity>
 
     @Override
     public int getItemType() {
-        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_HEADER;
+        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_TOPIC;
+    }
+
+    public boolean isFirstInExam() {
+        return isFirstInExam;
+    }
+
+    public void setFirstInExam(boolean firstInExam) {
+        isFirstInExam = firstInExam;
     }
 }

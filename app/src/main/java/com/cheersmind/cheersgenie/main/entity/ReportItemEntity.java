@@ -40,11 +40,15 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
     private int scoreType;
 
     @InjectMap(name = "items")
-    private List<ReportFactorEntity> items;
+    private List<ChartCompareItem> items;
 
     //最小分数
     @InjectMap(name = "min_score")
     private int minScore;
+
+    //最大分数
+    @InjectMap(name = "max_score")
+    private int maxScore;
 
     //当前chart的主题或量表ID
     @InjectMap(name = "chart_item_id")
@@ -56,10 +60,6 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
     //图表类型，1-雷达图，2-曲线图，3-柱状图，4-条状图
     @InjectMap(name = "chart_type")
     private int chartType;
-
-    //最大分数
-    @InjectMap(name = "max_score")
-    private int maxScore;
 
     //图表说明
     @InjectMap(name = "chart_description")
@@ -76,7 +76,7 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
     private String compareName = "";
 
     //项类型
-    int itemType = CHART_HEADER;
+    private int itemType = CHART_HEADER;
 
 
     public boolean getTopic() {
@@ -103,13 +103,7 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
         this.scoreType = scoreType;
     }
 
-    public List<ReportFactorEntity> getItems() {
-        return items;
-    }
 
-    public void setItems(List<ReportFactorEntity> items) {
-        this.items = items;
-    }
 
     public int getMinScore() {
         return minScore;
@@ -204,5 +198,13 @@ public class ReportItemEntity extends AbstractExpandableItem<ChartItem> implemen
 
     public void setExpandDesc(boolean expandDesc) {
         isExpandDesc = expandDesc;
+    }
+
+    public List<ChartCompareItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ChartCompareItem> items) {
+        this.items = items;
     }
 }

@@ -1,24 +1,19 @@
-package com.cheersmind.cheersgenie.features.modules.base.fragment;
+package com.cheersmind.cheersgenie.features.modules.mine.fragment;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
-import com.cheersmind.cheersgenie.features.modules.exam.fragment.ExamFragment;
-import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.modules.exam.fragment.HistoryExamDetailFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,11 +21,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * 测评包裹页面
+ * 历史测评明细
  */
-public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutListener {
+public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayoutListener {
 
     Unbinder unbinder;
+
+    //测评ID
+    String examId;
 
     //标题
     @BindView(R.id.tv_toolbar_title)
@@ -55,16 +53,22 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_exam_wrap;
+        return R.layout.fragment_mine_exam_detail;
     }
 
     @Override
     protected void onInitView(View contentView) {
         unbinder = ButterKnife.bind(this, contentView);
 
+        //测评ID
+        Bundle bundle = getArguments();
+        if(bundle!=null) {
+            examId = bundle.getString("exam_id");
+        }
+
         //标题
         if (tvToolbarTitle != null) {
-            tvToolbarTitle.setText(R.string.title_exam);
+            tvToolbarTitle.setText("我的智评");
         }
         //隐藏回退按钮
         if (ivLeft != null) {
@@ -74,20 +78,21 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
         //初始隐藏布局切换按钮
         ivSwitchLayout.setVisibility(View.GONE);
 
-        //隐藏搜索按钮
-        ivSearchTip.setVisibility(View.GONE);
-        tvCancel.setVisibility(View.GONE);
     }
 
     @Override
     protected void lazyLoad() {
         FragmentManager childFragmentManager = getChildFragmentManager();
-        String tag = ExamFragment.class.getSimpleName();
+        String tag = HistoryExamDetailFragment.class.getSimpleName();
         Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
         //空则添加
         if (fragmentByTag == null) {
             //测评
-            ExamFragment fragment = new ExamFragment();
+            HistoryExamDetailFragment fragment = new HistoryExamDetailFragment();
+            //添加初始数据
+            Bundle bundle = new Bundle();
+            bundle.putString("exam_id", examId);
+            fragment.setArguments(bundle);
             //添加已完成的测评fragment到容器中
             childFragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();
         }
@@ -106,7 +111,7 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
     @OnClick({R.id.iv_switch_layout,R.id.iv_search_tip,R.id.tv_cancel})
     public void onViewClick(View view) {
         FragmentManager childFragmentManager = getChildFragmentManager();
-        String tag = ExamFragment.class.getSimpleName();
+        String tag = HistoryExamDetailFragment.class.getSimpleName();
         Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
 
         switch (view.getId()) {
@@ -125,7 +130,7 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
                 //非空
                 if (fragmentByTag != null) {
                     //调用切换布局
-                    ((ExamFragment)fragmentByTag).switchLayout(layoutType);
+                    ((HistoryExamDetailFragment)fragmentByTag).switchLayout(layoutType);
                 }
                 break;
             }
@@ -202,7 +207,7 @@ public class ExamWrapFragment extends LazyLoadFragment implements ExamLayoutList
 
         if (!isVisibleToUser && hasLoaded) {
             FragmentManager childFragmentManager = getChildFragmentManager();
-            String tag = ExamFragment.class.getSimpleName();
+            String tag = HistoryExamDetailFragment.class.getSimpleName();
             Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
 
             if (fragmentByTag instanceof SearchLayoutControlListener) {

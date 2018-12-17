@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
@@ -40,6 +41,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
 import com.cheersmind.cheersgenie.features.modules.login.activity.PhoneNumLoginActivity;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
@@ -89,10 +91,13 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
+    public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
     //话题对象
     private TopicInfoEntity topicInfoEntity;
     //量表对象
     private DimensionInfoEntity dimensionInfoEntity;
+    //从哪个页面进入的答题页
+    int fromActivityToQuestion;
 
     private String testQuestionStr = "{\"total\":4,\"items\":[{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":{\"id\":\"107e3310-f5f8-47a9-809e-f9def6862d18\",\"exam_id\":\"6\",\"update_time\":\"2018-08-03T20:52:27.000+0800\",\"child_id\":\"10123\",\"create_time\":\"2018-08-03T20:29:15.000+0800\",\"score\":2,\"child_factor_id\":\"21fa62b2-6ea2-436f-b1b8-dedcef77e410\",\"user_id\":2200133574,\"option_id\":\"b11ee725-50dd-9823-3968-204c4d8ec05b\",\"flowers\":0,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"option_text\":\"\"},\"orderby\":1,\"stem\":\"复习时我准备充分，但真正开始考试时我大脑变得空白。\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"e8c6b2ac-3fd6-5a32-a23c-06d6aef1f7a9\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"21599dd4-3b37-159d-6033-68e5259a8378\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"b11ee725-50dd-9823-3968-204c4d8ec05b\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"6147a64a-cb5f-a108-00b1-8ad868f58c3d\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"b5ef3f9c-6812-90d4-1ede-f1bf55c068b8\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":2,\"stem\":\"我感觉自己对考试准备得不充分。\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"a75482f4-0f95-ef6a-2e15-4d6b9f7443f1\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"ef7dedf5-04bd-255d-fdd2-54ab408bdaff\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"3798273a-a7a4-2145-bf13-b64de72b1008\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"e204f91f-81a1-7add-5ee6-d66d5de50a67\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"ef9fec44-f811-b206-3ff7-d0aee53a2001\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":16,\"stem\":\"即使我觉得考试内容很熟悉，我还是出错很多。\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"091fb9c5-5a78-2efa-2d24-ece8ba1d7751\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"bfc8f9c4-5f17-5b8c-3053-c2748eaf1544\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"6d0cc932-eaff-c947-2a41-e5f86719482f\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"e6444ed4-69e3-c36c-05b8-4871228eb65e\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"ec18d2f8-9106-656c-fe07-e7eede29d728\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":20,\"stem\":\"在快要考试之前，匆忙、胡乱地学习。\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"3d1cda7d-cbc3-da80-23e6-36ed20c6c6ea\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"160b8beb-390a-8d38-19a6-633746a76aa8\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"d22874b4-9af7-a4f4-44f9-514dea5aa14e\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"b1ae845d-2d62-4bfe-74e8-725764f05bf3\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"6ac69a5c-87c8-3653-4dc9-5ca477c6f633\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":100}]}]}";
 
@@ -177,14 +182,33 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * @param context
      * @param dimensionInfoEntity
      */
-    public static void startReplyQuestionActivity(Context context, DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
+//    public static void startReplyQuestionActivity(Context context, DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
+//        Intent intent = new Intent(context, ReplyQuestionActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putSerializable(DIMENSION_INFO, dimensionInfoEntity);
+//        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+//        intent.putExtras(extras);
+//        context.startActivity(intent);
+//    }
+
+
+    /**
+     * 打开作答页面
+     * @param context
+     * @param dimensionInfoEntity
+     */
+    public static void startReplyQuestionActivity(Context context,
+                                                  DimensionInfoEntity dimensionInfoEntity,
+                                                  TopicInfoEntity topicInfoEntity, int fromActivityToQuestion) {
         Intent intent = new Intent(context, ReplyQuestionActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(DIMENSION_INFO, dimensionInfoEntity);
         extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+        extras.putInt(FROM_ACTIVITY_TO_QUESTION, fromActivityToQuestion);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
+
 
 
     @Override
@@ -239,6 +263,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
         dimensionInfoEntity = (DimensionInfoEntity) getIntent().getExtras().getSerializable(DIMENSION_INFO);
+        fromActivityToQuestion = getIntent().getIntExtra(FROM_ACTIVITY_TO_QUESTION, Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
         if (dimensionInfoEntity == null
                 || dimensionInfoEntity.getChildDimension() == null
                 || TextUtils.isEmpty(dimensionInfoEntity.getChildDimension().getChildDimensionId())) {
@@ -926,14 +951,48 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             new TopicReportDialog().setTopicInfo(topicInfo).setListener(new TopicReportDialog.OnOperationListener() {
                 @Override
                 public void onExit() {
-                    //返回主页面
-                    gotoMainPage();
+                    //跳转到下一个页面
+                    gotoNextActivity();
                 }
             }).show(getSupportFragmentManager(), "报告");
         } catch (Exception e) {
             e.printStackTrace();
             ToastUtil.showShort(getApplication(), e.getMessage());
         }
+    }
+
+
+    /**
+     * 跳转到下一个页面
+     */
+    private void gotoNextActivity() {
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Class toActivity;
+                switch (fromActivityToQuestion) {
+                    case Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN: {
+                        //主页面
+                        toActivity = MasterTabActivity.class;
+                        break;
+                    }
+                    case Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE: {
+                        //我的智评明细
+                        toActivity = MineExamDetailActivity.class;
+                        break;
+                    }
+                    default: {
+                        //默认主页面
+                        toActivity = MasterTabActivity.class;
+                    }
+                }
+
+                //跳转页面
+                Intent intent = new Intent(ReplyQuestionActivity.this, toActivity);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            }
+        }, 200);
     }
 
     /**
@@ -960,8 +1019,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             new DimensionReportDialog(ReplyQuestionActivity.this, dimensionInfo, new DimensionReportDialog.OnOperationListener() {
                 @Override
                 public void onExit() {
-                    //返回主页面
-                    gotoMainPage();
+                    //跳转到下一个页面
+                    gotoNextActivity();
                 }
             }).show();
         } catch (Exception e) {

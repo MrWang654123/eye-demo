@@ -96,6 +96,7 @@
     <!--评测-->
     <string name="exam_topic_suitable_user">适合人群：%s</string>
     <string name="exam_topic_endtime">有效期至 %s</string>
+    <string name="exam_date">有效期 %s - %s</string>
     <string name="exam_topic_navigate_to_report">测评结果 >></string>
     <string name="exam_dimension_use_count">%s人测过</string>
     <string name="exam_dimension_status_complete">已完成</string>
@@ -180,6 +181,7 @@
     <string name="empty_tip_integral">暂无积分</string>
     <string name="empty_tip_report">暂无报告</string>
     <string name="empty_tip_exam">暂无智评</string>
+    <string name="empty_tip_history_exam">暂无历史智评</string>
     <string name="empty_tip_article_on_category">暂无该分类的文章</string>
     <string name="empty_tip_article_for_search">暂无结果\n换个关键词试试吧~</string>
     <string name="empty_tip_category">暂无分类</string>

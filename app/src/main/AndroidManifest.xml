@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.GET_PACKAGE_SIZE" />
     <!-- <uses-permission android:name="android.permission.CLEAR_APP_CACHE" /> -->
     <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_SETTINGS" />
     <!-- 请求安装未知来源的包 -->
@@ -305,6 +305,8 @@
         <activity android:name=".features.modules.test.activity.EditTextPasteActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".features.modules.base.activity.CleanLeakActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".features.modules.mine.activity.MineExamDetailActivity"
             android:screenOrientation="portrait"/>
 
     </application>

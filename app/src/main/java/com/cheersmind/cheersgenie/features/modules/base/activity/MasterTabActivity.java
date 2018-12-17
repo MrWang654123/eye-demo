@@ -28,6 +28,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -48,6 +49,8 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.TimeLineAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
+import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
@@ -129,8 +132,28 @@ public class MasterTabActivity extends BaseActivity {
     private TaskListEntity taskListEntity;
     //任务列表项
     private List<TaskItemEntity> taskItems;
-
+    //翻页监听
     ViewPageChangeListener pageChangeListener = new ViewPageChangeListener();
+    //任务列表监听
+    TaskListDialog.OnOperationListener onOperationListener =  new TaskListDialog.OnOperationListener() {
+        @Override
+        public void onOnClickItem(int position, final String id) {
+            if (!TextUtils.isEmpty(id)) {
+                //切换到测评tab
+                switchToExamTab();
+                getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //发送定位测评的事件
+                        EventBus.getDefault().post(new LocationExamInListEvent(id));
+                    }
+                }, 350);
+
+            } else {
+                ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
+            }
+        }
+    };
 
 
     @Override
@@ -148,8 +171,6 @@ public class MasterTabActivity extends BaseActivity {
      */
     @Override
     protected void onInitView() {
-        //ButterKnife绑定页面
-//        ButterKnife.bind(this);
         //向ViewPager添加各页面
         listFragment = new ArrayList<>();
         //首页改为探索
@@ -508,7 +529,7 @@ public class MasterTabActivity extends BaseActivity {
             case R.id.fabTask:{
 //                ToastUtil.showShort(getApplicationContext(), "显示任务");
 //                doGetTaskList(null,null,null, httpTag);
-                new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, null).show();
+                new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, onOperationListener).show();
                 break;
             }
         }
@@ -597,6 +618,13 @@ public class MasterTabActivity extends BaseActivity {
         return sp.getBoolean(childId, false);
     }
 
+
+    /**
+     * 切换到测评tab
+     */
+    public void switchToExamTab() {
+        viewPager.setCurrentItem(1, true);
+    }
 
 }
 

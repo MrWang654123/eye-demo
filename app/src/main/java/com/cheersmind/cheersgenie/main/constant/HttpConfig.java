@@ -176,6 +176,13 @@ public class HttpConfig {
     public static final String URL_CHILD_TOPIC_LIST = API_HOST + "/v2/api/children/{child_id}/topics?page={page}&size={size}";
     //根据状态（未完成、已完成）获取孩子关注主题列表
     public static final String URL_CHILD_TOPIC_LIST_BY_STATUS = API_HOST + "/v2/api/children/{child_id}/child_exams?status={status}&page={page}&size={size}";
+    //获取孩子的测评列表
+    public static final String URL_CHILD_EXAM_LIST = API_HOST + "/v2/api/children/{child_id}/exam_with_topics?page={page}&size={size}";
+    //获取孩子的历史测评列表
+    public static final String URL_CHILD_HISTORY_EXAM_LIST = API_HOST + "/v2/api/children/{child_id}/exams/history?page={page}&size={size}";
+    //获取孩子的历史测评明细
+    public static final String URL_CHILD_HISTORY_EXAM_DETAIL = API_HOST + "/v2/api/children/{child_id}/exams/{exam_id}/topics?page={page}&size={size}";
+
 
     //获取孩子关注的主题列表（报告表头使用）
     public static final String URL_CHILD_TOPIC_LIST_REPORT = API_HOST + "/v2/api/children/{child_id}/latest_exam_topics";
@@ -261,7 +268,8 @@ public class HttpConfig {
     public static final String URL_UPDATE_NOTIFICATION = "http://img.cheersmind.com/notice/fireeyes.json";
 
     //获取报告
-    public static String URL_REPORT_V2 = API_HOST + "/v2/api/exams/reports?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
+//    public static String URL_REPORT_V2 = API_HOST + "/v2/api/exams/reports?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
+    public static String URL_REPORT_V2 = API_HOST + "/v2/api/reports/students/{child_exam_id}?relation_id={relation_id}&relation_type={relation_type}&sample_id={sample_id}";
 
     //获取报告推荐文章
     public static String URL_REPORT_RECOMMEND_ARTICLE = API_HOST + "/v2/api/exams/reports/actions/get_recommend_articles?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";

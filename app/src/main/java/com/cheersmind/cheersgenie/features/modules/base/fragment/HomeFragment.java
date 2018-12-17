@@ -812,7 +812,9 @@ public class HomeFragment extends LazyLoadFragment {
             }
             //进入最新测评
             case R.id.btn_goto_last_dimension: {
-                DimensionDetailActivity.startDimensionDetailActivity(getContext(), lastDimension, null);
+                DimensionDetailActivity.startDimensionDetailActivity(getContext(),
+                        lastDimension, null,
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
                 break;
             }
             //搜索

@@ -47,11 +47,14 @@ public class DimensionDetailActivity extends BaseActivity {
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
+    public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
 
     //量表对象
     private DimensionInfoEntity dimensionInfoEntity;
     //话题对象
     private TopicInfoEntity topicInfoEntity;
+    //从哪个页面进入的答题页
+    int fromActivityToQuestion;
 
     @BindView(R.id.iv_dimension)
     ImageView ivDimension;
@@ -91,14 +94,35 @@ public class DimensionDetailActivity extends BaseActivity {
      * @param dimensionInfo
      * @param topicInfoEntity
      */
-    public static void startDimensionDetailActivity(Context context, DimensionInfoEntity dimensionInfo, TopicInfoEntity topicInfoEntity) {
+//    public static void startDimensionDetailActivity(Context context, DimensionInfoEntity dimensionInfo, TopicInfoEntity topicInfoEntity) {
+//        Intent intent = new Intent(context, DimensionDetailActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putSerializable(DIMENSION_INFO, dimensionInfo);
+//        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+//        intent.putExtras(extras);
+//        context.startActivity(intent);
+//    }
+
+
+    /**
+     * 启动量表详细页面
+     * @param context
+     * @param dimensionInfo
+     * @param topicInfoEntity
+     * @param fromActivityToQuestion 从哪个页面进入的答题页
+     */
+    public static void startDimensionDetailActivity(Context context,
+                                                    DimensionInfoEntity dimensionInfo,
+                                                    TopicInfoEntity topicInfoEntity, int fromActivityToQuestion) {
         Intent intent = new Intent(context, DimensionDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(DIMENSION_INFO, dimensionInfo);
         extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+        extras.putInt(FROM_ACTIVITY_TO_QUESTION, fromActivityToQuestion);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
+
 
     @Override
     protected int setContentView() {
@@ -123,6 +147,7 @@ public class DimensionDetailActivity extends BaseActivity {
         }
         topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
         dimensionInfoEntity = (DimensionInfoEntity) getIntent().getExtras().getSerializable(DIMENSION_INFO);
+        fromActivityToQuestion = getIntent().getIntExtra(FROM_ACTIVITY_TO_QUESTION, Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
         //刷新量表视图
         refreshDimensionDetailView(dimensionInfoEntity);
@@ -263,7 +288,9 @@ public class DimensionDetailActivity extends BaseActivity {
                 //未完成状态，继续作答
                 if (entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                     //打开答题页面，传递分量表对象
-                    ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+                    ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this,
+                            dimensionInfoEntity, topicInfoEntity,
+                            fromActivityToQuestion);
 
                 } else {
                     //已完成状态，显示报告
@@ -340,7 +367,9 @@ public class DimensionDetailActivity extends BaseActivity {
                         btnStartExam.setText("继续测评");
 
                         //打开答题页面，传递分量表对象
-                        ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+                        ReplyQuestionActivity.startReplyQuestionActivity(DimensionDetailActivity.this,
+                                dimensionInfoEntity, topicInfoEntity,
+                                fromActivityToQuestion);
 
                         //发送最新操作测评通知：更新操作
 //                        EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_UPDATE));

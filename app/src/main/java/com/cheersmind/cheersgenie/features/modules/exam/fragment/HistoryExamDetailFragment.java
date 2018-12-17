@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,7 +26,7 @@ import com.cheersmind.cheersgenie.features.adapter.ExamDimensionLinearRecyclerAd
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
-import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
+import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.interfaces.OnBackPressListener;
@@ -33,7 +34,6 @@ import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener
 import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchListener;
 import com.cheersmind.cheersgenie.features.interfaces.SoftKeyboardStateHelper;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
@@ -48,9 +48,9 @@ import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.ExamRootEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -76,12 +76,12 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
- * 测评基础页面
+ * 历史测评明细页面
  */
-public class ExamBaseFragment extends LazyLoadFragment implements SearchListener, SearchLayoutControlListener {
+public class HistoryExamDetailFragment extends LazyLoadFragment implements SearchListener, SearchLayoutControlListener {
 
-    //话题状态（默认获取完成的）
-    protected int topicStatus = Dictionary.TOPIC_STATUS_COMPLETE;
+    //测评ID
+    String examId;
 
     //根布局
     @BindView(R.id.ll_root)
@@ -91,9 +91,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
     protected RecyclerView recycleView;
     protected Unbinder unbinder;
 
-    //测评列表（测评数据、话题基础数据、孩子话题的信息、量表）
-    List<ExamEntity> examList;
-    List<ExamEntity> examListSearch;
+    //话题列表（话题基础数据、孩子话题的信息、量表）
+    List<TopicInfoEntity> topicList;
+    List<TopicInfoEntity> topicListSearch;
 
     //适配器
     protected ExamDimensionBaseRecyclerAdapter recyclerAdapter;
@@ -167,7 +167,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
-                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
 
             } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
                 //查看话题报告
@@ -213,10 +213,6 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
     //滚动监听
     RecyclerViewScrollListener scrollListener;
-    //初始列表滚动的位置
-//    protected int initScrollPosition = 0;
-    //初始滚动到指定测评
-    protected String initScrollToExamId;
 
 
     //搜索布局
@@ -254,6 +250,12 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         unbinder = ButterKnife.bind(this, contentView);
         //注册事件
         EventBus.getDefault().register(this);
+
+        //测评ID
+        Bundle bundle = getArguments();
+        if(bundle!=null) {
+            examId = bundle.getString("exam_id");
+        }
 
         try {
             gridRecyclerAdapter = new ExamDimensionRecyclerAdapter(this, null);
@@ -563,8 +565,8 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         lastSearchText = "";
 
         //清空话题搜索集合
-        if (ArrayListUtil.isNotEmpty(examListSearch)) {
-            examListSearch.clear();
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            topicListSearch.clear();
             //重新布局
             switchLayout(layoutType);
         }
@@ -606,15 +608,28 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
     }
 
     /**
+     * 量表开启成功的通知事件
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDimensionOpenSuccessNotice(DimensionOpenSuccessEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            DimensionInfoEntity dimension = event.getDimension();
+            onDimensionOpenSuccess(dimension);
+        }
+    }
+
+    /**
      * 问题提交成功的通知事件的处理
      * @param dimension 量表
      */
-    protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        //重置为第一页
-        resetPageInfo();
-        //刷新孩子话题
-        refreshChildTopList();
-    }
+//    protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+//        //重置为第一页
+//        resetPageInfo();
+//        //刷新孩子话题
+//        refreshChildTopList();
+//    }
 
     /**
      * 是否满足解锁条件
@@ -721,12 +736,12 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         //页码
         pageNum = 1;
         //话题集合
-        examList = null;
+        topicList = null;
         //总数量
         totalCount = 0;
         //清空话题搜索集合
-        if (ArrayListUtil.isNotEmpty(examListSearch)) {
-            examListSearch.clear();
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            topicListSearch.clear();
         }
     }
 
@@ -745,7 +760,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
-        DataRequestService.getInstance().loadChildTopicListByStatus(defaultChildId,topicStatus,
+        DataRequestService.getInstance().loadChildHistoryExamDetail(defaultChildId,examId,
                 pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -775,11 +790,11 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
             Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-            ExamRootEntity examRoot = InjectionWrapperUtil.injectMap(dataMap, ExamRootEntity.class);
+            TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
 
             //后台总记录数
-            totalCount = examRoot.getTotal();
-            List<ExamEntity> dataList = examRoot.getItems();
+            totalCount = topicData.getTotal();
+            List<TopicInfoEntity> dataList = topicData.getItems();
 
             //空数据处理
             if (ArrayListUtil.isEmpty(dataList)) {
@@ -787,14 +802,36 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 return;
             }
 
-            //根据搜索文本进行过滤
-            filterBySearchText(dataList);
+            //搜索文本如果不为空，则需要过滤
+            if (!TextUtils.isEmpty(lastSearchText)) {
+                if (ArrayListUtil.isEmpty(topicListSearch)) {
+                    topicListSearch = new ArrayList<>();
+                } else {
+                    topicListSearch.clear();
+                }
+
+                for (TopicInfoEntity topicInfo : dataList) {
+                    if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(lastSearchText)) {
+                        topicListSearch.add(topicInfo);
+                        continue;
+                    }
+
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
+                            if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(lastSearchText)) {
+                                topicListSearch.add(topicInfo);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
             List recyclerItem = null;
-            //测评搜索集合不为空，则使用测评搜索集合作为列表数据项
-            if (ArrayListUtil.isNotEmpty(examListSearch)) {
+            //话题搜索集合不为空，则使用话题搜索集合作为列表数据项
+            if (ArrayListUtil.isNotEmpty(topicListSearch)) {
                 //转成列表的数据项
-                recyclerItem = topicInfoEntityToRecyclerMulti(examListSearch);
+                recyclerItem = topicInfoEntityToRecyclerMulti(topicListSearch);
 
             } else {
                 //转成列表的数据项
@@ -807,10 +844,10 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             //初始展开
             recyclerAdapter.expandAll();
 
-            examList = dataList;
+            topicList = dataList;
 
             //判断是否全部加载结束
-            if (examList.size() >= totalCount) {
+            if (topicList.size() >= totalCount) {
                 //全部加载结束
                 recyclerAdapter.loadMoreEnd();
             } else {
@@ -838,51 +875,6 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             Fragment parentFragment = getParentFragment();
             if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
                 ((ExamLayoutListener)parentFragment).change(layoutType, false);
-            }
-        }
-    }
-
-
-    /**
-     * 根据搜索文本进行过滤
-     * @param dataList 测评集合
-     */
-    private void filterBySearchText(List<ExamEntity> dataList) {
-        //搜索文本如果不为空，则需要过滤
-        if (!TextUtils.isEmpty(lastSearchText)) {
-            if (ArrayListUtil.isEmpty(examListSearch)) {
-                examListSearch = new ArrayList<>();
-            } else {
-                examListSearch.clear();
-            }
-
-            //测评
-            for (ExamEntity exam : dataList) {
-                if (!TextUtils.isEmpty(exam.getExamName()) && exam.getExamName().contains(lastSearchText)) {
-                    examListSearch.add(exam);
-                    continue;
-                }
-
-                //话题
-                List<TopicInfoEntity> topics = exam.getTopics();
-                if (ArrayListUtil.isNotEmpty(topics)) {
-                    for (TopicInfoEntity topicInfo : topics) {
-                        if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(lastSearchText)) {
-                            examListSearch.add(exam);
-                            continue;
-                        }
-
-                        //量表
-                        if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
-                            for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
-                                if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(lastSearchText)) {
-                                    examListSearch.add(exam);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -923,7 +915,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         }
 
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
-        DataRequestService.getInstance().loadChildTopicListByStatus(defaultChildId,topicStatus,
+        DataRequestService.getInstance().loadChildHistoryExamDetail(defaultChildId,examId,
                 pageNum, PAGE_SIZE, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -950,11 +942,11 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
             Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-            ExamRootEntity examRoot = InjectionWrapperUtil.injectMap(dataMap, ExamRootEntity.class);
+            TopicRootEntity topicData = InjectionWrapperUtil.injectMap(dataMap, TopicRootEntity.class);
 
             //后台总记录数
-            totalCount = examRoot.getTotal();
-            List<ExamEntity> dataList = examRoot.getItems();
+            totalCount = topicData.getTotal();
+            List<TopicInfoEntity> dataList = topicData.getItems();
 
             //空数据处理
             if (ArrayListUtil.isEmpty(dataList)) {
@@ -977,13 +969,13 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             int totalItem = getTotalItem(dataList);
             recyclerAdapter.expandAll(totalItem);
 
-            if (examList == null) {
-                examList = new ArrayList<>();
+            if (topicList == null) {
+                topicList = new ArrayList<>();
             }
-            examList.addAll(dataList);
+            topicList.addAll(dataList);
 
             //判断是否全部加载结束
-            if (examList.size() >= totalCount) {
+            if (topicList.size() >= totalCount) {
                 //全部加载结束
                 recyclerAdapter.loadMoreEnd();
             } else {
@@ -998,14 +990,6 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             Fragment parentFragment = getParentFragment();
             if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
                 ((ExamLayoutListener)parentFragment).change(layoutType, true);
-            }
-
-            //初始滚动位置
-            if (!TextUtils.isEmpty(initScrollToExamId)) {
-                doLocationExamInList(initScrollToExamId);
-                initScrollToExamId = null;
-                //测试滚动
-//                recycleView.scrollToPosition(7);
             }
 
         } catch (Exception e) {
@@ -1084,46 +1068,39 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
 
     /**
-     * 测评集合转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
+     * 话题列表转成用于适配recycler的分组数据模型，以维度（量表行）为基本单元
      *
-     * @param examList 测评集合
+     * @param topicList 话题集合
      * @return 适配recycler的分组数据模型
      */
-    protected List<MultiItemEntity> topicInfoEntityToRecyclerMulti(List<ExamEntity> examList) {
+    protected List<MultiItemEntity> topicInfoEntityToRecyclerMulti(List<TopicInfoEntity> topicList) {
         List<MultiItemEntity> resList = null;
 
-        if (ArrayListUtil.isNotEmpty(examList)) {
+        if (ArrayListUtil.isNotEmpty(topicList)) {
             resList = new ArrayList<>();
-            for (ExamEntity exam : examList) {
-                //添加适配器的测评模型
-                resList.add(exam);
-                //话题
-                List<TopicInfoEntity> topicList = exam.getTopics();
-                if (ArrayListUtil.isNotEmpty(topicList)) {
-                    boolean isFirstInExam = true;
-                    //遍历话题列表
-                    for (TopicInfoEntity topicInfo : topicList) {
-                        if (isFirstInExam) {
-                            topicInfo.setFirstInExam(true);
-                            isFirstInExam = false;
-                        }
-                        //已经添加过了就清空
-                        if (topicInfo.hasSubItem()) {
-                            topicInfo.getSubItems().clear();
-                        }
-                        //默认设置为不展开
-                        topicInfo.setExpanded(false);
+            boolean isFirstInExam = true;
+            //遍历话题列表
+            for (TopicInfoEntity topicInfo : topicList) {
+                //设置第一个的标记
+                if (isFirstInExam) {
+                    topicInfo.setFirstInExam(true);
+                    isFirstInExam = false;
+                }
+                //已经添加过了就清空
+                if (topicInfo.hasSubItem()) {
+                    topicInfo.getSubItems().clear();
+                }
+                //默认设置为不展开
+                topicInfo.setExpanded(false);
 
-                        List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();
-                        if (ArrayListUtil.isNotEmpty(dimensionInfoList)) {
-                            //添加适配器的1级模型
-                            resList.add(topicInfo);
-                            //遍历维度列表（量表）
-                            for (DimensionInfoEntity dimensionInfo : dimensionInfoList) {
-                                //添加适配器的2级模型
-                                topicInfo.addSubItem(dimensionInfo);
-                            }
-                        }
+                List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();
+                if (ArrayListUtil.isNotEmpty(dimensionInfoList)) {
+                    //添加适配器的1级模型
+                    resList.add(topicInfo);
+                    //遍历维度列表（量表）
+                    for (DimensionInfoEntity dimensionInfo : dimensionInfoList) {
+                        //添加适配器的2级模型
+                        topicInfo.addSubItem(dimensionInfo);
                     }
                 }
             }
@@ -1134,30 +1111,22 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
 
     /**
-     * 获取共总有多少项（测评、话题、量表）
+     * 获取共总有多少项（话题加量表）
      *
-     * @param examList 测评集合
+     * @param topicList 话题集合
      * @return 适配recycler的分组数据模型
      */
-    protected int getTotalItem(List<ExamEntity> examList) {
+    protected int getTotalItem(List<TopicInfoEntity> topicList) {
         int total = 0;
 
-        if (ArrayListUtil.isNotEmpty(examList)) {
-            //测评数量
-            total += examList.size();
-            for (ExamEntity exam : examList) {
-                List<TopicInfoEntity> topicList = exam.getTopics();
-
-                if (ArrayListUtil.isNotEmpty(topicList)) {
-                    //话题数量
-                    total = topicList.size();
-                    //遍历话题列表
-                    for (TopicInfoEntity topicInfo : topicList) {
-                        List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();
-                        if (ArrayListUtil.isNotEmpty(dimensionInfoList)) {
-                            total += dimensionInfoList.size();
-                        }
-                    }
+        if (ArrayListUtil.isNotEmpty(topicList)) {
+            //话题数量
+            total = topicList.size();
+            //遍历话题列表
+            for (TopicInfoEntity topicInfo : topicList) {
+                List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();
+                if (ArrayListUtil.isNotEmpty(dimensionInfoList)) {
+                    total += dimensionInfoList.size();
                 }
             }
         }
@@ -1191,7 +1160,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 //跳转到量表详细页面，传递量表对象和话题对象
                 DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                         dimensionInfoEntity, topicInfoEntity,
-                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
 
             } else {//已经开启过的状态
                 //未完成状态
@@ -1199,7 +1168,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                     //跳转到量表详细页面，传递量表对象和话题对象
                     DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                             dimensionInfoEntity, topicInfoEntity,
-                            Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
+                            Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
 
                 } else {
                     //已完成状态，显示报告
@@ -1271,21 +1240,21 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
     /**
      * 改变列表布局
-     * @param layoutType 列表布局类型
+     * @param layoutType
      */
     protected void changeRecyclerViewLayout(int layoutType) {
 
-        List examList = null;
+        List topicList = null;
         //如果话题搜索集合不为空，则赋值话题搜索集合
-        if (ArrayListUtil.isNotEmpty(this.examListSearch)) {
-            examList = this.examListSearch;
+        if (ArrayListUtil.isNotEmpty(this.topicListSearch)) {
+            topicList = this.topicListSearch;
         } else {
-            examList = this.examList;
+            topicList = this.topicList;
         }
 
         //线性
         if (layoutType == Dictionary.EXAM_LIST_LAYOUT_TYPE_LINEAR) {
-            List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(examList);
+            List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(topicList);
             linearRecyclerAdapter.setNewData(newData);
             recyclerAdapter = linearRecyclerAdapter;
             recycleView.setAdapter(recyclerAdapter);
@@ -1300,7 +1269,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 //            recycleView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 //            recycleView.setAdapter(recyclerAdapter);
 
-            List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(examList);
+            List<MultiItemEntity> newData = topicInfoEntityToRecyclerMulti(topicList);
             gridRecyclerAdapter.setNewData(newData);
             recyclerAdapter = gridRecyclerAdapter;
             recycleView.setAdapter(recyclerAdapter);
@@ -1337,53 +1306,37 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
     public void search(String searchText) {
         //搜索文本为空，则清空话题搜索集合
         if (TextUtils.isEmpty(searchText)) {
-            if (examListSearch != null) {
-                examListSearch.clear();
+            if (topicListSearch != null) {
+                topicListSearch.clear();
             }
 
             //空布局为无数据状态，则置为隐藏
             if (emptyLayout.getErrorState() == XEmptyLayout.NO_DATA) {
-                //测评集合不为空
-                if (ArrayListUtil.isNotEmpty(examList)) {
+                //话题集合不为空
+                if (ArrayListUtil.isNotEmpty(topicList)) {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
                 }
             }
 
         } else {
-            //从examList的测评名称、话题名称和量表名称中进行检索
-            if (ArrayListUtil.isNotEmpty(examList)) {
-                if (ArrayListUtil.isEmpty(examListSearch)) {
-                    examListSearch = new ArrayList<>();
+            //从topicList的话题名称和量表名称中进行检索
+            if (ArrayListUtil.isNotEmpty(topicList)) {
+                if (ArrayListUtil.isEmpty(topicListSearch)) {
+                    topicListSearch = new ArrayList<>();
                 } else {
-                    examListSearch.clear();
+                    topicListSearch.clear();
                 }
 
-                for (ExamEntity exam : examList) {
-                    if (!TextUtils.isEmpty(exam.getExamName()) && exam.getExamName().contains(searchText)) {
-                        examListSearch.add(exam);
+                for (TopicInfoEntity topicInfo : topicList) {
+                    if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(searchText)) {
+                        topicListSearch.add(topicInfo);
                         continue;
                     }
-                    //话题
-                    List<TopicInfoEntity> topicList = exam.getTopics();
-                    if (ArrayListUtil.isNotEmpty(topicList)) {
-                        //遍历话题列表
-                        for (TopicInfoEntity topicInfo : topicList) {
-                            if (!TextUtils.isEmpty(topicInfo.getTopicName()) && topicInfo.getTopicName().contains(searchText)) {
-                                examListSearch.add(exam);
-                                break;
-                            }
 
-                            boolean exist = false;
-                            if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
-                                for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
-                                    if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(searchText)) {
-                                        examListSearch.add(exam);
-                                        exist = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (exist) {
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity dimensionInfo : topicInfo.getDimensions()) {
+                            if (!TextUtils.isEmpty(dimensionInfo.getDimensionName()) && dimensionInfo.getDimensionName().contains(searchText)) {
+                                topicListSearch.add(topicInfo);
                                 break;
                             }
                         }
@@ -1392,7 +1345,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             }
 
             //搜索结果空处理
-            if (ArrayListUtil.isEmpty(examListSearch)) {
+            if (ArrayListUtil.isEmpty(topicListSearch)) {
                 //备份原先的无数据提示
                 String noDataTip = emptyLayout.getNoDataTip();
                 //设置新的无数据提示文本
@@ -1403,8 +1356,8 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 emptyLayout.setNoDataTip(noDataTip);
 
                 //调整总数
-                if (ArrayListUtil.isNotEmpty(examList)) {
-                    totalCount = examList.size();
+                if (ArrayListUtil.isNotEmpty(topicList)) {
+                    totalCount = topicList.size();
                 } else {
                     totalCount = 0;
                 }
@@ -1418,11 +1371,11 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         }
 
         //调整总数
-        if (ArrayListUtil.isNotEmpty(examListSearch)) {
-            totalCount = examListSearch.size();
+        if (ArrayListUtil.isNotEmpty(topicListSearch)) {
+            totalCount = topicListSearch.size();
         } else {
-            if (ArrayListUtil.isNotEmpty(examList)) {
-                totalCount = examList.size();
+            if (ArrayListUtil.isNotEmpty(topicList)) {
+                totalCount = topicList.size();
             } else {
                 totalCount = 0;
             }
@@ -1440,7 +1393,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             //空布局为无数据状态，则置为隐藏
             if (emptyLayout.getErrorState() == XEmptyLayout.NO_DATA) {
                 //话题集合不为空
-                if (ArrayListUtil.isNotEmpty(examList)) {
+                if (ArrayListUtil.isNotEmpty(topicList)) {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
                 }
             }
@@ -1463,56 +1416,297 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
 
     /**
-     * 定位到指定测评的通知事件
-     * @param event 事件
+     * 量表开启成功的通知事件的处理
+     * @param dimension 量表对象
      */
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLocationExamInListNotice(LocationExamInListEvent event) {
-        if (event != null && !TextUtils.isEmpty(event.getExamId())) {
-            try {
-                //已经加载了测评列表
-                if (recyclerAdapter.getData().size() > 0) {
-                    doLocationExamInList(event.getExamId());
-                } else {
-                    //赋值列表加载后初始滚动到指定测评
-                    initScrollToExamId = event.getExamId();
-                }
+    protected void onDimensionOpenSuccess(DimensionInfoEntity dimension) {
+        //已经加载了数据
+        if (hasLoaded) {
+            if (dimension == null) {
+                //重置为第一页
+                resetPageInfo();
+                //刷新孩子话题
+                refreshChildTopList();
 
-                //切换到tab页面
-//                if (getActivity() != null) {
-//                    ((MasterTabActivity) getActivity()).switchToExamTab();
+            } else {
+//                //局部刷新量表对应的视图项
+//                List<RecyclerCommonSection<DimensionInfoEntity>> data = recyclerAdapter.getData();
+//                if (ArrayListUtil.isNotEmpty(data)) {
+//                    //header模型位置
+//                    int headerPosition = 0;
+//
+//                    for (int i = 0; i < data.size(); i++) {
+//                        RecyclerCommonSection<DimensionInfoEntity> item = data.get(i);
+//                        TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
+//                        DimensionInfoEntity t = (DimensionInfoEntity) item.t;
+//
+//                        //t不为空
+//                        if (t != null) {
+//                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                            if (t.getTopicId().equals(dimension.getTopicId())
+//                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+//                                //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+//                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                                if (childTopic == null) {
+//                                    childTopic = new TopicInfoChildEntity();
+//                                    childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+//                                    topicInfo.setChildTopic(childTopic);
+//                                }
+//
+//                                //刷新对应量表的列表项
+//                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+//                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+//
+//                                break;
+//                            }
+//
+//                        } else {
+//                            //t为空则代表是header模型
+//                            headerPosition = i;
+//                        }
+//
+//                    }
 //                }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+                /*-------------------------------------------*/
+
+                //是否在当前列表中（搜索功能可能使得当前量表不在当前列表中）
+                boolean existInList = false;
+                //局部刷新量表对应的视图项
+                List<MultiItemEntity> data = recyclerAdapter.getData();
+                if (ArrayListUtil.isNotEmpty(data)) {
+                    //header模型位置
+//                    int headerPosition = 0;
+                    TopicInfoEntity topicInfo = null;
+                    DimensionInfoEntity t = null;
+
+                    for (int i = 0; i < data.size(); i++) {
+                        MultiItemEntity item = data.get(i);
+                        if (item instanceof TopicInfoEntity) {
+                            topicInfo = (TopicInfoEntity) item;
+//                            headerPosition = i;
+
+                        } else if (item instanceof DimensionInfoEntity) {
+                            t = (DimensionInfoEntity) item;
+                        }
+
+                        //t不为空
+                        if (t != null) {
+                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                            if (t.getTopicId().equals(dimension.getTopicId())
+                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+                                //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+                                //（目前用于开始答题了，但未做答案完成的提交就进入了话题详情页面，判断话题是否开始做过）
+                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+                                if (childTopic == null) {
+                                    childTopic = new TopicInfoChildEntity();
+                                    childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+                                    topicInfo.setChildTopic(childTopic);
+                                }
+
+                                //刷新对应量表的列表项
+                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                                recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+
+                                //标记当前量表存在当前列表中
+                                existInList = true;
+
+                                break;
+                            }
+
+                        }
+
+                    }
+                }
+
+                //当前量表不存在当前列表中
+                if (!existInList) {
+
+                    for (int i = 0; i < topicList.size(); i++) {
+                        TopicInfoEntity topicInfo = topicList.get(i);
+
+                        if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                            for (DimensionInfoEntity t : topicInfo.getDimensions()) {
+
+                                //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                                if (t.getTopicId().equals(dimension.getTopicId())
+                                        && t.getDimensionId().equals(dimension.getDimensionId())) {
+
+                                    //孩子话题如果为空，则创建孩子话题对象，并设置为未完成状态
+                                    //（目前用于开始答题了，但未做答案完成的提交就进入了话题详情页面，判断话题是否开始做过）
+                                    TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+                                    if (childTopic == null) {
+                                        childTopic = new TopicInfoChildEntity();
+                                        childTopic.setStatus(Dictionary.TOPIC_STATUS_INCOMPLETE);
+                                        topicInfo.setChildTopic(childTopic);
+                                    }
+
+                                    t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }
 
 
     /**
-     * 定位到指定测评
-     * @param examId 测评ID
+     * 问题提交成功的通知事件的处理
+     * @param dimension 量表对象
      */
-    private void doLocationExamInList(String examId) {
-        if (TextUtils.isEmpty(examId)) {
-            return;
-        }
-        //局部刷新量表对应的视图项
-        List<MultiItemEntity> data = recyclerAdapter.getData();
-        if (ArrayListUtil.isNotEmpty(data)) {
-            for (int i = 0; i < data.size(); i++) {
-                MultiItemEntity item = data.get(i);
-                if (item instanceof ExamEntity) {
-                    ExamEntity exam = (ExamEntity) item;
-                    if (examId.equals(exam.getExamId())) {
-                        //滚动到指定位置
-                        recycleView.scrollToPosition(i);
-                        break;
+    protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+        //量表
+        if (dimension == null) {
+            //重置为第一页
+            resetPageInfo();
+            //刷新孩子话题
+            refreshChildTopList();
+
+        } else {
+
+//            //局部刷新量表对应的视图项
+//            List<RecyclerCommonSection<DimensionInfoEntity>> data = recyclerAdapter.getData();
+//            if (ArrayListUtil.isNotEmpty(data)) {
+//                //header模型位置
+//                int headerPosition = 0;
+//
+//                for (int i = 0; i < data.size(); i++) {
+//                    RecyclerCommonSection<DimensionInfoEntity> item = data.get(i);
+//                    TopicInfoEntity topicInfo = (TopicInfoEntity) item.getInfo();
+//                    DimensionInfoEntity t = (DimensionInfoEntity) item.t;
+//
+//                    //t不为空
+//                    if (t != null ) {
+//                        //找出同一个量表，设置孩子量表，然后局部刷新列表项
+//                        if (t.getTopicId().equals(dimension.getTopicId())
+//                                && t.getDimensionId().equals(dimension.getDimensionId())) {
+//                            //刷新对应量表的列表项
+//                            t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+//                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+//                            recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+//
+//                            //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+//                            if (isMeetUnlockCondition(topicInfo)) {
+//                                //重置为第一页
+//                                resetPageInfo();
+//                                //刷新孩子话题
+//                                refreshChildTopList();
+//
+//                            } else {
+//                                //判断话题（场景）是否完成，完成则刷新header模型对应的列表项
+//                                refreshHeader(headerPosition, topicInfo);
+//                            }
+//                            break;
+//                        }
+//
+//                    } else {
+//                        //t为空则代表是header模型
+//                        headerPosition = i;
+//                    }
+//
+//                }
+//            }
+
+            /*-------------------------------------------*/
+
+            //是否在当前列表中（搜索功能可能使得当前量表不在当前列表中）
+            boolean existInList = false;
+            //局部刷新量表对应的视图项
+            List<MultiItemEntity> data = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(data)) {
+                //header模型位置
+                int headerPosition = 0;
+                TopicInfoEntity topicInfo = null;
+                DimensionInfoEntity t = null;
+
+                for (int i = 0; i < data.size(); i++) {
+                    MultiItemEntity item = data.get(i);
+                    if (item instanceof TopicInfoEntity) {
+                        topicInfo = (TopicInfoEntity) item;
+                        headerPosition = i;
+
+                    } else if (item instanceof DimensionInfoEntity) {
+                        t = (DimensionInfoEntity) item;
+                    }
+
+                    //t不为空
+                    if (t != null ) {
+                        //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                        if (t.getTopicId().equals(dimension.getTopicId())
+                                && t.getDimensionId().equals(dimension.getDimensionId())) {
+                            //刷新对应量表的列表项
+                            t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                            recyclerAdapter.notifyItemChanged(tempPosition);//局部数显列表项，把header计算在内
+
+                            //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+                            if (isMeetUnlockCondition(topicInfo)) {
+                                //重置为第一页
+                                resetPageInfo();
+                                //刷新孩子话题
+                                refreshChildTopList();
+
+                            } else {
+                                //处理话题是否为完成状态，如果已完成则刷新header模型对应的列表项
+                                if (handleTopicIsComplete(topicInfo)) {
+                                    refreshHeader(headerPosition);
+                                }
+                            }
+
+                            //标记当前量表存在当前列表中
+                            existInList = true;
+
+                            break;
+                        }
+
                     }
                 }
             }
+
+            //当前量表不存在当前列表中
+            if (!existInList) {
+
+                for (int i = 0; i < topicList.size(); i++) {
+                    TopicInfoEntity topicInfo = topicList.get(i);
+
+                    if (ArrayListUtil.isNotEmpty(topicInfo.getDimensions())) {
+                        for (DimensionInfoEntity t : topicInfo.getDimensions()) {
+                            //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                            if (t.getTopicId().equals(dimension.getTopicId())
+                                    && t.getDimensionId().equals(dimension.getDimensionId())) {
+
+                                t.setChildDimension(dimension.getChildDimension());//重置孩子量表对象
+
+                                //判断当前话题是否有被锁的量表，有则判断是否满足解锁条件
+                                if (isMeetUnlockCondition(topicInfo)) {
+                                    //重置为第一页
+                                    resetPageInfo();
+                                    //刷新孩子话题
+                                    refreshChildTopList();
+
+                                } else {
+                                    //处理话题是否为完成状态
+                                    handleTopicIsComplete(topicInfo);
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
         }
+
     }
 
 

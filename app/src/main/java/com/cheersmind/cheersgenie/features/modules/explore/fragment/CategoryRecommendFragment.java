@@ -328,7 +328,9 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         btnGotoLastDimension.setOnClickListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                DimensionDetailActivity.startDimensionDetailActivity(getContext(), lastDimension, null);
+                DimensionDetailActivity.startDimensionDetailActivity(getContext(),
+                        lastDimension, null,
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
             }
         });
 

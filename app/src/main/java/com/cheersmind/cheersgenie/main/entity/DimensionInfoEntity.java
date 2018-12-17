@@ -283,6 +283,6 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
 
     @Override
     public int getItemType() {
-        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_BODY;
+        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
     }
 }

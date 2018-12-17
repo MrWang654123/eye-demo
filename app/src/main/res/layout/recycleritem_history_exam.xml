@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/shape_corner_dfdddd_6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="20dp"
+            android:orientation="vertical"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_exam_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/color_666666"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="刷卡机大富科技涉及到福建省地方时电费束带结发" />
+
+            <LinearLayout
+                android:id="@+id/ll_begin_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_corner_ffd604_3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="3dp"
+                    android:text="开始"
+                    android:textColor="@color/color_666666"
+                    android:textSize="13sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_begin_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/color_666666"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="2018-9月-23 12:00" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_corner_ffd604_3dp"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="3dp"
+                    android:text="结束"
+                    android:textColor="@color/color_666666"
+                    android:textSize="13sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/color_666666"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="2018-9月-23 12:00" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_status"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/exam_status_doing"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
+
+</LinearLayout>

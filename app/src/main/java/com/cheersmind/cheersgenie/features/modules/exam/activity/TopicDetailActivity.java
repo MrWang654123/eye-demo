@@ -49,11 +49,14 @@ public class TopicDetailActivity extends BaseActivity {
 
     public static final String TOPIC_INFO = "topic_info";
     private static final String TOPIC_ID = "topic_id";
+    public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
 
     //话题对象
     private TopicInfoEntity topicInfoEntity;
     //话题ID
     private String topicId;
+    //从哪个页面进入的答题页
+    int fromActivityToQuestion;
 
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
@@ -93,11 +96,29 @@ public class TopicDetailActivity extends BaseActivity {
      * @param context
      * @param topicId 话题ID
      */
-    public static void startTopicDetailActivity(Context context, String topicId, TopicInfoEntity topicInfoEntity) {
+//    public static void startTopicDetailActivity(Context context, String topicId, TopicInfoEntity topicInfoEntity) {
+//        Intent intent = new Intent(context, TopicDetailActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putString(TOPIC_ID, topicId);
+//        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+//        intent.putExtras(extras);
+//        context.startActivity(intent);
+//    }
+
+    /**
+     * 启动话题详情页面
+     *
+     * @param context
+     * @param topicId 话题ID
+     */
+    public static void startTopicDetailActivity(Context context,
+                                                String topicId,
+                                                TopicInfoEntity topicInfoEntity, int fromActivityToQuestion) {
         Intent intent = new Intent(context, TopicDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(TOPIC_ID, topicId);
         extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+        extras.putInt(FROM_ACTIVITY_TO_QUESTION, fromActivityToQuestion);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -124,7 +145,9 @@ public class TopicDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //加载话题详情
-                loadTopicDetail(topicId);
+//                loadTopicDetail(topicId);
+                //刷新话题详细视图
+                refreshTopicDetailView(topicInfoEntity);
             }
         });
     }
@@ -144,16 +167,19 @@ public class TopicDetailActivity extends BaseActivity {
             return;
         }
 
-        topicId = getIntent().getExtras().getString(TOPIC_ID);
+        topicId = getIntent().getStringExtra(TOPIC_ID);
         if (TextUtils.isEmpty(topicId)) {
             ToastUtil.showShort(getApplication(), "话题ID不能为空");
             return;
         }
 
         topicInfoEntity = (TopicInfoEntity)getIntent().getSerializableExtra(TOPIC_INFO);
+        fromActivityToQuestion = getIntent().getIntExtra(FROM_ACTIVITY_TO_QUESTION, Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
         //加载话题详情
         loadTopicDetail(topicId);
+        //刷新话题详细视图
+//        refreshTopicDetailView(topicInfoEntity);
 
     }
 
@@ -244,6 +270,62 @@ public class TopicDetailActivity extends BaseActivity {
     }
 
 
+    /**
+     * 刷新话题详细视图
+     * @param topicInfo
+     */
+    private void refreshTopicDetailView(TopicInfoEntity topicInfo) {
+        //显示scrollView
+        scrollView.setVisibility(View.VISIBLE);
+        //话题名称
+        tvTopicName.setText(topicInfo.getTopicName());
+//        tvContent.setText(Dictionary.Text_Indent + topicDetail.getDescription());
+        //场景描述（位于底部的）
+        if (!TextUtils.isEmpty(topicInfo.getDeccription())) {
+            //显示布局
+            tvContentBottom.setVisibility(View.VISIBLE);
+            tvContentBottom.setText(Html.fromHtml(topicInfo.getDeccription()));
+
+        } else {
+            tvContentBottom.setVisibility(View.GONE);
+        }
+
+        //适用对象
+        tvSuitableUser.setText("#适合对象：学生");
+        //使用人数
+        if (topicInfo.getUseCount() > 0) {
+            rlUsedCount.setVisibility(View.VISIBLE);
+            tvUsedCount.setText(getResources().getString(R.string.exam_dimension_use_count, topicInfo.getUseCount() + ""));
+        } else {
+            rlUsedCount.setVisibility(View.GONE);
+        }
+
+        //图片
+        Glide.with(TopicDetailActivity.this)
+                .load(topicInfo.getIcon())
+//                .thumbnail(0.5f)
+                .apply(defaultOptions)
+                .into(ivDesc);
+//        ivDesc.setImageResource(R.drawable.default_image_round);
+
+        //测评按钮
+        if (topicInfoEntity != null) {
+            //孩子话题为空：未开始
+            if (topicInfoEntity.getChildTopic() == null) {
+                btnStartExam.setText("进入测评");
+            } else {
+                //孩子话题的状态为已完成：查看报告
+                if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    btnStartExam.setText("查看报告");
+                } else {
+                    btnStartExam.setText("继续测评");
+                }
+            }
+        }
+
+    }
+
+
     @OnClick({R.id.btn_start_exam})
     public void onViewClick(View view) {
         switch (view.getId()) {
@@ -270,7 +352,9 @@ public class TopicDetailActivity extends BaseActivity {
                 if (!ArrayListUtil.isEmpty(dimensions)) {
                     DimensionInfoEntity dimensionInfoEntity = dimensions.get(0);
                     //跳转到量表详细页面，传递量表对象和话题对象
-                    DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+                    DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this,
+                            dimensionInfoEntity, topicInfoEntity,
+                            fromActivityToQuestion);
 
                 } else {
                     doOpenFailedTip();
@@ -309,7 +393,9 @@ public class TopicDetailActivity extends BaseActivity {
 
                         if (dimensionInfoEntity != null) {
                             //跳转到量表详细页面，传递量表对象和话题对象
-                            DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this, dimensionInfoEntity, topicInfoEntity);
+                            DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this,
+                                    dimensionInfoEntity, topicInfoEntity,
+                                    fromActivityToQuestion);
                         } else {
                             doOpenFailedTip();
                         }

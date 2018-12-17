@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,14 +10,15 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.view.CircleProgressBar;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,29 +31,76 @@ public class ExamDimensionLinearRecyclerAdapter extends ExamDimensionBaseRecycle
     public ExamDimensionLinearRecyclerAdapter(Fragment fragment, List<MultiItemEntity> data) throws QSCustomException {
         super(fragment, data);
 
-        addItemType(LAYOUT_TYPE_HEADER, R.layout.recycleritem_axam_header);
-        addItemType(LAYOUT_TYPE_BODY, R.layout.recycleritem_axam_linear);
+        addItemType(LAYOUT_TYPE_EXAM, R.layout.recycleritem_axam_title_empty);
+        addItemType(LAYOUT_TYPE_TOPIC, R.layout.recycleritem_axam_header);
+        addItemType(LAYOUT_TYPE_DIMENSION, R.layout.recycleritem_axam_linear);
     }
 
 
     @Override
     protected void convert(final BaseViewHolder helper, MultiItemEntity item) {
         switch (helper.getItemViewType()) {
+            //测评
+            case LAYOUT_TYPE_EXAM: {
+//                ExamEntity exam = (ExamEntity) item;
+//                //测评名称
+//                if (!TextUtils.isEmpty(exam.getExamName())) {
+//                    helper.getView(R.id.tv_title).setVisibility(View.VISIBLE);
+//                    helper.setText(R.id.tv_title, exam.getExamName());
+//                } else {
+//                    helper.getView(R.id.tv_title).setVisibility(View.GONE);
+//                }
+//                //有效期
+//                if (!TextUtils.isEmpty(exam.getStartTime())  && !TextUtils.isEmpty(exam.getEndTime())) {
+//                    //有效期
+//                    String startTime = exam.getStartTime();
+//                    String endTime = exam.getEndTime();//ISO8601 时间字符串
+//                    try {
+//                        Date startDate = formatIso8601.parse(startTime);
+//                        Date endDate = formatIso8601.parse(endTime);
+//                        String startDateStr = formatNormal.format(startDate);
+//                        String endDateStr = formatNormal.format(endDate);
+//                        helper.setText(R.id.tv_date, fragment.getResources().getString(R.string.exam_date,startDateStr, endDateStr));
+//
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                //圆形进度条
+//                try {
+//                    float progress = (float)exam.getCompleteDimensions() / exam.getTotalDimensions() * 100;
+//                    ((CircleProgressBar) helper.getView(R.id.circleProgressBar)).setProgress((int) progress);
+////                circleProgressBar.setProgress(progress, true); // 使用数字过渡动画
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
+                break;
+            }
             //header（话题）
-            case LAYOUT_TYPE_HEADER: {
+            case LAYOUT_TYPE_TOPIC: {
                 //第一个Header的分割线布局隐藏
-                int position = helper.getLayoutPosition();
-                int headCount = getHeaderLayoutCount();
-                boolean isFirst = position - headCount == 0;
+//                int position = helper.getLayoutPosition();
+//                int headCount = getHeaderLayoutCount();
+//                boolean isFirst = position - headCount == 0;
+//                if (isFirst) {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+//                } else {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+//                }
+
+                final TopicInfoEntity topicInfo = (TopicInfoEntity) item;
+                DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
+
+                //第一个Header的分割线布局隐藏
+                boolean isFirst = topicInfo.isFirstInExam();
                 if (isFirst) {
                     helper.getView(R.id.tv_divider).setVisibility(View.GONE);
                 } else {
                     helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
                 }
 
-//        DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item.t;
-                final TopicInfoEntity topicInfo = (TopicInfoEntity) item;
-                DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
                 //标题
                 helper.setText(R.id.tv_title, topicInfo.getTopicName());
                 //设置标题的最大宽度
@@ -117,7 +166,7 @@ public class ExamDimensionLinearRecyclerAdapter extends ExamDimensionBaseRecycle
                 break;
             }
             //body（量表）
-            case LAYOUT_TYPE_BODY: {
+            case LAYOUT_TYPE_DIMENSION: {
                 DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item;
                 //标题
                 helper.setText(R.id.tv_title2, dimensionInfo.getDimensionName());

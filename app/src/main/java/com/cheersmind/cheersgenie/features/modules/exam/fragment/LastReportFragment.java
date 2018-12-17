@@ -1,6 +1,5 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,10 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -26,23 +23,16 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ReportMultiRecyclerAdapter;
-import com.cheersmind.cheersgenie.features.adapter.ReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
-import com.cheersmind.cheersgenie.features.entity.HBarChartItem;
-import com.cheersmind.cheersgenie.features.entity.LineChartItem;
-import com.cheersmind.cheersgenie.features.entity.RadarChartItem;
-import com.cheersmind.cheersgenie.features.entity.VBarChartItem;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
-import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.FactorResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
@@ -56,10 +46,6 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
-import com.cheersmind.cheersgenie.mpcharts.MPHorizontalBarChart;
-import com.cheersmind.cheersgenie.mpcharts.MPLineChart;
-import com.cheersmind.cheersgenie.mpcharts.MPRadarChart;
-import com.cheersmind.cheersgenie.mpcharts.MPVerticalBarChart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +148,6 @@ public class LastReportFragment extends LazyLoadFragment {
         return R.layout.fragment_last_report;
     }
 
-    @SuppressLint("RestrictedApi")
     @Override
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
@@ -278,6 +263,8 @@ public class LastReportFragment extends LazyLoadFragment {
                         emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                         try {
+                            //测试数据
+//                            Map dataMap = JsonUtil.fromJson(testDataStr, Map.class);
                             Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                             ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ReportRootEntity.class);
 
@@ -839,5 +826,237 @@ public class LastReportFragment extends LazyLoadFragment {
             }
         }, httpTag, getActivity());
     }
+
+
+    String testDataStr = "{\n" +
+            "\t\"compare_name\": \"全国\",\n" +
+            "\t\"topic_name\": \"我的认知过程\",\n" +
+            "\t\"chart_datas\": [{\n" +
+            "\t\t\"is_topic\": true,\n" +
+            "\t\t\"chart_type\": 2,\n" +
+            "\t\t\"chart_description\": \"原始分曲线图\",\n" +
+            "\t\t\"score_type\": 1,\n" +
+            "\t\t\"min_score\": 0,\n" +
+            "\t\t\"max_score\": 100,\n" +
+            "\t\t\"chart_item_id\": \"084eb136-34db-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\"chart_item_name\": \"我的认知过程\",\n" +
+            "\t\t\"chart_show_item_name\": false,\n" +
+            "\t\t\"report_result\": null,\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"compare_id\": \"0\",\n" +
+            "\t\t\t\"compare_name\": \"全国\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"1953c6a3-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1953cbd0-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"执行功能\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"1\",\n" +
+            "\t\t\t\"compare_name\": \"年级\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"1953c6a3-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 44.35\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1953cbd0-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"执行功能\",\n" +
+            "\t\t\t\t\"score\": 36.92\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"2\",\n" +
+            "\t\t\t\"compare_name\": \"我\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"1953c6a3-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 44.35\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1953cbd0-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\t\t\"item_name\": \"执行功能\",\n" +
+            "\t\t\t\t\"score\": 36.92\n" +
+            "\t\t\t}]\n" +
+            "\t\t}]\n" +
+            "\t}, {\n" +
+            "\t\t\"is_topic\": false,\n" +
+            "\t\t\"chart_type\": 1,\n" +
+            "\t\t\"chart_description\": \"原始分曲线图\",\n" +
+            "\t\t\"score_type\": 1,\n" +
+            "\t\t\"min_score\": 0,\n" +
+            "\t\t\"max_score\": 100,\n" +
+            "\t\t\"chart_item_id\": \"1953cbd0-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\"chart_item_name\": \"执行功能\",\n" +
+            "\t\t\"chart_show_item_name\": false,\n" +
+            "\t\t\"report_result\": null,\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"compare_id\": \"0\",\n" +
+            "\t\t\t\"compare_name\": \"全国\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"55b95f9f-4c03-4fbd-c575-ee152452baa0\",\n" +
+            "\t\t\t\t\"item_name\": \"抑制\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"49b128fc-27f0-c155-ad07-45f83632141f\",\n" +
+            "\t\t\t\t\"item_name\": \"转换\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"0fc66061-142b-739e-3b16-61e230f9e19e\",\n" +
+            "\t\t\t\t\"item_name\": \"情绪控制\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"67e4373e-d2c1-f699-d7c5-dbb9e66bc520\",\n" +
+            "\t\t\t\t\"item_name\": \"任务完成\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"c88e8e0a-fe99-d128-99cb-40e1d0c80a7f\",\n" +
+            "\t\t\t\t\"item_name\": \"工作记忆\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"4ea7451f-524e-658f-ec44-044a3301cdac\",\n" +
+            "\t\t\t\t\"item_name\": \"计划\\/组织\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"cad6dd76-8f0b-9263-6532-c5e034701aec\",\n" +
+            "\t\t\t\t\"item_name\": \"材料组织\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1d4d7fd7-0d2b-0c1d-e106-ebb0cb44f805\",\n" +
+            "\t\t\t\t\"item_name\": \"监控\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"1\",\n" +
+            "\t\t\t\"compare_name\": \"年级\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"55b95f9f-4c03-4fbd-c575-ee152452baa0\",\n" +
+            "\t\t\t\t\"item_name\": \"抑制\",\n" +
+            "\t\t\t\t\"score\": 35.54\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"49b128fc-27f0-c155-ad07-45f83632141f\",\n" +
+            "\t\t\t\t\"item_name\": \"转换\",\n" +
+            "\t\t\t\t\"score\": 34.28\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"0fc66061-142b-739e-3b16-61e230f9e19e\",\n" +
+            "\t\t\t\t\"item_name\": \"情绪控制\",\n" +
+            "\t\t\t\t\"score\": 42.91\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"67e4373e-d2c1-f699-d7c5-dbb9e66bc520\",\n" +
+            "\t\t\t\t\"item_name\": \"任务完成\",\n" +
+            "\t\t\t\t\"score\": 54.6\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"c88e8e0a-fe99-d128-99cb-40e1d0c80a7f\",\n" +
+            "\t\t\t\t\"item_name\": \"工作记忆\",\n" +
+            "\t\t\t\t\"score\": 33.6\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"4ea7451f-524e-658f-ec44-044a3301cdac\",\n" +
+            "\t\t\t\t\"item_name\": \"计划\\/组织\",\n" +
+            "\t\t\t\t\"score\": 15.42\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"cad6dd76-8f0b-9263-6532-c5e034701aec\",\n" +
+            "\t\t\t\t\"item_name\": \"材料组织\",\n" +
+            "\t\t\t\t\"score\": 26.93\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1d4d7fd7-0d2b-0c1d-e106-ebb0cb44f805\",\n" +
+            "\t\t\t\t\"item_name\": \"监控\",\n" +
+            "\t\t\t\t\"score\": 46.25\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"2\",\n" +
+            "\t\t\t\"compare_name\": \"我\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"55b95f9f-4c03-4fbd-c575-ee152452baa0\",\n" +
+            "\t\t\t\t\"item_name\": \"抑制\",\n" +
+            "\t\t\t\t\"score\": 30.54\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"49b128fc-27f0-c155-ad07-45f83632141f\",\n" +
+            "\t\t\t\t\"item_name\": \"转换\",\n" +
+            "\t\t\t\t\"score\": 41.28\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"0fc66061-142b-739e-3b16-61e230f9e19e\",\n" +
+            "\t\t\t\t\"item_name\": \"情绪控制\",\n" +
+            "\t\t\t\t\"score\": 48.91\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"67e4373e-d2c1-f699-d7c5-dbb9e66bc520\",\n" +
+            "\t\t\t\t\"item_name\": \"任务完成\",\n" +
+            "\t\t\t\t\"score\": 34.6\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"c88e8e0a-fe99-d128-99cb-40e1d0c80a7f\",\n" +
+            "\t\t\t\t\"item_name\": \"工作记忆\",\n" +
+            "\t\t\t\t\"score\": 37.6\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"4ea7451f-524e-658f-ec44-044a3301cdac\",\n" +
+            "\t\t\t\t\"item_name\": \"计划\\/组织\",\n" +
+            "\t\t\t\t\"score\": 45.42\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"cad6dd76-8f0b-9263-6532-c5e034701aec\",\n" +
+            "\t\t\t\t\"item_name\": \"材料组织\",\n" +
+            "\t\t\t\t\"score\": 36.93\n" +
+            "\t\t\t}, {\n" +
+            "\t\t\t\t\"item_id\": \"1d4d7fd7-0d2b-0c1d-e106-ebb0cb44f805\",\n" +
+            "\t\t\t\t\"item_name\": \"监控\",\n" +
+            "\t\t\t\t\"score\": 36.25\n" +
+            "\t\t\t}]\n" +
+            "\t\t}]\n" +
+            "\t}, {\n" +
+            "\t\t\"is_topic\": false,\n" +
+            "\t\t\"chart_type\": 2,\n" +
+            "\t\t\"chart_description\": \"原始分曲线图\",\n" +
+            "\t\t\"score_type\": 1,\n" +
+            "\t\t\"min_score\": 0,\n" +
+            "\t\t\"max_score\": 100,\n" +
+            "\t\t\"chart_item_id\": \"1953c6a3-34e4-11e8-bc53-00163e000f06\",\n" +
+            "\t\t\"chart_item_name\": \"正念注意觉知\",\n" +
+            "\t\t\"chart_show_item_name\": false,\n" +
+            "\t\t\"report_result\": null,\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"compare_id\": \"0\",\n" +
+            "\t\t\t\"compare_name\": \"全国\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"a2b2eaab-56dc-57d3-9fea-727949424d76\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 50\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"1\",\n" +
+            "\t\t\t\"compare_name\": \"年级\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"a2b2eaab-56dc-57d3-9fea-727949424d76\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 44.43\n" +
+            "\t\t\t}]\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"compare_id\": \"2\",\n" +
+            "\t\t\t\"compare_name\": \"我\",\n" +
+            "\t\t\t\"chart_datas\": [{\n" +
+            "\t\t\t\t\"item_id\": \"a2b2eaab-56dc-57d3-9fea-727949424d76\",\n" +
+            "\t\t\t\t\"item_name\": \"正念注意觉知\",\n" +
+            "\t\t\t\t\"score\": 44.43\n" +
+            "\t\t\t}]\n" +
+            "\t\t}]\n" +
+            "\t}],\n" +
+            "\t\"report_results\": [{\n" +
+            "\t\t\"relation_id\": null,\n" +
+            "\t\t\"header\": null,\n" +
+            "\t\t\"color\": null,\n" +
+            "\t\t\"title\": null,\n" +
+            "\t\t\"content\": null,\n" +
+            "\t\t\"description\": \"原始分曲线图\",\n" +
+            "\t\t\"result\": null,\n" +
+            "\t\t\"score\": 36.92,\n" +
+            "\t\t\"factor_result\": []\n" +
+            "\t}, {\n" +
+            "\t\t\"relation_id\": null,\n" +
+            "\t\t\"header\": null,\n" +
+            "\t\t\"color\": null,\n" +
+            "\t\t\"title\": null,\n" +
+            "\t\t\"content\": null,\n" +
+            "\t\t\"description\": \"原始分曲线图\",\n" +
+            "\t\t\"result\": null,\n" +
+            "\t\t\"score\": 44.35,\n" +
+            "\t\t\"factor_result\": []\n" +
+            "\t}]\n" +
+            "}";
 
 }

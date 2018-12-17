@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.main.entity.ChartCompareItem;
+import com.cheersmind.cheersgenie.main.entity.ChartScoreItem;
 import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
-import com.cheersmind.cheersgenie.main.helper.MPChartViewHelper;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
@@ -65,6 +67,8 @@ public class ChartItem implements MultiItemEntity {
     protected String dataSetColor_1 = "#2ec8c9";
     //数据集合2的颜色
     protected String dataSetColor_2 = "#cbbfe6";
+    //数据集合2的颜色
+    protected String dataSetColor_3 = "#416dd2";
     //孔的颜色
     String holeColor = "#ffffff";
 
@@ -220,25 +224,33 @@ public class ChartItem implements MultiItemEntity {
      */
     List<Float> getMaxAndMinValue(){
         List<Float> values = new ArrayList<>();
-        float maxValue = reportData.getMaxScore();
+        float maxValue = 0;
         float minValue = 0;
-        values.add(maxValue);
-        values.add(minValue);
         if(reportData == null){
+            values.add(maxValue);
+            values.add(minValue);
+
             return values;
         }
 
-        List<ReportFactorEntity> items = reportData.getItems();
-        if(items!=null && items.size()>0){
-            for(int i=0;i<items.size();i++){
-                float childScore = (float) items.get(i).getChildScore();
-                if(childScore>=0){
-                    if(childScore>maxValue){
-                        maxValue = childScore;
-                    }
-                }else{
-                    if(childScore<minValue){
-                        minValue = childScore;
+        //比较项
+        List<ChartCompareItem> compareItems = reportData.getItems();
+        if(ArrayListUtil.isNotEmpty(compareItems)){
+            for(ChartCompareItem compareItem : compareItems){
+                //分数项
+                List<ChartScoreItem> scoreItems = compareItem.getScoreItems();
+                if (ArrayListUtil.isNotEmpty(scoreItems)) {
+                    for (ChartScoreItem scoreItem : scoreItems) {
+                        float score = (float) scoreItem.getScore();
+                        if (score >= 0) {
+                            if (score > maxValue) {
+                                maxValue = score;
+                            }
+                        } else {
+                            if (score < minValue) {
+                                minValue = score;
+                            }
+                        }
                     }
                 }
             }
@@ -289,15 +301,15 @@ public class ChartItem implements MultiItemEntity {
      * @return
      */
     private int adjustHeightByXLabels(ReportItemEntity reportItemEntity) {
-        int height = 270;
+        int height = 280;
         if (reportItemEntity != null) {
             int chartType = reportItemEntity.getChartType();
             //雷达图
-            if (chartType == MPChartViewHelper.MPChartType.RADARCHARTVIEW.getType()) {
-                height = 330;
+            if (chartType == Dictionary.CHART_RADAR) {
+                height = 350;
 
-            } else if (chartType == MPChartViewHelper.MPChartType.BARHCHARTVIEW.getType()) {//水平条状图
-                height = 270;
+            } else if (chartType == Dictionary.CHART_BAR_H) {//水平条状图
+                height = 280;
 
             } else {//其他：柱状图和曲线图
                 List<String> xLabels = getXLabels(reportItemEntity);
@@ -332,11 +344,22 @@ public class ChartItem implements MultiItemEntity {
         List<String> xLabels = new ArrayList<>();
 
         if (reportItemEntity != null && reportItemEntity.getItems() != null) {
-            List<ReportFactorEntity> items = reportItemEntity.getItems();
+            //比较项
+            List<ChartCompareItem> compareItems = reportItemEntity.getItems();
+            if (ArrayListUtil.isNotEmpty(compareItems)) {
+                for (ChartCompareItem compareItem : compareItems) {
+                    //分数项
+                    List<ChartScoreItem> scoreItems = compareItem.getScoreItems();
+                    if (ArrayListUtil.isNotEmpty(scoreItems)) {
+                        for (ChartScoreItem scoreItem : scoreItems) {
+                            xLabels.add(scoreItem.getItemName());
+                        }
+                    }
 
-            for (int i = 0; i < items.size(); i++) {
-                ReportFactorEntity rfe = items.get(i);
-                xLabels.add(rfe.getItemName());
+                    if (xLabels.size() > 0) {
+                        break;
+                    }
+                }
             }
         }
 
