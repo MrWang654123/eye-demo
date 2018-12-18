@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/shape_corner_dfdddd_6dp">
+        android:background="@drawable/shape_corner_eeeeee_5dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,28 +28,48 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingMultiplier="1.2"
-                android:textColor="@color/color_666666"
+                android:textColor="@color/color_333333"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 tools:text="刷卡机大富科技涉及到福建省地方时电费束带结发" />
+
+            <TextView
+                android:id="@+id/tv_seminar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/color_666666"
+                android:lineSpacingMultiplier="1.2"
+                android:text="所属专题：数据的飞机世界东方世界东方升级到封建时代反击受到激发"/>
+
+            <TextView
+                android:id="@+id/tv_topic_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="14sp"
+                android:textColor="@color/color_555555"
+                android:lineSpacingMultiplier="1.2"
+                android:text="完成数量：15/20"/>
 
             <LinearLayout
                 android:id="@+id/ll_begin_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="13dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@drawable/shape_corner_ffd604_3dp"
                     android:paddingBottom="3dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:paddingTop="3dp"
                     android:text="开始"
-                    android:textColor="@color/color_666666"
+                    android:textColor="@color/color_444444"
                     android:textSize="13sp" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -57,9 +77,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/color_666666"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    android:textColor="@color/color_444444"
+                    android:textSize="15sp"
                     tools:text="2018-9月-23 12:00" />
 
             </LinearLayout>
@@ -80,7 +99,7 @@
                     android:paddingRight="10dp"
                     android:paddingTop="3dp"
                     android:text="结束"
-                    android:textColor="@color/color_666666"
+                    android:textColor="@color/color_444444"
                     android:textSize="13sp" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -88,9 +107,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/color_666666"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
+                    android:textColor="@color/color_444444"
+                    android:textSize="15sp"
                     tools:text="2018-9月-23 12:00" />
 
             </LinearLayout>
@@ -102,7 +120,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/exam_status_doing"
+            android:src="@drawable/exam_status_complete"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>

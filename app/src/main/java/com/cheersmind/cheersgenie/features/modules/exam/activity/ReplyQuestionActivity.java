@@ -343,6 +343,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //停止任何语音
         getSynthesizerManager().stop();
+        //清空设置监听
+        getSynthesizerManager().setSpeechSynthesizerListener(null);
     }
 
 

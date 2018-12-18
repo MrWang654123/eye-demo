@@ -21,9 +21,9 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.TaskItemEntity;
-import com.cheersmind.cheersgenie.main.entity.TaskListEntity;
-import com.cheersmind.cheersgenie.main.entity.TaskListRootEntity;
+import com.cheersmind.cheersgenie.main.entity.ExamEntity;
+import com.cheersmind.cheersgenie.main.entity.SeminarEntity;
+import com.cheersmind.cheersgenie.main.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -53,10 +53,10 @@ public class TaskListDialog extends Dialog {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
-    //任务列表
-    private TaskListEntity taskListEntity;
-    //任务列表项
-    private List<TaskItemEntity> taskItems;
+    //专题
+    private SeminarEntity seminarEntity;
+    //测评集合
+    private List<ExamEntity> examList;
 
     //操作监听
     private OnOperationListener listener;
@@ -70,7 +70,7 @@ public class TaskListDialog extends Dialog {
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             Object item = ((TaskListAdapter) adapter).getItem(position);
             if (item != null && listener != null) {
-                listener.onOnClickItem(position, ((TaskItemEntity) item).getId());
+                listener.onOnClickItem(position, ((ExamEntity) item).getExamId());
                 //点击完直接关闭对话框
                 dismiss();
             }
@@ -78,10 +78,10 @@ public class TaskListDialog extends Dialog {
     };
 
 
-    public TaskListDialog(@NonNull Context context, TaskListEntity taskListEntity, List<TaskItemEntity> taskItems, OnOperationListener listener) {
+    public TaskListDialog(@NonNull Context context, SeminarEntity seminarEntity, List<ExamEntity> examList, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
-        this.taskListEntity = taskListEntity;
-        this.taskItems = taskItems;
+        this.seminarEntity = seminarEntity;
+        this.examList = examList;
 
 
         this.listener = listener;
@@ -101,11 +101,11 @@ public class TaskListDialog extends Dialog {
         //初始化视图
         initView();
 
-        if (taskListEntity == null && taskItems == null) {
+        if (seminarEntity == null && examList == null) {
             doGetTaskList(tag);
         } else {
             //刷新视图
-            refreshView(taskListEntity, taskItems);
+            refreshView(seminarEntity, examList);
 
             //第一次访问默认弹出任务列表弹窗
             String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
@@ -167,12 +167,12 @@ public class TaskListDialog extends Dialog {
 
 //                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
+                    SeminarRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, SeminarRootEntity.class);
 
                     int totalCount = taskListRootEntity.getTotal();
-                    List<TaskListEntity> dataList = taskListRootEntity.getItems();
-                    taskListEntity = null;
-                    taskItems = null;
+                    List<SeminarEntity> dataList = taskListRootEntity.getItems();
+                    seminarEntity = null;
+                    examList = null;
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
@@ -181,9 +181,9 @@ public class TaskListDialog extends Dialog {
                         }
                         return;
                     } else {
-                        taskListEntity = dataList.get(0);
-                        taskItems = taskListEntity.getTaskItems();
-                        if (ArrayListUtil.isEmpty(taskItems)) {
+                        seminarEntity = dataList.get(0);
+                        examList = seminarEntity.getExams();
+                        if (ArrayListUtil.isEmpty(examList)) {
                             if (emptyLayout != null) {
                                 emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                                 return;
@@ -192,7 +192,7 @@ public class TaskListDialog extends Dialog {
                     }
 
                     //刷新视图
-                    refreshView(taskListEntity, taskItems);
+                    refreshView(seminarEntity, examList);
 
                     //第一次访问默认弹出任务列表弹窗
                     String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
@@ -213,20 +213,20 @@ public class TaskListDialog extends Dialog {
 
     /**
      * 刷新视图
-     * @param taskListEntity 任务列表总数据
-     * @param taskItems 任务子项集合
+     * @param seminar 专题
+     * @param examList 测评集合
      */
-    private void refreshView(TaskListEntity taskListEntity, List<TaskItemEntity> taskItems) {
+    private void refreshView(SeminarEntity seminar, List<ExamEntity> examList) {
         //任务列表
-        TaskListAdapter taskListAdapter = new TaskListAdapter(R.layout.item_timeline_line_padding_custom, taskItems);
+        TaskListAdapter taskListAdapter = new TaskListAdapter(R.layout.item_timeline_line_padding_custom, examList);
         //设置子项点击监听
         taskListAdapter.setOnItemClickListener(recyclerItemClickListener);
         recyclerView.setAdapter(taskListAdapter);
-        recyclerView.scrollToPosition(getFirstDoingTaskPosition(taskItems));
+        recyclerView.scrollToPosition(getFirstDoingTaskPosition(examList));
 
         //标题
-        if (taskListEntity != null) {
-            tvTitle.setText(taskListEntity.getSeminar_name());
+        if (seminar != null) {
+            tvTitle.setText(seminar.getSeminar_name());
         } else {
             tvTitle.setText("");
         }
@@ -258,16 +258,16 @@ public class TaskListDialog extends Dialog {
 
 
     /**
-     * 获取第一个正在进行的任务位置
+     * 获取第一个正在进行的测评位置
      * @return 索引
      */
-    private int getFirstDoingTaskPosition(List<TaskItemEntity> taskItems) {
+    private int getFirstDoingTaskPosition(List<ExamEntity> examList) {
         int position = 0;
 
-        if (ArrayListUtil.isNotEmpty(taskItems)) {
-            for (int i=0; i<taskItems.size(); i++) {
-                TaskItemEntity taskItem = taskItems.get(i);
-                if (taskItem.getStatus() == Dictionary.TASK_STATUS_DOING) {
+        if (ArrayListUtil.isNotEmpty(examList)) {
+            for (int i=0; i<examList.size(); i++) {
+                ExamEntity exam = examList.get(i);
+                if (exam.getStatus() == Dictionary.TASK_STATUS_DOING) {
                     position = i;
                     break;
                 }

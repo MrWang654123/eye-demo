@@ -72,7 +72,7 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
         }
         //隐藏回退按钮
         if (ivLeft != null) {
-            ivLeft.setVisibility(View.GONE);
+            ivLeft.setVisibility(View.VISIBLE);
         }
 
         //初始隐藏布局切换按钮
@@ -108,13 +108,20 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
     //布局类型
     int layoutType = Dictionary.EXAM_LIST_LAYOUT_TYPE_GRID;
 
-    @OnClick({R.id.iv_switch_layout,R.id.iv_search_tip,R.id.tv_cancel})
+    @OnClick({R.id.iv_switch_layout,R.id.iv_search_tip,R.id.tv_cancel, R.id.iv_left})
     public void onViewClick(View view) {
         FragmentManager childFragmentManager = getChildFragmentManager();
         String tag = HistoryExamDetailFragment.class.getSimpleName();
         Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
 
         switch (view.getId()) {
+            //退出
+            case R.id.iv_left: {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+                break;
+            }
             //切换列表布局
             case R.id.iv_switch_layout:{
                 //当前是网格，切换成线性，显示网格图标

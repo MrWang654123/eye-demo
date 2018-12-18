@@ -315,6 +315,25 @@ public class DataRequestService {
                 .replace("{size}",String.valueOf(limit));
         doGet(url, callback, httpTag, context);
     }
+
+
+    /**
+     * 获取孩子的历史专题列表
+     * @param childId 孩子ID
+     * @param offset 页码
+     * @param limit 页宽
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param context 上下文
+     */
+    public void loadChildHistorySeminarList(String childId,int offset, int limit,
+                                         final BaseService.ServiceCallback callback, String httpTag, final Context context){
+        String url = HttpConfig.URL_CHILD_HISTORY_SEMINAR_LIST
+                .replace("{child_id}", childId)
+                .replace("{page}",String.valueOf(offset))
+                .replace("{size}",String.valueOf(limit));
+        doGet(url, callback, httpTag, context);
+    }
     
 
     //获取孩子最后一次使用量表 V2
@@ -1076,7 +1095,7 @@ public class DataRequestService {
      * @param callback 回调
      */
     public void getTopicDetail(String topicId,final BaseService.ServiceCallback callback, String httpTag, Context context){
-        String url = HttpConfig.URL_TOPIC_INFO_V2
+        String url = HttpConfig.URL_TOPIC_INFO
                 .replace("{topic_id}",topicId);
         doGet(url, callback, httpTag, context);
     }

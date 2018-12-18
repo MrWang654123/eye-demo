@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.main.entity;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import org.litepal.crud.DataSupport;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * 任务项实体
  */
-public class TaskItemEntity extends DataSupport implements Serializable {
+public class TaskItemEntity extends DataSupport implements Serializable, MultiItemEntity {
 
     //测评ID
     @InjectMap(name = "exam_id")
@@ -31,6 +32,10 @@ public class TaskItemEntity extends DataSupport implements Serializable {
     //状态
     @InjectMap(name = "status")
     private int status;
+
+    //孩子测评状态
+    @InjectMap(name = "child_exam_status")
+    private int childExamStatus;
 
 
     public String getId() {
@@ -73,4 +78,18 @@ public class TaskItemEntity extends DataSupport implements Serializable {
         this.status = status;
     }
 
+    public int getChildExamStatus() {
+        return childExamStatus;
+    }
+
+    public void setChildExamStatus(int childExamStatus) {
+        this.childExamStatus = childExamStatus;
+    }
+
+    @Override
+    public int getItemType() {
+        return 0;
+    }
+
 }
+

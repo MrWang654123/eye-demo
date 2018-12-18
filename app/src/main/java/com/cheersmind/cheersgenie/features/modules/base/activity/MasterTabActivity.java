@@ -1,22 +1,13 @@
 package com.cheersmind.cheersgenie.features.modules.base.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.Message;
-import android.os.MessageQueue;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -26,55 +17,37 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
+import com.alibaba.sdk.android.push.CloudPushService;
+import com.alibaba.sdk.android.push.CommonCallback;
+import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.TimeLineAdapter;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
-import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
-import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
-import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TaskItemEntity;
-import com.cheersmind.cheersgenie.main.entity.TaskListEntity;
-import com.cheersmind.cheersgenie.main.entity.TaskListRootEntity;
+import com.cheersmind.cheersgenie.main.entity.SeminarEntity;
+import com.cheersmind.cheersgenie.main.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -83,15 +56,11 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -128,10 +97,10 @@ public class MasterTabActivity extends BaseActivity {
     //任务弹窗偏移
     int offset_x;
     int offset_y;
-    //任务列表
-    private TaskListEntity taskListEntity;
-    //任务列表项
-    private List<TaskItemEntity> taskItems;
+    //专题
+    private SeminarEntity seminarEntity;
+    //测评集合
+    private List<ExamEntity> exams;
     //翻页监听
     ViewPageChangeListener pageChangeListener = new ViewPageChangeListener();
     //任务列表监听
@@ -254,6 +223,22 @@ public class MasterTabActivity extends BaseActivity {
 
         //初始化声音
         SoundPlayUtils.init(this);
+
+        //绑定本机和班级号
+        final CloudPushService pushService = PushServiceFactory.getCloudPushService();
+        //班级Id
+        String classId = UCManager.getInstance().getDefaultChild().getClassId();
+        pushService.bindTag(CloudPushService.DEVICE_TARGET, new String[]{classId}, null, new CommonCallback() {
+            @Override
+            public void onSuccess(String s) {
+                System.out.println("绑定设备和班级号成功");
+            }
+
+            @Override
+            public void onFailed(String s, String s1) {
+                System.out.println("绑定设备和班级号失败");
+            }
+        });
     }
 
     @Override
@@ -451,6 +436,8 @@ public class MasterTabActivity extends BaseActivity {
 
         //释放百度音频
         getSynthesizerManager().release();
+        //清空设置监听
+        getSynthesizerManager().setSpeechSynthesizerListener(null);
 
         //取消通信
         BaseService.cancelTag(httpTag);
@@ -529,7 +516,7 @@ public class MasterTabActivity extends BaseActivity {
             case R.id.fabTask:{
 //                ToastUtil.showShort(getApplicationContext(), "显示任务");
 //                doGetTaskList(null,null,null, httpTag);
-                new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, onOperationListener).show();
+                new TaskListDialog(MasterTabActivity.this, seminarEntity, exams, onOperationListener).show();
                 break;
             }
         }
@@ -554,21 +541,21 @@ public class MasterTabActivity extends BaseActivity {
                 try {
 //                    Map dataMap = JsonUtil.fromJson(testTaskStr, Map.class);
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    TaskListRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, TaskListRootEntity.class);
+                    SeminarRootEntity taskListRootEntity = InjectionWrapperUtil.injectMap(dataMap, SeminarRootEntity.class);
 
                     int totalCount = taskListRootEntity.getTotal();
-                    List<TaskListEntity> dataList = taskListRootEntity.getItems();
-                    taskListEntity = null;
-                    taskItems = null;
+                    List<SeminarEntity> dataList = taskListRootEntity.getItems();
+                    seminarEntity = null;
+                    exams = null;
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
                         fabTask.setVisibility(View.GONE);
                         return;
                     } else {
-                        taskListEntity = dataList.get(0);
-                        taskItems = taskListEntity.getTaskItems();
-                        if (ArrayListUtil.isEmpty(taskItems)) {
+                        seminarEntity = dataList.get(0);
+                        exams = seminarEntity.getExams();
+                        if (ArrayListUtil.isEmpty(exams)) {
                             fabTask.setVisibility(View.GONE);
                             return;
                         }
@@ -579,7 +566,7 @@ public class MasterTabActivity extends BaseActivity {
                     //第一次访问默认弹出任务列表弹窗
                     if (!hasFirstShowTaskList) {
                         //显示弹窗
-                        new TaskListDialog(MasterTabActivity.this, taskListEntity, taskItems, null).show();
+                        new TaskListDialog(MasterTabActivity.this, seminarEntity, exams, null).show();
                         //设置已经第一次访问过了任务列表
                         hasFirstShowTaskList = true;
                         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();

@@ -1,13 +1,22 @@
 package com.cheersmind.cheersgenie.features.modules.mine.fragment;
 
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.util.Pair;
 import android.view.View;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.HistoryExamFragment;
+import com.cheersmind.cheersgenie.features.modules.exam.fragment.HistorySeminarFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -16,6 +25,13 @@ import butterknife.Unbinder;
  */
 public class MineExamFragment extends LazyLoadFragment {
 
+    @BindView(R.id.tabs)
+    TabLayout tabs;
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
+
+    //title、Fragment组合对象的集合
+    private List<Pair<String, Fragment>> items;
     //ButterKnife解绑对象
     Unbinder unbinder;
 
@@ -27,23 +43,20 @@ public class MineExamFragment extends LazyLoadFragment {
 
     @Override
     protected void onInitView(View contentView) {
-        //ButterKnife绑定
         unbinder = ButterKnife.bind(this, contentView);
+
+        items = new ArrayList<>();
+        items.add(new Pair<String, Fragment>("全部", new HistoryExamFragment()));
+        items.add(new Pair<String, Fragment>("专题", new HistorySeminarFragment()));
+        viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
+        //标签绑定viewpager
+        tabs.setupWithViewPager(viewPager);
 
     }
 
     @Override
     protected void lazyLoad() {
-        FragmentManager childFragmentManager = getChildFragmentManager();
-        String tag = HistoryExamFragment.class.getSimpleName();
-        Fragment fragmentByTag = childFragmentManager.findFragmentByTag(tag);
-        //空则添加
-        if (fragmentByTag == null) {
-            //已完成的测评
-            HistoryExamFragment fragment = new HistoryExamFragment();
-            //添加已完成的测评fragment到容器中
-            childFragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();
-        }
+
     }
 
 

@@ -130,12 +130,25 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 //            }
 
             Object item = ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(position);
+            //点击量表
             if (item instanceof DimensionInfoEntity) {
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) item;
                 int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(parentPosition);
-                //点击量表项的操作
-                operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
+                //如果话题已完成则查看话题报告
+                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    //查看话题报告
+                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+                } else {
+                    //点击量表项的操作
+                    operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                }
+
+            } else if (item instanceof TopicInfoEntity) {//点击header话题
+                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
+                //查看话题报告
+                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
             }
         }
     };
@@ -168,20 +181,20 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
-
-            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
-                //查看话题报告
-                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
-
-            } else if (view.getId() == R.id.iv_expand) {//伸缩按钮
-                if (topicInfoEntity != null) {
-                    if (topicInfoEntity.isExpanded()) {
-                        adapter.collapse(position);
-                    } else {
-                        adapter.expand(position);
-                    }
-                }
             }
+//            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
+//                //查看话题报告
+//                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//
+//            } else if (view.getId() == R.id.iv_expand) {//伸缩按钮
+//                if (topicInfoEntity != null) {
+//                    if (topicInfoEntity.isExpanded()) {
+//                        adapter.collapse(position);
+//                    } else {
+//                        adapter.expand(position);
+//                    }
+//                }
+//            }
 
         }
     };
@@ -859,10 +872,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
             pageNum++;
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, true);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, true);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -872,10 +885,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
             recyclerAdapter.setNewData(null);
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, false);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//            }
         }
     }
 
@@ -895,10 +908,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
         recyclerAdapter.setNewData(null);
 
         //回调布局切换
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-            ((ExamLayoutListener)parentFragment).change(layoutType, false);
-        }
+//        Fragment parentFragment = getParentFragment();
+//        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//            ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//        }
     }
 
 
@@ -987,10 +1000,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
             pageNum++;
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, true);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, true);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -999,10 +1012,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
 
                 //回调布局切换
-                Fragment parentFragment = getParentFragment();
-                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                }
+//                Fragment parentFragment = getParentFragment();
+//                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//                }
 
             } else {
                 //加载失败处理
@@ -1025,10 +1038,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, false);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//            }
 
         } else {
             //加载失败处理
@@ -1098,7 +1111,12 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                     //添加适配器的1级模型
                     resList.add(topicInfo);
                     //遍历维度列表（量表）
-                    for (DimensionInfoEntity dimensionInfo : dimensionInfoList) {
+                    for (int i=0; i<dimensionInfoList.size(); i++) {
+                        DimensionInfoEntity dimensionInfo = dimensionInfoList.get(i);
+                        //标记是最后一个量表
+                        if (i == dimensionInfoList.size() - 1) {
+                            dimensionInfo.setLastInTopic(true);
+                        }
                         //添加适配器的2级模型
                         topicInfo.addSubItem(dimensionInfo);
                     }

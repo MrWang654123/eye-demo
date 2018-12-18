@@ -104,64 +104,64 @@ public class ExamDimensionLinearRecyclerAdapter extends ExamDimensionBaseRecycle
                 //标题
                 helper.setText(R.id.tv_title, topicInfo.getTopicName());
                 //设置标题的最大宽度
-                ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
+//                ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
 
                 //适合人群
-                String suitableUser = "";
-                //学生
-                if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Student) {
-                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.student));
-
-                } else if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Parent) {
-                    //家长
-                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.parent));
-                }
-                helper.setText(R.id.tv_suitable_user, suitableUser);
+//                String suitableUser = "";
+//                //学生
+//                if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Student) {
+//                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.student));
+//
+//                } else if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Parent) {
+//                    //家长
+//                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.parent));
+//                }
+//                helper.setText(R.id.tv_suitable_user, suitableUser);
 
                 //有效期
-                String dateStr = topicInfo.getEndTime();//ISO8601 时间字符串
-                try {
-                    Date date = formatIso8601.parse(dateStr);
-                    String normalDateStr = formatNormal.format(date);
-                    helper.setText(R.id.tv_end_date, fragment.getResources().getString(R.string.exam_topic_endtime,normalDateStr));
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                //查看报告按钮
-                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
-                //整个topic已完成
-                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.VISIBLE);
-                } else {
-                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.GONE);
-                }
-
+//                String dateStr = topicInfo.getEndTime();//ISO8601 时间字符串
+//                try {
+//                    Date date = formatIso8601.parse(dateStr);
+//                    String normalDateStr = formatNormal.format(date);
+//                    helper.setText(R.id.tv_end_date, fragment.getResources().getString(R.string.exam_topic_endtime,normalDateStr));
+//
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                //查看报告按钮
+//                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                //整个topic已完成
+//                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+//                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.VISIBLE);
+//                } else {
+//                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.GONE);
+//                }
+//
                 //场景介绍按钮点击监听
                 helper.addOnClickListener(R.id.iv_desc);
-                //查看报告按钮点击监听
-                helper.addOnClickListener(R.id.tv_nav_to_report);
-
-                //伸缩按钮
-                helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
-                //伸缩按钮监听
-                helper.addOnClickListener(R.id.iv_expand);
-//                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        int pos = helper.getAdapterPosition();
-//                        if (topicInfo.isExpanded()) {
-//                            collapse(pos);
-//                        } else {
-////                            if (pos % 3 == 0) {
-////                                expandAll(pos, false);
-////                            } else {
-//                            expand(pos);
-////                            }
-//                        }
-//                    }
-//                });
+//                //查看报告按钮点击监听
+//                helper.addOnClickListener(R.id.tv_nav_to_report);
+//
+//                //伸缩按钮
+//                helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
+//                //伸缩按钮监听
+//                helper.addOnClickListener(R.id.iv_expand);
+////                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                        int pos = helper.getAdapterPosition();
+////                        if (topicInfo.isExpanded()) {
+////                            collapse(pos);
+////                        } else {
+//////                            if (pos % 3 == 0) {
+//////                                expandAll(pos, false);
+//////                            } else {
+////                            expand(pos);
+//////                            }
+////                        }
+////                    }
+////                });
 
                 break;
             }

@@ -160,13 +160,20 @@ public class Dictionary {
     public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT_SMALL = 2;
     //隐藏历史测评列表的加载更多视图的阈值数量
     public static final int HIDE_HISTORY_EXAM_LOAD_MORE_VIEW_COUNT = 10;
+    //隐藏历史专题列表的加载更多视图的阈值数量
+    public static final int HIDE_HISTORY_SEMINAR_LOAD_MORE_VIEW_COUNT = 5;
 
     //任务（专题海报）状态：未激活
     public static final int TASK_STATUS_INACTIVE = 0;
     //任务（专题海报）状态：进行中
     public static final int TASK_STATUS_DOING = 1;
-    //任务（专题海报）状态：已完成
-    public static final int TASK_STATUS_COMPLETE = 2;
+    //任务（专题海报）状态：已结束
+    public static final int TASK_STATUS_OVER = 2;
+
+    //孩子测评状态：未完成
+    public static final int CHILD_EXAM_STATUS_NO_COMPLETE = 0;
+    //孩子测评状态：已完成
+    public static final int CHILD_EXAM_STATUS_COMPLETE = 1;
 
     //从主页进入答题页
     public static final int FROM_ACTIVITY_TO_QUESTION_MAIN = 1;
@@ -180,4 +187,5 @@ public class Dictionary {
     public static final String REPORT_CHART_COMPARE_ID_GRADE = "1";
     //报告图表比较ID：我
     public static final String REPORT_CHART_COMPARE_ID_MINE = "2";
+
 }

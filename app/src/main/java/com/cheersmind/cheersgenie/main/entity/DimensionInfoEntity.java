@@ -88,6 +88,11 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
     @InjectMap(name = "exam_id")
     private String examId;
 
+    //item类型
+//    private int itemType = ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
+
+    //是否最后一个量表
+    private boolean isLastInTopic;
 
     public String getDimensionId() {
         return dimensionId;
@@ -284,5 +289,17 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
     @Override
     public int getItemType() {
         return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
+    }
+
+//    public void setItemType(int itemType) {
+//        this.itemType = itemType;
+//    }
+
+    public boolean isLastInTopic() {
+        return isLastInTopic;
+    }
+
+    public void setLastInTopic(boolean lastInTopic) {
+        isLastInTopic = lastInTopic;
     }
 }

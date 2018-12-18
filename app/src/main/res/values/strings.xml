@@ -91,9 +91,9 @@
     <!--列表加载更多-->
     <string name="brvah_loading">正在加载中…</string>
     <string name="brvah_load_failed">加载失败，请点我重试</string>
-    <string name="brvah_load_end">已经到底了</string>
+    <string name="brvah_load_end">没有更多数据了</string>
 
-    <!--评测-->
+    <!--测评-->
     <string name="exam_topic_suitable_user">适合人群：%s</string>
     <string name="exam_topic_endtime">有效期至 %s</string>
     <string name="exam_date">有效期 %s - %s</string>
@@ -113,6 +113,7 @@
     <string name="question_timeout_tip">需要休息一下吗？</string>
     <string name="pre_question">上一题</string>
     <string name="submit">提交</string>
+    <string name="complete_topics_count_summary">完成数量 %s/%s</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>
@@ -182,11 +183,12 @@
     <string name="empty_tip_report">暂无报告</string>
     <string name="empty_tip_exam">暂无智评</string>
     <string name="empty_tip_history_exam">暂无历史智评</string>
+    <string name="empty_tip_history_seminar">暂无历史专题</string>
     <string name="empty_tip_article_on_category">暂无该分类的文章</string>
     <string name="empty_tip_article_for_search">暂无结果\n换个关键词试试吧~</string>
     <string name="empty_tip_category">暂无分类</string>
     <string name="empty_tip_question_definition">暂无说明</string>
-    <string name="empty_tip_task_list">暂无任务</string>
+    <string name="empty_tip_task_list">暂无专题</string>
 
     <!--任务列表-->
     <string name="begin_time_fmt">开始时间 %s</string>

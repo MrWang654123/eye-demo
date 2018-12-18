@@ -3,14 +3,8 @@ package com.cheersmind.cheersgenie.features.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -19,18 +13,11 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
-import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
@@ -44,6 +31,7 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
     public final static int LAYOUT_TYPE_EXAM = 1;//测评
     public final static int LAYOUT_TYPE_TOPIC = 2;//话题
     public final static int LAYOUT_TYPE_DIMENSION = 3;//量表
+    public final static int LAYOUT_TYPE_SIMULATE_FOOTER = 4;//模拟footer
 
     protected Fragment fragment;
 
@@ -113,7 +101,10 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
 
     }
 
-
+    /**
+     * 从末尾开始展开指定数量的项
+     * @param count 数量
+     */
     public void expandAll(int count) {
         int beginPos = mData.size() - 1 + getHeaderLayoutCount();
         int endPos = mData.size() - 1 + getHeaderLayoutCount() - count;

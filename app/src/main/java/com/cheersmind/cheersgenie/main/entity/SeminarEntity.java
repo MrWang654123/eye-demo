@@ -1,5 +1,8 @@
 package com.cheersmind.cheersgenie.main.entity;
 
+import com.chad.library.adapter.base.entity.AbstractExpandableItem;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.adapter.HistorySeminarRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import org.litepal.crud.DataSupport;
@@ -8,9 +11,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 简单文章实体
+ * 专题
  */
-public class TaskListEntity extends DataSupport implements Serializable {
+public class SeminarEntity extends AbstractExpandableItem<ExamEntity> implements Serializable, MultiItemEntity {
 
     @InjectMap(name = "seminar_id")
     private String id;
@@ -33,7 +36,7 @@ public class TaskListEntity extends DataSupport implements Serializable {
 
     //任务项集合
     @InjectMap(name = "items")
-    private List<TaskItemEntity> taskItems;
+    private List<ExamEntity> exams;
 
 
     public String getId() {
@@ -76,13 +79,22 @@ public class TaskListEntity extends DataSupport implements Serializable {
         this.end_time = end_time;
     }
 
-    public List<TaskItemEntity> getTaskItems() {
-        return taskItems;
+    public List<ExamEntity> getExams() {
+        return exams;
     }
 
-    public void setTaskItems(List<TaskItemEntity> taskItems) {
-        this.taskItems = taskItems;
+    public void setExams(List<ExamEntity> exams) {
+        this.exams = exams;
     }
 
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public int getItemType() {
+        return HistorySeminarRecyclerAdapter.LAYOUT_TYPE_HEADER;
+    }
 }
 

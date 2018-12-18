@@ -128,8 +128,8 @@
 
                 <ImageView
                     android:id="@+id/iv_wx_login"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="@dimen/third_login_icon_width"
+                    android:layout_height="@dimen/third_login_icon_width"
                     android:visibility="visible"
                     android:background="@drawable/btn_wechat_login" />
 
@@ -153,8 +153,8 @@
 
                 <ImageView
                     android:id="@+id/iv_qq_login"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="@dimen/third_login_icon_width"
+                    android:layout_height="@dimen/third_login_icon_width"
                     android:visibility="visible"
                     android:background="@drawable/btn_qq_login" />
 

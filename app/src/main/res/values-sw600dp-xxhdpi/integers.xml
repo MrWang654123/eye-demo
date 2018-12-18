@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--测评网格布局的列数-->
-    <integer name="exam_grid_layout_span_count">2</integer>
-
     <!--recyclerView限制最大滑动速度-->
     <integer name="recycler_view_max_velocity">2000</integer>
 </resources>

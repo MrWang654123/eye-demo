@@ -19,6 +19,7 @@ import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 
         addItemType(LAYOUT_TYPE_EXAM, R.layout.recycleritem_axam_title);
         addItemType(LAYOUT_TYPE_TOPIC, R.layout.recycleritem_axam_header);
-        addItemType(LAYOUT_TYPE_DIMENSION, R.layout.recycleritem_axam);
+        addItemType(LAYOUT_TYPE_DIMENSION, R.layout.recycleritem_axam_item);
     }
 
 
@@ -43,15 +44,15 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
         switch (helper.getItemViewType()) {
             //测评
             case LAYOUT_TYPE_EXAM: {
-                //第一个测评显示顶部外间距布局
-//                int position = helper.getLayoutPosition();
-//                int headCount = getHeaderLayoutCount();
-//                boolean isFirst = position - headCount == 0;
-//                if (isFirst) {
-//                    helper.getView(R.id.tv_margin_top).setVisibility(View.VISIBLE);
-//                } else {
-//                    helper.getView(R.id.tv_margin_top).setVisibility(View.GONE);
-//                }
+                //第一个测评隐藏顶部外间距布局
+                int position = helper.getLayoutPosition();
+                int headCount = getHeaderLayoutCount();
+                boolean isFirst = position - headCount == 0;
+                if (isFirst) {
+                    helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+                } else {
+                    helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+                }
 
                 ExamEntity exam = (ExamEntity) item;
                 //测评名称
@@ -105,71 +106,71 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
 
                 //第一个Header的分割线布局隐藏
-                boolean isFirst = topicInfo.isFirstInExam();
-                if (isFirst) {
-                    helper.getView(R.id.tv_divider).setVisibility(View.GONE);
-                } else {
-                    helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
-                }
+//                boolean isFirst = topicInfo.isFirstInExam();
+//                if (isFirst) {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+//                } else {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+//                }
 
                 //标题
                 helper.setText(R.id.tv_title, topicInfo.getTopicName());
                 //设置标题的最大宽度
-                ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
+//                ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
 
                 //适合人群
-                String suitableUser = "";
-                //学生
-                if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Student) {
-                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.student));
-
-                } else if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Parent) {
-                    //家长
-                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.parent));
-                }
-                helper.setText(R.id.tv_suitable_user, suitableUser);
+//                String suitableUser = "";
+//                //学生
+//                if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Student) {
+//                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.student));
+//
+//                } else if (dimensionInfo.getSuitableUser() == Dictionary.Exam_Suitable_User_Parent) {
+//                    //家长
+//                    suitableUser = fragment.getResources().getString(R.string.exam_topic_suitable_user, fragment.getResources().getString(R.string.parent));
+//                }
+//                helper.setText(R.id.tv_suitable_user, suitableUser);
 
                 //有效期
-                String dateStr = topicInfo.getEndTime();//ISO8601 时间字符串
-                try {
-                    Date date = formatIso8601.parse(dateStr);
-                    String normalDateStr = formatNormal.format(date);
-                    helper.setText(R.id.tv_end_date, fragment.getResources().getString(R.string.exam_topic_endtime,normalDateStr));
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                //查看报告按钮
-                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
-                //整个topic已完成
-                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.VISIBLE);
-                } else {
-                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.GONE);
-                }
-
+//                String dateStr = topicInfo.getEndTime();//ISO8601 时间字符串
+//                try {
+//                    Date date = formatIso8601.parse(dateStr);
+//                    String normalDateStr = formatNormal.format(date);
+//                    helper.setText(R.id.tv_end_date, fragment.getResources().getString(R.string.exam_topic_endtime,normalDateStr));
+//
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                //查看报告按钮
+//                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                //整个topic已完成
+//                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+//                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.VISIBLE);
+//                } else {
+//                    helper.getView(R.id.tv_nav_to_report).setVisibility(View.GONE);
+//                }
+//
                 //场景介绍按钮点击监听
                 helper.addOnClickListener(R.id.iv_desc);
-                //查看报告按钮点击监听
-                helper.addOnClickListener(R.id.tv_nav_to_report);
-
-                //伸缩按钮（网格模式隐藏）
-                helper.getView(R.id.iv_expand).setVisibility(View.GONE);
-                helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
-                //伸缩按钮监听
-                helper.addOnClickListener(R.id.iv_expand);
-//                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        int pos = helper.getAdapterPosition();
-//                        if (topicInfo.isExpanded()) {
-//                            collapse(pos);
-//                        } else {
-//                            expand(pos);
-//                        }
-//                    }
-//                });
+//                //查看报告按钮点击监听
+//                helper.addOnClickListener(R.id.tv_nav_to_report);
+//
+//                //伸缩按钮（网格模式隐藏）
+//                helper.getView(R.id.iv_expand).setVisibility(View.GONE);
+//                helper.setImageResource(R.id.iv_expand, topicInfo.isExpanded() ? R.drawable.ic_arrow_drop_up_black_24dp : R.drawable.ic_arrow_drop_down_black_24dp);
+//                //伸缩按钮监听
+//                helper.addOnClickListener(R.id.iv_expand);
+////                helper.getView(R.id.iv_expand).setOnClickListener(new View.OnClickListener() {
+////                    @Override
+////                    public void onClick(View v) {
+////                        int pos = helper.getAdapterPosition();
+////                        if (topicInfo.isExpanded()) {
+////                            collapse(pos);
+////                        } else {
+////                            expand(pos);
+////                        }
+////                    }
+////                });
 
                 break;
             }
@@ -177,6 +178,16 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
             //body（量表）
             case LAYOUT_TYPE_DIMENSION: {
                 DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item;
+
+                //最后一个量表
+                if (dimensionInfo.isLastInTopic()) {
+                    helper.getView(R.id.cl_content).setBackgroundResource(R.drawable.exam_item_footer);
+                    helper.getView(R.id.tv_footer_padding).setVisibility(View.VISIBLE);
+                } else {
+                    helper.getView(R.id.cl_content).setBackgroundResource(R.drawable.exam_item_body);
+                    helper.getView(R.id.tv_footer_padding).setVisibility(View.GONE);
+                }
+
                 //标题
                 helper.setText(R.id.tv_title2, dimensionInfo.getDimensionName());
 
@@ -213,53 +224,61 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 }
 
                 //加载图片
-                String url = dimensionInfo.getIcon();
-//        String url = testImageUrl;
-                ImageView imageView = helper.getView(R.id.iv_icon);
-                //加载图片，区分是否被锁
-                if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
-                    //被锁情况
-                    if (!TextUtils.isEmpty(url)) {
-                        if (!url.equals(imageView.getTag(R.id.iv_icon))) {
-                            Glide.with(fragment)
+//                String url = dimensionInfo.getIcon();
+////        String url = testImageUrl;
+//                ImageView imageView = helper.getView(R.id.iv_icon);
+//                //加载图片，区分是否被锁
+//                if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
+//                    //被锁情况
+//                    if (!TextUtils.isEmpty(url)) {
+//                        if (!url.equals(imageView.getTag(R.id.iv_icon))) {
+//                            Glide.with(fragment)
+////                        .load(R.drawable.default_image_round)
+//                                    .load(url)
+////                        .thumbnail(0.5f)
+//                                    .apply(defaultOptions)
+//                                    .into(imageView);
+//                            imageView.setTag(R.id.iv_icon, url);
+//                        }
+//                    } else {
+//                        Glide.with(fragment)
+//                                .load(R.drawable.default_image_round)
+////                                .load(url)
+////                        .thumbnail(0.5f)
+//                                .apply(defaultOptions)
+//                                .into(imageView);
+//                        imageView.setTag(R.id.iv_icon, url);
+//                    }
+//
+//                } else {
+//                    //未被锁：正常显示图片
+//                    if (!TextUtils.isEmpty(url)) {
+//                        if (!url.equals(imageView.getTag(R.id.iv_icon))) {
+//                            Glide.with(fragment)
+////                        .load(R.drawable.default_image_round)
+//                                    .load(url)
+////                        .thumbnail(0.5f)
+//                                    .apply(defaultOptions)
+//                                    .into(imageView);
+//                            imageView.setTag(R.id.iv_icon, url);
+//                        }
+//                    } else {
+//                        Glide.with(fragment)
 //                        .load(R.drawable.default_image_round)
-                                    .load(url)
-//                        .thumbnail(0.5f)
-                                    .apply(defaultOptions)
-                                    .into(imageView);
-                            imageView.setTag(R.id.iv_icon, url);
-                        }
-                    } else {
-                        Glide.with(fragment)
-                                .load(R.drawable.default_image_round)
-//                                .load(url)
-//                        .thumbnail(0.5f)
-                                .apply(defaultOptions)
-                                .into(imageView);
-                        imageView.setTag(R.id.iv_icon, url);
-                    }
+////                                .load(url)
+////                        .thumbnail(0.5f)
+//                                .apply(defaultOptions)
+//                                .into(imageView);
+//                        imageView.setTag(R.id.iv_icon, url);
+//                    }
+//                }
 
+                //加载图片
+                SimpleDraweeView imageView = helper.getView(R.id.iv_icon);
+                if (!TextUtils.isEmpty(dimensionInfo.getIcon())) {
+                    imageView.setImageURI(dimensionInfo.getIcon());
                 } else {
-                    //未被锁：正常显示图片
-                    if (!TextUtils.isEmpty(url)) {
-                        if (!url.equals(imageView.getTag(R.id.iv_icon))) {
-                            Glide.with(fragment)
-//                        .load(R.drawable.default_image_round)
-                                    .load(url)
-//                        .thumbnail(0.5f)
-                                    .apply(defaultOptions)
-                                    .into(imageView);
-                            imageView.setTag(R.id.iv_icon, url);
-                        }
-                    } else {
-                        Glide.with(fragment)
-                        .load(R.drawable.default_image_round)
-//                                .load(url)
-//                        .thumbnail(0.5f)
-                                .apply(defaultOptions)
-                                .into(imageView);
-                        imageView.setTag(R.id.iv_icon, url);
-                    }
+                    imageView.setActualImageResource(R.drawable.default_image_round);
                 }
 
                 //是否被锁，显隐锁图标

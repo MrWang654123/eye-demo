@@ -52,5 +52,17 @@
     <dimen name="task_list_popup_window_offset_x">20dp</dimen><!--弹窗x偏移-->
     <dimen name="task_list_popup_window_offset_y">140dp</dimen><!--弹窗y偏移-->
 
+    <!--智评列表-->
+    <dimen name="exam_item_horizontal_margin">15dp</dimen><!-- 水平外间距 -->
+    <dimen name="exam_item_vertical_margin">20dp</dimen><!-- 垂直外间距 -->
+    <dimen name="exam_item_horizontal_padding">15dp</dimen><!-- 水平内间距 -->
+    <dimen name="exam_item_body_item_vertical_margin">10dp</dimen><!-- body子项垂直外间距 -->
+    <dimen name="exam_item_body_item_footer_extra_margin">10dp</dimen><!-- body子项footer底部额外垂直外间距 -->
+    <dimen name="exam_item_radius">5dp</dimen><!-- 圆角数值 -->
+    <dimen name="exam_item_wrap_radius">7dp</dimen><!-- 外层包裹圆角数值 -->
+
+    <!--第三方登录-->
+    <dimen name="third_login_icon_width">60dp</dimen><!--第三方登录图标宽度-->
+
 
 </resources>

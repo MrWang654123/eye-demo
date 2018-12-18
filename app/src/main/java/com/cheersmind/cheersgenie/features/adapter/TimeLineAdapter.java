@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.ScaleAnimation;
 
@@ -85,7 +84,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     public void onBindViewHolder(@NonNull final TimeLineViewHolder holder, int position) {
         TaskItemEntity timeLineModel = mFeedList.get(position);
 
-//        if(timeLineModel.getStatus() == Dictionary.TASK_STATUS_COMPLETE) {
+//        if(timeLineModel.getStatus() == Dictionary.TASK_STATUS_OVER) {
 //            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
 //        } else if(timeLineModel.getStatus() == Dictionary.TASK_STATUS_DOING) {
 //            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_active, R.color.colorAccent));
@@ -123,8 +122,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
         //状态
         int status = timeLineModel.getStatus();
-        if(status == Dictionary.TASK_STATUS_COMPLETE) {
-            holder.ivStatus.setImageResource(R.drawable.task_complete);
+        if(status == Dictionary.TASK_STATUS_OVER) {
+            holder.ivStatus.setImageResource(R.drawable.task_over);
 //            holder.ivStatus.clearAnimation();
             animatorSet.cancel();
             holder.iv_badge.setVisibility(View.GONE);

@@ -182,6 +182,8 @@ public class HttpConfig {
     public static final String URL_CHILD_HISTORY_EXAM_LIST = API_HOST + "/v2/api/children/{child_id}/exams/history?page={page}&size={size}";
     //获取孩子的历史测评明细
     public static final String URL_CHILD_HISTORY_EXAM_DETAIL = API_HOST + "/v2/api/children/{child_id}/exams/{exam_id}/topics?page={page}&size={size}";
+    //获取孩子的历史专题列表
+    public static final String URL_CHILD_HISTORY_SEMINAR_LIST = API_HOST + "/v2/api/children/{child_id}/seminars/history?page={page}&size={size}";
 
 
     //获取孩子关注的主题列表（报告表头使用）

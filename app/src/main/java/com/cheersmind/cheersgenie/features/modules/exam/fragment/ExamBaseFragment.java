@@ -1,7 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,13 +26,11 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
-import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.interfaces.OnBackPressListener;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchLayoutControlListener;
 import com.cheersmind.cheersgenie.features.interfaces.SearchListener;
 import com.cheersmind.cheersgenie.features.interfaces.SoftKeyboardStateHelper;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
@@ -50,6 +47,7 @@ import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamRootEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -130,12 +128,25 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 //            }
 
             Object item = ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(position);
+            //点击量表
             if (item instanceof DimensionInfoEntity) {
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) item;
                 int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(parentPosition);
-                //点击量表项的操作
-                operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
+                //如果话题已完成则查看话题报告
+                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    //查看话题报告
+                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+                } else {
+                    //点击量表项的操作
+                    operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                }
+
+            } else if (item instanceof TopicInfoEntity) {//点击header话题
+                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
+                //查看话题报告
+                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
             }
         }
     };
@@ -168,20 +179,20 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
-
-            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
-                //查看话题报告
-                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
-
-            } else if (view.getId() == R.id.iv_expand) {//伸缩按钮
-                if (topicInfoEntity != null) {
-                    if (topicInfoEntity.isExpanded()) {
-                        adapter.collapse(position);
-                    } else {
-                        adapter.expand(position);
-                    }
-                }
             }
+//            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
+//                //查看话题报告
+//                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//
+//            } else if (view.getId() == R.id.iv_expand) {//伸缩按钮
+//                if (topicInfoEntity != null) {
+//                    if (topicInfoEntity.isExpanded()) {
+//                        adapter.collapse(position);
+//                    } else {
+//                        adapter.expand(position);
+//                    }
+//                }
+//            }
 
         }
     };
@@ -720,13 +731,15 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
     protected void resetPageInfo() {
         //页码
         pageNum = 1;
-        //话题集合
-        examList = null;
         //总数量
         totalCount = 0;
         //清空话题搜索集合
         if (ArrayListUtil.isNotEmpty(examListSearch)) {
             examListSearch.clear();
+        }
+        //清空话题集合
+        if (ArrayListUtil.isNotEmpty(examList)) {
+            examList.clear();
         }
     }
 
@@ -822,10 +835,10 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             pageNum++;
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, true);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, true);
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -835,10 +848,10 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             recyclerAdapter.setNewData(null);
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, false);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//            }
         }
     }
 
@@ -903,10 +916,10 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         recyclerAdapter.setNewData(null);
 
         //回调布局切换
-        Fragment parentFragment = getParentFragment();
-        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-            ((ExamLayoutListener)parentFragment).change(layoutType, false);
-        }
+//        Fragment parentFragment = getParentFragment();
+//        if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//            ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//        }
     }
 
 
@@ -918,7 +931,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
-        if (recyclerAdapter.getData().size() == 0) {
+        if (ArrayListUtil.isEmpty(examList)) {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
@@ -995,10 +1008,10 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             pageNum++;
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, true);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, true);
+//            }
 
             //初始滚动位置
             if (!TextUtils.isEmpty(initScrollToExamId)) {
@@ -1010,15 +1023,15 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
         } catch (Exception e) {
             e.printStackTrace();
-            if (recyclerAdapter.getData().size() == 0) {
+            if (ArrayListUtil.isEmpty(examList)) {
                 //设置空布局：没有数据，可重载
                 emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
 
                 //回调布局切换
-                Fragment parentFragment = getParentFragment();
-                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
-                }
+//                Fragment parentFragment = getParentFragment();
+//                if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                    ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//                }
 
             } else {
                 //加载失败处理
@@ -1036,15 +1049,15 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         //开启下拉刷新功能
         swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
 
-        if (recyclerAdapter.getData().size() == 0) {
+        if (ArrayListUtil.isEmpty(examList)) {
             //设置空布局：网络错误
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
 
             //回调布局切换
-            Fragment parentFragment = getParentFragment();
-            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
-                ((ExamLayoutListener)parentFragment).change(layoutType, false);
-            }
+//            Fragment parentFragment = getParentFragment();
+//            if (parentFragment != null && parentFragment instanceof ExamLayoutListener) {
+//                ((ExamLayoutListener)parentFragment).change(layoutType, false);
+//            }
 
         } else {
             //加载失败处理
@@ -1095,6 +1108,8 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         if (ArrayListUtil.isNotEmpty(examList)) {
             resList = new ArrayList<>();
             for (ExamEntity exam : examList) {
+                //设置布局type
+                exam.setItemType(ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_EXAM);
                 //添加适配器的测评模型
                 resList.add(exam);
                 //话题
@@ -1119,10 +1134,19 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                             //添加适配器的1级模型
                             resList.add(topicInfo);
                             //遍历维度列表（量表）
-                            for (DimensionInfoEntity dimensionInfo : dimensionInfoList) {
+                            for (int i=0; i<dimensionInfoList.size(); i++) {
+                                DimensionInfoEntity dimensionInfo = dimensionInfoList.get(i);
+                                //标记是最后一个量表
+                                if (i == dimensionInfoList.size() - 1) {
+                                    dimensionInfo.setLastInTopic(true);
+                                }
                                 //添加适配器的2级模型
                                 topicInfo.addSubItem(dimensionInfo);
                             }
+                            //模拟footer
+//                            DimensionInfoEntity footerDimensionInfo = new DimensionInfoEntity();
+//                            footerDimensionInfo.setItemType(ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_SIMULATE_FOOTER);
+//                            topicInfo.addSubItem(footerDimensionInfo);
                         }
                     }
                 }
@@ -1150,7 +1174,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
                 if (ArrayListUtil.isNotEmpty(topicList)) {
                     //话题数量
-                    total = topicList.size();
+                    total += topicList.size();
                     //遍历话题列表
                     for (TopicInfoEntity topicInfo : topicList) {
                         List<DimensionInfoEntity> dimensionInfoList = topicInfo.getDimensions();

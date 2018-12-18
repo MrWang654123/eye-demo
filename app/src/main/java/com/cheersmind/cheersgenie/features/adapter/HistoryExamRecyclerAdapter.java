@@ -1,61 +1,72 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
-import com.bumptech.glide.load.MultiTransformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.utils.DateTimeUtils;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
 /**
  * 历史测评recycler适配器
  */
 public class HistoryExamRecyclerAdapter extends BaseQuickAdapter<ExamEntity, BaseViewHolder> {
 
-    SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat formatIso8601;
+    private SimpleDateFormat formatNormal;
 
+    private Context context;
 
     public HistoryExamRecyclerAdapter(Context context , int layoutResId, @Nullable List<ExamEntity> data) {
         super(layoutResId, data);
+        this.context = context;
+        formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        formatNormal = new SimpleDateFormat("yyyy年 MM月 dd日");
     }
 
     @Override
     protected void convert(BaseViewHolder helper, ExamEntity item) {
 
-        //状态
-        int status = item.getStatus();
-        if(status == Dictionary.TASK_STATUS_COMPLETE) {
+        //测评名称
+        if (!TextUtils.isEmpty(item.getExamName())) {
+            helper.setText(R.id.tv_exam_name, item.getExamName());
+        } else {
+            helper.setText(R.id.tv_exam_name, "");
+        }
+
+        //专题名称
+        if (!TextUtils.isEmpty(item.getSeminarName())) {
+            helper.setText(R.id.tv_seminar, item.getSeminarName());
+        } else {
+            helper.getView(R.id.tv_seminar).setVisibility(View.GONE);
+        }
+
+        //量表完成数量
+        if (item.getTotalTopics() > 0) {
+            helper.setText(R.id.tv_topic_count, context.getResources()
+                    .getString(R.string.complete_topics_count_summary,
+                            String.valueOf(item.getCompleteTopics()),
+                            String.valueOf(item.getTotalTopics())));
+        } else {
+            helper.getView(R.id.tv_topic_count).setVisibility(View.GONE);
+        }
+
+        //孩子测评状态
+        int status = item.getChildExamStatus();
+        if(status == Dictionary.CHILD_EXAM_STATUS_COMPLETE) {
             helper.setImageResource(R.id.iv_status, R.drawable.exam_status_complete);
 
-        } else if(status == Dictionary.TASK_STATUS_DOING) {
-            helper.setImageResource(R.id.iv_status, R.drawable.exam_status_doing);
-
-        } else if(status == Dictionary.TASK_STATUS_INACTIVE) {
-            helper.setImageResource(R.id.iv_status, R.drawable.exam_status_inactive);
         } else {
-            helper.getView(R.id.tv_status).setVisibility(View.GONE);
+            helper.getView(R.id.iv_status).setVisibility(View.GONE);
         }
 
         //开始时间
@@ -90,12 +101,6 @@ public class HistoryExamRecyclerAdapter extends BaseQuickAdapter<ExamEntity, Bas
         else
             helper.setText(R.id.tv_end_time, "");
 
-        //描述信息
-        if (!TextUtils.isEmpty(item.getExamName())) {
-            helper.setText(R.id.tv_exam_name, item.getExamName());
-        } else {
-            helper.setText(R.id.tv_exam_name, "");
-        }
 
     }
 }

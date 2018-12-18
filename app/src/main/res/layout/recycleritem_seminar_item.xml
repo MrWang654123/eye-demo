@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/exam_item_horizontal_margin"
+        android:layout_marginRight="@dimen/exam_item_horizontal_margin"
+        android:background="@drawable/exam_item_footer"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/tv_timeline_up"
+                android:layout_width="3dp"
+                android:layout_height="30dp"
+                android:layout_marginBottom="5dp"
+                android:background="#ffd604"
+                android:text=""/>
+
+            <ImageView
+                android:id="@+id/iv_status"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:background="@drawable/task_inactive"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_timeline_down"
+                android:layout_width="3dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="5dp"
+                android:background="#ffd604"
+                android:text=""/>
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/task_item_content_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="45dp"
+                    android:layout_marginTop="5dp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textColor="@color/color_333333"
+                    android:textSize="17sp"
+                    android:textStyle="normal"
+                    tools:text="刷卡机大富科技涉及到福建省地方时电费束带结发" />
+
+                <LinearLayout
+                    android:id="@+id/ll_begin_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_corner_ffd604_3dp"
+                        android:paddingBottom="3dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="3dp"
+                        android:text="开始"
+                        android:textColor="@color/color_333333"
+                        android:textSize="13sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_begin_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/color_333333"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        tools:text="2018-9月-23 12:00" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_corner_ffd604_3dp"
+                        android:paddingBottom="3dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="3dp"
+                        android:text="结束"
+                        android:textColor="@color/color_333333"
+                        android:textSize="13sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_end_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textColor="@color/color_333333"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+                        tools:text="2018-9月-23 12:00" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_badge"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="1dp"
+                android:src="@drawable/exam_status_complete"
+                tools:ignore="ContentDescription"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

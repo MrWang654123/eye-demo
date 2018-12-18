@@ -14,4 +14,7 @@
     <!--修改昵称对话框水平外间距-->
     <dimen name="modify_nickname_dialog_horizontal_margin">150dp</dimen>
 
+    <!--第三方登录-->
+    <dimen name="third_login_icon_width">80dp</dimen><!--第三方登录图标宽度-->
+
 </resources>
