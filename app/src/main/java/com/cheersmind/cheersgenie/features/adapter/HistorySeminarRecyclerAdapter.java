@@ -85,8 +85,8 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
                 AnimatorSet animatorSet = (AnimatorSet) helper.getView(R.id.iv_status).getTag();
                 if (animatorSet == null) {
                     animatorSet = new AnimatorSet();//组合动画
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleX", 1f, 1.3f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleY", 1f, 1.3f);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleX", 0.7f, 1.3f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleY", 0.7f, 1.3f);
                     scaleX.setRepeatCount(ValueAnimator.INFINITE);
                     scaleX.setRepeatMode(ValueAnimator.REVERSE);
                     scaleY.setRepeatCount(ValueAnimator.INFINITE);
@@ -104,7 +104,7 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
                     helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_complete);
 
                 } else {
-                    helper.getView(R.id.iv_badge).setVisibility(View.GONE);
+                    helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_no_complete);
                 }
 
                 //测评状态

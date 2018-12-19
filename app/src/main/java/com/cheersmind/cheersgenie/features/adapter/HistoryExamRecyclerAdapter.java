@@ -66,7 +66,7 @@ public class HistoryExamRecyclerAdapter extends BaseQuickAdapter<ExamEntity, Bas
             helper.setImageResource(R.id.iv_status, R.drawable.exam_status_complete);
 
         } else {
-            helper.getView(R.id.iv_status).setVisibility(View.GONE);
+            helper.setImageResource(R.id.iv_status, R.drawable.exam_status_no_complete);
         }
 
         //开始时间

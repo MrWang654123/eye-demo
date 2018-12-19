@@ -301,12 +301,12 @@ public class ChartItem implements MultiItemEntity {
      * @return
      */
     private int adjustHeightByXLabels(ReportItemEntity reportItemEntity) {
-        int height = 280;
+        int height = 270;
         if (reportItemEntity != null) {
             int chartType = reportItemEntity.getChartType();
             //雷达图
             if (chartType == Dictionary.CHART_RADAR) {
-                height = 350;
+                height = 340;
 
             } else if (chartType == Dictionary.CHART_BAR_H) {//水平条状图
                 height = 280;

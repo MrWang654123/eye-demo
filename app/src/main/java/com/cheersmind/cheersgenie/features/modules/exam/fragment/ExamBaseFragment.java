@@ -133,20 +133,31 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) item;
                 int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(parentPosition);
-                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
-                //如果话题已完成则查看话题报告
-                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    //查看话题报告
-                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
-                } else {
-                    //点击量表项的操作
-                    operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                if (topicInfoEntity != null) {
+                    TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
+                    //如果话题已完成则查看话题报告
+                    if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                        //查看话题报告
+                        ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+                    } else {
+                        //点击量表项的操作
+                        operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                    }
                 }
 
             } else if (item instanceof TopicInfoEntity) {//点击header话题
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
-                //查看话题报告
-                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
+//                //如果话题已完成则查看话题报告
+//                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+//                    //查看话题报告
+//                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                }
+
+                //跳转到话题详情页面
+                TopicDetailActivity.startTopicDetailActivity(getContext(),
+                        topicInfoEntity.getTopicId(), topicInfoEntity,
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
             }
         }
     };

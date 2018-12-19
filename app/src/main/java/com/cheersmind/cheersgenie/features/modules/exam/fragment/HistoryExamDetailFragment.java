@@ -147,8 +147,17 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
             } else if (item instanceof TopicInfoEntity) {//点击header话题
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
-                //查看话题报告
-                ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
+//                //如果话题已完成则查看话题报告
+//                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+//                    //查看话题报告
+//                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                }
+
+                //跳转到话题详情页面
+                TopicDetailActivity.startTopicDetailActivity(getContext(),
+                        topicInfoEntity.getTopicId(), topicInfoEntity,
+                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
             }
         }
     };

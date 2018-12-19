@@ -179,10 +179,9 @@ public class HistoryExamFragment extends LazyLoadFragment {
         }
 
         //限制最大滑动速度
-        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
-        maxFlingVelocity = getResources().getInteger(R.integer.recycler_view_max_velocity);
-//        ToastUtil.showLong(getContext(), "滑动速度：" + maxFlingVelocity);
-        RecyclerViewUtil.setMaxFlingVelocity(recycleView, DensityUtil.dip2px(getContext(), maxFlingVelocity));
+//        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
+//        maxFlingVelocity = getResources().getInteger(R.integer.recycler_view_max_velocity);
+//        RecyclerViewUtil.setMaxFlingVelocity(recycleView, DensityUtil.dip2px(getContext(), maxFlingVelocity));
 
 
         //设置下拉刷新的监听

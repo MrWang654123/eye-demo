@@ -67,7 +67,7 @@
             android:text="惊世毒妃技术的附件"
             android:textColor="@color/color_333333"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/tv_used_count"
+            app:layout_constraintBottom_toTopOf="@+id/ll_desc"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toRightOf="@id/iv_icon"
             app:layout_constraintRight_toRightOf="parent"
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="@+id/iv_icon"
             app:layout_constraintTop_toTopOf="@+id/iv_icon"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="7dp"
             android:layout_marginLeft="10dp"
             android:text="@string/exam_dimension_status_complete"
             android:textColor="@color/white"
@@ -94,21 +94,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="234234人测过"
-            android:textColor="@color/color_333333"
+            android:textColor="@color/white"
             android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_title2"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title2"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintLeft_toLeftOf="@+id/iv_icon"
             app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
             tools:layout_editor_absoluteY="31dp" />
 
-        <ImageView
-            android:id="@+id/iv_lock"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentBottom="true"
+        <LinearLayout
+            android:id="@+id/ll_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_title2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title2"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_used_count"
-            android:src="@drawable/lock"/>
+            app:layout_constraintBottom_toBottomOf="@+id/iv_icon"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="234234人测过四季度房价是打飞机水电费时代峰时代峻峰世纪东方"
+                android:textColor="@color/color_898989"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:lineSpacingMultiplier="1.1"
+                app:layout_constraintRight_toLeftOf="@+id/iv_lock" />
+
+            <ImageView
+                android:id="@+id/iv_lock"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|right"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/lock_black"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_footer_padding"

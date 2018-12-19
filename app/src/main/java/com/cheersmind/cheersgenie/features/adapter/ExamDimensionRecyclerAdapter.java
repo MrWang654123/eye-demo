@@ -103,7 +103,7 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 //                }
 
                 final TopicInfoEntity topicInfo = (TopicInfoEntity) item;
-                DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
+//                DimensionInfoEntity dimensionInfo = topicInfo.getDimensions().get(0);
 
                 //第一个Header的分割线布局隐藏
 //                boolean isFirst = topicInfo.isFirstInExam();
@@ -115,6 +115,17 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 
                 //标题
                 helper.setText(R.id.tv_title, topicInfo.getTopicName());
+                //状态角标
+                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+//                //整个topic已完成
+                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                    helper.getView(R.id.iv_status).setVisibility(View.VISIBLE);
+                    helper.getView(R.id.iv_right).setVisibility(View.INVISIBLE);
+                } else {
+                    helper.getView(R.id.iv_status).setVisibility(View.GONE);
+                    helper.getView(R.id.iv_right).setVisibility(View.VISIBLE);
+                }
+
                 //设置标题的最大宽度
 //                ((TextView)helper.getView(R.id.tv_title)).setMaxWidth(titleMaxWidth);
 
@@ -151,7 +162,7 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 //                }
 //
                 //场景介绍按钮点击监听
-                helper.addOnClickListener(R.id.iv_desc);
+//                helper.addOnClickListener(R.id.iv_desc);
 //                //查看报告按钮点击监听
 //                helper.addOnClickListener(R.id.tv_nav_to_report);
 //
@@ -198,6 +209,19 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                     helper.setText(R.id.tv_used_count, useCount);
                 } else {
                     helper.getView(R.id.tv_used_count).setVisibility(View.GONE);
+                }
+
+                //描述
+                if (!TextUtils.isEmpty(dimensionInfo.getDescription())) {
+                    helper.getView(R.id.tv_desc).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_desc, dimensionInfo.getDescription());
+                } else {
+                    //被锁
+                    if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
+                        helper.getView(R.id.tv_desc).setVisibility(View.INVISIBLE);
+                    } else {
+                        helper.getView(R.id.tv_desc).setVisibility(View.GONE);
+                    }
                 }
 
                 //状态

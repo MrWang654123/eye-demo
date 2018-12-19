@@ -39,7 +39,7 @@ import java.io.File;
  */
 public abstract class TakePhotoFragment extends LazyLoadFragment implements TakePhoto.TakeResultListener, InvokeListener {
 
-    private static final String TAG = org.devio.takephoto.app.TakePhotoFragment.class.getName();
+    private static final String TAG = TakePhotoFragment.class.getName();
     private InvokeParam invokeParam;
     private TakePhoto takePhoto;
 
@@ -91,6 +91,18 @@ public abstract class TakePhotoFragment extends LazyLoadFragment implements Take
             takePhoto = (TakePhoto) TakePhotoInvocationHandler.of(this).bind(new TakePhotoImpl(this, this));
         }
         return takePhoto;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+//        try {
+//            TakePhotoInvocationHandler.of(null).bind((TakePhotoImpl)null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            takePhoto = null;
+//        }
     }
 
     @Override

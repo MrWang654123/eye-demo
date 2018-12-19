@@ -224,21 +224,27 @@ public class MasterTabActivity extends BaseActivity {
         //初始化声音
         SoundPlayUtils.init(this);
 
-        //绑定本机和班级号
-        final CloudPushService pushService = PushServiceFactory.getCloudPushService();
-        //班级Id
-        String classId = UCManager.getInstance().getDefaultChild().getClassId();
-        pushService.bindTag(CloudPushService.DEVICE_TARGET, new String[]{classId}, null, new CommonCallback() {
+        new Thread(new Runnable() {
             @Override
-            public void onSuccess(String s) {
-                System.out.println("绑定设备和班级号成功");
-            }
+            public void run() {
+                //绑定本机和班级号
+                final CloudPushService pushService = PushServiceFactory.getCloudPushService();
+                //班级Id
+                String classId = UCManager.getInstance().getDefaultChild().getClassId();
+                pushService.bindTag(CloudPushService.DEVICE_TARGET, new String[]{classId}, null, new CommonCallback() {
+                    @Override
+                    public void onSuccess(String s) {
+                        System.out.println("绑定设备和班级号成功");
+                    }
 
-            @Override
-            public void onFailed(String s, String s1) {
-                System.out.println("绑定设备和班级号失败");
+                    @Override
+                    public void onFailed(String s, String s1) {
+                        System.out.println("绑定设备和班级号失败");
+                    }
+                });
             }
-        });
+        }).start();
+
     }
 
     @Override

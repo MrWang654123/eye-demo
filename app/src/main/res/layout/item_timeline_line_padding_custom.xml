@@ -23,8 +23,8 @@
 
         <ImageView
             android:id="@+id/iv_status"
-            android:layout_width="26dp"
-            android:layout_height="26dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@drawable/task_inactive"
             tools:ignore="ContentDescription" />
 
@@ -62,7 +62,7 @@
                 android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="45dp"
+                android:layout_marginRight="24dp"
                 android:layout_marginTop="5dp"
                 android:lineSpacingMultiplier="1.2"
                 android:textColor="@color/color_333333"
@@ -136,10 +136,10 @@
 
         <ImageView
             android:id="@+id/iv_badge"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/task_doing_badge"
+            android:src="@drawable/exam_status_complete"
             tools:ignore="ContentDescription" />
 
     </RelativeLayout>

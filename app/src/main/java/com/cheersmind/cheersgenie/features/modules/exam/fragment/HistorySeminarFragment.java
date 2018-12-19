@@ -211,6 +211,8 @@ public class HistorySeminarFragment extends LazyLoadFragment {
                 loadMoreHistorySeminarList();
             }
         });
+        //初始显示正在加载中
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);

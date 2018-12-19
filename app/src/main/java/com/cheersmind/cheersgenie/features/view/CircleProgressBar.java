@@ -214,7 +214,8 @@ public class CircleProgressBar extends View
     private void drawText(Canvas canvas, int center, int radius)
     {
         float result = (currentValue * 100.0f / maxValue * 1.0f); // 计算进度
-        String percent = String.format("%.1f", result) + "%";
+//        String percent = String.format("%.1f", result) + "%";
+        String percent = (int)result + "%";
 
         textPaint.setTextAlign(Paint.Align.CENTER); // 设置文字居中，文字的x坐标要注意
         textPaint.setColor(Color.BLACK); // 设置文字颜色
