@@ -35,6 +35,9 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
 
     protected Fragment fragment;
 
+    //测评状态
+    protected int examStatus;
+
     //默认Glide处理参数
     protected RequestOptions defaultOptions;
 
@@ -115,6 +118,17 @@ public class ExamDimensionBaseRecyclerAdapter extends BaseMultiItemQuickAdapter<
             expandAll(i, false, false);
         }
     }
+
+
+    /**
+     * 设置测评状态
+     * @param examStatus 状态
+     */
+    public ExamDimensionBaseRecyclerAdapter setExamStatus(int examStatus) {
+        this.examStatus = examStatus;
+        return this;
+    }
+
 
 }
 

@@ -286,8 +286,8 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
         }
 
         try {
-            gridRecyclerAdapter = new ExamDimensionRecyclerAdapter(this, null);
-            linearRecyclerAdapter = new ExamDimensionLinearRecyclerAdapter(this,  null);
+            gridRecyclerAdapter = new ExamDimensionRecyclerAdapter(this, null).setExamStatus(examStatus);
+            linearRecyclerAdapter = new ExamDimensionLinearRecyclerAdapter(this,  null).setExamStatus(examStatus);
         } catch (QSCustomException e) {
             e.printStackTrace();
         }

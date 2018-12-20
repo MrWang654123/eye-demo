@@ -233,11 +233,16 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                     helper.setText(R.id.tv_status, "未开始");
 
                 } else if (childDimension.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
-                    //进行中
-                    helper.getView(R.id.tv_status).setVisibility(View.VISIBLE);
-                    ((TextView)helper.getView(R.id.tv_status)).setCompoundDrawablesWithIntrinsicBounds(
-                            ContextCompat.getDrawable(fragment.getContext(), R.drawable.doing), null, null, null);
-                    helper.setText(R.id.tv_status, "进行中");
+                    //测评已结束则不显示进行中的状态
+                    if (examStatus == Dictionary.EXAM_STATUS_OVER) {
+                        helper.getView(R.id.tv_status).setVisibility(View.GONE);
+                    } else {
+                        //进行中
+                        helper.getView(R.id.tv_status).setVisibility(View.VISIBLE);
+                        ((TextView) helper.getView(R.id.tv_status)).setCompoundDrawablesWithIntrinsicBounds(
+                                ContextCompat.getDrawable(fragment.getContext(), R.drawable.doing), null, null, null);
+                        helper.setText(R.id.tv_status, "进行中");
+                    }
 
                 } else if (childDimension.getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
                     //已完成
@@ -316,7 +321,6 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
         }
 
     }
-
 
 }
 
