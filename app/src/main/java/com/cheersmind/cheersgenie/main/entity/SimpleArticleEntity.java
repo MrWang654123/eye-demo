@@ -75,6 +75,11 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     @InjectMap(name = "is_like")
     private boolean isLike;
 
+    //评论数
+    @InjectMap(name = "comment_count")
+    private int commentCount;
+
+
     public String getId() {
         return id;
     }
@@ -201,5 +206,13 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
 
     public void setLike(boolean like) {
         isLike = like;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 }

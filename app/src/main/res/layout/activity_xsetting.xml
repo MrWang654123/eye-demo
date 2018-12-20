@@ -53,7 +53,7 @@
             android:layout_height="50dp"
             android:gravity="center_vertical"
             style="@style/common_option_text"
-            android:text="账号绑定设置" />
+            android:text="密码及账号绑定设置" />
 
         <ImageView
             android:layout_width="20dp"

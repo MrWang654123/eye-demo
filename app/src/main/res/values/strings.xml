@@ -114,6 +114,8 @@
     <string name="pre_question">上一题</string>
     <string name="submit">提交</string>
     <string name="complete_topics_count_summary">完成数量 %s/%s</string>
+    <string name="exam_over_tip">测评已结束</string>
+    <string name="exam_inactive_tip">测评未开始</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>

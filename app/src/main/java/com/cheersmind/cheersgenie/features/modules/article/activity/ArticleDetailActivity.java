@@ -202,6 +202,9 @@ public class ArticleDetailActivity extends BaseActivity {
     //收藏
     @BindView(R.id.iv_favorite)
     ImageView ivFavorite;
+    //收藏数
+    @BindView(R.id.tv_favorite_count)
+    TextView tvFavoriteCount;
     //点赞
     @BindView(R.id.iv_like)
     ImageView ivLike;
@@ -924,7 +927,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     //刷新文章视图
                     refreshArticleView(articleEntity);
                     //刷新收藏视图
-                    refreshFavoriteView(articleEntity.isFavorite());
+                    refreshFavoriteView(articleEntity.isFavorite(), articleEntity.getPageFavorite());
                     //刷新点赞视图
                     refreshLikeView(articleEntity.isLike(), articleEntity.getPageLike());
 
@@ -1026,7 +1029,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新点赞视图
-                    refreshLikeView((Boolean) dataMap.get("is_like"), new Double(dataMap.get("page_like").toString()).intValue());
+                    refreshLikeView((Boolean) dataMap.get("is_like"), Double.valueOf(dataMap.get("page_like").toString()).intValue());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1080,7 +1083,7 @@ public class ArticleDetailActivity extends BaseActivity {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     //刷新收藏视图
-                    refreshFavoriteView((Boolean) dataMap.get("is_favorite"));
+                    refreshFavoriteView((Boolean) dataMap.get("is_favorite"), ((Double) dataMap.get("page_favorite")).intValue());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1094,16 +1097,23 @@ public class ArticleDetailActivity extends BaseActivity {
 
     /**
      * 刷新收藏视图
-     *
-     * @param isFavorite
+     * @param isFavorite 是否收藏
+     * @param favoriteCount 收藏数量
      */
-    private void refreshFavoriteView(boolean isFavorite) {
+    private void refreshFavoriteView(boolean isFavorite, int favoriteCount) {
         if (isFavorite) {
             //收藏状态
             ivFavorite.setImageResource(R.drawable.favorite_do);
         } else {
             //未收藏状态
             ivFavorite.setImageResource(R.drawable.favorite_not);
+        }
+
+        if (favoriteCount > 0) {
+            tvFavoriteCount.setVisibility(View.VISIBLE);
+            tvFavoriteCount.setText(String.valueOf(favoriteCount));
+        }else {
+            tvFavoriteCount.setVisibility(View.GONE);
         }
     }
 

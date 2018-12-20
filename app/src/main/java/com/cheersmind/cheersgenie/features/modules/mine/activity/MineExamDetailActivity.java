@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.HistoryExamDetailFragment;
 import com.cheersmind.cheersgenie.features.modules.explore.fragment.CategoryTabItemFragment;
@@ -22,6 +23,8 @@ public class MineExamDetailActivity extends BaseActivity {
 
     //测评ID
     public static final String EXAM_ID = "exam_id";
+    //测评状态
+    public static final String EXAM_STATUS = "exam_status";
 
 
     /**
@@ -29,10 +32,11 @@ public class MineExamDetailActivity extends BaseActivity {
      * @param context 上下文
      * @param examId 测评ID
      */
-    public static void startMineExamDetailActivity(Context context, String examId) {
+    public static void startMineExamDetailActivity(Context context, String examId, int examStatus) {
         Intent intent = new Intent(context, MineExamDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXAM_ID, examId);
+        extras.putInt(EXAM_STATUS, examStatus);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -55,13 +59,15 @@ public class MineExamDetailActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
-
+        //测评ID
         String examId = getIntent().getStringExtra(EXAM_ID);
         if (TextUtils.isEmpty(examId)) {
             ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
             finish();
             return;
         }
+        //测评状态
+        int examStatus = getIntent().getIntExtra(EXAM_STATUS, Dictionary.EXAM_STATUS_OVER);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = MineExamDetailFragment.class.getSimpleName();
@@ -73,6 +79,7 @@ public class MineExamDetailActivity extends BaseActivity {
             //添加初始数据
             Bundle bundle = new Bundle();
             bundle.putString(EXAM_ID, examId);
+            bundle.putInt(EXAM_STATUS, examStatus);
             fragment.setArguments(bundle);
             //添加已完成的测评fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

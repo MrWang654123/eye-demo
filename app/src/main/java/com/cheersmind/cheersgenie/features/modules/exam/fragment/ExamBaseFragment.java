@@ -157,6 +157,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
+                        Dictionary.EXAM_STATUS_DOING,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
             }
         }
@@ -189,6 +190,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
+                        Dictionary.EXAM_STATUS_DOING,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
             }
 //            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告

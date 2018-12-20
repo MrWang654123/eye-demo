@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -82,6 +83,8 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
     //测评ID
     String examId;
+    //测评状态
+    int examStatus;
 
     //根布局
     @BindView(R.id.ll_root)
@@ -157,6 +160,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
+                        examStatus,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
             }
         }
@@ -189,6 +193,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
+                        examStatus,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
             }
 //            } else if (view.getId() == R.id.tv_nav_to_report) {//查看报告
@@ -277,6 +282,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
         Bundle bundle = getArguments();
         if(bundle!=null) {
             examId = bundle.getString("exam_id");
+            examStatus = bundle.getInt("exam_status", Dictionary.EXAM_STATUS_OVER);
         }
 
         try {
@@ -631,7 +637,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
     /**
      * 量表开启成功的通知事件
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDimensionOpenSuccessNotice(DimensionOpenSuccessEvent event) {
@@ -642,16 +648,6 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
         }
     }
 
-    /**
-     * 问题提交成功的通知事件的处理
-     * @param dimension 量表
-     */
-//    protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-//        //重置为第一页
-//        resetPageInfo();
-//        //刷新孩子话题
-//        refreshChildTopList();
-//    }
 
     /**
      * 是否满足解锁条件
@@ -1036,7 +1032,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
     /**
      * 加载更多孩子话题列表失败
-     * @param e
+     * @param e 异常
      */
     protected void onLoadMoreChildTopicListFailed(QSCustomException e) {
         //开启下拉刷新功能
@@ -1164,7 +1160,8 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
     /**
      * 操作点击量表
-     * @param dimensionInfoEntity
+     * @param dimensionInfoEntity 量表
+     * @param topicInfoEntity 话题
      */
     protected void operateClickDimension(final DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
         if( dimensionInfoEntity == null ){
@@ -1175,44 +1172,75 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
         }
 
         //被锁定
-        if(dimensionInfoEntity.getIsLocked() == 1){
-            //锁定提示
-            lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
+        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE){
+            //测评已结束
+            if (examStatus == Dictionary.EXAM_STATUS_OVER) {
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_over_tip));
+                }
+            } else if (examStatus == Dictionary.EXAM_STATUS_INACTIVE) {//测评未开始
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_inactive_tip));
+                }
+            } else {
+                //锁定提示
+                lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
+            }
 
         } else {
             //孩子量表对象
             DimensionInfoChildEntity entity = dimensionInfoEntity.getChildDimension();
             //从未开启过的状态
             if (entity == null) {
-                //跳转到量表详细页面，传递量表对象和话题对象
-                DimensionDetailActivity.startDimensionDetailActivity(getContext(),
-                        dimensionInfoEntity, topicInfoEntity,
-                        Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
+                //开启量表
+                startDimension(dimensionInfoEntity, topicInfoEntity);
 
             } else {//已经开启过的状态
                 //未完成状态
-                if(entity.getStatus() == 0){
-                    //跳转到量表详细页面，传递量表对象和话题对象
-                    DimensionDetailActivity.startDimensionDetailActivity(getContext(),
-                            dimensionInfoEntity, topicInfoEntity,
-                            Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
+                if(entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE){
+                    //开启量表
+                    startDimension(dimensionInfoEntity, topicInfoEntity);
 
                 } else {
                     //已完成状态，显示报告
-                    showDimensionReport(dimensionInfoEntity);
+                    showDimensionReport(getContext(), dimensionInfoEntity);
                 }
             }
         }
 
     }
 
+
+    /**
+     * 开启量表
+     * @param dimensionInfoEntity 量表
+     * @param topicInfoEntity 话题
+     */
+    private void startDimension(DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
+        //测评已结束
+        if (examStatus == Dictionary.EXAM_STATUS_OVER) {
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_over_tip));
+            }
+        } else if (examStatus == Dictionary.EXAM_STATUS_INACTIVE) {//测评未开始
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_inactive_tip));
+            }
+        } else {
+            //跳转到量表详细页面，传递量表对象和话题对象
+            DimensionDetailActivity.startDimensionDetailActivity(getContext(),
+                    dimensionInfoEntity, topicInfoEntity,
+                    Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
+        }
+    }
+
     /**
      * 显示量表报告
      */
-    protected void showDimensionReport(DimensionInfoEntity dimensionInfo) {
+    protected void showDimensionReport(Context context, DimensionInfoEntity dimensionInfo) {
 //        ToastUtil.showShort(getContext(), "查看该量表报告");
         try {
-            new DimensionReportDialog(getContext(), dimensionInfo, null).show();
+            new DimensionReportDialog(context, dimensionInfo, null).show();
         } catch (Exception e) {
             e.printStackTrace();
             if (getActivity() != null) {

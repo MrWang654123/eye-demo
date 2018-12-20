@@ -212,7 +212,7 @@
                             android:id="@+id/ll_char_desc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="17dp"
+                            android:layout_marginBottom="20dp"
                             android:paddingLeft="15dp"
                             android:paddingRight="15dp"
                             android:orientation="vertical"
@@ -293,7 +293,7 @@
                                 android:id="@+id/ll_factor_result"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="17dp"
+                                android:layout_marginTop="25dp"
                                 android:orientation="vertical">
 
                                 <TextView
@@ -327,7 +327,7 @@
                                 android:id="@+id/ll_result_suggest"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
+                                android:layout_marginTop="25dp"
                                 android:orientation="vertical">
 
                                 <TextView

@@ -119,7 +119,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="234234人测过四季度房价是打飞机水电费时代峰时代峻峰世纪东方"
-                android:textColor="@color/color_898989"
+                android:textColor="@color/color_a6a6a6"
                 android:textSize="12sp"
                 android:maxLines="2"
                 android:ellipsize="end"

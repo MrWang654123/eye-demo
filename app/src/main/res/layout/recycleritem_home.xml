@@ -126,7 +126,7 @@
                 android:id="@+id/rl_read"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="6dp"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/iv_favorite">
 
@@ -135,7 +135,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_centerVertical="true"
-                    android:padding="4dp"
+                    android:padding="6dp"
                     android:layout_marginRight="1dp"
                     android:src="@drawable/read_normal" />
                 <TextView
@@ -152,9 +152,10 @@
             <RelativeLayout
                 android:id="@+id/rl_evaluation"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginRight="13dp"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginRight="11dp"
+                android:visibility="visible"
                 android:layout_toLeftOf="@+id/rl_read">
 
                 <ImageView
@@ -163,14 +164,44 @@
                     android:layout_height="22dp"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="3dp"
-                    android:src="@drawable/evaluation_normal"/>
+                    android:src="@drawable/evaluation_normal" />
 
                 <TextView
                     android:id="@+id/tv_evaluation_count"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginBottom="-2dp"
                     android:layout_toRightOf="@+id/iv_evaluation"
+                    android:text="123"
+                    android:textColor="@color/color_a6a6a6"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginRight="13dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/rl_evaluation">
+
+                <ImageView
+                    android:id="@+id/iv_comment"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:paddingTop="1dp"
+                    android:layout_marginRight="3dp"
+                    android:src="@drawable/comment_count"/>
+
+                <TextView
+                    android:id="@+id/tv_comment_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="-2dp"
+                    android:layout_toRightOf="@+id/iv_comment"
                     android:layout_centerVertical="true"
                     android:textColor="@color/color_a6a6a6"
                     android:textSize="14sp"

@@ -29,6 +29,8 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
 
     //测评ID
     String examId;
+    //测评状态
+    int examStatus;
 
     //标题
     @BindView(R.id.tv_toolbar_title)
@@ -64,6 +66,7 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
         Bundle bundle = getArguments();
         if(bundle!=null) {
             examId = bundle.getString("exam_id");
+            examStatus = bundle.getInt("exam_status", Dictionary.EXAM_STATUS_OVER);
         }
 
         //标题
@@ -77,6 +80,8 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
 
         //初始隐藏布局切换按钮
         ivSwitchLayout.setVisibility(View.GONE);
+        //初始隐藏本地搜索按钮
+        ivSearchTip.setVisibility(View.GONE);
 
     }
 
@@ -92,6 +97,7 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
             //添加初始数据
             Bundle bundle = new Bundle();
             bundle.putString("exam_id", examId);
+            bundle.putInt("exam_status", examStatus);
             fragment.setArguments(bundle);
             //添加已完成的测评fragment到容器中
             childFragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

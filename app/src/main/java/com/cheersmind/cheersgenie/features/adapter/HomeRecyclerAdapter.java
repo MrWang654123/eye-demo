@@ -150,6 +150,19 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
             helper.getView(R.id.rl_evaluation).setVisibility(View.GONE);
         }
 
+        //测评数布局不存在的情况，才考虑显示评论数，避免页面宽度不够，内容溢出
+        if (helper.getView(R.id.rl_evaluation).getVisibility() == View.GONE) {
+            //评论数
+            if (item.getCommentCount() > 0) {
+                helper.getView(R.id.rl_comment).setVisibility(View.VISIBLE);
+                helper.setText(R.id.tv_comment_count, item.getCommentCount() + "");
+            } else {
+                helper.getView(R.id.rl_comment).setVisibility(View.GONE);
+            }
+        } else {
+            helper.getView(R.id.rl_comment).setVisibility(View.GONE);
+        }
+
         //收藏状态初始化
         ImageView ivFavorite = helper.getView(R.id.iv_favorite);
         if (item.isFavorite()) {

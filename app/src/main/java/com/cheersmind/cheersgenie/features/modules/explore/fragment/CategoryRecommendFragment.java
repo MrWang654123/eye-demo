@@ -545,6 +545,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
                     //设置空布局：隐藏
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
+//                    Map dataMap = JsonUtil.fromJson(testArticleStr, Map.class);
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
 
@@ -717,5 +718,264 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
         }, httpTag, getActivity());
     }
 
+
+//    private String testArticleStr = "{\n" +
+//            "\t\"total\": 33,\n" +
+//            "\t\"items\": [{\n" +
+//            "\t\t\"id\": \"c6660405-987a-45aa-9819-fd6344242f6b\",\n" +
+//            "\t\t\"article_title\": \"你抑郁了吗？家中如果有青少年感觉忧虑及抑郁要怎么办？\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/large\\/pgc-image\\/15220677529242047f53aef\",\n" +
+//            "\t\t\"is_reference_test\": 1,\n" +
+//            "\t\t\"summary\": \"你抑郁了吗？家中如果有青少年感觉忧虑及抑郁要怎么办？\",\n" +
+//            "\t\t\"content_type\": 2,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 485,\n" +
+//            "\t\t\"page_favorite\": 2,\n" +
+//            "\t\t\"test_count\": 56,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 1,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": false,\n" +
+//            "\t  \"comment_count\": 213,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": {\n" +
+//            "\t\t\t\"id\": \"fe31d362-9e5c-484d-8965-517e73fa29f6\",\n" +
+//            "\t\t\t\"name\": \"新高考3+3\",\n" +
+//            "\t\t\t\"background_img\": \"\",\n" +
+//            "\t\t\t\"background_color\": null,\n" +
+//            "\t\t\t\"icon\": null\n" +
+//            "\t\t}\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"a41f6717-076f-4e93-a2b2-b4aa56909d84\",\n" +
+//            "\t\t\"article_title\": \"通晓工作及职业技能的七条途径\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p99.pstatp.com\\/large\\/pgc-image\\/1521785903939fea94c942d\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"通晓工作及职业技能的七条途径\",\n" +
+//            "\t\t\"content_type\": 1,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 239,\n" +
+//            "\t\t\"page_favorite\": 4,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 2,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": false,\n" +
+//            "\t  \"comment_count\": 213,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": {\n" +
+//            "\t\t\t\"id\": \"375a9275-f2f2-4787-b898-0311d238e981\",\n" +
+//            "\t\t\t\"name\": \"学习习惯3\",\n" +
+//            "\t\t\t\"background_img\": \"\",\n" +
+//            "\t\t\t\"background_color\": null,\n" +
+//            "\t\t\t\"icon\": null\n" +
+//            "\t\t}\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"f4a34466-5d03-4ab9-9a40-28cc602d6976\",\n" +
+//            "\t\t\"article_title\": \"如何辨别你的父母是否对你控制欲过强\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/large\\/pgc-image\\/1521785253364835d85d924\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"如何辨别你的父母是否对你控制欲过强\",\n" +
+//            "\t\t\"content_type\": 0,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 265,\n" +
+//            "\t\t\"page_favorite\": 5,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 0,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": true,\n" +
+//            "\t  \"comment_count\": 43,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": {\n" +
+//            "\t\t\t\"id\": \"375a9275-f2f2-4787-b898-0311d238e981\",\n" +
+//            "\t\t\t\"name\": \"学习习惯3\",\n" +
+//            "\t\t\t\"background_img\": \"\",\n" +
+//            "\t\t\t\"background_color\": null,\n" +
+//            "\t\t\t\"icon\": null\n" +
+//            "\t\t}\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"e22fe967-5bf8-4104-9ab6-24070e83ccc2\",\n" +
+//            "\t\t\"article_title\": \"时间对每个人都是公平的，你没有掌握的时间管理技巧\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p1.pstatp.com\\/large\\/pgc-image\\/15300169928267b9a48d9b6\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"时间对每个人都是公平的，你没有掌握的时间管理技巧\",\n" +
+//            "\t\t\"content_type\": 1,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 230,\n" +
+//            "\t\t\"page_favorite\": 1,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 1,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": true,\n" +
+//            "\t  \"comment_count\": 8,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": null\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"bdafc1cb-59aa-44ca-b8c9-bb816090de0c\",\n" +
+//            "\t\t\"article_title\": \"7种父母的感情影响你处理感情的方式\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p1.pstatp.com\\/large\\/pgc-image\\/153020139251126968133ba\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"7种父母的感情影响你处理感情的方式\",\n" +
+//            "\t\t\"content_type\": 1,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 199,\n" +
+//            "\t\t\"page_favorite\": 4,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 1,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": false,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": null\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"44942338-e64b-4c3d-8fa2-016075274e02\",\n" +
+//            "\t\t\"article_title\": \"雅思小作文 - 如何有效组织写作内容\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/origin\\/79e300037ec5c04bebe4\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"雅思小作文 - 如何有效组织写作内容\",\n" +
+//            "\t\t\"content_type\": 2,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 307,\n" +
+//            "\t\t\"page_favorite\": 3,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 1,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": true,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": {\n" +
+//            "\t\t\t\"id\": null,\n" +
+//            "\t\t\t\"name\": null,\n" +
+//            "\t\t\t\"background_img\": null,\n" +
+//            "\t\t\t\"background_color\": null,\n" +
+//            "\t\t\t\"icon\": null\n" +
+//            "\t\t}\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"568637cb-14cd-4108-8703-6067093982e5\",\n" +
+//            "\t\t\"article_title\": \"雅思写作小作文9分技巧及词汇\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/origin\\/7a06000cedf3693300f8\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"雅思写作小作文9分技巧及词汇\",\n" +
+//            "\t\t\"content_type\": 2,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 340,\n" +
+//            "\t\t\"page_favorite\": 3,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 3,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": false,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": null\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"e22fe967-5bf8-4104-9ab6-24070e83ccc3\",\n" +
+//            "\t\t\"article_title\": \"英文听读-最聪明的5%的人才能解开的7大谜团，敢来一试？\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/origin\\/a8560004952f908dd678\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"英文听读-最聪明的5%的人才能解开的7大谜团，敢来一试？\",\n" +
+//            "\t\t\"content_type\": 2,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 209,\n" +
+//            "\t\t\"page_favorite\": 2,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 0,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": true,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": null\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"3200c33b-21d3-445b-b22c-b4b72bd30f03\",\n" +
+//            "\t\t\"article_title\": \"视觉魔法分形艺术\",\n" +
+//            "\t\t\"article_img\": \"http:\\/\\/p3.pstatp.com\\/large\\/pgc-image\\/1521613623363d573ee8471\",\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"视觉魔法分形艺术\",\n" +
+//            "\t\t\"content_type\": 1,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 220,\n" +
+//            "\t\t\"page_favorite\": 5,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 4,\n" +
+//            "\t\t\"is_like\": true,\n" +
+//            "\t\t\"is_favorite\": true,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": {\n" +
+//            "\t\t\t\"id\": null,\n" +
+//            "\t\t\t\"name\": null,\n" +
+//            "\t\t\t\"background_img\": null,\n" +
+//            "\t\t\t\"background_color\": null,\n" +
+//            "\t\t\t\"icon\": null\n" +
+//            "\t\t}\n" +
+//            "\t}, {\n" +
+//            "\t\t\"id\": \"efddac3c-1434-411a-bcb4-80a96bf4b6f9\",\n" +
+//            "\t\t\"article_title\": \"雅思写作 - 分析表图（1）\",\n" +
+//            "\t\t\"article_img\": null,\n" +
+//            "\t\t\"is_reference_test\": 0,\n" +
+//            "\t\t\"summary\": \"雅思写作 - 分析表图（1）\",\n" +
+//            "\t\t\"content_type\": 1,\n" +
+//            "\t\t\"source_type\": 2,\n" +
+//            "\t\t\"page_view\": 93,\n" +
+//            "\t\t\"page_favorite\": 3,\n" +
+//            "\t\t\"test_count\": null,\n" +
+//            "\t\t\"source_name\": \"少年计划YouthPlan\",\n" +
+//            "\t\t\"page_like\": 0,\n" +
+//            "\t\t\"is_like\": false,\n" +
+//            "\t\t\"is_favorite\": false,\n" +
+//            "\t\t\"user_data\": {\n" +
+//            "\t\t\t\"user_id\": null,\n" +
+//            "\t\t\t\"user_name\": null,\n" +
+//            "\t\t\t\"nick_name\": null,\n" +
+//            "\t\t\t\"avatar\": null\n" +
+//            "\t\t},\n" +
+//            "\t\t\"category\": null\n" +
+//            "\t}]\n" +
+//            "}";
 
 }

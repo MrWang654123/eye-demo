@@ -1,38 +1,29 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.HistoryExamRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.HistorySeminarRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.ExamRootEntity;
 import com.cheersmind.cheersgenie.main.entity.SeminarEntity;
 import com.cheersmind.cheersgenie.main.entity.SeminarRootEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
@@ -81,18 +72,17 @@ public class HistorySeminarFragment extends LazyLoadFragment {
                 if (item != null) {
                     //状态
                     int status = item.getStatus();
-                    if (status == Dictionary.TASK_STATUS_OVER) {
-                        if (getActivity() != null) {
-                            ToastUtil.showShort(getActivity().getApplication(), "已结束");
-                        }
-
-                    } else if (status == Dictionary.TASK_STATUS_DOING) {
+                    if (status == Dictionary.EXAM_STATUS_OVER) {
                         //跳转历史测评明细页面
-                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId());
+                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status);
 
-                    } else if (status == Dictionary.TASK_STATUS_INACTIVE) {
+                    } else if (status == Dictionary.EXAM_STATUS_DOING) {
+                        //跳转历史测评明细页面
+                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status);
+
+                    } else if (status == Dictionary.EXAM_STATUS_INACTIVE) {
                         if (getActivity() != null) {
-                            ToastUtil.showShort(getActivity().getApplication(), "未开始");
+                            ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_inactive_tip));
                         }
                     } else {
                         throw new QSCustomException("未知的测评状态");

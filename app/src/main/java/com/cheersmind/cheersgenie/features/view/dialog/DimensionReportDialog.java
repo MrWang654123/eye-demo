@@ -750,7 +750,7 @@ public class DimensionReportDialog extends Dialog {
         layoutParams.gravity = Gravity.BOTTOM;
         //宽度
         layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        //高度
+        //高度，会影响状态栏的颜色
 //        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
         //DecorView的内间距（目前测试的机型还没发现有影响）
 //        getWindow().getDecorView().setPadding(0, 0, 0, 0);

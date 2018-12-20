@@ -84,9 +84,9 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
     public void onBindViewHolder(@NonNull final TimeLineViewHolder holder, int position) {
         TaskItemEntity timeLineModel = mFeedList.get(position);
 
-//        if(timeLineModel.getStatus() == Dictionary.TASK_STATUS_OVER) {
+//        if(timeLineModel.getStatus() == Dictionary.EXAM_STATUS_OVER) {
 //            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_inactive, android.R.color.darker_gray));
-//        } else if(timeLineModel.getStatus() == Dictionary.TASK_STATUS_DOING) {
+//        } else if(timeLineModel.getStatus() == Dictionary.EXAM_STATUS_DOING) {
 //            holder.mTimelineView.setMarker(VectorDrawableUtils.getDrawable(mContext, R.drawable.ic_marker_active, R.color.colorAccent));
 //        } else {
 //            holder.mTimelineView.setMarker(ContextCompat.getDrawable(mContext, R.drawable.ic_marker), ContextCompat.getColor(mContext, R.color.colorAccent));
@@ -122,13 +122,13 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder> {
 
         //状态
         int status = timeLineModel.getStatus();
-        if(status == Dictionary.TASK_STATUS_OVER) {
+        if(status == Dictionary.EXAM_STATUS_OVER) {
             holder.ivStatus.setImageResource(R.drawable.task_over);
 //            holder.ivStatus.clearAnimation();
             animatorSet.cancel();
             holder.iv_badge.setVisibility(View.GONE);
 
-        } else if(status == Dictionary.TASK_STATUS_DOING) {
+        } else if(status == Dictionary.EXAM_STATUS_DOING) {
             holder.ivStatus.setImageResource(R.drawable.task_doing);
             animatorSet.start();
             //视图动画

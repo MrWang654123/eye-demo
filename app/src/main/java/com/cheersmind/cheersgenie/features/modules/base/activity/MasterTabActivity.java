@@ -28,11 +28,13 @@ import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
@@ -106,20 +108,37 @@ public class MasterTabActivity extends BaseActivity {
     //任务列表监听
     TaskListDialog.OnOperationListener onOperationListener =  new TaskListDialog.OnOperationListener() {
         @Override
-        public void onOnClickItem(int position, final String id) {
-            if (!TextUtils.isEmpty(id)) {
-                //切换到测评tab
-                switchToExamTab();
-                getHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //发送定位测评的事件
-                        EventBus.getDefault().post(new LocationExamInListEvent(id));
-                    }
-                }, 350);
+        public void onOnClickItem(int position, final String examId, int examStatus) {
+            switch (examStatus) {
+                //测评未开始
+                case Dictionary.EXAM_STATUS_INACTIVE: {
+                    ToastUtil.showShort(getApplication(), getResources().getString(R.string.exam_inactive_tip));
+                    break;
+                }
+                //测评已结束
+                case Dictionary.EXAM_STATUS_OVER: {
+                    //跳转历史测评明细页面
+                    MineExamDetailActivity.startMineExamDetailActivity(MasterTabActivity.this, examId, examStatus);
+                    break;
+                }
+                //测评正在进行中
+                case Dictionary.EXAM_STATUS_DOING: {
+                    if (!TextUtils.isEmpty(examId)) {
+                        //切换到测评tab
+                        switchToExamTab();
+                        getHandler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //发送定位测评的事件
+                                EventBus.getDefault().post(new LocationExamInListEvent(examId));
+                            }
+                        }, 350);
 
-            } else {
-                ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
+                    } else {
+                        ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
+                    }
+                    break;
+                }
             }
         }
     };
@@ -559,6 +578,7 @@ public class MasterTabActivity extends BaseActivity {
                         fabTask.setVisibility(View.GONE);
                         return;
                     } else {
+                        //取第一个专题
                         seminarEntity = dataList.get(0);
                         exams = seminarEntity.getExams();
                         if (ArrayListUtil.isEmpty(exams)) {
@@ -572,7 +592,7 @@ public class MasterTabActivity extends BaseActivity {
                     //第一次访问默认弹出任务列表弹窗
                     if (!hasFirstShowTaskList) {
                         //显示弹窗
-                        new TaskListDialog(MasterTabActivity.this, seminarEntity, exams, null).show();
+                        new TaskListDialog(MasterTabActivity.this, seminarEntity, exams, onOperationListener).show();
                         //设置已经第一次访问过了任务列表
                         hasFirstShowTaskList = true;
                         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
@@ -618,6 +638,39 @@ public class MasterTabActivity extends BaseActivity {
     public void switchToExamTab() {
         viewPager.setCurrentItem(1, true);
     }
+
+//    String testTaskStr = "{\n" +
+//            "\t\"total\": 1,\n" +
+//            "\t\"items\": [{\n" +
+//            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
+//            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
+//            "\t\t\"description\": \"专题描述专题描述\",\n" +
+//            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
+//            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
+//            "\t\t\"items\": [{\n" +
+//            "\t\t\t\"exam_id\": \"10001\",\n" +
+//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+//            "\t\t\t\"status\": 0,\n" +
+//            "\t\t\t\"child_exam_status\": 0\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"10001\",\n" +
+//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+//            "\t\t\t\"status\": 1,\n" +
+//            "\t\t\t\"child_exam_status\": 1\n" +
+//            "\t\t}, {\n" +
+//            "\t\t\t\"exam_id\": \"10001\",\n" +
+//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+//            "\t\t\t\"status\": 2,\n" +
+//            "\t\t\t\"child_exam_status\": 0\n" +
+//            "\t\t}]\n" +
+//            "\t}]\n" +
+//            "}";
 
 }
 

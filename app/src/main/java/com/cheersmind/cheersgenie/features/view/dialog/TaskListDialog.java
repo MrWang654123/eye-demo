@@ -30,6 +30,7 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.List;
@@ -69,10 +70,29 @@ public class TaskListDialog extends Dialog {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             Object item = ((TaskListAdapter) adapter).getItem(position);
-            if (item != null && listener != null) {
-                listener.onOnClickItem(position, ((ExamEntity) item).getExamId());
-                //点击完直接关闭对话框
-                dismiss();
+            if (item != null) {
+                ExamEntity exam = (ExamEntity) item;
+                int status = exam.getStatus();
+                switch (status) {
+                    //测评未开始
+                    case Dictionary.EXAM_STATUS_INACTIVE: {
+                        break;
+                    }
+                    //测评已结束
+                    case Dictionary.EXAM_STATUS_OVER: {
+                        dismiss();
+                        break;
+                    }
+                    //测评正在进行中
+                    case Dictionary.EXAM_STATUS_DOING: {
+                        dismiss();
+                        break;
+                    }
+                }
+
+                if (listener != null) {
+                    listener.onOnClickItem(position, exam.getExamId(), status);
+                }
             }
         }
     };
@@ -267,7 +287,7 @@ public class TaskListDialog extends Dialog {
         if (ArrayListUtil.isNotEmpty(examList)) {
             for (int i=0; i<examList.size(); i++) {
                 ExamEntity exam = examList.get(i);
-                if (exam.getStatus() == Dictionary.TASK_STATUS_DOING) {
+                if (exam.getStatus() == Dictionary.EXAM_STATUS_DOING) {
                     position = i;
                     break;
                 }
@@ -304,8 +324,13 @@ public class TaskListDialog extends Dialog {
     //操作监听
     public interface OnOperationListener {
 
-        //点击列表项
-        void onOnClickItem(int position, String id);
+        /**
+         * 点击列表项
+         * @param position 位置
+         * @param examId 测评id
+         * @param examStatus 测评状态
+         */
+        void onOnClickItem(int position, String examId, int examStatus);
     }
 
     @Override
@@ -334,64 +359,51 @@ public class TaskListDialog extends Dialog {
     }
 
 
-//    String testTaskStr = "{\n" +
-//            "\t\"total\": 1,\n" +
-//            "\t\"items\": [{\n" +
-//            "\t\t\"seminar_id\": \"b985b695-f773-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\"seminar_name\": \"中学生成长之路\",\n" +
-//            "\t\t\"description\": \"中学生成长之路\",\n" +
-//            "\t\t\"start_time\": \"2018-12-01T00:00:00.000+0800\",\n" +
-//            "\t\t\"end_time\": \"2019-04-19T23:59:59.000+0800\",\n" +
-//            "\t\t\"items\": [{\n" +
-//            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 1\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 0\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 1\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 0\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"0431a5e9-df48-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"情绪健康与促进（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2018-12-06T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2018-12-23T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 1\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"d47fac6c-f773-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"家庭与学校支持（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2018-12-24T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-01-02T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 0\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"c9a75573-f93c-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"生涯规划与发展（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2019-02-20T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-03-19T23:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 0\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"21f7ff10-f93d-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\t\"exam_name\": \"学习问题诊断与学习指导（初）\",\n" +
-//            "\t\t\t\"start_time\": \"2019-03-20T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2019-04-19T19:59:59.000+0800\",\n" +
-//            "\t\t\t\"status\": 1\n" +
-//            "\t\t}]\n" +
-//            "\t}]\n" +
-//            "}";
+    String testTaskStr = "{\n" +
+            "\t\"total\": 1,\n" +
+            "\t\"items\": [{\n" +
+            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
+            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
+            "\t\t\"description\": \"专题描述专题描述\",\n" +
+            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
+            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 1,\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
+            "\t\t}]\n" +
+            "\t}, {\n" +
+            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
+            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
+            "\t\t\"description\": \"专题描述专题描述\",\n" +
+            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
+            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 0,\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 1,\n" +
+            "\t\t\t\"child_exam_status\": 1\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 2,\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
+            "\t\t}]\n" +
+            "\t}]\n" +
+            "}";
 
 }

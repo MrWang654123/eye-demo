@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
@@ -85,13 +86,14 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
                 AnimatorSet animatorSet = (AnimatorSet) helper.getView(R.id.iv_status).getTag();
                 if (animatorSet == null) {
                     animatorSet = new AnimatorSet();//组合动画
-                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleX", 0.7f, 1.3f);
-                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleY", 0.7f, 1.3f);
+                    ObjectAnimator scaleX = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleX", 0.6f, 1.1f);
+                    ObjectAnimator scaleY = ObjectAnimator.ofFloat(helper.getView(R.id.iv_status), "scaleY", 0.6f, 1.1f);
                     scaleX.setRepeatCount(ValueAnimator.INFINITE);
                     scaleX.setRepeatMode(ValueAnimator.REVERSE);
                     scaleY.setRepeatCount(ValueAnimator.INFINITE);
                     scaleY.setRepeatMode(ValueAnimator.REVERSE);
-                    animatorSet.setInterpolator(new LinearInterpolator());
+                    animatorSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animatorSet.setDuration(500);
                     animatorSet.play(scaleX).with(scaleY);//两个动画同时开始
 //            animatorSet.start();
 
@@ -109,11 +111,11 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
 
                 //测评状态
                 int examStatus = exam.getStatus();
-                if(examStatus == Dictionary.TASK_STATUS_OVER) {
+                if(examStatus == Dictionary.EXAM_STATUS_OVER) {
                     helper.setImageResource(R.id.iv_status, R.drawable.task_over);
                     animatorSet.cancel();
 
-                } else if(examStatus == Dictionary.TASK_STATUS_DOING) {
+                } else if(examStatus == Dictionary.EXAM_STATUS_DOING) {
                     helper.setImageResource(R.id.iv_status, R.drawable.task_doing);
                     animatorSet.start();
 

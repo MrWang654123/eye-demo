@@ -16,7 +16,7 @@
         <TextView
             android:id="@+id/tv_timeline_up"
             android:layout_width="3dp"
-            android:layout_height="30dp"
+            android:layout_height="37dp"
             android:layout_marginBottom="5dp"
             android:background="#ffd604"
             android:text=""/>

@@ -163,12 +163,12 @@ public class Dictionary {
     //隐藏历史专题列表的加载更多视图的阈值数量
     public static final int HIDE_HISTORY_SEMINAR_LOAD_MORE_VIEW_COUNT = 5;
 
-    //任务（专题海报）状态：未激活
-    public static final int TASK_STATUS_INACTIVE = 0;
-    //任务（专题海报）状态：进行中
-    public static final int TASK_STATUS_DOING = 1;
-    //任务（专题海报）状态：已结束
-    public static final int TASK_STATUS_OVER = 2;
+    //测评状态：未激活
+    public static final int EXAM_STATUS_INACTIVE = 0;
+    //测评状态：进行中
+    public static final int EXAM_STATUS_DOING = 1;
+    //测评状态：已结束
+    public static final int EXAM_STATUS_OVER = 2;
 
     //孩子测评状态：未完成
     public static final int CHILD_EXAM_STATUS_NO_COMPLETE = 0;

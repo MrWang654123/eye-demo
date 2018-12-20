@@ -49,12 +49,15 @@ public class TopicDetailActivity extends BaseActivity {
 
     public static final String TOPIC_INFO = "topic_info";
     private static final String TOPIC_ID = "topic_id";
+    private static final String EXAM_STATUS = "exam_status";
     public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
 
     //话题对象
     private TopicInfoEntity topicInfoEntity;
     //话题ID
     private String topicId;
+    //测评状态
+    private int examStatus;
     //从哪个页面进入的答题页
     int fromActivityToQuestion;
 
@@ -113,11 +116,12 @@ public class TopicDetailActivity extends BaseActivity {
      */
     public static void startTopicDetailActivity(Context context,
                                                 String topicId,
-                                                TopicInfoEntity topicInfoEntity, int fromActivityToQuestion) {
+                                                TopicInfoEntity topicInfoEntity, int examStatus, int fromActivityToQuestion) {
         Intent intent = new Intent(context, TopicDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(TOPIC_ID, topicId);
         extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+        extras.putInt(EXAM_STATUS, examStatus);
         extras.putInt(FROM_ACTIVITY_TO_QUESTION, fromActivityToQuestion);
         intent.putExtras(extras);
         context.startActivity(intent);
@@ -174,6 +178,7 @@ public class TopicDetailActivity extends BaseActivity {
         }
 
         topicInfoEntity = (TopicInfoEntity)getIntent().getSerializableExtra(TOPIC_INFO);
+        examStatus = getIntent().getIntExtra(EXAM_STATUS, Dictionary.EXAM_STATUS_OVER);
         fromActivityToQuestion = getIntent().getIntExtra(FROM_ACTIVITY_TO_QUESTION, Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
         //加载话题详情
@@ -216,7 +221,7 @@ public class TopicDetailActivity extends BaseActivity {
 
     /**
      * 刷新话题详细视图
-     * @param topicDetail
+     * @param topicDetail 话题详情
      */
     private void refreshTopicDetailView(TopicDetail topicDetail) {
         //显示scrollView
@@ -252,17 +257,30 @@ public class TopicDetailActivity extends BaseActivity {
                 .into(ivDesc);
 //        ivDesc.setImageResource(R.drawable.default_image_round);
 
-        //测评按钮
-        if (topicInfoEntity != null) {
-            //孩子话题为空：未开始
-            if (topicInfoEntity.getChildTopic() == null) {
-                btnStartExam.setText("进入测评");
-            } else {
-                //孩子话题的状态为已完成：查看报告
-                if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    btnStartExam.setText("查看报告");
+        //测评已结束
+        if (examStatus == Dictionary.EXAM_STATUS_OVER) {
+            //测评按钮
+            btnStartExam.setEnabled(false);
+            btnStartExam.setText(getResources().getString(R.string.exam_over_tip));
+
+        } else if (examStatus == Dictionary.EXAM_STATUS_INACTIVE) {//测评未开始
+            //测评按钮
+            btnStartExam.setEnabled(false);
+            btnStartExam.setText(getResources().getString(R.string.exam_inactive_tip));
+
+        } else {
+            //测评按钮
+            if (topicInfoEntity != null) {
+                //孩子话题为空：未开始
+                if (topicInfoEntity.getChildTopic() == null) {
+                    btnStartExam.setText("进入测评");
                 } else {
-                    btnStartExam.setText("继续测评");
+                    //孩子话题的状态为已完成：查看报告
+                    if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
+                        btnStartExam.setText("查看报告");
+                    } else {
+                        btnStartExam.setText("继续测评");
+                    }
                 }
             }
         }
