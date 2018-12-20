@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sticky_header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,6 +9,7 @@
     <TextView
         android:id="@+id/tv_divider"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="@dimen/exam_item_vertical_margin"
         android:background="@color/color_f5f5f5"/>
 
@@ -51,7 +53,7 @@
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintWidth_percent="0.15"
+                app:layout_constraintWidth_percent="0.12"
                 app:secondColor="#f6de29"
                 app:thirdColor="#f6ae29" />
             <!--app:secondColor="#f6de29"-->
@@ -70,7 +72,7 @@
                 android:layout_marginRight="15dp"
                 android:text="升级到封建时代肌肤接"
                 android:textColor="@color/color_333333"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tv_date"
                 app:layout_constraintLeft_toRightOf="@+id/circleProgressBar"
@@ -82,8 +84,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="有效期 2018/09/02 - 2018/10-20"
-                android:textColor="@color/color_555555"
-                android:textSize="14sp"
+                android:textColor="@color/color_777777"
+                android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="@+id/circleProgressBar"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_title"

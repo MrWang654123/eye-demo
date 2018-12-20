@@ -108,6 +108,9 @@
 
             </android.support.v4.widget.SwipeRefreshLayout>
 
+            <!--顶部粘性布局-->
+            <include layout="@layout/recycleritem_axam_title" />
+
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabGotoTop"
                 android:layout_width="wrap_content"

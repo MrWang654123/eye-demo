@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 
 
 /**
@@ -219,7 +220,8 @@ public class CircleProgressBar extends View
 
         textPaint.setTextAlign(Paint.Align.CENTER); // 设置文字居中，文字的x坐标要注意
         textPaint.setColor(Color.BLACK); // 设置文字颜色
-        textPaint.setTextSize(40); // 设置要绘制的文字大小
+//        textPaint.setTextSize(40); // 设置要绘制的文字大小
+        textPaint.setTextSize(DensityUtil.sp2px(getContext(), 12)); // 设置要绘制的文字大小
         textPaint.setStrokeWidth(0); // 注意此处一定要重新设置宽度为0,否则绘制的文字会重叠
         Rect bounds = new Rect(); // 文字边框
         textPaint.getTextBounds(percent, 0, percent.length(), bounds); // 获得绘制文字的边界矩形

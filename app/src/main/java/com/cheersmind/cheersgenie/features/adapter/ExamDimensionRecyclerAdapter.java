@@ -44,17 +44,23 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
         switch (helper.getItemViewType()) {
             //测评
             case LAYOUT_TYPE_EXAM: {
+//                //第一个测评隐藏顶部外间距布局
+//                int position = helper.getLayoutPosition();
+//                int headCount = getHeaderLayoutCount();
+//                boolean isFirst = position - headCount == 0;
+//                if (isFirst) {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.GONE);
+//                } else {
+//                    helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
+//                }
+
+                ExamEntity exam = (ExamEntity) item;
                 //第一个测评隐藏顶部外间距布局
-                int position = helper.getLayoutPosition();
-                int headCount = getHeaderLayoutCount();
-                boolean isFirst = position - headCount == 0;
-                if (isFirst) {
+                if (((ExamEntity) item).isFirstInSeminar()) {
                     helper.getView(R.id.tv_divider).setVisibility(View.GONE);
                 } else {
                     helper.getView(R.id.tv_divider).setVisibility(View.VISIBLE);
                 }
-
-                ExamEntity exam = (ExamEntity) item;
                 //测评名称
                 if (!TextUtils.isEmpty(exam.getExamName())) {
                     helper.getView(R.id.tv_title).setVisibility(View.VISIBLE);
@@ -87,6 +93,9 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                //把测评对象设置到子项视图的tag中
+                helper.itemView.setTag(exam);
 
                 break;
             }
@@ -316,6 +325,16 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
                 } else {
                     (helper.getView(R.id.iv_lock)).setVisibility(View.GONE);
                 }
+
+//                //最后一个量表
+//                if (dimensionInfo.isLastInTopic()) {
+//                    //把最后一个量表对象设置到子项视图的tag中
+//                    helper.itemView.setTag(dimensionInfo);
+//                }
+
+                //把量表对象设置到子项视图的tag中
+                helper.itemView.setTag(dimensionInfo);
+
                 break;
             }
         }

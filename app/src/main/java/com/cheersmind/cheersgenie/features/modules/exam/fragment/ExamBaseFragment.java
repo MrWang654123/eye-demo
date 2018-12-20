@@ -1,5 +1,8 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionBaseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.adapter.ExamDimensionLinearRecyclerAdapter;
@@ -37,6 +41,7 @@ import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.TopicDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features.view.CircleProgressBar;
 import com.cheersmind.cheersgenie.features.view.EditTextPreIme;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -61,8 +66,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -219,6 +227,20 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             refreshChildTopList();
         }
     };
+//    protected SwipeRefreshLayout.OnChildScrollUpCallback childScrollUpCallback = new SwipeRefreshLayout.OnChildScrollUpCallback() {
+//        @Override
+//        public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
+//            int top = parent.getTop();
+//            System.out.println("刷新视图的top：" + top);
+//
+//            if (child != null) {
+//                int childTop = child.getTop();
+//                System.out.println("刷新的孩子视图的top：" + childTop);
+//            }
+//            return false;
+//        }
+//    };
+
     //上拉加载更多的监听
     protected BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
         @Override
@@ -256,6 +278,19 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
     //最后一次搜索文本
     String lastSearchText = "";
+
+    //顶部粘性布局
+    @BindView(R.id.sticky_header_view)
+    View stickyHeaderView;
+    //圆形进度圈
+    @BindView(R.id.circleProgressBar)
+    CircleProgressBar circleProgressBar;
+    //测评名称
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+    //有效日期
+    @BindView(R.id.tv_date)
+    TextView tvDate;
 
 
     @Override
@@ -323,7 +358,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
         //滑动监听
         try {
-            scrollListener = new RecyclerViewScrollListener(getContext(), fabGotoTop);
+            scrollListener = new StickyRecyclerViewScrollListener(getContext(), fabGotoTop);
             recycleView.addOnScrollListener(scrollListener);
         } catch (Exception e) {
             e.printStackTrace();
@@ -333,6 +368,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
         //设置样式刷新显示的位置
         swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
+//        swipeRefreshLayout.setOnChildScrollUpCallback(childScrollUpCallback);
 
         //设置添加空点击监听，防止点击渗透到被覆盖的视图
         emptyLayout.setAttachBlankClickListener();
@@ -1120,7 +1156,13 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
         if (ArrayListUtil.isNotEmpty(examList)) {
             resList = new ArrayList<>();
+            boolean isFirstInSeminar = true;
             for (ExamEntity exam : examList) {
+                //标记是第一个测评
+                if (isFirstInSeminar) {
+                    exam.setFirstInSeminar(true);
+                    isFirstInSeminar = false;
+                }
                 //设置布局type
                 exam.setItemType(ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_EXAM);
                 //添加适配器的测评模型
@@ -1549,6 +1591,159 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                     }
                 }
             }
+        }
+    }
+
+
+    /**
+     * 粘性布局监听
+     */
+    private class StickyRecyclerViewScrollListener extends RecyclerViewScrollListener {
+        //粘性布局的分隔布局高度
+        int dividerHeight;
+
+        //开始推动粘性视图的阈值
+        int transInfoThreshold;
+
+        StickyRecyclerViewScrollListener(Context context, FloatingActionButton fabGotoTop) throws Exception {
+            super(context, fabGotoTop);
+            dividerHeight = (int) getResources().getDimension(R.dimen.exam_item_vertical_margin);
+            transInfoThreshold = 0;
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            //不能够向下划的时候就隐藏
+            if (!recyclerView.canScrollVertically(-1)) {
+                stickyHeaderView.setVisibility(View.INVISIBLE);
+            } else {
+                stickyHeaderView.setVisibility(View.VISIBLE);
+            }
+
+            View stickyInfoView = recyclerView.findChildViewUnder(
+                    stickyHeaderView.getMeasuredWidth() / 2, 5);
+            if (stickyInfoView != null && stickyInfoView.getTag() != null) {
+                //测评
+                if (stickyInfoView.getTag() instanceof ExamEntity) {
+                    refreshStickyHeaderView((ExamEntity) stickyInfoView.getTag());
+
+                } else if (stickyInfoView.getTag() instanceof DimensionInfoEntity) {//最后一个量表
+                    DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) stickyInfoView.getTag();
+                    if (dimensionInfo.isLastInTopic()) {
+                        ExamEntity exam = getBelongToExam(dimensionInfo);
+                        refreshStickyHeaderView(exam);
+                    }
+                }
+            }
+
+            View transInfoView = recyclerView.findChildViewUnder(
+                    stickyHeaderView.getMeasuredWidth() / 2, stickyHeaderView.getMeasuredHeight() + 1);
+
+            if (transInfoView != null) {
+                if (transInfoView.getTag() != null && transInfoView.getTag() instanceof ExamEntity) {
+
+                    ExamEntity exam = (ExamEntity) transInfoView.getTag();
+                    int dealtY = transInfoView.getTop() + dividerHeight - stickyHeaderView.getMeasuredHeight();
+                    //非第一个测评
+                    if (!exam.isFirstInSeminar()) {
+                        if (BuildConfig.DEBUG) {
+                            System.out.println("dealtY：" + dealtY);
+                            System.out.println("实际top：" + transInfoView.getTop());
+                            System.out.println("预期top：" + (transInfoView.getTop() + dividerHeight));
+                        }
+                        if (transInfoView.getTop() + dividerHeight > 0) {
+                            if (dealtY < 0) {
+                                stickyHeaderView.setTranslationY(dealtY);
+                            }
+                        } else {
+                            stickyHeaderView.setTranslationY(0);
+                        }
+                    } else {
+                        stickyHeaderView.setTranslationY(0);
+                    }
+                } else {
+                    stickyHeaderView.setTranslationY(0);
+                }
+//                } else if (transViewStatus == StickyExampleAdapter.NONE_STICKY_VIEW) {
+//                    tvStickyHeaderView.setTranslationY(0);
+//                }
+            }
+        }
+    }
+
+
+    /**
+     * 获取所属量表
+     * @param dimension
+     * @return
+     */
+    private ExamEntity getBelongToExam(DimensionInfoEntity dimension) {
+        ExamEntity exam = null;
+
+        if (dimension != null && !TextUtils.isEmpty(dimension.getTopicId())) {
+            String topicId = dimension.getTopicId();
+            for (ExamEntity tempExam : examList) {
+                List<TopicInfoEntity> topics = tempExam.getTopics();
+                if (ArrayListUtil.isNotEmpty(topics)) {
+                    for (TopicInfoEntity topic : topics) {
+                        if (topicId.equals(topic.getTopicId())) {
+                            exam = tempExam;
+                            break;
+                        }
+                    }
+                }
+
+                if (exam != null) {
+                    break;
+                }
+            }
+        }
+
+        return exam;
+    }
+
+
+    SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy/MM/dd");
+
+    /**
+     * 刷新粘性布局视图
+     * @param exam 测评
+     */
+    private void refreshStickyHeaderView(ExamEntity exam) {
+        //测评名称
+        if (!TextUtils.isEmpty(exam.getExamName())) {
+            tvTitle.setVisibility(View.VISIBLE);
+            tvTitle.setText(exam.getExamName());
+        } else {
+            tvTitle.setVisibility(View.GONE);
+        }
+        //有效期
+        if (!TextUtils.isEmpty(exam.getStartTime())  && !TextUtils.isEmpty(exam.getEndTime())) {
+            //有效期
+            String startTime = exam.getStartTime();
+            String endTime = exam.getEndTime();//ISO8601 时间字符串
+            try {
+                Date startDate = formatIso8601.parse(startTime);
+                Date endDate = formatIso8601.parse(endTime);
+                String startDateStr = formatNormal.format(startDate);
+                String endDateStr = formatNormal.format(endDate);
+                tvDate.setText(getResources().getString(R.string.exam_date,startDateStr, endDateStr));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //圆形进度条
+        try {
+            float progress = (float)exam.getCompleteDimensions() / exam.getTotalDimensions() * 100;
+            circleProgressBar.setProgress((int) progress);
+//                circleProgressBar.setProgress(progress, true); // 使用数字过渡动画
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
