@@ -84,7 +84,7 @@ public class ReportActivity extends BaseActivity {
             finish();
             return;
         }
-        topicInfo = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
+        topicInfo = (TopicInfoEntity)getIntent().getSerializableExtra(TOPIC_INFO);
 
         //话题数据包
         Bundle bundle = new Bundle();

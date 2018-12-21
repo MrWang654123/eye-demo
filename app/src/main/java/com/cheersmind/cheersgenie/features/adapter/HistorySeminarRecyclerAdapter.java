@@ -100,15 +100,6 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
                     helper.getView(R.id.iv_status).setTag(animatorSet);
                 }
 
-                //孩子测评状态
-                int childExamStatus = exam.getChildExamStatus();
-                if(childExamStatus == Dictionary.CHILD_EXAM_STATUS_COMPLETE) {
-                    helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_complete);
-
-                } else {
-                    helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_no_complete);
-                }
-
                 //测评状态
                 int examStatus = exam.getStatus();
                 if(examStatus == Dictionary.EXAM_STATUS_OVER) {
@@ -122,6 +113,21 @@ public class HistorySeminarRecyclerAdapter extends BaseMultiItemQuickAdapter<Mul
                 } else {
                     helper.setImageResource(R.id.iv_status, R.drawable.task_inactive);
                     animatorSet.cancel();
+                }
+
+                //孩子测评状态
+                int childExamStatus = exam.getChildExamStatus();
+                helper.getView(R.id.iv_badge).setVisibility(View.VISIBLE);
+                if(childExamStatus == Dictionary.CHILD_EXAM_STATUS_COMPLETE) {
+                    helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_complete);
+
+                } else {
+                    //非未开始的才显示未完成状态
+                    if (examStatus != Dictionary.EXAM_STATUS_INACTIVE) {
+                        helper.setImageResource(R.id.iv_badge, R.drawable.exam_status_no_complete);
+                    } else {
+                        helper.getView(R.id.iv_badge).setVisibility(View.GONE);
+                    }
                 }
 
                 //开始时间

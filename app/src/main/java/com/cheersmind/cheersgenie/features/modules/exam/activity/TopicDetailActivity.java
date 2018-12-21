@@ -372,6 +372,7 @@ public class TopicDetailActivity extends BaseActivity {
                     //跳转到量表详细页面，传递量表对象和话题对象
                     DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this,
                             dimensionInfoEntity, topicInfoEntity,
+                            examStatus,
                             fromActivityToQuestion);
 
                 } else {
@@ -413,6 +414,7 @@ public class TopicDetailActivity extends BaseActivity {
                             //跳转到量表详细页面，传递量表对象和话题对象
                             DimensionDetailActivity.startDimensionDetailActivity(TopicDetailActivity.this,
                                     dimensionInfoEntity, topicInfoEntity,
+                                    examStatus,
                                     fromActivityToQuestion);
                         } else {
                             doOpenFailedTip();

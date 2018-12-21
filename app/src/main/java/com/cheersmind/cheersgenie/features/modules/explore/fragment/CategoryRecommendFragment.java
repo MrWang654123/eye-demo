@@ -330,6 +330,7 @@ public class CategoryRecommendFragment extends LazyLoadFragment {
             public void onMultiClick(View view) {
                 DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                         lastDimension, null,
+                        Dictionary.EXAM_STATUS_DOING,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
             }
         });

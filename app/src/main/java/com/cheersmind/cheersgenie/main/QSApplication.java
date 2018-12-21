@@ -145,7 +145,7 @@ public class QSApplication extends LitePalApplication {
                 .centerCrop()//铺满、居中
             .skipMemoryCache(false)//不忽略内存
             .placeholder(R.drawable.default_image_round_article_list)//占位图
-            .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+//            .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
             .diskCacheStrategy(DiskCacheStrategy.ALL);//磁盘缓存策略：缓存所有
 
 

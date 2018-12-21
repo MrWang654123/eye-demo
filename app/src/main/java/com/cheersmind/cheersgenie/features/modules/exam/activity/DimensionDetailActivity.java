@@ -47,12 +47,15 @@ public class DimensionDetailActivity extends BaseActivity {
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
+    private static final String EXAM_STATUS = "exam_status";
     public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
 
     //量表对象
     private DimensionInfoEntity dimensionInfoEntity;
     //话题对象
     private TopicInfoEntity topicInfoEntity;
+    //测评状态
+    private int examStatus;
     //从哪个页面进入的答题页
     int fromActivityToQuestion;
 
@@ -113,11 +116,14 @@ public class DimensionDetailActivity extends BaseActivity {
      */
     public static void startDimensionDetailActivity(Context context,
                                                     DimensionInfoEntity dimensionInfo,
-                                                    TopicInfoEntity topicInfoEntity, int fromActivityToQuestion) {
+                                                    TopicInfoEntity topicInfoEntity,
+                                                    int examStatus,
+                                                    int fromActivityToQuestion) {
         Intent intent = new Intent(context, DimensionDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putSerializable(DIMENSION_INFO, dimensionInfo);
         extras.putSerializable(TOPIC_INFO, topicInfoEntity);
+        extras.putInt(EXAM_STATUS, examStatus);
         extras.putInt(FROM_ACTIVITY_TO_QUESTION, fromActivityToQuestion);
         intent.putExtras(extras);
         context.startActivity(intent);
@@ -147,6 +153,7 @@ public class DimensionDetailActivity extends BaseActivity {
         }
         topicInfoEntity = (TopicInfoEntity)getIntent().getExtras().getSerializable(TOPIC_INFO);
         dimensionInfoEntity = (DimensionInfoEntity) getIntent().getExtras().getSerializable(DIMENSION_INFO);
+        examStatus = getIntent().getIntExtra(EXAM_STATUS, Dictionary.EXAM_STATUS_OVER);
         fromActivityToQuestion = getIntent().getIntExtra(FROM_ACTIVITY_TO_QUESTION, Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
         //刷新量表视图
@@ -231,14 +238,26 @@ public class DimensionDetailActivity extends BaseActivity {
             llDimensionDefinition.setVisibility(View.GONE);
         }
 
-        //根据量表状态改变按钮文字
-        //未开始
-        if (dimensionInfoEntity.getChildDimension() == null) {
-            btnStartExam.setText("开始测评");
-        } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
-            btnStartExam.setText("继续测评");
-        } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
-            btnStartExam.setText("查看报告");
+        //测评已结束
+        if (examStatus == Dictionary.EXAM_STATUS_OVER) {
+            //测评按钮
+            btnStartExam.setEnabled(false);
+            btnStartExam.setText(getResources().getString(R.string.exam_over_tip));
+
+        } else if (examStatus == Dictionary.EXAM_STATUS_INACTIVE) {//测评未开始
+            //测评按钮
+            btnStartExam.setEnabled(false);
+            btnStartExam.setText(getResources().getString(R.string.exam_inactive_tip));
+
+        } else {
+            //根据量表状态改变按钮文字
+            if (dimensionInfoEntity.getChildDimension() == null) {
+                btnStartExam.setText("开始测评");
+            } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+                btnStartExam.setText("继续测评");
+            } else if (dimensionInfoEntity.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+                btnStartExam.setText("查看报告");
+            }
         }
     }
 

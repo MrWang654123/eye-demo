@@ -1625,6 +1625,7 @@ public class ArticleDetailActivity extends BaseActivity {
                         DimensionDetailActivity.startDimensionDetailActivity(
                                 ArticleDetailActivity.this, dimension,
                                 topicInfoEntity,
+                                Dictionary.EXAM_STATUS_DOING,
                                 Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
                     }
                 } else {

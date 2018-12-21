@@ -332,6 +332,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         super.onDestroy();
         //释放所有计时器
         releaseAllTimer();
+        countTimer = null;
 
         try {
             //注销事件
@@ -898,12 +899,17 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             //孩子话题不为空，但是孩子话题对象的ID为空，说明这个孩子话题对象是本地创建的，必须让测评页面刷新数据（刷新后孩子话题对象中才会有孩子测评ID，用于查看话题报告）
                             if (topicInfoEntity.getChildTopic() == null
                                     || TextUtils.isEmpty(topicInfoEntity.getChildTopic().getChildTopicId())) {
+                                //置空孩子量表对象
+                                dimensionInfoEntity.setChildDimension(null);
                                 //发送问题提交成功的事件通知，附带量表对象
-                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(null));
+                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
                             } else {
                                 //发送问题提交成功的事件通知，附带量表对象
                                 EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
                             }
+
+                            //设置孩子量表对象
+                            dimensionInfoEntity.setChildDimension(dimensionChild);
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
@@ -1220,7 +1226,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     private void startLimitCountTimer(){
         releaseLimitCountTimer();
         //初始化计时器
-        countTimer = new CountTimer(LIMIT_TIME, 1000);
+        if (countTimer == null) {
+            countTimer = new CountTimer(LIMIT_TIME, 1000);
+        }
         countTimer.start();
     }
 
@@ -1231,7 +1239,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //释放计时器
         if (countTimer != null) {
             countTimer.cancel();
-            countTimer = null;
         }
     }
 

@@ -770,9 +770,17 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
      */
     protected void refreshHeader(int headerPosition) {
         int tempHeaderPosition = headerPosition + recyclerAdapter.getHeaderLayoutCount();
-        recyclerAdapter.notifyItemChanged(tempHeaderPosition);//局部数显列表项，把header计算在内
+        recyclerAdapter.notifyItemChanged(tempHeaderPosition);//局部刷新列表项，把header计算在内
     }
 
+    /**
+     * 刷新测评对应的列表项
+     * @param examPosition 列表索引
+     */
+    protected void refreshExamItem(int examPosition) {
+        int tempPosition = examPosition + recyclerAdapter.getHeaderLayoutCount();
+        recyclerAdapter.notifyItemChanged(tempPosition);//局部刷新列表项，把header计算在内
+    }
 
     /**
      * 重置为第一页
@@ -888,6 +896,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 //            if (parentFragment != null && parentFragment instanceof ExamLayoutListener && pageNum == 2) {
 //                ((ExamLayoutListener)parentFragment).change(layoutType, true);
 //            }
+
+            //用第一项测评刷新粘性布局
+            refreshStickyHeaderView(examList.get(0));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1270,6 +1281,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                 //跳转到量表详细页面，传递量表对象和话题对象
                 DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                         dimensionInfoEntity, topicInfoEntity,
+                        Dictionary.EXAM_STATUS_DOING,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
             } else {//已经开启过的状态
@@ -1278,6 +1290,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                     //跳转到量表详细页面，传递量表对象和话题对象
                     DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                             dimensionInfoEntity, topicInfoEntity,
+                            Dictionary.EXAM_STATUS_DOING,
                             Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
 
                 } else {
@@ -1675,11 +1688,11 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
 
     /**
-     * 获取所属量表
+     * 获取所属测评
      * @param dimension
      * @return
      */
-    private ExamEntity getBelongToExam(DimensionInfoEntity dimension) {
+    protected ExamEntity getBelongToExam(DimensionInfoEntity dimension) {
         ExamEntity exam = null;
 
         if (dimension != null && !TextUtils.isEmpty(dimension.getTopicId())) {
@@ -1712,7 +1725,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
      * 刷新粘性布局视图
      * @param exam 测评
      */
-    private void refreshStickyHeaderView(ExamEntity exam) {
+    protected void refreshStickyHeaderView(ExamEntity exam) {
         //测评名称
         if (!TextUtils.isEmpty(exam.getExamName())) {
             tvTitle.setVisibility(View.VISIBLE);

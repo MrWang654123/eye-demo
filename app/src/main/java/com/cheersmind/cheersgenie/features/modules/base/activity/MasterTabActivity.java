@@ -31,6 +31,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
+import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
@@ -57,6 +58,8 @@ import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -211,6 +214,9 @@ public class MasterTabActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
+        //注册事件
+        EventBus.getDefault().register(this);
+
         //检查更新
         if (!VersionUpdateUtil.isCurrVersionUpdateDialogShow) {
             VersionUpdateUtil.checkUpdate(this,false, false, httpTag);
@@ -473,6 +479,9 @@ public class MasterTabActivity extends BaseActivity {
         //释放监听器
         viewPager.removeOnPageChangeListener(pageChangeListener);
         pageChangeListener = null;
+
+        //注销事件
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -639,38 +648,53 @@ public class MasterTabActivity extends BaseActivity {
         viewPager.setCurrentItem(1, true);
     }
 
-//    String testTaskStr = "{\n" +
-//            "\t\"total\": 1,\n" +
-//            "\t\"items\": [{\n" +
-//            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
-//            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
-//            "\t\t\"description\": \"专题描述专题描述\",\n" +
-//            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
-//            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
-//            "\t\t\"items\": [{\n" +
-//            "\t\t\t\"exam_id\": \"10001\",\n" +
-//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-//            "\t\t\t\"status\": 0,\n" +
-//            "\t\t\t\"child_exam_status\": 0\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"10001\",\n" +
-//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-//            "\t\t\t\"status\": 1,\n" +
-//            "\t\t\t\"child_exam_status\": 1\n" +
-//            "\t\t}, {\n" +
-//            "\t\t\t\"exam_id\": \"10001\",\n" +
-//            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
-//            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
-//            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
-//            "\t\t\t\"status\": 2,\n" +
-//            "\t\t\t\"child_exam_status\": 0\n" +
-//            "\t\t}]\n" +
-//            "\t}]\n" +
-//            "}";
+
+    /**
+     * 刷新任务（测评）列表的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshTaskListNotice(RefreshTaskListEvent event) {
+        //先清空测评数据
+        seminarEntity = null;
+        exams = null;
+//        //请求任务列表
+//        doGetTaskList(httpTag);
+    }
+
+
+    String testTaskStr = "{\n" +
+            "\t\"total\": 1,\n" +
+            "\t\"items\": [{\n" +
+            "\t\t\"seminar_id\": \"b985b694-f773-11e8-a1b4-161768d3d95e\",\n" +
+            "\t\t\"seminar_name\": \"201810-福州一中高中测评测试专题\",\n" +
+            "\t\t\"description\": \"专题描述专题描述\",\n" +
+            "\t\t\"start_time\": \"2018-09-25T00:00:00.000+0800\",\n" +
+            "\t\t\"end_time\": \"2019-06-02T11:24:07.000+0800\",\n" +
+            "\t\t\"items\": [{\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 0,\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 1,\n" +
+            "\t\t\t\"child_exam_status\": 1\n" +
+            "\t\t}, {\n" +
+            "\t\t\t\"exam_id\": \"10001\",\n" +
+            "\t\t\t\"exam_name\": \"201810-福州一中高中\",\n" +
+            "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
+            "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
+            "\t\t\t\"status\": 2,\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
+            "\t\t}]\n" +
+            "\t}]\n" +
+            "}";
 
 }
 

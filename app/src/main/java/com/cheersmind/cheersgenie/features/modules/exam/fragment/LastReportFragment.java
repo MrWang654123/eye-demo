@@ -180,6 +180,8 @@ public class LastReportFragment extends LazyLoadFragment {
                 loadReportRecommendArticle(compareType);
             }
         });
+        //初始化为加载状态
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //适配器
         recyclerAdapter = new ReportMultiRecyclerAdapter(null);
@@ -245,75 +247,82 @@ public class LastReportFragment extends LazyLoadFragment {
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
-        DataRequestService.getInstance().getReportV2(
-                topicInfo.getChildTopic().getChildExamId(),
-                topicInfo.getTopicId(),
-                Dictionary.REPORT_TYPE_TOPIC,
-                compareType,
-                new BaseService.ServiceCallback() {
-                    @Override
-                    public void onFailure(QSCustomException e) {
-                        //空布局：网络连接有误，或者请求失败
-                        emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                    }
-
-                    @Override
-                    public void onResponse(Object obj) {
-                        //空布局：隐藏
-                        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-                        try {
-                            //测试数据
-//                            Map dataMap = JsonUtil.fromJson(testDataStr, Map.class);
-                            Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                            ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ReportRootEntity.class);
-
-                            if (data == null || (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0)) {
-                                //空布局：无数据
-                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                                return;
-                            }
-
-                            //报告结果
-                            List<ReportResultEntity> reportResultEntities = data.getReportResults();
-                            //报告图表数据
-                            List<ReportItemEntity> reportItems = data.getChartDatas();
-
-                            //拼接因子结果文本
-                            formatFactorResultText(reportResultEntities);
-                            //把报告结果置于报告图表对象中
-                            reportItems = settingResultToReportItem(reportItems, reportResultEntities);
-                            //初始图表说明是否展开（没有评价则展开）
-                            initDescIsExpand(reportItems);
-                            //把比较名称置于报告图表对象中
-                            settingCompareName(reportItems, data);
-                            //把reportItems分组，每个量表可能不只一个图表
-                            recyclerItem = groupReportItem(reportItems);
-                            //如果topic报告项没有报告结果（ReportResultEntity中的title），则提取所有量表项的结果作为结果
-                            fetchDimensionResultToTopicResult(recyclerItem);
-
-                            //报告标题
-                            tvTopicReportTitle.setText(data.getTopicName());
-                            //不存在话题报告时，显示报告header
-                            if (!hasTopicReport(reportItems)) {
-                                headerReportView.setVisibility(View.VISIBLE);
-                            } else {
-                                headerReportView.setVisibility(View.GONE);
-                            }
-
-                            List<MultiItemEntity> multiItemEntities = reportItemCollectionToRecyclerMulti(recyclerItem);
-                            //目前每次都是重置列表数据
-                            recyclerAdapter.setNewData(multiItemEntities);
-                            //初始展开
-                            recyclerAdapter.expandAll();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            //空布局：加载失败
-                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+        try {
+            DataRequestService.getInstance().getReportV2(
+                    topicInfo.getChildTopic().getChildExamId(),
+                    topicInfo.getTopicId(),
+                    Dictionary.REPORT_TYPE_TOPIC,
+                    compareType,
+                    new BaseService.ServiceCallback() {
+                        @Override
+                        public void onFailure(QSCustomException e) {
+                            //空布局：网络连接有误，或者请求失败
+                            emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                         }
-                    }
-                }, httpTag, getActivity());
+
+                        @Override
+                        public void onResponse(Object obj) {
+                            //空布局：隐藏
+                            emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                            try {
+                                //测试数据
+//                            Map dataMap = JsonUtil.fromJson(testDataStr, Map.class);
+                                Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                                ReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ReportRootEntity.class);
+
+                                if (data == null || (data.getChartDatas().size() == 0 && data.getReportResults().size() == 0)) {
+                                    //空布局：无数据
+                                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                                    return;
+                                }
+
+                                //报告结果
+                                List<ReportResultEntity> reportResultEntities = data.getReportResults();
+                                //报告图表数据
+                                List<ReportItemEntity> reportItems = data.getChartDatas();
+
+                                //拼接因子结果文本
+                                formatFactorResultText(reportResultEntities);
+                                //把报告结果置于报告图表对象中
+                                reportItems = settingResultToReportItem(reportItems, reportResultEntities);
+                                //初始图表说明是否展开（没有评价则展开）
+                                initDescIsExpand(reportItems);
+                                //把比较名称置于报告图表对象中
+                                settingCompareName(reportItems, data);
+                                //把reportItems分组，每个量表可能不只一个图表
+                                recyclerItem = groupReportItem(reportItems);
+                                //如果topic报告项没有报告结果（ReportResultEntity中的title），则提取所有量表项的结果作为结果
+                                fetchDimensionResultToTopicResult(recyclerItem);
+
+                                //报告标题
+                                tvTopicReportTitle.setText(data.getTopicName());
+                                //不存在话题报告时，显示报告header
+                                if (!hasTopicReport(reportItems)) {
+                                    headerReportView.setVisibility(View.VISIBLE);
+                                } else {
+                                    headerReportView.setVisibility(View.GONE);
+                                }
+
+                                List<MultiItemEntity> multiItemEntities = reportItemCollectionToRecyclerMulti(recyclerItem);
+                                //目前每次都是重置列表数据
+                                recyclerAdapter.setNewData(multiItemEntities);
+                                //初始展开
+                                recyclerAdapter.expandAll();
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                //空布局：加载失败
+                                emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                            }
+                        }
+                    }, httpTag, getActivity());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            //空布局：网络连接有误，或者请求失败
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+        }
     }
 
 

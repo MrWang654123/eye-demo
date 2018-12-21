@@ -814,6 +814,7 @@ public class HomeFragment extends LazyLoadFragment {
             case R.id.btn_goto_last_dimension: {
                 DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                         lastDimension, null,
+                        Dictionary.EXAM_STATUS_DOING,
                         Dictionary.FROM_ACTIVITY_TO_QUESTION_MAIN);
                 break;
             }

@@ -28,7 +28,10 @@ import com.cheersmind.cheersgenie.features.adapter.ExamDimensionRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.RecyclerCommonSection;
 import com.cheersmind.cheersgenie.features.event.DimensionOpenSuccessEvent;
+import com.cheersmind.cheersgenie.features.event.ExamCompleteEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
+import com.cheersmind.cheersgenie.features.event.TopicInExamCompleteEvent;
 import com.cheersmind.cheersgenie.features.interfaces.ExamLayoutListener;
 import com.cheersmind.cheersgenie.features.interfaces.OnBackPressListener;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
@@ -49,6 +52,7 @@ import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicRootEntity;
@@ -256,6 +260,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
     //最后一次搜索文本
     String lastSearchText = "";
 
+    //顶部粘性布局
+    @BindView(R.id.sticky_header_view)
+    View stickyHeaderView;
+
 
     @Override
     protected int setContentView() {
@@ -458,6 +466,9 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 }
             }
         });*/
+
+        //初始隐藏顶部粘性布局
+        stickyHeaderView.setVisibility(View.GONE);
 
     }
 
@@ -1219,9 +1230,15 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
     private void startDimension(DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
         //测评已结束
         if (examStatus == Dictionary.EXAM_STATUS_OVER) {
-            if (getActivity() != null) {
-                ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_over_tip));
-            }
+//            if (getActivity() != null) {
+//                ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_over_tip));
+//            }
+            //跳转到量表详细页面，传递量表对象和话题对象
+            DimensionDetailActivity.startDimensionDetailActivity(getContext(),
+                    dimensionInfoEntity, topicInfoEntity,
+                    examStatus,
+                    Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
+
         } else if (examStatus == Dictionary.EXAM_STATUS_INACTIVE) {//测评未开始
             if (getActivity() != null) {
                 ToastUtil.showShort(getActivity().getApplication(), getResources().getString(R.string.exam_inactive_tip));
@@ -1230,6 +1247,7 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
             //跳转到量表详细页面，传递量表对象和话题对象
             DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                     dimensionInfoEntity, topicInfoEntity,
+                    examStatus,
                     Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE);
         }
     }
@@ -1617,8 +1635,50 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+        //孩子量表对象
+        DimensionInfoChildEntity childDimension = dimension.getChildDimension();
+
         //量表
-        if (dimension == null) {
+        if (childDimension == null) {
+
+            //局部刷新量表对应的视图项
+            List<MultiItemEntity> data = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(data)) {
+                TopicInfoEntity topicInfo = null;
+                DimensionInfoEntity t = null;
+
+                for (int i = 0; i < data.size(); i++) {
+                    MultiItemEntity item = data.get(i);
+                    if (item instanceof TopicInfoEntity) {
+                        topicInfo = (TopicInfoEntity) item;
+
+                    } else if (item instanceof DimensionInfoEntity) {
+                        t = (DimensionInfoEntity) item;
+                        //找出同一个量表，设置孩子量表，然后局部刷新列表项
+                        if (t.getTopicId().equals(dimension.getTopicId())
+                                && t.getDimensionId().equals(dimension.getDimensionId())) {
+
+                            //话题只有一个量表，则视为话题完成了
+                            if (topicInfo != null && topicInfo.getDimensions().size() == 1) {
+                                //设置话题为完成状态
+                                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+                                if (childTopic == null) {
+                                    childTopic = new TopicInfoChildEntity();
+                                    topicInfo.setChildTopic(childTopic);
+                                }
+                                childTopic.setStatus(Dictionary.TOPIC_STATUS_COMPLETE);
+                                //发送测评下某个话题完成的通知事件
+                                EventBus.getDefault().post(new TopicInExamCompleteEvent(examId));
+                                //判断当前测评是否完成，做相应处理
+                                handleChildExamStatus();
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+
             //重置为第一页
             resetPageInfo();
             //刷新孩子话题
@@ -1712,6 +1772,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                                 //处理话题是否为完成状态，如果已完成则刷新header模型对应的列表项
                                 if (handleTopicIsComplete(topicInfo)) {
                                     refreshHeader(headerPosition);
+                                    //发送测评下某个话题完成的通知事件
+                                    EventBus.getDefault().post(new TopicInExamCompleteEvent(examId));
+                                    //判断当前测评是否完成，做相应处理
+                                    handleChildExamStatus();
                                 }
                             }
 
@@ -1748,7 +1812,10 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
                                 } else {
                                     //处理话题是否为完成状态
-                                    handleTopicIsComplete(topicInfo);
+                                    if (handleTopicIsComplete(topicInfo)) {
+                                        //判断当前测评是否完成，做相应处理
+                                        handleChildExamStatus();
+                                    }
                                 }
 
                                 break;
@@ -1762,6 +1829,28 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
         }
 
+    }
+
+
+    /**
+     * 判断当前测评是否完成，做相应处理
+     */
+    private void handleChildExamStatus() {
+        if (ArrayListUtil.isNotEmpty(topicList)) {
+            boolean examHasComplete = true;
+            for (TopicInfoEntity topicInfo : topicList) {
+                TopicInfoChildEntity childTopic = topicInfo.getChildTopic();
+                if (childTopic == null || childTopic.getStatus() != Dictionary.TOPIC_STATUS_COMPLETE) {
+                    examHasComplete = false;
+                    break;
+                }
+            }
+
+            //完成则发送测评完成通知事件
+            if (examHasComplete) {
+                EventBus.getDefault().post(new ExamCompleteEvent(examId));
+            }
+        }
     }
 
 

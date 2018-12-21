@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -12,6 +13,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HistorySeminarRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.event.ExamCompleteEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
@@ -29,6 +31,10 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +153,8 @@ public class HistorySeminarFragment extends LazyLoadFragment {
     public void onInitView(View contentView) {
         //绑定ButterKnife
         unbinder = ButterKnife.bind(this, contentView);
+        //注册事件
+        EventBus.getDefault().register(this);
 
         //适配器
         recyclerAdapter = new HistorySeminarRecyclerAdapter(null);
@@ -215,6 +223,47 @@ public class HistorySeminarFragment extends LazyLoadFragment {
         super.onDestroyView();
         //解绑ButterKnife
         unbinder.unbind();
+
+        //注销事件
+        EventBus.getDefault().unregister(this);
+    }
+
+
+    /**
+     * 测评完成的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExamCompleteNotice(ExamCompleteEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            String examId = event.getExamId();
+            List<MultiItemEntity> data = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(data) && !TextUtils.isEmpty(examId)) {
+                for (int i=0; i<data.size(); i++) {
+                    MultiItemEntity multiItem = data.get(i);
+                    if (multiItem instanceof ExamEntity) {
+                        ExamEntity exam = (ExamEntity) multiItem;
+                        if (examId.equals(exam.getExamId())) {
+                            //设置完成量表数
+                            exam.setCompleteDimensions(exam.getTotalDimensions());
+                            //设置完成话题数
+                            exam.setCompleteTopics(exam.getTotalTopics());
+                            //设置为完成状态
+                            exam.setChildExamStatus(Dictionary.CHILD_EXAM_STATUS_COMPLETE);
+                            try {
+                                int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                                recyclerAdapter.notifyItemChanged(tempPosition);//局部刷新列表项，把header计算在内
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -511,7 +560,7 @@ public class HistorySeminarFragment extends LazyLoadFragment {
             "\t\t\t\"start_time\": \"2018-09-27T00:00:00.000+0800\",\n" +
             "\t\t\t\"end_time\": \"2018-12-28T23:11:29.000+0800\",\n" +
             "\t\t\t\"status\": 0,\n" +
-            "\t\t\t\"child_exam_status\": 1\n" +
+            "\t\t\t\"child_exam_status\": 0\n" +
             "\t\t}, {\n" +
             "\t\t\t\"exam_id\": \"10001\",\n" +
             "\t\t\t\"exam_name\": \"201810-福州一中高中2\",\n" +

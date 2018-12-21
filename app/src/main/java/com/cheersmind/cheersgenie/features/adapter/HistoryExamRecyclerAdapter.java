@@ -50,7 +50,7 @@ public class HistoryExamRecyclerAdapter extends BaseQuickAdapter<ExamEntity, Bas
             helper.getView(R.id.tv_seminar).setVisibility(View.GONE);
         }
 
-        //量表完成数量
+        //话题完成数量
         if (item.getTotalTopics() > 0) {
             helper.setText(R.id.tv_topic_count, context.getResources()
                     .getString(R.string.complete_topics_count_summary,
@@ -62,11 +62,19 @@ public class HistoryExamRecyclerAdapter extends BaseQuickAdapter<ExamEntity, Bas
 
         //孩子测评状态
         int status = item.getChildExamStatus();
+        helper.getView(R.id.iv_status).setVisibility(View.VISIBLE);
         if(status == Dictionary.CHILD_EXAM_STATUS_COMPLETE) {
             helper.setImageResource(R.id.iv_status, R.drawable.exam_status_complete);
 
         } else {
-            helper.setImageResource(R.id.iv_status, R.drawable.exam_status_no_complete);
+            //测评状态
+            int examStatus = item.getStatus();
+            //非未开始的才显示未完成状态
+            if (examStatus != Dictionary.EXAM_STATUS_INACTIVE) {
+                helper.setImageResource(R.id.iv_status, R.drawable.exam_status_no_complete);
+            } else {
+                helper.getView(R.id.iv_status).setVisibility(View.GONE);
+            }
         }
 
         //开始时间

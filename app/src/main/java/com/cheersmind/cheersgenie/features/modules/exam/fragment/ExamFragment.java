@@ -5,10 +5,13 @@ import android.view.View;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
+import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
@@ -16,6 +19,7 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -39,8 +43,26 @@ public class ExamFragment extends ExamDoingFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+        //孩子量表对象
+        DimensionInfoChildEntity childDimension = dimension.getChildDimension();
+
         //量表
-        if (dimension == null) {
+        if (childDimension == null) {
+            //获取所属测评
+            ExamEntity exam = getBelongToExam(dimension);
+            if (exam != null) {
+                //完成量表数+1
+                exam.setCompleteDimensions(exam.getCompleteDimensions() + 1);
+                //如果当前测评完成了，则发送任务列表（测评）刷新事件
+                if (exam.getCompleteDimensions() == exam.getTotalDimensions()) {
+                    //设置完成话题数
+                    exam.setCompleteTopics(exam.getTotalTopics());
+                    //设置完成状态
+                    exam.setChildExamStatus(Dictionary.CHILD_EXAM_STATUS_COMPLETE);
+                    EventBus.getDefault().post(new RefreshTaskListEvent());
+                }
+            }
+
             //重置为第一页
             resetPageInfo();
             //刷新孩子话题
@@ -187,15 +209,22 @@ public class ExamFragment extends ExamDoingFragment {
             //局部刷新量表对应的视图项
             List<MultiItemEntity> data = recyclerAdapter.getData();
             if (ArrayListUtil.isNotEmpty(data)) {
+                //测评位置
+                int examPosition = 0;
                 //header模型位置
                 int headerPosition = 0;
+                ExamEntity exam = null;
                 TopicInfoEntity topicInfo = null;
                 DimensionInfoEntity t = null;
 
                 for (int i = 0; i < data.size(); i++) {
                     MultiItemEntity item = data.get(i);
 
-                    if (item instanceof TopicInfoEntity) {
+                    if (item instanceof ExamEntity) {
+                        exam = (ExamEntity) item;
+                        examPosition = i;
+
+                    } else if (item instanceof TopicInfoEntity) {
                         topicInfo = (TopicInfoEntity) item;
                         headerPosition = i;
 
@@ -224,6 +253,31 @@ public class ExamFragment extends ExamDoingFragment {
                                 //处理话题是否为完成状态，如果已完成则刷新header模型对应的列表项
                                 if (handleTopicIsComplete(topicInfo)) {
                                     refreshHeader(headerPosition);
+                                }
+
+                                //处理测评项
+                                if (exam != null) {
+                                    //完成量表数+1
+                                    exam.setCompleteDimensions(exam.getCompleteDimensions() + 1);
+                                    //如果当前测评完成了，则发送任务列表（测评）刷新事件
+                                    if (exam.getCompleteDimensions() == exam.getTotalDimensions()) {
+                                        //设置完成话题数
+                                        exam.setCompleteTopics(exam.getTotalTopics());
+                                        //设置完成状态
+                                        exam.setChildExamStatus(Dictionary.CHILD_EXAM_STATUS_COMPLETE);
+                                        EventBus.getDefault().post(new RefreshTaskListEvent());
+                                    }
+                                    try {
+                                        //刷新测评项
+                                        refreshExamItem(examPosition);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    //当前测评和粘性布局中是同一个才刷新粘性布局
+                                    if (!TextUtils.isEmpty(exam.getExamName()) && exam.getExamName().equals(tvTitle.getText().toString())) {
+                                        //刷新粘性布局
+                                        refreshStickyHeaderView(exam);
+                                    }
                                 }
                             }
 

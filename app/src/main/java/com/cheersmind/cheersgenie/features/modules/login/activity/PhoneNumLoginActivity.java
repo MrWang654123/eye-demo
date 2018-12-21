@@ -558,10 +558,6 @@ public class PhoneNumLoginActivity extends BaseActivity {
         if (!checkData()) {
             return;
         } else {
-            if (countTimer == null) {
-                //初始化计时器
-                countTimer = new CountTimer(COUNT_DOWN, 1000);
-            }
             //开始计时
             countTimer.start();
         }
@@ -899,7 +895,6 @@ public class PhoneNumLoginActivity extends BaseActivity {
         //释放计时器
         if (countTimer != null) {
             countTimer.cancel();
-            countTimer = null;
         }
         //还原按钮
         btnCaptcha.setText("重新发送");

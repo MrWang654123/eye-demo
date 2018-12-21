@@ -7,12 +7,17 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HistoryExamRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.event.ExamCompleteEvent;
+import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
+import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
+import com.cheersmind.cheersgenie.features.event.TopicInExamCompleteEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
@@ -20,6 +25,7 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.ExamRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -29,6 +35,10 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Map;
@@ -143,6 +153,8 @@ public class HistoryExamFragment extends LazyLoadFragment {
     public void onInitView(View contentView) {
         //绑定ButterKnife
         unbinder = ButterKnife.bind(this, contentView);
+        //注册事件
+        EventBus.getDefault().register(this);
 
         //适配器
         recyclerAdapter = new HistoryExamRecyclerAdapter(getContext(), R.layout.recycleritem_history_exam, null);
@@ -208,8 +220,77 @@ public class HistoryExamFragment extends LazyLoadFragment {
         super.onDestroyView();
         //解绑ButterKnife
         unbinder.unbind();
+
+        //注销事件
+        EventBus.getDefault().unregister(this);
     }
 
+
+    /**
+     * 测评下某个话题完成的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTopicInExamCompleteNotice(TopicInExamCompleteEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            String examId = event.getExamId();
+            List<ExamEntity> examList = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(examList) && !TextUtils.isEmpty(examId)) {
+                for (int i=0; i<examList.size(); i++) {
+                    ExamEntity exam = examList.get(i);
+                    if (examId.equals(exam.getExamId())) {
+                        //设置完成话题数
+                        exam.setCompleteTopics(exam.getCompleteTopics() + 1);
+                        try {
+                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                            recyclerAdapter.notifyItemChanged(tempPosition);//局部刷新列表项，把header计算在内
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 测评完成的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExamCompleteNotice(ExamCompleteEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            String examId = event.getExamId();
+            List<ExamEntity> examList = recyclerAdapter.getData();
+            if (ArrayListUtil.isNotEmpty(examList) && !TextUtils.isEmpty(examId)) {
+                for (int i=0; i<examList.size(); i++) {
+                    ExamEntity exam = examList.get(i);
+                    if (examId.equals(exam.getExamId())) {
+                        //设置完成量表数
+                        exam.setCompleteDimensions(exam.getTotalDimensions());
+                        //设置完成话题数
+                        exam.setCompleteTopics(exam.getTotalTopics());
+                        //设置为完成状态
+                        exam.setChildExamStatus(Dictionary.CHILD_EXAM_STATUS_COMPLETE);
+                        try {
+                            int tempPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                            recyclerAdapter.notifyItemChanged(tempPosition);//局部刷新列表项，把header计算在内
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        //发送刷新任务列表的通知事件
+                        EventBus.getDefault().post(new RefreshTaskListEvent());
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
 
     /**
      * 重置为第一页
