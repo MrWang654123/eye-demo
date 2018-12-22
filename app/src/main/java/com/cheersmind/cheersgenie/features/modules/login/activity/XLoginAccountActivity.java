@@ -26,8 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
@@ -621,10 +619,10 @@ public class XLoginAccountActivity extends BaseActivity {
                         }
                     }
 
-                    //登录统计
-                    MANService manService = MANServiceProvider.getService();
-                    // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
+//                    //登录统计
+//                    MANService manService = MANServiceProvider.getService();
+//                    // 用户登录埋点("usernick", "userid")
+//                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
                     //友盟统计：当用户使用自有账号登录时，可以这样统计：
                     MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));
@@ -861,10 +859,10 @@ public class XLoginAccountActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
-                    //登录统计
-                    MANService manService = MANServiceProvider.getService();
-                    // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
+//                    //登录统计
+//                    MANService manService = MANServiceProvider.getService();
+//                    // 用户登录埋点("usernick", "userid")
+//                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
                     //友盟统计：当用户使用第三方账号（如新浪微博）登录时，可以这样统计：
                     MobclickAgent.onProfileSignIn(thirdLoginDto.getPlatSource(), String.valueOf(wxUserInfoEntity.getUserId()));

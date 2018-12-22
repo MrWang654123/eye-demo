@@ -1,24 +1,21 @@
 package com.cheersmind.cheersgenie.main;
 
-import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
+import com.alibaba.sdk.android.feedback.util.ErrorCode;
+import com.alibaba.sdk.android.feedback.util.FeedbackErrorCallback;
 import com.alibaba.sdk.android.push.CloudPushService;
 import com.alibaba.sdk.android.push.CommonCallback;
 import com.alibaba.sdk.android.push.noonesdk.PushServiceFactory;
@@ -26,34 +23,28 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZExoPlayer;
-import com.cheersmind.cheersgenie.features.CustomMediaPlayer.JZMediaIjkplayer;
-import com.cheersmind.cheersgenie.features.interfaces.baidu.control.MySyntherizer;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
 import com.cheersmind.cheersgenie.features.utils.fresco.ImagePipelineConfigFactory;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
 import com.cheersmind.cheersgenie.main.util.LogUtils;
 import com.cheersmind.cheersgenie.main.util.PhoneUtil;
-import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.github.mikephil.charting.utils.Utils;
 import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.LitePalApplication;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import cn.jzvd.JZMediaSystem;
-import cn.jzvd.JZVideoPlayer;
 import okhttp3.OkHttpClient;
 
 
@@ -114,28 +105,33 @@ public class QSApplication extends LitePalApplication {
             Thread.currentThread().setUncaughtExceptionHandler(myCrashHandler);
 //        }
 
-        //反馈
-        FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
+//        //反馈
+//        FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
 
-        //移动数据分析
-        // 获取MAN服务
-        MANService manService = MANServiceProvider.getService();
-        //调试模式下关闭crash自动采集功能
-//        if (BuildConfig.DEBUG) {
-            // 关闭crash自动采集功能
-//            manService.getMANAnalytics().turnOffCrashReporter();
-//        }
-        //初始化
-        manService.getMANAnalytics().init(this, getApplicationContext(), Constant.FEEDBACK_APP_KEY, Constant.FEEDBACK_APP_SECRET);
-        // 通过此接口关闭页面自动打点功能
-        manService.getMANAnalytics().turnOffAutoPageTrack();
-        // 用户注销埋点
-//        manService.getMANAnalytics().updateUserAccount("", "");
+//        //移动数据分析
+//        // 获取MAN服务
+//        MANService manService = MANServiceProvider.getService();
+//        //调试模式下关闭crash自动采集功能
+////        if (BuildConfig.DEBUG) {
+//            // 关闭crash自动采集功能
+////            manService.getMANAnalytics().turnOffCrashReporter();
+////        }
+//        //初始化
+//        manService.getMANAnalytics().init(this, getApplicationContext(), Constant.FEEDBACK_APP_KEY, Constant.FEEDBACK_APP_SECRET);
+//        // 通过此接口关闭页面自动打点功能
+//        manService.getMANAnalytics().turnOffAutoPageTrack();
+//        // 用户注销埋点
+////        manService.getMANAnalytics().updateUserAccount("", "");
 
-        //初始化通知通道
-        initNotificationChannel();
-        //消息推送
-        initCloudChannel(this);
+//        //初始化通知通道
+//        initNotificationChannel();
+//        //消息推送
+//        initCloudChannel(this);
+
+        //初始化阿里反馈
+        initFeedbackService();
+        //初始化云推送通道
+        initPushService(this);
 
         //设置服务器地址
        setHostType();
@@ -465,6 +461,91 @@ public class QSApplication extends LitePalApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * 初始化阿里反馈
+     */
+    private void initFeedbackService() {
+        /**
+         * 添加自定义的error handler
+         */
+        FeedbackAPI.addErrorCallback(new FeedbackErrorCallback() {
+            @Override
+            public void onError(Context context, String errorMessage, ErrorCode code) {
+                Toast.makeText(context, "ErrMsg is: " + errorMessage, Toast.LENGTH_SHORT).show();
+            }
+        });
+        FeedbackAPI.addLeaveCallback(new Callable() {
+            @Override
+            public Object call() throws Exception {
+                Log.d("DemoApplication", "custom leave callback");
+                return null;
+            }
+        });
+        /**
+         * 建议放在此处做初始化
+         */
+        //默认初始化
+        FeedbackAPI.init(this);
+        //FeedbackAPI.init(this, "DEFAULT_APPKEY", "DEFAULT_APPSECRET");
+        /**
+         * 在Activity的onCreate中执行的代码
+         * 可以设置状态栏背景颜色和图标颜色，这里使用com.githang:status-bar-compat来实现
+         */
+        //FeedbackAPI.setActivityCallback(new IActivityCallback() {
+        //    @Override
+        //    public void onCreate(Activity activity) {
+        //        StatusBarCompat.setStatusBarColor(activity,getResources().getColor(R.color.aliwx_setting_bg_nor),true);
+        //    }
+        //});
+        /**
+         * 自定义参数演示
+         */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("loginTime", "登录时间");
+            jsonObject.put("visitPath", "登陆，关于，反馈");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        FeedbackAPI.setAppExtInfo(jsonObject);
+        /**
+         * 以下是设置UI
+         */
+        //设置默认联系方式
+//        FeedbackAPI.setDefaultUserContactInfo("13800000000");
+        //沉浸式任务栏，控制台设置为true之后此方法才能生效
+        FeedbackAPI.setTranslucent(true);
+        //设置返回按钮图标
+        //FeedbackAPI.setBackIcon(R.drawable.ali_feedback_common_back_btn_bg);
+        //设置标题栏"历史反馈"的字号，需要将控制台中此字号设置为0
+//        FeedbackAPI.setHistoryTextSize(20);
+        //设置标题栏高度，单位为像素
+//        FeedbackAPI.setTitleBarHeight(100);
+    }
+
+
+    /**
+     * 初始化云推送通道
+     * @param applicationContext
+     */
+    private void initPushService(final Context applicationContext) {
+        PushServiceFactory.init(applicationContext);
+        final CloudPushService pushService = PushServiceFactory.getCloudPushService();
+        pushService.register(applicationContext, new CommonCallback() {
+            @Override
+            public void onSuccess(String response) {
+                Log.i(TAG, "init cloudchannel success");
+                //setConsoleText("init cloudchannel success");
+            }
+            @Override
+            public void onFailed(String errorCode, String errorMessage) {
+                Log.e(TAG, "init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+                //setConsoleText("init cloudchannel failed -- errorcode:" + errorCode + " -- errorMessage:" + errorMessage);
+            }
+        });
     }
 
 }

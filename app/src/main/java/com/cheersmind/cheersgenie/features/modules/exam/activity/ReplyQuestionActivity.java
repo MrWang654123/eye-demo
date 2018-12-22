@@ -11,7 +11,9 @@ import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -139,7 +141,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     //作答计时器
     private Timer timer;
     //限制空闲计时器（60秒）
-    private CountTimer countTimer;
+//    private CountTimer countTimer;
     private static final int LIMIT_TIME = 60000;//限制作答时间
 
     //问题集合
@@ -147,7 +149,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     //问题fragment集合
     List<Fragment> fragments = new ArrayList<>();
     //适配器
-    FragmentPagerAdapter adapter;
+    MyFragAdapter adapter;
     //当前位置
     int curPosition;
 
@@ -176,6 +178,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     @BindView(R.id.fabVoicePlay)
     ImageView fabVoicePlay;
 
+    //是否已经显示了报告弹窗
+    private boolean hasShowReportDialog;
 
     /**
      * 打开作答页面
@@ -308,8 +312,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     protected void onResume() {
         super.onResume();
 
-        //已经加载了题目，则开启计时
-        if (ArrayListUtil.isNotEmpty(questionList)) {
+        //已经加载了题目且当前未显示报告弹窗，则开启计时
+        if (ArrayListUtil.isNotEmpty(questionList) && !hasShowReportDialog) {
             startAllTimer();
         }
     }
@@ -332,7 +336,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         super.onDestroy();
         //释放所有计时器
         releaseAllTimer();
-        countTimer = null;
+//        countTimer = null;
 
         try {
             //注销事件
@@ -346,6 +350,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         getSynthesizerManager().stop();
         //清空设置监听
         getSynthesizerManager().setSpeechSynthesizerListener(null);
+
+        //释放pagerView监听器
+        vpQuestion.clearOnPageChangeListeners();
+        //释放监听事件
+        xemptyLayout.setOnReloadListener(null);
+        btnSubmit.setOnClickListener(null);
+        btnPre.setOnClickListener(null);
+        ivStop.setOnClickListener(null);
     }
 
 
@@ -686,18 +698,19 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             fragments.add(fg);
         }
 
-        //适配器
-        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public Fragment getItem(int position) {
-                return fragments.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return fragments.size();
-            }
-        };
+//        //适配器
+//        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+//            @Override
+//            public Fragment getItem(int position) {
+//                return fragments.get(position);
+//            }
+//
+//            @Override
+//            public int getCount() {
+//                return fragments.size();
+//            }
+//        };
+        adapter = new MyFragAdapter(getSupportFragmentManager());
 
         vpQuestion.setAdapter(adapter);
         //换页监听
@@ -735,6 +748,26 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     }
 
+
+    /**
+     * viewpager fragment适配器
+     */
+    class MyFragAdapter extends FragmentStatePagerAdapter {
+
+        MyFragAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+    }
 
     /*@OnClick({R.id.btn_pre, R.id.fabVoicePlay, R.id.fabDesc})
     public void onViewClick(View view) {
@@ -935,6 +968,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                                             //请求量表报告
                                             queryDimensionReport(dimensionInfoEntity);
                                         }
+
+                                        //标记已经显示了报告弹窗
+                                        hasShowReportDialog = true;
 
                                     } catch (Exception e) {
                                         onFailure(new QSCustomException("获取报告失败"));
@@ -1224,22 +1260,22 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 开启限时计时
      */
     private void startLimitCountTimer(){
-        releaseLimitCountTimer();
-        //初始化计时器
-        if (countTimer == null) {
-            countTimer = new CountTimer(LIMIT_TIME, 1000);
-        }
-        countTimer.start();
+//        releaseLimitCountTimer();
+//        //初始化计时器
+//        if (countTimer == null) {
+//            countTimer = new CountTimer(LIMIT_TIME, 1000);
+//        }
+//        countTimer.start();
     }
 
     /**
      * 释放限时计时器
      */
     private void releaseLimitCountTimer() {
-        //释放计时器
-        if (countTimer != null) {
-            countTimer.cancel();
-        }
+//        //释放计时器
+//        if (countTimer != null) {
+//            countTimer.cancel();
+//        }
     }
 
 

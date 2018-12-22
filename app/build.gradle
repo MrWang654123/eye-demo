@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
+// 在 apply plugin: 'com.android.application' 下添加
+apply plugin: 'com.aliyun.ams.emas-services'
 
 
 android {
@@ -16,7 +18,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 27
-        versionCode 5
+        versionCode 10
         versionName APP_VERSION_NAME
         flavorDimensions "versionCode"
         vectorDrawables.useSupportLibrary = true
@@ -179,16 +181,19 @@ dependencies {
     implementation 'com.android.support:support-vector-drawable:27.1.1'
 
     implementation files('libs/open_sdk_r6008_lite.jar')
-    implementation files('libs/alicloud-android-beacon-1.0.1.jar')
-    implementation files('libs/alicloud-android-ut-5.1.0.jar')
-    implementation files('libs/alicloud-android-utils-1.1.3.jar')
-    implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
-    implementation files('libs/alisdk-feedback-3.1.7.aar')
-    implementation files('libs/alicloud-android-man-1.2.4.aar')
-    implementation files('libs/alicloud-android-push-3.1.4.aar')
+//    implementation files('libs/alicloud-android-beacon-1.0.1.jar')
+//    implementation files('libs/alicloud-android-ut-5.1.0.jar')
+//    implementation files('libs/alicloud-android-utils-1.1.3.jar')
+//    implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
+//    implementation files('libs/alisdk-feedback-3.1.7.aar')
+//    implementation files('libs/alicloud-android-man-1.2.4.aar')
+//    implementation files('libs/alicloud-android-push-3.1.4.aar')
 
     implementation files('libs/umeng-analytics-7.4.0.jar')
     implementation files('libs/umeng-common-1.4.0.jar')
+//    implementation files('libs/utdid4all-1.1.5.3_proguard.jar')
+
+//    implementation 'com.aliyun.ams:alicloud-android-push:3.1.4'
 
     implementation 'cn.jzvd:jiaozivideoplayer:6.2.12'
     implementation 'com.youth.banner:banner:1.4.10'

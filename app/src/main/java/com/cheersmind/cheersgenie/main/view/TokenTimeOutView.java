@@ -3,18 +3,11 @@ package com.cheersmind.cheersgenie.main.view;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.SplashActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
-import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.module.login.UCManager;
@@ -101,9 +94,9 @@ public class TokenTimeOutView {
         UCManager.getInstance().clearToken();
 //                SharedPreferencesUtils.setParam(this, MainActivity.SLIDING_ITEM_SHARE_KEY, 0);
 
-        // 用户注销埋点
-        MANService manService = MANServiceProvider.getService();
-        manService.getMANAnalytics().updateUserAccount("", "");
+//        // 用户注销埋点
+//        MANService manService = MANServiceProvider.getService();
+//        manService.getMANAnalytics().updateUserAccount("", "");
 
         //友盟统计：登出
         MobclickAgent.onProfileSignOff();

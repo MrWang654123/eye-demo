@@ -17,18 +17,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
-import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
-import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
@@ -319,9 +314,9 @@ public class PasswordInitActivity extends BaseActivity {
                     //本地缓存用户名和密码（这边就以手机号作为用户名）
                     saveUserAccount(phoneNum, dto.getPassword());
 
-                    // 统计：注册用户埋点("usernick")
-                    MANService manService = MANServiceProvider.getService();
-                    manService.getMANAnalytics().userRegister(wxUserInfoEntity.getUserId() +"");
+//                    // 统计：注册用户埋点("usernick")
+//                    MANService manService = MANServiceProvider.getService();
+//                    manService.getMANAnalytics().userRegister(wxUserInfoEntity.getUserId() +"");
 
                     //跳转班级号输入页面
                     gotoClassNumPage();

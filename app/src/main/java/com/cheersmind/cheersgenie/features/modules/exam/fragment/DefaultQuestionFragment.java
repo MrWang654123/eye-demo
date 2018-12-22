@@ -1,13 +1,9 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
@@ -32,9 +28,9 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
@@ -79,16 +75,6 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
     boolean isPlayFullEnd = true;
     //是否暂停
     boolean isPause = false;
-
-
-    //消息处理器
-    @SuppressLint("HandlerLeak")
-    protected Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
 
 
     @Override
@@ -355,15 +341,10 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
                     if (entity.getType()== Dictionary.QUESTION_TYPE_SELECT_ONLY) {
                         notifyDataSetChanged();
                         SoundPlayUtils.play(getContext(),3);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-//                                SoundPlayUtils.play(4);
-                            }
-                        }, INTERVAL_TIME);
                         //处理答题数据，并跳转到下一题
                         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, "");
-                        hiddenSoft();
+//                        hiddenSoft();
+                        SoftInputUtil.closeSoftInput(getActivity());
 
                     } else if (entity.getType()== Dictionary.QUESTION_TYPE_EDIT) {//问题类型：填写
                         //弹出填写答案的对话框
@@ -513,28 +494,17 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
 
         adapter.notifyDataSetChanged();
         SoundPlayUtils.play(getContext(),3);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                SoundPlayUtils.play(4);
-            }
-        }, INTERVAL_TIME);
 
         //处理答题数据，并跳转到下一题
         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, optionText);
-        hiddenSoft();
+//        hiddenSoft();
+        SoftInputUtil.closeSoftInput(getActivity());
     }
 
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
         tv.setVisibility(View.VISIBLE);
         SoundPlayUtils.play(getContext(),3);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                SoundPlayUtils.play(4);
-            }
-        }, INTERVAL_TIME);
         //处理答题数据，并跳转到下一题
 //        saveReplyInfo(optionsEntity);
     }
@@ -555,15 +525,15 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         }
     }
 
-    /**
-     * 隐藏软键盘
-     */
-    private void hiddenSoft(){
-        if(getActivity().getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE){
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
+//    /**
+//     * 隐藏软键盘
+//     */
+//    private void hiddenSoft(){
+//        if(getActivity().getWindow().getAttributes().softInputMode == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE){
+//            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+//        }
+//    }
 
 
     /**

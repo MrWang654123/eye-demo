@@ -1726,6 +1726,9 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
      * @param exam 测评
      */
     protected void refreshStickyHeaderView(ExamEntity exam) {
+        if (exam == null) {
+            return;
+        }
         //测评名称
         if (!TextUtils.isEmpty(exam.getExamName())) {
             tvTitle.setVisibility(View.VISIBLE);

@@ -2,7 +2,10 @@
 buildscript {
     repositories {
         jcenter()
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven{
+//            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
         google()
     }
     dependencies {
@@ -10,6 +13,8 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
 //        Android Studio3.0与butterknife 8.8.1的冲突，暂时的解决方法是降至8.4.0的版本
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        // 添加emas-services插件
+        classpath 'com.aliyun.ams:emas-services:1.0.1'
 
     }
 }
@@ -17,7 +22,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+        maven{
+//            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            url 'http://maven.aliyun.com/nexus/content/repositories/releases/'
+        }
         maven { url "https://jitpack.io" }
         google()
     }

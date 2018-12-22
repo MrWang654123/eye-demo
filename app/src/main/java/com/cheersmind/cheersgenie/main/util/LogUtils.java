@@ -2,15 +2,17 @@ package com.cheersmind.cheersgenie.main.util;
 
 import android.util.Log;
 
+import com.cheersmind.cheersgenie.BuildConfig;
+
 /**
  * Created by Administrator on 2018/7/3.
  */
 
 public class LogUtils {
 
-    public static boolean isDebug = true;
+    private static boolean isDebug = BuildConfig.DEBUG;
 
-    private final static String APP_TAG = "SmartBrain_Log";
+    private final static String APP_TAG = "fire-eyes_Log";
 
     /**
      * 获取相关数据:类名,方法名,行号等.用来定位行<br>

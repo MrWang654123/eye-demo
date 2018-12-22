@@ -21,17 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
-import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
-import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
@@ -431,10 +427,10 @@ public class PhoneNumLoginActivity extends BaseActivity {
                     DataSupport.deleteAll(WXUserInfoEntity.class);
                     wxUserInfoEntity.save();
 
-                    //登录统计
-                    MANService manService = MANServiceProvider.getService();
-                    // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
+//                    //登录统计
+//                    MANService manService = MANServiceProvider.getService();
+//                    // 用户登录埋点("usernick", "userid")
+//                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() +"", wxUserInfoEntity.getUserId()+"");
 
                     //友盟统计：当用户使用自有账号登录时，可以这样统计：
                     MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));

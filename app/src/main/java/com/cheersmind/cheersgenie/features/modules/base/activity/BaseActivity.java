@@ -7,18 +7,15 @@ import android.app.Application;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -35,8 +32,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
@@ -45,22 +40,13 @@ import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.MessageHandlerCallback;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.ReportActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
 import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFeedBackActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.register.activity.ClassNumActivity;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.dao.ChildInfoDao;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoRootEntity;
@@ -70,9 +56,7 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.PackageUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
-import com.cheersmind.cheersgenie.main.util.VersionUpdateUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.umeng.analytics.MobclickAgent;
@@ -223,9 +207,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     @Override
     protected void onResume() {
         super.onResume();
-        //统计：页面埋点
-        MANService manService = MANServiceProvider.getService();
-        manService.getMANPageHitHelper().pageAppear(this);
+//        //统计：页面埋点
+//        MANService manService = MANServiceProvider.getService();
+//        manService.getMANPageHitHelper().pageAppear(this);
 
         //友盟统计
         MobclickAgent.onResume(this);
@@ -234,9 +218,9 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
     @Override
     protected void onPause() {
         super.onPause();
-        //统计：页面埋点
-        MANService manService = MANServiceProvider.getService();
-        manService.getMANPageHitHelper().pageDisAppear(this);
+//        //统计：页面埋点
+//        MANService manService = MANServiceProvider.getService();
+//        manService.getMANPageHitHelper().pageDisAppear(this);
 
         //友盟统计
         MobclickAgent.onPause(this);

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Message;
@@ -29,32 +28,23 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.man.MANService;
-import com.alibaba.sdk.android.man.MANServiceProvider;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
 import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
-import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
-import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
-import com.cheersmind.cheersgenie.features.entity.SessionCreateResult;
 import com.cheersmind.cheersgenie.features.interfaces.OnResultListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginAccountActivity;
-import com.cheersmind.cheersgenie.features.modules.login.activity.XLoginActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.ModifyPasswordActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PhoneMessageTestUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -795,10 +785,10 @@ public class RegisterCaptchaActivity extends BaseActivity {
                         doGetChildListWrap();
                     }
 
-                    //登录统计
-                    MANService manService = MANServiceProvider.getService();
-                    // 用户登录埋点("usernick", "userid")
-                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
+//                    //登录统计
+//                    MANService manService = MANServiceProvider.getService();
+//                    // 用户登录埋点("usernick", "userid")
+//                    manService.getMANAnalytics().updateUserAccount(wxUserInfoEntity.getUserId() + "", wxUserInfoEntity.getUserId() + "");
 
                     //友盟统计：当用户使用自有账号登录时，可以这样统计：
                     MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));
@@ -933,9 +923,9 @@ public class RegisterCaptchaActivity extends BaseActivity {
                     //本地缓存用户名和密码（这边就以手机号作为用户名）
                     saveUserAccount(phoneNum, dto.getPassword());
 
-                    // 统计：注册用户埋点("usernick")
-                    MANService manService = MANServiceProvider.getService();
-                    manService.getMANAnalytics().userRegister(wxUserInfoEntity.getUserId() +"");
+//                    // 统计：注册用户埋点("usernick")
+//                    MANService manService = MANServiceProvider.getService();
+//                    manService.getMANAnalytics().userRegister(wxUserInfoEntity.getUserId() +"");
 
                     //友盟统计：当用户使用自有账号登录时，可以这样统计：
                     MobclickAgent.onProfileSignIn(String.valueOf(wxUserInfoEntity.getUserId()));
