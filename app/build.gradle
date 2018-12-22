@@ -22,6 +22,13 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
 
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi', 'armeabi-v7a','x86','x86_64'
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64', 'arm64-v8a'
+            //注释arm64-v8a即可
+        }
+
     }
 
     dexOptions {
