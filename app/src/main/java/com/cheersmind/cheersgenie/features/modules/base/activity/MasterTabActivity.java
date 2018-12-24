@@ -247,7 +247,7 @@ public class MasterTabActivity extends BaseActivity {
         offset_y = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_y);
 
         //初始化声音
-        SoundPlayUtils.init(this);
+//        SoundPlayUtils.init(this);
 
         new Thread(new Runnable() {
             @Override

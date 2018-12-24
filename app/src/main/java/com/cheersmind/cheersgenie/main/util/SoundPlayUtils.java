@@ -67,6 +67,21 @@ public class SoundPlayUtils {
      *
      * @param soundID
      */
+    public static void play(SoundPool soundPlayer, int soundID) {
+        if (soundPlayer != null) {
+            try {
+                soundPlayer.play(soundID, 1, 1, 0, 0, 1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 播放声音
+     *
+     * @param soundID
+     */
     public static void play(Context context, int soundID) {
         if(!getSoundStatus(context)){
             return;

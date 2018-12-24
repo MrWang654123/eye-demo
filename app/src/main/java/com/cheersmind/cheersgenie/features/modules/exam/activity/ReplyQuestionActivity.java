@@ -3,6 +3,10 @@ package com.cheersmind.cheersgenie.features.modules.exam.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,6 +39,7 @@ import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.event.LastHandleExamEvent;
 import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.WaitingLastHandleRefreshEvent;
+import com.cheersmind.cheersgenie.features.interfaces.SoundPlayListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.MainHandlerConstant;
@@ -77,6 +82,7 @@ import com.cheersmind.cheersgenie.main.view.LoadingView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +95,7 @@ import butterknife.OnClick;
 /**
  * 回答问题的页面
  */
-public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUISwitchListener {
+public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUISwitchListener, SoundPlayListener {
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
@@ -305,6 +311,85 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             getSynthesizerManager().initialTts();
         }
 
+        //初始化声音池
+        initSoundPool();
+    }
+
+
+    SoundPool mSoundPool;
+    int maxSteams = 10;
+    boolean isInitSoundPool;
+    boolean isOpenSound;
+    int soundId;
+    MediaPlayer mediaPlayer;
+    /**
+     * 初始化声音池
+     */
+    private void initSoundPool() {
+        //本地开关
+        isOpenSound = SoundPlayUtils.getSoundStatus(ReplyQuestionActivity.this);
+
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            mSoundPool = new SoundPool.Builder()
+//                    .setMaxStreams(maxSteams)
+//                    .build();
+//        } else {
+//            mSoundPool = new SoundPool(maxSteams, AudioManager.STREAM_MUSIC, 5);
+//        }
+//
+//        mSoundPool.load(getApplicationContext(),R.raw.question_click,1);//this是因为写在代码里的一段方法,R.raw.right是指/res/raw包下的相关资源
+//        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+//            @Override
+//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+//                //soundID       int: a soundID returned by the load() function
+//                //leftVolume    float: left volume value (range = 0.0 to 1.0)
+//                //rightVolume   float: right volume value (range = 0.0 to 1.0)
+//                //priority      int: stream priority (0 = lowest priority)
+//                //loop          int: loop mode (0 = no loop, -1 = loop forever)
+//                //rate          float: playback rate (1.0 = normal playback, range 0.5 to 2.0)
+////                soundPool.play(sampleId,1.0f,1.0f,1,0,1.0f);
+//                isInitSoundPool = true;
+//                soundId = sampleId;
+//            }
+//        });
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.question_click);
+    }
+
+
+    /**
+     * 释放声音池
+     */
+    private void releaseSoundPool() {
+        try {
+//            mSoundPool.unload(soundId);
+//            mSoundPool.setOnLoadCompleteListener(null);
+//            mSoundPool.release();
+//            mSoundPool = null;
+
+            mediaPlayer.release();
+            mediaPlayer = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public void clickQuestionOption() {
+//        if (isInitSoundPool && isOpenSound) {
+//            SoundPlayUtils.play(mSoundPool, soundId);
+//        }
+
+        if (isOpenSound) {
+//            try {
+//                mediaPlayer.prepare();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+            mediaPlayer.start();
+        }
     }
 
 
@@ -317,6 +402,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             startAllTimer();
         }
     }
+
 
     @Override
     protected void onPause() {
@@ -358,6 +444,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         btnSubmit.setOnClickListener(null);
         btnPre.setOnClickListener(null);
         ivStop.setOnClickListener(null);
+
+        //释放声音
+        releaseSoundPool();
     }
 
 

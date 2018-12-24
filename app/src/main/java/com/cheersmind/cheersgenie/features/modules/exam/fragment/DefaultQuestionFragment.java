@@ -3,6 +3,8 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.interfaces.SoundPlayListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceButtonUISwitchListener;
 import com.cheersmind.cheersgenie.features.interfaces.VoiceControlListener;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.ReplyQuestionActivity;
@@ -45,7 +48,7 @@ import pl.droidsonroids.gif.GifTextView;
 /**
  * 默认的问题Fragment
  */
-public class DefaultQuestionFragment extends Fragment implements VoiceControlListener {
+public class DefaultQuestionFragment extends Fragment implements VoiceControlListener, SoundPlayListener {
 
     private View contentView;
     //题目文本
@@ -168,97 +171,9 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
 
         //初始隐藏题目播放提示
         gftVoicePlay.setVisibility(View.INVISIBLE);
-        /*ivVoicePlay.requestFocus();
-        //播放音频监听
-        ivVoicePlay.setOnClickListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                //语音播放
-                ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
-                try {
-                    if (activity != null) {
-                        //播放语音
-                        activity.speak(mStem);
-                        //防止快速点击
-//                        ivVoicePlay.setEnabled(false);
-//                        mHandler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                ivVoicePlay.setEnabled(true);
-//                            }
-//                        }, 1500);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });*/
-
-        //题目点击监听
-//        tvQuestionTitle.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //语音播放
-//                ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
-//                String text = tvQuestionTitle.getText().toString();
-//                try {
-//                    if (activity != null) {
-//                        activity.speak(text);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-
-        //最后一个字后面加可点击图标
-        /*Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.voice_play_normal);
-        ImageSpan imgSpan = new ImageSpan(getContext(),bitmap);
-        Drawable d = getResources().getDrawable(R.drawable.voice_play_normal);
-        d.setBounds(0, 0,
-                DensityUtil.dip2px(getContext(), 25),
-                DensityUtil.dip2px(getContext(), 25));
-        //用这个drawable对象代替字符串easy
-        ImageSpan span = new ImageSpan(d, ImageSpan.ALIGN_BASELINE);
-
-        mStem = questionInfoEntity.getStem();
-        String stem = questionInfoEntity.getStem() + " __";
-        SpannableString spanString2 = new SpannableString(stem);
-        spanString2.setSpan(span, stem.length() - 2, stem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spanString2.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                //语音播放
-                ReplyQuestionActivity activity = (ReplyQuestionActivity)getActivity();
-                try {
-                    if (activity != null) {
-                        //播放语音
-                        activity.speak(mStem);
-                        //防止快速点击
-                        tvQuestionTitle.setEnabled(false);
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvQuestionTitle.setEnabled(true);
-                            }
-                        }, 1500);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-//                super.updateDrawState(ds);
-                System.out.println("--");
-            }
-        }, stem.length() - 2, stem.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        tvQuestionTitle.setText(spanString2);
-        tvQuestionTitle.setMovementMethod(LinkMovementMethod.getInstance());*/
 
     }
+
 
     BaseAdapter adapter = new BaseAdapter() {
         @Override
@@ -340,7 +255,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
                     //问题类型：只选
                     if (entity.getType()== Dictionary.QUESTION_TYPE_SELECT_ONLY) {
                         notifyDataSetChanged();
-                        SoundPlayUtils.play(getContext(),3);
+//                        SoundPlayUtils.play(getContext(),3);
+                        clickQuestionOption();
                         //处理答题数据，并跳转到下一题
                         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, "");
 //                        hiddenSoft();
@@ -366,6 +282,14 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         }
 
     };
+
+
+    @Override
+    public void clickQuestionOption() {
+        if (getActivity() != null && getActivity() instanceof SoundPlayListener) {
+            ((SoundPlayListener) getActivity()).clickQuestionOption();
+        }
+    }
 
 
     class ViewHolder{
@@ -493,7 +417,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         optionText = answer;
 
         adapter.notifyDataSetChanged();
-        SoundPlayUtils.play(getContext(),3);
+//        SoundPlayUtils.play(getContext(),3);
+        clickQuestionOption();
 
         //处理答题数据，并跳转到下一题
         saveReplyInfo(questionInfoEntity.getChildFactorId(), entity, optionText);
@@ -504,7 +429,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
 
     private void showAnimBg(TextView tv, final OptionsEntity optionsEntity){
         tv.setVisibility(View.VISIBLE);
-        SoundPlayUtils.play(getContext(),3);
+//        SoundPlayUtils.play(getContext(),3);
+        clickQuestionOption();
         //处理答题数据，并跳转到下一题
 //        saveReplyInfo(optionsEntity);
     }

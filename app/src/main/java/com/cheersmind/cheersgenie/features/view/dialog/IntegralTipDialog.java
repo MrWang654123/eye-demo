@@ -28,7 +28,6 @@ public class IntegralTipDialog extends Dialog {
     @BindView(R.id.tv_integral)
     TextView tvIntegral;
 
-    private Context context;
     //积分
     private int integralVal;
 
@@ -39,7 +38,6 @@ public class IntegralTipDialog extends Dialog {
     public IntegralTipDialog(@NonNull Context context, int integralVal, OnOperationListener listener) {
         super(context, R.style.loading_dialog);
         this.integralVal = integralVal;
-        this.context = context;
         this.listener = listener;
     }
 
@@ -75,7 +73,7 @@ public class IntegralTipDialog extends Dialog {
         }
 
         //初始化积分文本
-        tvIntegral.setText(context.getResources().getString(R.string.integral_tip_add, String.valueOf(integralVal)));
+        tvIntegral.setText(getContext().getResources().getString(R.string.integral_tip_add, String.valueOf(integralVal)));
     }
 
 
@@ -96,7 +94,7 @@ public class IntegralTipDialog extends Dialog {
      * 动画
      */
     private void doAnimation() {
-        final Animation animation = AnimationUtils.loadAnimation(context, R.anim.integral_tip);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.integral_tip);
         animation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -117,14 +115,17 @@ public class IntegralTipDialog extends Dialog {
 
             }
         });
-        new Handler().postDelayed(new Runnable() {
+//        new Handler().postDelayed(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    //动画效果
+//                    tvIntegral.startAnimation(animation);
+//                }
+//            }, 50) ;
 
-                @Override
-                public void run() {
-                    //动画效果
-                    tvIntegral.startAnimation(animation);
-                }
-            }, 50) ;
+        //动画效果
+        tvIntegral.startAnimation(animation);
     }
 
 
