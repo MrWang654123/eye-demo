@@ -1,10 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +34,6 @@ import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,9 +102,27 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
             arguments.putInt("curSelect", curSelect);
             arguments.putString("optionText", optionText);
         }
+
         super.onDestroyView();
     }
 
+
+    @Override
+    public void onDestroy() {
+        try {
+            //数据释放
+            questionInfoEntity = null;
+            optionsList.clear();
+            optionsList = null;
+            texts.clear();
+            texts = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
+    }
 
     private void initView(){
         tvQuestionTitle = contentView.findViewById(R.id.tv_question_title);

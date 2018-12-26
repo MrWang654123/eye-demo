@@ -530,6 +530,23 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             e.printStackTrace();
         }
 
+        try {
+            //释放数据集合
+            questionList.clear();
+            questionList = null;
+            fragments.clear();
+            fragments = null;
+            arrayMapBeforeHasedReply.clear();
+            arrayMapBeforeHasedReply = null;
+            arrayMapCurHasedReply.clear();
+            arrayMapCurHasedReply = null;
+            topicInfoEntity = null;
+            dimensionInfoEntity = null;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         super.onDestroy();
     }
 
