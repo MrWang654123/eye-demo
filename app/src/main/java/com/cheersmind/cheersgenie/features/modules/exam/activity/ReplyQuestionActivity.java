@@ -46,6 +46,7 @@ import com.cheersmind.cheersgenie.features.interfaces.baidu.MainHandlerConstant;
 import com.cheersmind.cheersgenie.features.interfaces.baidu.UiMessageListener;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.fragment.BaseQuestionFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
 import com.cheersmind.cheersgenie.features.modules.login.activity.PhoneNumLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
@@ -157,7 +158,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     //问题集合
     List<QuestionInfoEntity> questionList;
     //问题fragment集合
-    List<Fragment> fragments = new ArrayList<>();
+    List<BaseQuestionFragment> fragments = new ArrayList<>();
     //适配器
     MyFragAdapter adapter;
     //当前位置
@@ -534,8 +535,18 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             //释放数据集合
             questionList.clear();
             questionList = null;
-            fragments.clear();
-            fragments = null;
+            try {
+                if (fragments != null) {
+                    for (BaseQuestionFragment fragment : fragments) {
+                        fragment.clearData();
+                    }
+
+                    fragments.clear();
+                    fragments = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             arrayMapBeforeHasedReply.clear();
             arrayMapBeforeHasedReply = null;
             arrayMapCurHasedReply.clear();

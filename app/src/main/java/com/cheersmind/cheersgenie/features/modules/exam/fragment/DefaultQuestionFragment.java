@@ -3,7 +3,6 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -36,29 +35,26 @@ import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import pl.droidsonroids.gif.GifTextView;
 
 /**
  * 默认的问题Fragment
  */
-public class DefaultQuestionFragment extends Fragment implements VoiceControlListener, SoundPlayListener {
+public class DefaultQuestionFragment extends BaseQuestionFragment implements VoiceControlListener, SoundPlayListener {
 
     private View contentView;
     //题目文本
     private TextView tvQuestionTitle;
-    //问题选项列表
-    private ListView lvQuestion;
 
     //当前选中选项，默认没选中
     private int curSelect = -1;
     //填写的答案
     String optionText;
-    //问题对象
-    QuestionInfoEntity questionInfoEntity;
-    //选项集合
-    List<OptionsEntity> optionsList;
+//    //问题对象
+//    QuestionInfoEntity questionInfoEntity;
+//    //选项集合
+//    List<OptionsEntity> optionsList;
 
     //时间间隔
     private long INTERVAL_TIME = 220;
@@ -67,8 +63,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
     String mStem;
     //题目音频播放gft提示
     GifTextView gftVoicePlay;
-    //播放的文字集合Pair<String, String>：1、文字；2、ID
-    List<Pair<String, String>> texts;
+//    //播放的文字集合Pair<String, String>：1、文字；2、ID
+//    List<Pair<String, String>> texts;
     //播放完整结束
     boolean isPlayFullEnd = true;
     //是否暂停
@@ -109,7 +105,7 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
 
     private void initView(){
         tvQuestionTitle = contentView.findViewById(R.id.tv_question_title);
-        lvQuestion = contentView.findViewById(R.id.lv_question);
+        ListView lvQuestion = contentView.findViewById(R.id.lv_question);
         lvQuestion.setAdapter(adapter);
         gftVoicePlay = contentView.findViewById(R.id.gif_voice_play);
     }
