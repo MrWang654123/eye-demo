@@ -60,15 +60,15 @@ public class QuestionCompleteXDialog extends Dialog implements View.OnClickListe
             return;
         }
         if(v == tvCancel){
+            onDismiss();
             if(listener != null){
                 listener.onCancel();
             }
-            onDismiss();
         }else if(v == tvComfirm){
+            onDismiss();
             if(listener != null){
                 listener.onConfirm();
             }
-            onDismiss();
         }
     }
 
@@ -85,4 +85,15 @@ public class QuestionCompleteXDialog extends Dialog implements View.OnClickListe
         //确定操作
         void onConfirm();
     }
+
+    /**
+     * 清空监听
+     */
+    public void clearListener() {
+        listener = null;
+        setOnDismissListener(null);
+        setOnCancelListener(null);
+        setOnShowListener(null);
+    }
+
 }

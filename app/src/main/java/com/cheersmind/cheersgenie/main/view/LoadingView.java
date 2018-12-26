@@ -98,6 +98,10 @@ public class LoadingView {
     public void dismiss() {
         try {
             if (dlg != null) {
+                dlg.setOnKeyListener(null);
+                dlg.setOnDismissListener(null);
+                dlg.setOnCancelListener(null);
+                dlg.setOnShowListener(null);
                 dlg.dismiss();
                 dlg.cancel();
                 dlg = null;

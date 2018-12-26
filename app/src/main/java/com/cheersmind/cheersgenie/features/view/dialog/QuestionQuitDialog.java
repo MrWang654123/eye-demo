@@ -32,12 +32,12 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
 
     private Context context;
     private int type;
-    private QuestionQuitDialogCallback callback;
+    private OnOperationListener listener;
 
-    public QuestionQuitDialog(@NonNull Context context, int type, QuestionQuitDialogCallback callback) {
+    public QuestionQuitDialog(@NonNull Context context, int type, OnOperationListener listener) {
         super(context);
         this.context = context;
-        this.callback = callback;
+        this.listener = listener;
         this.type = type;
     }
 
@@ -79,26 +79,37 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
             return;
         }
         if(v == tvExit){
-            if(callback != null){
-                callback.onQuesExit();
+            if(listener != null){
+                listener.onQuesExit();
             }
             onDismiss();
         }else if(v == tvContinue){
-            if(callback != null){
-                callback.onQuesContinue();
+            if(listener != null){
+                listener.onQuesContinue();
             }
             onDismiss();
         }
     }
 
-    public void onDismiss(){
+    private void onDismiss(){
         this.dismiss();
     }
 
-    public interface QuestionQuitDialogCallback{
+    public interface OnOperationListener{
 
         void onQuesExit();
 
         void onQuesContinue();
     }
+
+    /**
+     * 清空监听
+     */
+    public void clearListener() {
+        listener = null;
+        setOnDismissListener(null);
+        setOnCancelListener(null);
+        setOnShowListener(null);
+    }
+
 }

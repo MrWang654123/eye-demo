@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.view.dialog;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -181,6 +182,24 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
 //        }
         if (listener != null) {
             listener.onExit();
+        }
+    }
+
+
+    /**
+     * 清空监听
+     */
+    public void clearListener() {
+        listener = null;
+        try {
+            Dialog dialog = getDialog();
+            if (dialog != null) {
+                dialog.setOnDismissListener(null);
+                dialog.setOnCancelListener(null);
+                dialog.setOnShowListener(null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

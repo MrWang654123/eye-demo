@@ -80,7 +80,6 @@ public class IntegralTipDialog extends Dialog {
     @Override
     public void dismiss() {
         super.dismiss();
-
     }
 
     @Override
@@ -104,7 +103,6 @@ public class IntegralTipDialog extends Dialog {
             @Override
             public void onAnimationEnd(Animation animation) {
                 dismiss();
-
                 if (listener != null) {
                     listener.onAnimationEnd();
                 }
@@ -133,6 +131,16 @@ public class IntegralTipDialog extends Dialog {
     public interface OnOperationListener {
         //动画结束
         void onAnimationEnd();
+    }
+
+    /**
+     * 清空监听
+     */
+    public void clearListener() {
+        listener = null;
+        setOnDismissListener(null);
+        setOnCancelListener(null);
+        setOnShowListener(null);
     }
 
 }

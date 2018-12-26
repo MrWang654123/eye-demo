@@ -18,7 +18,7 @@ public class IntegralUtil {
      * @param context 上下文
      * @param obj http通信返回结果对象
      */
-    public static void showIntegralTipDialog(@NonNull Context context, Object obj,IntegralTipDialog.OnOperationListener listener) {
+    public static IntegralTipDialog buildIntegralTipDialog(@NonNull Context context, Object obj,IntegralTipDialog.OnOperationListener listener) {
         try {
             if (obj != null && obj instanceof JSONObject) {
                 JSONObject jsonObject = (JSONObject) obj;
@@ -31,13 +31,16 @@ public class IntegralUtil {
                         int point = jsonObjPoint.getInt("point");
                         //积分弹窗提示
                         if (point > 0) {
-                            new IntegralTipDialog(context, point, listener).show();
+                            return new IntegralTipDialog(context, point, listener);
                         }
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return null;
     }
 
 }

@@ -314,13 +314,14 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
     }
 
 
+    Dialog answerEditDialog;
     /**
      * 弹出填写答案对话框
      */
     private void popupAnswerEditWindows(String title, String content) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.popup_window_edit_answer, null);
-        final Dialog dialog = new Dialog(getContext(), R.style.dialog_bottom_full);
-        Window window = dialog.getWindow();
+        answerEditDialog = new Dialog(getContext(), R.style.dialog_bottom_full);
+        Window window = answerEditDialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
         window.setContentView(view);
 
@@ -329,7 +330,7 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         window.setAttributes(lp);
         window.setWindowAnimations(R.style.BottomDialog_Animation);//动画
-        dialog.show();
+        answerEditDialog.show();
 
         //标题
         TextView tvTitle = view.findViewById(R.id.tv_title);
@@ -347,7 +348,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                answerEditDialog.dismiss();
+                answerEditDialog = null;
                 //确定答案
                 if (!TextUtils.isEmpty(etAnswer.getText().toString())) {
                     String text = etAnswer.getText().toString().trim();
@@ -362,7 +364,8 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                answerEditDialog.dismiss();
+                answerEditDialog = null;
             }
         });
 

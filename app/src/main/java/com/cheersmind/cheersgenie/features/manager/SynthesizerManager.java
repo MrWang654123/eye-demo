@@ -262,5 +262,12 @@ public class SynthesizerManager {
         }
     }
 
+    /**
+     * 是否初始化了
+     * @return true 已经初始化了
+     */
+    public boolean isInit() {
+        return synthesizer != null;
+    }
 
 }

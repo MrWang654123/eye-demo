@@ -362,6 +362,18 @@ public class MineFragment extends TakePhotoFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+
+        try {
+            //释放积分对话框
+            if (integralTipDialog != null) {
+                integralTipDialog.clearListener();
+                integralTipDialog.dismiss();
+                integralTipDialog.cancel();
+                integralTipDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -452,6 +464,8 @@ public class MineFragment extends TakePhotoFragment {
         }
     }
 
+    IntegralTipDialog integralTipDialog;
+
     /**
      * 签到
      */
@@ -475,7 +489,18 @@ public class MineFragment extends TakePhotoFragment {
 
                 //积分提示
                 if (getContext() != null) {
-                    IntegralUtil.showIntegralTipDialog(getContext(), obj, null);
+                    try {
+                        if (integralTipDialog == null) {
+                            integralTipDialog = IntegralUtil.buildIntegralTipDialog(getContext(), obj, null);
+                        }
+
+                        if (integralTipDialog != null) {
+                            integralTipDialog.show();
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }, httpTag, getActivity());

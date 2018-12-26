@@ -52,7 +52,7 @@ public class UiMessageListener extends MessageListener {
         if (mainHandler != null) {
             mainHandler.sendMessage(mainHandler.obtainMessage(UI_CHANGE_INPUT_TEXT_SELECTION, progress, 0));
             if (BuildConfig.DEBUG) {
-                System.out.println("播放进度：" + progress);
+//                System.out.println("播放进度：" + progress);
             }
         }
     }

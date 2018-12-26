@@ -202,6 +202,24 @@ public class UserInfoInitActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            //释放积分对话框
+            if (integralTipDialog != null) {
+                integralTipDialog.clearListener();
+                integralTipDialog.dismiss();
+                integralTipDialog.cancel();
+                integralTipDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday, R.id.iv_clear, R.id.iv_clear_nickname})
     public void onViewClick(View view) {
 
@@ -326,6 +344,9 @@ public class UserInfoInitActivity extends BaseActivity {
         postUserInfo(classNum, genderVal, username, nickName, birthday, parentRole);
     }
 
+
+    IntegralTipDialog integralTipDialog;
+
     /**
      * 注册环节提交用户信息
      * @param classNum //班级群号
@@ -363,14 +384,25 @@ public class UserInfoInitActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
 //                LoadingView.getInstance().dismiss();
-                //积分提示
-                IntegralUtil.showIntegralTipDialog(UserInfoInitActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
-                    @Override
-                    public void onAnimationEnd() {
-                        //提交完善信息成功后，获取孩子列表
-                        doGetChildListWrap();
+                try {
+                    if (integralTipDialog == null) {
+                        //积分提示
+                        integralTipDialog = IntegralUtil.buildIntegralTipDialog(UserInfoInitActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+                            @Override
+                            public void onAnimationEnd() {
+                                //提交完善信息成功后，获取孩子列表
+                                doGetChildListWrap();
+                            }
+                        });
                     }
-                });
+
+                    if (integralTipDialog != null) {
+                        integralTipDialog.show();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, httpTag, UserInfoInitActivity.this);
     }

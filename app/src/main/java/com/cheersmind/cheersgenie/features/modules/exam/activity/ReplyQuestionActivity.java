@@ -96,10 +96,13 @@ import butterknife.OnClick;
  * 回答问题的页面
  */
 public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUISwitchListener, SoundPlayListener {
+    //定时器消息
+    private static final int MSG_TIMER = 23;
 
     public static final String TOPIC_INFO = "topic_info";
     public static final String DIMENSION_INFO = "dimension_info";
     public static final String FROM_ACTIVITY_TO_QUESTION = "FROM_ACTIVITY_TO_QUESTION";//从哪个页面进入的答题页
+
     //话题对象
     private TopicInfoEntity topicInfoEntity;
     //量表对象
@@ -146,6 +149,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     //作答计时器
     private Timer timer;
+    private TimerTask timerTask;
     //限制空闲计时器（60秒）
 //    private CountTimer countTimer;
     private static final int LIMIT_TIME = 60000;//限制作答时间
@@ -329,31 +333,31 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //本地开关
         isOpenSound = SoundPlayUtils.getSoundStatus(ReplyQuestionActivity.this);
 
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-//            mSoundPool = new SoundPool.Builder()
-//                    .setMaxStreams(maxSteams)
-//                    .build();
-//        } else {
-//            mSoundPool = new SoundPool(maxSteams, AudioManager.STREAM_MUSIC, 5);
-//        }
-//
-//        mSoundPool.load(getApplicationContext(),R.raw.question_click,1);//this是因为写在代码里的一段方法,R.raw.right是指/res/raw包下的相关资源
-//        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-//            @Override
-//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-//                //soundID       int: a soundID returned by the load() function
-//                //leftVolume    float: left volume value (range = 0.0 to 1.0)
-//                //rightVolume   float: right volume value (range = 0.0 to 1.0)
-//                //priority      int: stream priority (0 = lowest priority)
-//                //loop          int: loop mode (0 = no loop, -1 = loop forever)
-//                //rate          float: playback rate (1.0 = normal playback, range 0.5 to 2.0)
-////                soundPool.play(sampleId,1.0f,1.0f,1,0,1.0f);
-//                isInitSoundPool = true;
-//                soundId = sampleId;
-//            }
-//        });
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            mSoundPool = new SoundPool.Builder()
+                    .setMaxStreams(maxSteams)
+                    .build();
+        } else {
+            mSoundPool = new SoundPool(maxSteams, AudioManager.STREAM_MUSIC, 5);
+        }
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.question_click);
+        mSoundPool.load(getApplicationContext(),R.raw.question_click,1);//this是因为写在代码里的一段方法,R.raw.right是指/res/raw包下的相关资源
+        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                //soundID       int: a soundID returned by the load() function
+                //leftVolume    float: left volume value (range = 0.0 to 1.0)
+                //rightVolume   float: right volume value (range = 0.0 to 1.0)
+                //priority      int: stream priority (0 = lowest priority)
+                //loop          int: loop mode (0 = no loop, -1 = loop forever)
+                //rate          float: playback rate (1.0 = normal playback, range 0.5 to 2.0)
+//                soundPool.play(sampleId,1.0f,1.0f,1,0,1.0f);
+                isInitSoundPool = true;
+                soundId = sampleId;
+            }
+        });
+
+//        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.question_click);
     }
 
 
@@ -362,13 +366,17 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      */
     private void releaseSoundPool() {
         try {
-//            mSoundPool.unload(soundId);
-//            mSoundPool.setOnLoadCompleteListener(null);
-//            mSoundPool.release();
-//            mSoundPool = null;
+            if (mSoundPool != null) {
+                mSoundPool.unload(soundId);
+                mSoundPool.setOnLoadCompleteListener(null);
+                mSoundPool.release();
+                mSoundPool = null;
+            }
 
-            mediaPlayer.release();
-            mediaPlayer = null;
+//            if (mediaPlayer != null) {
+//                mediaPlayer.release();
+//                mediaPlayer = null;
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -378,18 +386,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     @Override
     public void clickQuestionOption() {
-//        if (isInitSoundPool && isOpenSound) {
+        if (isInitSoundPool && isOpenSound) {
 //            SoundPlayUtils.play(mSoundPool, soundId);
-//        }
-
-        if (isOpenSound) {
-//            try {
-//                mediaPlayer.prepare();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-            mediaPlayer.start();
+            mSoundPool.play(soundId, 1, 1, 0, 0, 1);
         }
+
+//        if (isOpenSound) {
+//            mediaPlayer.start();
+//        }
     }
 
 
@@ -419,7 +423,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         //释放所有计时器
         releaseAllTimer();
 //        countTimer = null;
@@ -439,6 +442,16 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //释放pagerView监听器
         vpQuestion.clearOnPageChangeListeners();
+        try {
+            //释放适配器
+            vpQuestion.clearDisappearingChildren();
+            vpQuestion.clearFocus();
+            vpQuestion.clearFocus();
+            vpQuestion.setAdapter(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         //释放监听事件
         xemptyLayout.setOnReloadListener(null);
         btnSubmit.setOnClickListener(null);
@@ -447,6 +460,77 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //释放声音
         releaseSoundPool();
+
+        try {
+            //释放完成对话框
+            if (completeDialog != null) {
+                completeDialog.clearListener();
+                completeDialog.dismiss();
+                completeDialog.cancel();
+                completeDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放积分对话框
+            if (integralTipDialog != null) {
+                integralTipDialog.clearListener();
+                integralTipDialog.dismiss();
+                integralTipDialog.cancel();
+                integralTipDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放话题报告对话框
+            if (topicReportDialog != null) {
+                topicReportDialog.clearListener();
+                topicReportDialog.dismiss();
+                topicReportDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放量表报告对话框
+            if (dimensionReportDialog != null) {
+                dimensionReportDialog.clearListener();
+                dimensionReportDialog.dismiss();
+                dimensionReportDialog.cancel();
+                dimensionReportDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放描述对话框
+            if (descDialog != null) {
+                descDialog.dismiss();
+                descDialog.cancel();
+                descDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放暂停对话框
+            if (quitDialog != null) {
+                quitDialog.dismiss();
+                quitDialog.cancel();
+                quitDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
     }
 
 
@@ -547,6 +631,12 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 if (BuildConfig.DEBUG) {
                     System.out.println("语音合成或者错误");
                 }
+                break;
+            }
+            //定时器修改定时数值
+            case MSG_TIMER: {
+                costTime++;
+                tvTime.setText(String.valueOf(costTime));
                 break;
             }
         }
@@ -722,7 +812,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //添加到当前题目答案的集合：key为问题ID
         AnswerDto answerDto = assembleAnswerDto(childFactorId, optionsEntity, optionText);
         arrayMapCurHasedReply.put(questionId, answerDto);
-        LogUtils.w("当前题目答案的集合长度：" + arrayMapCurHasedReply.size());
+//        LogUtils.w("当前题目答案的集合长度：" + arrayMapCurHasedReply.size());
     }
 
     /**
@@ -904,15 +994,20 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             //语音播放
             case R.id.fabVoicePlay: {
                 //语音播放
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Fragment fragment = fragments.get(curPosition);
-                        if (fragment instanceof VoiceControlListener) {
-                            ((VoiceControlListener)fragment).play();
-                        }
-                    }
-                }).start();
+//                new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Fragment fragment = fragments.get(curPosition);
+//                        if (fragment instanceof VoiceControlListener) {
+//                            ((VoiceControlListener)fragment).play();
+//                        }
+//                    }
+//                }).start();
+
+                Fragment fragment = fragments.get(curPosition);
+                if (fragment instanceof VoiceControlListener) {
+                    ((VoiceControlListener)fragment).play();
+                }
             }
         }
     }
@@ -970,6 +1065,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             showQuestionCompleteDialog();
         }
     }
+
+    IntegralTipDialog integralTipDialog;
 
     /**
      * 提交所有问题答案
@@ -1036,7 +1133,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
                             //积分提示
-                            IntegralUtil.showIntegralTipDialog(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+                            integralTipDialog = IntegralUtil.buildIntegralTipDialog(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
                                 @Override
                                 public void onAnimationEnd() {
                                     try {
@@ -1068,6 +1165,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
                             });
 
+                            if (integralTipDialog != null) {
+                                integralTipDialog.show();
+                            }
+
                         } catch (Exception e) {
                             onFailure(new QSCustomException("获取报告失败"));
                         }
@@ -1075,22 +1176,28 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 }, httpTag, ReplyQuestionActivity.this);
     }
 
+    TopicReportDialog topicReportDialog;
     /**
      * 请求话题报告
      * @param topicInfo 话题对象
      */
     private void queryTopicReport(TopicInfoEntity topicInfo) {
         try {
-            new TopicReportDialog().setTopicInfo(topicInfo).setListener(new TopicReportDialog.OnOperationListener() {
-                @Override
-                public void onExit() {
-                    //跳转到下一个页面
-                    gotoNextActivity();
-                }
-            }).show(getSupportFragmentManager(), "报告");
+            if (topicReportDialog == null) {
+                topicReportDialog = new TopicReportDialog().setTopicInfo(topicInfo).setListener(new TopicReportDialog.OnOperationListener() {
+                    @Override
+                    public void onExit() {
+                        //跳转到下一个页面
+                        gotoNextActivity();
+                    }
+                });
+            }
+            if (topicReportDialog != null) {
+                topicReportDialog.show(getSupportFragmentManager(), "报告");
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplication(), e.getMessage());
+            ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
         }
     }
 
@@ -1143,22 +1250,28 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }, 200);
     }
 
+    DimensionReportDialog dimensionReportDialog;
     /**
      * 请求量表报告
      * @param dimensionInfo 分量表对象，一定得带孩子量表对象
      */
     private void queryDimensionReport(DimensionInfoEntity dimensionInfo) {
         try {
-            new DimensionReportDialog(ReplyQuestionActivity.this, dimensionInfo, new DimensionReportDialog.OnOperationListener() {
-                @Override
-                public void onExit() {
-                    //跳转到下一个页面
-                    gotoNextActivity();
-                }
-            }).show();
+            if (dimensionReportDialog == null) {
+                dimensionReportDialog = new DimensionReportDialog(ReplyQuestionActivity.this, dimensionInfo, new DimensionReportDialog.OnOperationListener() {
+                    @Override
+                    public void onExit() {
+                        //跳转到下一个页面
+                        gotoNextActivity();
+                    }
+                });
+            }
+
+            dimensionReportDialog.show();
+
         } catch (Exception e) {
             e.printStackTrace();
-            ToastUtil.showShort(getApplication(), e.getMessage());
+            ToastUtil.showShort(getApplication(), getResources().getString(R.string.operate_fail));
         }
     }
 
@@ -1240,6 +1353,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         doPostSaveQuestions();
     }
 
+
     /**
      * 动画
      */
@@ -1319,6 +1433,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             timer.cancel();
             timer = null;
         }
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 
     /**
@@ -1328,19 +1446,22 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         releaseTimeTask();
         if (timer == null) {
             timer = new Timer();
-            timer.schedule(new TimerTask() {
+            getHandler();
+            timerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            costTime++;
-                            tvTime.setText(String.valueOf(costTime));
-                        }
-                    });
+                    getHandler().sendEmptyMessage(MSG_TIMER);
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            costTime++;
+//                            tvTime.setText(String.valueOf(costTime));
+//                        }
+//                    });
 
                 }
-            }, 1000, 1000);
+            };
+            timer.schedule(timerTask, 1000, 1000);
         }
     }
 
@@ -1389,6 +1510,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     }
 
 
+    QuestionQuitDialog quitDialog;
     /**
      * 显示暂停对话框
      * @param type
@@ -1397,29 +1519,38 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //释放计时器
         releaseAllTimer();
 
-        QuestionQuitDialog dialog = new QuestionQuitDialog(ReplyQuestionActivity.this,
-                type, new QuestionQuitDialog.QuestionQuitDialogCallback() {
-            @Override
-            public void onQuesExit() {
-                //保存当前问题答案到服务器
-                doPostSaveQuestions();
-                //退出
-                finish();
+        try {
+            if (quitDialog == null) {
+                quitDialog = new QuestionQuitDialog(ReplyQuestionActivity.this,
+                        type, new QuestionQuitDialog.OnOperationListener() {
+                    @Override
+                    public void onQuesExit() {
+                        //保存当前问题答案到服务器
+                        doPostSaveQuestions();
+                        //退出
+                        finish();
+                    }
+
+                    @Override
+                    public void onQuesContinue() {
+                        //继续答题，开启计时器
+                        startAllTimer();
+                    }
+                });
+
+                if (quitDialog.getWindow() != null) {
+                    quitDialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+                }
             }
 
-            @Override
-            public void onQuesContinue() {
-                //继续答题，开启计时器
-                startAllTimer();
-            }
-        });
+            quitDialog.show();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        dialog.show();
     }
 
+    QuestionCompleteXDialog completeDialog = null;
     /**
      * 显示提交对话框
      */
@@ -1427,62 +1558,79 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //释放计时器
         releaseAllTimer();
 
-        QuestionCompleteXDialog dialog = new QuestionCompleteXDialog(ReplyQuestionActivity.this, new QuestionCompleteXDialog.OnOperationListener() {
-            @Override
-            public void onCancel() {
-                //开启计时器
-                startAllTimer();
+        try {
+            if (completeDialog == null) {
+                completeDialog = new QuestionCompleteXDialog(ReplyQuestionActivity.this, new QuestionCompleteXDialog.OnOperationListener() {
+                    @Override
+                    public void onCancel() {
+                        //开启计时器
+                        startAllTimer();
+                    }
+
+                    @Override
+                    public void onConfirm() {
+                        //提交所有答案
+                        doPostSubmitQuestions();
+                    }
+                });
+
+                if (completeDialog.getWindow() != null) {
+                    completeDialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+                }
             }
 
-            @Override
-            public void onConfirm() {
-                //提交所有答案
-                doPostSubmitQuestions();
-            }
-        });
+            completeDialog.show();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        dialog.show();
     }
 
 
+    AlertDialog descDialog;
     /**
      * 弹出须知弹窗
      */
     void popupDescWindows() {
-        String definition = dimensionInfoEntity.getDefinition();
-        if (TextUtils.isEmpty(definition)) {
-            definition = getResources().getString(R.string.empty_tip_question_definition);
-        }
-        //内容
-        View view = View.inflate(ReplyQuestionActivity.this, R.layout.text_view_question_definition, null);
-        TextView textViewContent = view.findViewById(R.id.tv_content);
-        textViewContent.setText(Html.fromHtml(definition));
+        try {
+            if (descDialog == null) {
+                String definition = dimensionInfoEntity.getDefinition();
+                if (TextUtils.isEmpty(definition)) {
+                    definition = getResources().getString(R.string.empty_tip_question_definition);
+                }
+                //内容
+                View view = View.inflate(ReplyQuestionActivity.this, R.layout.text_view_question_definition, null);
+                TextView textViewContent = view.findViewById(R.id.tv_content);
+                textViewContent.setText(Html.fromHtml(definition));
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("须知")
+                descDialog = new AlertDialog.Builder(this)
+                        .setTitle("须知")
 //                .setMessage(desc)
-                .setView(textViewContent)
+                        .setView(textViewContent)
 //                .setNegativeButton("关闭", new DialogInterface.OnClickListener() {
 //                    @Override
 //                    public void onClick(DialogInterface dialog, int which) {
 //                        dialog.dismiss();
 //                    }
 //                })
-                .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //退出操作
-                    }
-                })
-                .create();
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+                        .setPositiveButton("关闭", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                //退出操作
+                            }
+                        })
+                        .create();
+                if (descDialog.getWindow() != null) {
+                    descDialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+                }
+            }
+
+            descDialog.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        dialog.show();
     }
 
     @Override
