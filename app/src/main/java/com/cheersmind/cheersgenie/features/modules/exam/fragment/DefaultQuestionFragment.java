@@ -107,23 +107,6 @@ public class DefaultQuestionFragment extends Fragment implements VoiceControlLis
     }
 
 
-    @Override
-    public void onDestroy() {
-        try {
-            //数据释放
-            questionInfoEntity = null;
-            optionsList.clear();
-            optionsList = null;
-            texts.clear();
-            texts = null;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        super.onDestroy();
-    }
-
     private void initView(){
         tvQuestionTitle = contentView.findViewById(R.id.tv_question_title);
         lvQuestion = contentView.findViewById(R.id.lv_question);
