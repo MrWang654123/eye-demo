@@ -333,31 +333,31 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //本地开关
         isOpenSound = SoundPlayUtils.getSoundStatus(ReplyQuestionActivity.this);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            mSoundPool = new SoundPool.Builder()
-                    .setMaxStreams(maxSteams)
-                    .build();
-        } else {
-            mSoundPool = new SoundPool(maxSteams, AudioManager.STREAM_MUSIC, 5);
-        }
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//            mSoundPool = new SoundPool.Builder()
+//                    .setMaxStreams(maxSteams)
+//                    .build();
+//        } else {
+//            mSoundPool = new SoundPool(maxSteams, AudioManager.STREAM_MUSIC, 5);
+//        }
+//
+//        mSoundPool.load(getApplicationContext(),R.raw.question_click,1);//this是因为写在代码里的一段方法,R.raw.right是指/res/raw包下的相关资源
+//        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+//            @Override
+//            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+//                //soundID       int: a soundID returned by the load() function
+//                //leftVolume    float: left volume value (range = 0.0 to 1.0)
+//                //rightVolume   float: right volume value (range = 0.0 to 1.0)
+//                //priority      int: stream priority (0 = lowest priority)
+//                //loop          int: loop mode (0 = no loop, -1 = loop forever)
+//                //rate          float: playback rate (1.0 = normal playback, range 0.5 to 2.0)
+////                soundPool.play(sampleId,1.0f,1.0f,1,0,1.0f);
+//                isInitSoundPool = true;
+//                soundId = sampleId;
+//            }
+//        });
 
-        mSoundPool.load(getApplicationContext(),R.raw.question_click,1);//this是因为写在代码里的一段方法,R.raw.right是指/res/raw包下的相关资源
-        mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-            @Override
-            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                //soundID       int: a soundID returned by the load() function
-                //leftVolume    float: left volume value (range = 0.0 to 1.0)
-                //rightVolume   float: right volume value (range = 0.0 to 1.0)
-                //priority      int: stream priority (0 = lowest priority)
-                //loop          int: loop mode (0 = no loop, -1 = loop forever)
-                //rate          float: playback rate (1.0 = normal playback, range 0.5 to 2.0)
-//                soundPool.play(sampleId,1.0f,1.0f,1,0,1.0f);
-                isInitSoundPool = true;
-                soundId = sampleId;
-            }
-        });
-
-//        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.question_click);
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.question_click);
     }
 
 
@@ -366,17 +366,17 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      */
     private void releaseSoundPool() {
         try {
-            if (mSoundPool != null) {
-                mSoundPool.unload(soundId);
-                mSoundPool.setOnLoadCompleteListener(null);
-                mSoundPool.release();
-                mSoundPool = null;
-            }
-
-//            if (mediaPlayer != null) {
-//                mediaPlayer.release();
-//                mediaPlayer = null;
+//            if (mSoundPool != null) {
+//                mSoundPool.unload(soundId);
+//                mSoundPool.setOnLoadCompleteListener(null);
+//                mSoundPool.release();
+//                mSoundPool = null;
 //            }
+
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -386,14 +386,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     @Override
     public void clickQuestionOption() {
-        if (isInitSoundPool && isOpenSound) {
-//            SoundPlayUtils.play(mSoundPool, soundId);
-            mSoundPool.play(soundId, 1, 1, 0, 0, 1);
-        }
-
-//        if (isOpenSound) {
-//            mediaPlayer.start();
+//        if (isInitSoundPool && isOpenSound) {
+////            SoundPlayUtils.play(mSoundPool, soundId);
+//            mSoundPool.play(soundId, 1, 1, 0, 0, 1);
 //        }
+
+        if (isOpenSound) {
+            mediaPlayer.start();
+        }
     }
 
 
