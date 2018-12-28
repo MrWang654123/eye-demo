@@ -301,8 +301,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //        costTime = dimensionInfoEntity.getChildDimension().getCostTime();
         costTime = 0;
 
-        //初始设置监听
-        getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(getHandler()));
         // android 6.0以上动态权限申请
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (PermissionUtil.lacksPermissions(ReplyQuestionActivity.this, permissions)) {
@@ -332,7 +330,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      */
     private void initSoundPool() {
         //本地开关
-        isOpenSound = SoundPlayUtils.getSoundStatus(ReplyQuestionActivity.this);
+        isOpenSound = SoundPlayUtils.getInstance().getSoundStatus(getApplicationContext());
 
 //        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
 //            mSoundPool = new SoundPool.Builder()
@@ -358,7 +356,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //            }
 //        });
 
-        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.question_click);
+//        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.question_click);
     }
 
 
@@ -374,10 +372,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //                mSoundPool = null;
 //            }
 
-            if (mediaPlayer != null) {
-                mediaPlayer.release();
-                mediaPlayer = null;
-            }
+//            if (mediaPlayer != null) {
+//                mediaPlayer.release();
+//                mediaPlayer = null;
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,7 +391,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //        }
 
         if (isOpenSound) {
-            mediaPlayer.start();
+//            mediaPlayer.start();
+            SoundPlayUtils.getInstance().play();
         }
     }
 
@@ -1032,6 +1031,11 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //                    }
 //                }).start();
 
+                //初始设置百度语音监听
+                if (!getSynthesizerManager().isHasSetSpeechSynthesizerListener()) {
+                    getSynthesizerManager().setSpeechSynthesizerListener(new UiMessageListener(getHandler()));
+                }
+
                 Fragment fragment = fragments.get(curPosition);
                 if (fragment instanceof VoiceControlListener) {
                     ((VoiceControlListener)fragment).play();
@@ -1408,7 +1412,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                         }
                         if(timeCout==1){
                             tvTimeGo.setText("GO");
-                            SoundPlayUtils.play(ReplyQuestionActivity.this, 2);
+//                            SoundPlayUtils.play(ReplyQuestionActivity.this, 2);
                             showTimeAnim();
                             timeCout --;
                         }else{

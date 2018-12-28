@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -60,7 +62,7 @@ public class DimensionDetailActivity extends BaseActivity {
     int fromActivityToQuestion;
 
     @BindView(R.id.iv_dimension)
-    ImageView ivDimension;
+    SimpleDraweeView ivDimension;
     @BindView(R.id.tv_dimension_name)
     TextView tvDimensionName;
     @BindView(R.id.tv_suitable_user)
@@ -161,6 +163,15 @@ public class DimensionDetailActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        dimensionInfoEntity = null;
+        topicInfoEntity = null;
+    }
+
+
     /**
      * 更新页面上的量表详细信息
      *
@@ -187,11 +198,12 @@ public class DimensionDetailActivity extends BaseActivity {
         tvToolbarTitle.setText(dimensionInfoEntity.getDimensionName());
 
         //图片
-        Glide.with(DimensionDetailActivity.this)
-                .load(dimensionInfoEntity.getBackgroundImage())
-//                .thumbnail(0.5f)
-                .apply(QSApplication.getDefaultOptions())
-                .into(ivDimension);
+//        Glide.with(DimensionDetailActivity.this)
+//                .load(dimensionInfoEntity.getBackgroundImage())
+////                .thumbnail(0.5f)
+//                .apply(QSApplication.getDefaultOptions())
+//                .into(ivDimension);
+        ivDimension.setImageURI(dimensionInfoEntity.getBackgroundImage());
 
         //名称
         tvDimensionName.setText(dimensionInfoEntity.getDimensionName());

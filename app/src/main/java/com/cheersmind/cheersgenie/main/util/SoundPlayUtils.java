@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.main.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 import com.cheersmind.cheersgenie.R;
@@ -16,87 +17,114 @@ import static android.content.Context.MODE_PRIVATE;
 public class SoundPlayUtils {
 
     // SoundPool对象
-    private static SoundPool mSoundPlayer = new SoundPool(10,
-            AudioManager.STREAM_MUSIC, 5);
+//    private static SoundPool mSoundPlayer = new SoundPool(10,
+////            AudioManager.STREAM_MUSIC, 5);
+
+    private MediaPlayer mediaPlayer;
+
     private static SoundPlayUtils soundPlayUtils;
+
+    public static SoundPlayUtils getInstance() {
+        if (soundPlayUtils == null) {
+            soundPlayUtils = new SoundPlayUtils();
+        }
+        return soundPlayUtils;
+    }
 
     /**
      * 初始化
      *
      * @param context
      */
-    public static SoundPlayUtils init(Context context) {
-        if (soundPlayUtils == null) {
-            soundPlayUtils = new SoundPlayUtils();
-        }
+    public void init(Context context) {
 
-        // 初始化声音
-        mSoundPlayer.load(context, R.raw.num_sound, 1);// 1
-        mSoundPlayer.load(context, R.raw.go_sound, 1);// 2
-        mSoundPlayer.load(context, R.raw.question_click, 1);// 3
-        mSoundPlayer.load(context, R.raw.page_next, 1);// 4
+//        // 初始化声音
+//        mSoundPlayer.load(context, R.raw.num_sound, 1);// 1
+//        mSoundPlayer.load(context, R.raw.go_sound, 1);// 2
+//        mSoundPlayer.load(context, R.raw.question_click, 1);// 3
+//        mSoundPlayer.load(context, R.raw.page_next, 1);// 4
 
-        //初始化声音开关
-        setSoundStatus(context, getSoundStatus(context));
+        mediaPlayer = MediaPlayer.create(context, R.raw.question_click);
 
-        return soundPlayUtils;
+//        //初始化声音开关
+//        setSoundStatus(context, getSoundStatus(context));
     }
 
-//    /**
-//     * 释放资源
-//     */
-//    public static void release() {
-//        try {
+
+    /**
+     * 释放资源
+     */
+    public void release() {
+        try {
 //            if (mSoundPlayer != null) {
 //                mSoundPlayer.release();
 //                mSoundPlayer = null;
 //            }
-//
-//            if (soundPlayUtils != null) {
-//                soundPlayUtils = null;
+
+            if (mediaPlayer != null) {
+                mediaPlayer.release();
+                mediaPlayer = null;
+            }
+
+            if (soundPlayUtils != null) {
+                soundPlayUtils = null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 播放音频
+     */
+    public void play() {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+//    /**
+//     * 播放声音
+//     *
+//     * @param soundID
+//     */
+//    public static void play(SoundPool soundPlayer, int soundID) {
+//        if (soundPlayer != null) {
+//            try {
+//                soundPlayer.play(soundID, 1, 1, 0, 0, 1);
+//            } catch (Exception e) {
+//                e.printStackTrace();
 //            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
 //        }
 //    }
 
+//    /**
+//     * 播放声音
+//     *
+//     * @param soundID
+//     */
+//    public static void play(Context context, int soundID) {
+//        if(!getSoundStatus(context)){
+//            return;
+//        }
+//        mSoundPlayer.play(soundID, 1, 1, 0, 0, 1);
+//    }
 
-    /**
-     * 播放声音
-     *
-     * @param soundID
-     */
-    public static void play(SoundPool soundPlayer, int soundID) {
-        if (soundPlayer != null) {
-            try {
-                soundPlayer.play(soundID, 1, 1, 0, 0, 1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 播放声音
-     *
-     * @param soundID
-     */
-    public static void play(Context context, int soundID) {
-        if(!getSoundStatus(context)){
-            return;
-        }
-        mSoundPlayer.play(soundID, 1, 1, 0, 0, 1);
-    }
-
-    public static void setSoundStatus(Context context, boolean isSound){
+    public void setSoundStatus(Context context, boolean isSound){
         SharedPreferences soundPreference = context.getSharedPreferences("setting_sound", MODE_PRIVATE);
         SharedPreferences.Editor editor = soundPreference.edit();
         editor.putBoolean("is_sound",isSound);
         editor.apply();
     }
 
-    public static boolean getSoundStatus(Context context){
+    public boolean getSoundStatus(Context context){
         SharedPreferences soundPreference = context.getSharedPreferences("setting_sound", MODE_PRIVATE);
         return soundPreference.getBoolean("is_sound",true);//默认开启声音
     }

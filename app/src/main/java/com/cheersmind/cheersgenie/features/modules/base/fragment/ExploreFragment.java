@@ -85,25 +85,25 @@ public class ExploreFragment extends LazyLoadFragment {
     ViewPager viewPager;
 
 
-    //banner子项点击监听
-    OnItemClickListener bannerItemClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(int position) {
-            handlerBannerItemClick(position);
-        }
-    };
-    //banner的ViewHolderCreator
-    CBViewHolderCreator viewHolderCreator = new CBViewHolderCreator() {
-        @Override
-        public Holder createHolder(View itemView) {
-            return new BannerHomeHolder(ExploreFragment.this, itemView);
-        }
-
-        @Override
-        public int getLayoutId() {
-            return R.layout.banneritem_home;
-        }
-    };
+//    //banner子项点击监听
+//    OnItemClickListener bannerItemClickListener = new OnItemClickListener() {
+//        @Override
+//        public void onItemClick(int position) {
+//            handlerBannerItemClick(position);
+//        }
+//    };
+//    //banner的ViewHolderCreator
+//    CBViewHolderCreator viewHolderCreator = new CBViewHolderCreator() {
+//        @Override
+//        public Holder createHolder(View itemView) {
+//            return new BannerHomeHolder(ExploreFragment.this, itemView);
+//        }
+//
+//        @Override
+//        public int getLayoutId() {
+//            return R.layout.banneritem_home;
+//        }
+//    };
 
 
     //空布局
@@ -111,19 +111,19 @@ public class ExploreFragment extends LazyLoadFragment {
     XEmptyLayout emptyLayout;
 
 
-    //下拉刷新的监听
-    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            //还原通信错误数量
-            errorQuantity = 0;
-
-            //加载banner
-            loadBannerData();
-            //加载分类
-            loadCategory();
-        }
-    };
+//    //下拉刷新的监听
+//    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+//        @Override
+//        public void onRefresh() {
+//            //还原通信错误数量
+//            errorQuantity = 0;
+//
+//            //加载banner
+//            loadBannerData();
+//            //加载分类
+//            loadCategory();
+//        }
+//    };
 
 
     //底部滑出显示动画
@@ -320,10 +320,10 @@ public class ExploreFragment extends LazyLoadFragment {
                     //非空
                     if (ArrayListUtil.isNotEmpty(bannerArticleList)) {
 //                        bannerlist = Arrays.asList(images);
-                        List<String> images = new ArrayList<>();
-                        for (SimpleArticleEntity simpleArticle : bannerArticleList) {
-                            images.add(simpleArticle.getArticleImg());
-                        }
+//                        List<String> images = new ArrayList<>();
+//                        for (SimpleArticleEntity simpleArticle : bannerArticleList) {
+//                            images.add(simpleArticle.getArticleImg());
+//                        }
 
                         //设置图片加载器
                         /*banner.setImageLoader(new GlideImageLoader());

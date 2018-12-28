@@ -247,7 +247,7 @@ public class MasterTabActivity extends BaseActivity {
         offset_y = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_y);
 
         //初始化声音
-//        SoundPlayUtils.init(this);
+        SoundPlayUtils.getInstance().init(getApplicationContext());
 
         try {
             //绑定本机和班级号
@@ -473,7 +473,7 @@ public class MasterTabActivity extends BaseActivity {
         BaseService.cancelTag(httpTag);
 
         //释放声音资源
-//        SoundPlayUtils.release();
+        SoundPlayUtils.getInstance().release();
 
         //释放监听器
         viewPager.removeOnPageChangeListener(pageChangeListener);

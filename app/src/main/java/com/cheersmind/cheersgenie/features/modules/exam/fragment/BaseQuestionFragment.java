@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 
+import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * 默认的问题Fragment
  */
-public class BaseQuestionFragment extends Fragment {
+public abstract class BaseQuestionFragment extends LazyLoadFragment {
 
     //问题对象
     QuestionInfoEntity questionInfoEntity;

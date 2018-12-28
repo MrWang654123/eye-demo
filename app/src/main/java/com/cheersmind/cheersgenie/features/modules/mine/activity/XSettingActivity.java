@@ -55,12 +55,12 @@ public class XSettingActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //声音切换器初始化
-        stMusic.setChecked(SoundPlayUtils.getSoundStatus(XSettingActivity.this));
+        stMusic.setChecked(SoundPlayUtils.getInstance().getSoundStatus(XSettingActivity.this));
         //声音切换器切换监听
         stMusic.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                SoundPlayUtils.setSoundStatus(XSettingActivity.this, isChecked);
+                SoundPlayUtils.getInstance().setSoundStatus(XSettingActivity.this, isChecked);
             }
         });
 

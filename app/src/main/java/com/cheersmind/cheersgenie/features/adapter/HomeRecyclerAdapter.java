@@ -60,7 +60,7 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
         super(layoutResId, data);
         this.context = context;
 
-        initRequestOptions();
+//        initRequestOptions();
     }
 
     @Override
@@ -103,11 +103,12 @@ public class HomeRecyclerAdapter extends BaseQuickAdapter<SimpleArticleEntity, B
 
         //主图
         SimpleDraweeView imageView = helper.getView(R.id.iv_main);
-        if (!TextUtils.isEmpty(item.getArticleImg())) {
-            imageView.setImageURI(item.getArticleImg());
-        } else {
-            imageView.setActualImageResource(R.drawable.default_image_round_article_list);
-        }
+//        if (!TextUtils.isEmpty(item.getArticleImg())) {
+//            imageView.setImageURI(item.getArticleImg());
+//        } else {
+//            imageView.setActualImageResource(R.drawable.default_image_round_article_list);
+//        }
+        imageView.setImageURI(item.getArticleImg());
 
         //播放键
         if (item.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {

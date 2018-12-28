@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class BannerPageAdapter extends PagerAdapter {
     private LayoutInflater inflater;
 
     //默认Glide处理参数
-    private static RequestOptions defaultOptions;
+//    private static RequestOptions defaultOptions;
 
     //页面点击监听
     private OnPageClickListener listener;
@@ -46,8 +47,9 @@ public class BannerPageAdapter extends PagerAdapter {
         this.list = list;
         inflater = LayoutInflater.from(fragment.getContext());
         //初始化Glide处理参数
-        initRequestOptions(fragment);
+//        initRequestOptions(fragment);
     }
+
     @Override
     public int getCount() {
         return list.size();
@@ -62,7 +64,7 @@ public class BannerPageAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, final int position) {
         View itemView = inflater.inflate(R.layout.banneritem_home, container, false);
-        ImageView ivMain = itemView.findViewById(R.id.iv_main);
+        SimpleDraweeView ivMain = itemView.findViewById(R.id.iv_main);
         ImageView ivPlay = itemView.findViewById(R.id.iv_play);
         TextView tvTitle = itemView.findViewById(R.id.tv_title);
         TextView tvType = itemView.findViewById(R.id.tv_type);
@@ -70,11 +72,12 @@ public class BannerPageAdapter extends PagerAdapter {
         SimpleArticleEntity entity = list.get(position);
 
         //主图
-        Glide.with(fragment)
-                .load(entity.getArticleImg())
-//                .thumbnail(0.5f)//缩略图
-                .apply(defaultOptions)
-                .into(ivMain);
+//        Glide.with(fragment)
+//                .load(entity.getArticleImg())
+////                .thumbnail(0.5f)//缩略图
+//                .apply(defaultOptions)
+//                .into(ivMain);
+        ivMain.setImageURI(entity.getArticleImg());
 
         //播放键
         if (entity.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
@@ -113,24 +116,24 @@ public class BannerPageAdapter extends PagerAdapter {
     }
 
 
-    /**
-     * 初始化默认Glide处理参数
-     */
-    private void initRequestOptions(Fragment fragment) {
-        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
-                new CenterCrop(),
-                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getContext(), 3), 0, RoundedCornersTransformation.CornerType.ALL));
-
-        //默认Glide处理参数
-        defaultOptions = new RequestOptions()
-                .transform(multi)
-                .skipMemoryCache(false)//不忽略内存
-                .placeholder(R.drawable.default_image_round_article_list)//占位图
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
-                ;
-//                .centerCrop();
-    }
+//    /**
+//     * 初始化默认Glide处理参数
+//     */
+//    private void initRequestOptions(Fragment fragment) {
+//        MultiTransformation<Bitmap> multi = new MultiTransformation<>(
+//                new CenterCrop(),
+//                new RoundedCornersTransformation(DensityUtil.dip2px(fragment.getContext(), 3), 0, RoundedCornersTransformation.CornerType.ALL));
+//
+//        //默认Glide处理参数
+//        defaultOptions = new RequestOptions()
+//                .transform(multi)
+//                .skipMemoryCache(false)//不忽略内存
+//                .placeholder(R.drawable.default_image_round_article_list)//占位图
+//                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)//磁盘缓存策略：缓存所有
+//                ;
+////                .centerCrop();
+//    }
 
 
     /**

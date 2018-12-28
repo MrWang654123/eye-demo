@@ -25,6 +25,8 @@ public class SynthesizerManager {
     private Context context;
     // 主控制类，所有合成控制方法从这个类开始
     private MySyntherizer synthesizer;
+    //是否已经设置了监听器
+    private boolean hasSetSpeechSynthesizerListener;
 
     //监听器
     SpeechSynthesizerListener speechSynthesizerListener;
@@ -258,7 +260,10 @@ public class SynthesizerManager {
     public void setSpeechSynthesizerListener(SpeechSynthesizerListener speechSynthesizerListener) {
         this.speechSynthesizerListener = speechSynthesizerListener;
         if (synthesizer != null) {
+            hasSetSpeechSynthesizerListener = true;
             synthesizer.setSpeechSynthesizerListener(speechSynthesizerListener);
+        } else {
+            hasSetSpeechSynthesizerListener = false;
         }
     }
 
@@ -268,6 +273,14 @@ public class SynthesizerManager {
      */
     public boolean isInit() {
         return synthesizer != null;
+    }
+
+    /**
+     * 是否已经设置了监听器
+     * @return true：是
+     */
+    public boolean isHasSetSpeechSynthesizerListener() {
+        return hasSetSpeechSynthesizerListener;
     }
 
 }

@@ -313,11 +313,12 @@ public class ExamDimensionRecyclerAdapter extends ExamDimensionBaseRecyclerAdapt
 
                 //加载图片
                 SimpleDraweeView imageView = helper.getView(R.id.iv_icon);
-                if (!TextUtils.isEmpty(dimensionInfo.getIcon())) {
-                    imageView.setImageURI(dimensionInfo.getIcon());
-                } else {
-                    imageView.setActualImageResource(R.drawable.default_image_round);
-                }
+//                if (!TextUtils.isEmpty(dimensionInfo.getIcon())) {
+//                    imageView.setImageURI(dimensionInfo.getIcon());
+//                } else {
+//                    imageView.setActualImageResource(R.drawable.default_image_round);
+//                }
+                imageView.setImageURI(dimensionInfo.getIcon());
 
                 //是否被锁，显隐锁图标
                 if (dimensionInfo.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {

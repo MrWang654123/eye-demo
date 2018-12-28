@@ -239,7 +239,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
     //默认Glide配置
     RequestOptions optionsCircle;
-    RequestOptions defaultOptions;
+//    RequestOptions defaultOptions;
 
     //话题信息
     TopicInfo topicInfo;
@@ -356,13 +356,13 @@ public class ArticleDetailActivity extends BaseActivity {
                 .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
 
         //默认Glide处理参数
-        defaultOptions = new RequestOptions()
-//                .transform(multi)
-                .centerCrop()
-                .skipMemoryCache(false)//不忽略内存
-                .placeholder(R.drawable.default_image_round_article_list)//占位图
-                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-                .diskCacheStrategy(DiskCacheStrategy.ALL);
+//        defaultOptions = new RequestOptions()
+////                .transform(multi)
+//                .centerCrop()
+//                .skipMemoryCache(false)//不忽略内存
+//                .placeholder(R.drawable.default_image_round_article_list)//占位图
+//                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
+//                .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         //初始化webView
         initWebView();
@@ -399,12 +399,13 @@ public class ArticleDetailActivity extends BaseActivity {
                 .apply(defaultOptions)
                 .into(ivMain);*/
         //主图
-        if (!TextUtils.isEmpty(ivMainUrl)) {
-            ivMain.setImageURI(ivMainUrl);
-//            ivMain.setImageURI("http://img5.imgtn.bdimg.com/it/u=415293130,2419074865&fm=26&gp=0.jpg");
-        } else {
-            ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
-        }
+//        if (!TextUtils.isEmpty(ivMainUrl)) {
+//            ivMain.setImageURI(ivMainUrl);
+////            ivMain.setImageURI("http://img5.imgtn.bdimg.com/it/u=415293130,2419074865&fm=26&gp=0.jpg");
+//        } else {
+//            ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
+//        }
+        ivMain.setImageURI(ivMainUrl);
         //文章标题
         tvArticleTitle.setText(articleTitle);
 
