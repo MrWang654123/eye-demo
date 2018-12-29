@@ -398,8 +398,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         //已经加载了题目且当前未显示报告弹窗，则开启计时
         if (ArrayListUtil.isNotEmpty(questionList) && !hasShowReportDialog) {
@@ -407,10 +407,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }
     }
 
-
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
+
         //释放所有计时器
         releaseAllTimer();
     }
@@ -442,15 +442,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //释放pagerView监听器
         vpQuestion.clearOnPageChangeListeners();
-        try {
-            //释放适配器
-            vpQuestion.clearDisappearingChildren();
-            vpQuestion.clearFocus();
-            vpQuestion.clearFocus();
-            vpQuestion.setAdapter(null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            //释放适配器
+//            vpQuestion.clearDisappearingChildren();
+//            vpQuestion.clearFocus();
+//            vpQuestion.setAdapter(null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //释放监听事件
         xemptyLayout.setOnReloadListener(null);
