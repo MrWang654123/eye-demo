@@ -192,6 +192,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     //是否已经显示了报告弹窗
     private boolean hasShowReportDialog;
 
+
     /**
      * 打开作答页面
      * @param context
@@ -407,7 +408,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 //        }
 
         //已经加载了题目且当前未显示弹窗，则开启计时
-        if (ArrayListUtil.isNotEmpty(questionList) && !quitDialog.isShowing() && !completeDialog.isShowing()) {
+        if (ArrayListUtil.isNotEmpty(questionList)
+                && (quitDialog == null || !quitDialog.isShowing())
+                && (completeDialog == null || !completeDialog.isShowing())
+                && !hasShowReportDialog) {
             startAllTimer();
         }
     }
@@ -1590,6 +1594,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }
 
             quitDialog.show();
+            quitDialog.setType(type);
 
         } catch (Exception e) {
             e.printStackTrace();

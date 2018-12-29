@@ -30,13 +30,11 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
     //提示内容
     private TextView tvContent;
 
-    private Context context;
     private int type;
     private OnOperationListener listener;
 
     public QuestionQuitDialog(@NonNull Context context, int type, OnOperationListener listener) {
         super(context);
-        this.context = context;
         this.listener = listener;
         this.type = type;
     }
@@ -66,9 +64,26 @@ public class QuestionQuitDialog extends Dialog implements View.OnClickListener{
         tvContent = findViewById(R.id.tv_content);
 
         if (type == QUIT_TYPE_STOP) {
-            tvContent.setText(context.getResources().getString(R.string.question_stop_tip));
+            tvContent.setText(getContext().getResources().getString(R.string.question_stop_tip));
         } else {
-            tvContent.setText(context.getResources().getString(R.string.question_timeout_tip));
+            tvContent.setText(getContext().getResources().getString(R.string.question_timeout_tip));
+        }
+    }
+
+    /**
+     * 设置类型
+     * @param type 类型
+     */
+    public void setType(int type) {
+        this.type = type;
+        if (type == QUIT_TYPE_STOP) {
+            if (tvContent != null) {
+                tvContent.setText(getContext().getResources().getString(R.string.question_stop_tip));
+            }
+        } else {
+            if (tvContent != null) {
+                tvContent.setText(getContext().getResources().getString(R.string.question_timeout_tip));
+            }
         }
     }
 
