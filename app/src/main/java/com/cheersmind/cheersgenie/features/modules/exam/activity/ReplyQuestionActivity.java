@@ -770,7 +770,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             //更新视图信息
             updateLastNextText(curPageIndex);
 
-        } else if (curPageIndex == questionList.size() -1) {//已经全部答完，但是未提交
+        }
+
+        //已经全部答完，但是未提交
+        if (hasAnswer == questionList.size()) {
             //显示自动提交的按钮
             showAutoSubmitButton();
             //显示提交对话框
