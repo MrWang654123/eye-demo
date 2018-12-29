@@ -11,6 +11,9 @@
     <!--banner页之间间距的而外距离-->
     <dimen name="bannerPageMarginExtra">20dp</dimen>
 
+    <!--话题报告-->
+    <dimen name="relative_article_width">320dp</dimen><!--关联文章宽度-->
+
     <!--修改昵称对话框水平外间距-->
     <dimen name="modify_nickname_dialog_horizontal_margin">180dp</dimen>
 
