@@ -29,7 +29,7 @@ public class SynthesizerManager {
     private boolean hasSetSpeechSynthesizerListener;
 
     //监听器
-    SpeechSynthesizerListener speechSynthesizerListener;
+    private SpeechSynthesizerListener speechSynthesizerListener = null;
 
 
     public SynthesizerManager(Context context) {
@@ -260,7 +260,7 @@ public class SynthesizerManager {
     public void setSpeechSynthesizerListener(SpeechSynthesizerListener speechSynthesizerListener) {
         this.speechSynthesizerListener = speechSynthesizerListener;
         if (synthesizer != null) {
-            hasSetSpeechSynthesizerListener = true;
+            hasSetSpeechSynthesizerListener = speechSynthesizerListener != null;
             synthesizer.setSpeechSynthesizerListener(speechSynthesizerListener);
         } else {
             hasSetSpeechSynthesizerListener = false;

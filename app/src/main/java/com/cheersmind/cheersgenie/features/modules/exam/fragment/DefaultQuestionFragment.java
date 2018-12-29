@@ -115,7 +115,9 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new QuestionOptionsAdapter(R.layout.item_evaluate_question, null);
+        if (recyclerAdapter == null) {
+            recyclerAdapter = new QuestionOptionsAdapter(R.layout.item_evaluate_question, null);
+        }
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
         recycleView.setAdapter(recyclerAdapter);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -148,39 +150,61 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
         //初始化已经选中的项
         Bundle bundle = getArguments();
         if(bundle!=null){
-//            childFactorId = bundle.getString("child_factor_id");
-            int curSelect = bundle.getInt("curSelect", -1);
-            String optionText = bundle.getString("optionText", "");
-            if (curSelect != -1) {
-                //非第一次初始化
-                if (optionsList != null) {
-                    recyclerAdapter.setCurSelect(curSelect);
-                    recyclerAdapter.setOptionText(optionText);
-                    recyclerAdapter.notifyDataSetChanged();
-                }
+//            int curSelect = bundle.getInt("curSelect", -1);
+//            String optionText = bundle.getString("optionText", "");
+//            if (curSelect != -1) {
+//                //非第一次初始化
+//                if (optionsList != null) {
+//                    recyclerAdapter.setCurSelect(curSelect);
+//                    recyclerAdapter.setOptionText(optionText);
+//                    recyclerAdapter.notifyDataSetChanged();
+//                }
+//
+//            } else {
+//                //第一次初始化
+//                questionInfoEntity = (QuestionInfoEntity) bundle.getSerializable("question_content");
+//                if (questionInfoEntity != null) {
+//                    optionsList = questionInfoEntity.getOptions();
+//                    //如果之前回答过本题,更新对应选项选中状态
+//                    QuestionInfoChildEntity childQuestion = questionInfoEntity.getChildQuestion();
+//                    if (childQuestion != null) {
+//                        for (int i = 0; i < optionsList.size(); i++) {
+//                            if (childQuestion.getOptionId().equals(optionsList.get(i).getOptionId())) {
+//                                //初始化当前选中项
+//                                recyclerAdapter.setCurSelect(i);
+//                                break;
+//                            }
+//                        }
+//
+//                        //填写的答案
+//                        recyclerAdapter.setOptionText(childQuestion.getOptionText());
+//                    }
+//
+//                    recyclerAdapter.setNewData(optionsList);
+//                }
+//            }
 
-            } else {
-                //第一次初始化
+            if (questionInfoEntity == null) {
                 questionInfoEntity = (QuestionInfoEntity) bundle.getSerializable("question_content");
-                if (questionInfoEntity != null) {
-                    optionsList = questionInfoEntity.getOptions();
-                    //如果之前回答过本题,更新对应选项选中状态
-                    QuestionInfoChildEntity childQuestion = questionInfoEntity.getChildQuestion();
-                    if (childQuestion != null) {
-                        for (int i = 0; i < optionsList.size(); i++) {
-                            if (childQuestion.getOptionId().equals(optionsList.get(i).getOptionId())) {
-                                //初始化当前选中项
-                                recyclerAdapter.setCurSelect(i);
-                                break;
-                            }
+            }
+            if (questionInfoEntity != null) {
+                optionsList = questionInfoEntity.getOptions();
+                //如果之前回答过本题,更新对应选项选中状态
+                QuestionInfoChildEntity childQuestion = questionInfoEntity.getChildQuestion();
+                if (childQuestion != null) {
+                    for (int i = 0; i < optionsList.size(); i++) {
+                        if (childQuestion.getOptionId().equals(optionsList.get(i).getOptionId())) {
+                            //初始化当前选中项
+                            recyclerAdapter.setCurSelect(i);
+                            break;
                         }
-
-                        //填写的答案
-                        recyclerAdapter.setOptionText(childQuestion.getOptionText());
                     }
 
-                    recyclerAdapter.setNewData(optionsList);
+                    //填写的答案
+                    recyclerAdapter.setOptionText(childQuestion.getOptionText());
                 }
+
+                recyclerAdapter.setNewData(optionsList);
             }
         }
 
