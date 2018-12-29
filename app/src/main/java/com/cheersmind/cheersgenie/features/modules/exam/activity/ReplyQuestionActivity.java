@@ -401,8 +401,13 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     protected void onStart() {
         super.onStart();
 
-        //已经加载了题目且当前未显示报告弹窗，则开启计时
-        if (ArrayListUtil.isNotEmpty(questionList) && !hasShowReportDialog) {
+//        //已经加载了题目且当前未显示报告弹窗，则开启计时
+//        if (ArrayListUtil.isNotEmpty(questionList) && !hasShowReportDialog) {
+//            startAllTimer();
+//        }
+
+        //已经加载了题目且当前未显示弹窗，则开启计时
+        if (ArrayListUtil.isNotEmpty(questionList) && !quitDialog.isShowing() && !completeDialog.isShowing()) {
             startAllTimer();
         }
     }
