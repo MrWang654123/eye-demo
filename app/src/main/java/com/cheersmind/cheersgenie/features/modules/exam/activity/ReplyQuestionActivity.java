@@ -772,7 +772,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         }
 
-        //已经全部答完，但是未提交
+        //已经全部答完，但是未提交（必须在setCurrentItem之后：限时器）
         if (hasAnswer == questionList.size()) {
             //显示自动提交的按钮
             showAutoSubmitButton();
