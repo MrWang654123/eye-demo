@@ -152,7 +152,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     private Timer timer;
     private TimerTask timerTask;
     //限制空闲计时器（60秒）
-//    private CountTimer countTimer;
+    private CountTimer countTimer;
     private static final int LIMIT_TIME = 60000;//限制作答时间
 
     //问题集合
@@ -425,7 +425,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     public void onDestroy() {
         //释放所有计时器
         releaseAllTimer();
-//        countTimer = null;
+        countTimer = null;
 
         try {
             //注销事件
@@ -720,10 +720,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     sortForQuestionList(questionList);
                     //初始化问题卡片（fragment）
                     initQuestionFragment(questionList);
+                    //开启计时（必须在跳转到第一题之前：限时定时器）
+                    startAllTimer();
                     //跳转到第一个显示的题目（默认：未答过的第一题）
                     gotoFirstShowQuestion();
-                    //开启计时
-                    startAllTimer();
 
                     //注册粘性事件（等待最新操作量表在服务端刷新的事件）接收器
                     EventBus.getDefault().register(ReplyQuestionActivity.this);
@@ -747,14 +747,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //已答过的题目数量
         int hasAnswer = arrayMapBeforeHasedReply.size();
 
-        //已经全部答完，但是未提交
-        if (hasAnswer == questionList.size()) {
-            //显示自动提交的按钮
-            showAutoSubmitButton();
-
-            //显示提交对话框
-            showQuestionCompleteDialog();
-        }
+//        //已经全部答完，但是未提交
+//        if (hasAnswer == questionList.size()) {
+//            //显示自动提交的按钮
+//            showAutoSubmitButton();
+//
+//            //显示提交对话框
+//            showQuestionCompleteDialog();
+//        }
 
         //当前pageview索引为未答过的第一题，如何已经全部答完，则显示最后一题
         int curPageIndex = (hasAnswer == questionList.size() ? questionList.size() -1 : hasAnswer);
@@ -764,6 +764,12 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         if (curPageIndex == 0) {
             //更新视图信息
             updateLastNextText(curPageIndex);
+
+        } else if (curPageIndex == questionList.size() -1) {//已经全部答完，但是未提交
+            //显示自动提交的按钮
+            showAutoSubmitButton();
+            //显示提交对话框
+            showQuestionCompleteDialog();
         }
 
         //设置最后能显示的页索引
@@ -1501,22 +1507,23 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 开启限时计时
      */
     private void startLimitCountTimer(){
-//        releaseLimitCountTimer();
-//        //初始化计时器
-//        if (countTimer == null) {
-//            countTimer = new CountTimer(LIMIT_TIME, 1000);
-//        }
-//        countTimer.start();
+//        releaseLimitCountTimer();//不需要
+        //初始化计时器
+        if (countTimer == null) {
+            countTimer = new CountTimer(LIMIT_TIME, 1000);
+        }
+        countTimer.start();
     }
 
     /**
      * 释放限时计时器
      */
     private void releaseLimitCountTimer() {
-//        //释放计时器
-//        if (countTimer != null) {
-//            countTimer.cancel();
-//        }
+        //释放计时器
+        if (countTimer != null) {
+            countTimer.cancel();
+//            countTimer = null;//onDestroy中置空
+        }
     }
 
 
