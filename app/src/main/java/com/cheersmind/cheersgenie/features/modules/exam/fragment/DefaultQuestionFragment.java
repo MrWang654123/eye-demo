@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.app.Dialog;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,13 +33,20 @@ import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
+import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import pl.droidsonroids.gif.GifImageView;
 import pl.droidsonroids.gif.GifTextView;
+
+import static com.alibaba.sdk.android.ams.common.global.AmsGlobalHolder.getPackageName;
 
 /**
  * 默认的问题Fragment
@@ -63,7 +71,7 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
     String mStem;
     //题目音频播放gft提示
     @BindView(R.id.gif_voice_play)
-    GifTextView gftVoicePlay;
+    SimpleDraweeView gftVoicePlay;
     //播放完整结束
     boolean isPlayFullEnd = true;
     //是否暂停
@@ -522,6 +530,21 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
             //题目
             if (utteranceIdVal == -1 || utteranceIdVal == -2) {
                 gftVoicePlay.setVisibility(View.VISIBLE);
+                //设置Controller
+                DraweeController controller = gftVoicePlay.getController();
+                if (controller == null) {
+                    Uri uri = new Uri.Builder()
+                            .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
+                            .path(String.valueOf(R.drawable.voice_playing))
+                            .build();
+                    controller = Fresco.newDraweeControllerBuilder()
+                            //设置uri,加载本地的gif资源
+//                            .setUri(Uri.parse("res://"+getPackageName()+"/"+R.drawable.voice_playing))//设置uri
+                            .setUri(uri)
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    gftVoicePlay.setController(controller);
+                }
 
             } else {
                 //选项列表

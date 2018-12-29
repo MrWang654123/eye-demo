@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="blocksDescendants">
 
     <FrameLayout
@@ -31,7 +32,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:background="#000000"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        fresco:placeholderImage="@drawable/default_image_round_article_list"
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerCrop"/>
 
     <LinearLayout
         android:id="@+id/layout_bottom"

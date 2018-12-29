@@ -153,6 +153,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     //    implementation 'com.squareup.okhttp3:okhttp:3.4.2'
     implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.facebook.fresco:animated-gif:1.10.0'
     implementation 'me.relex:circleindicator:1.2.2@aar'
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'

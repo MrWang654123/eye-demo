@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -24,6 +25,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.cheersmind.cheersgenie.R;
+import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 /**
  * 空数据布局
@@ -54,7 +59,7 @@ public class XEmptyLayout extends LinearLayout {
     private String noDataTip = "";
 
     //加载图片
-    private TextView ivLoading;
+    private SimpleDraweeView ivLoading;
     //提示图标
     private ImageView ivErrorIcon;
     //提示文字
@@ -164,7 +169,7 @@ public class XEmptyLayout extends LinearLayout {
             if (ivErrorIcon.getVisibility() == GONE) {
                 ivErrorIcon.setVisibility(VISIBLE);
             }
-            ivErrorIcon.setBackgroundResource(imgResource);
+            ivErrorIcon.setImageResource(imgResource);
         } catch (Exception e) {
         }
     }
@@ -216,6 +221,21 @@ public class XEmptyLayout extends LinearLayout {
                 //显示通信等待
                 animProgress.setVisibility(View.GONE);
                 ivLoading.setVisibility(VISIBLE);
+                //设置Controller
+                DraweeController controller = ivLoading.getController();
+                if (controller == null) {
+                    Uri uri = new Uri.Builder()
+                            .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
+                            .path(String.valueOf(R.drawable.loading))
+                            .build();
+                    controller = Fresco.newDraweeControllerBuilder()
+                            //设置uri,加载本地的gif资源
+//                            .setUri(Uri.parse("res://"+getPackageName()+"/"+R.drawable.voice_playing))//设置uri
+                            .setUri(uri)
+                            .setAutoPlayAnimations(true)
+                            .build();
+                    ivLoading.setController(controller);
+                }
 
                 //隐藏重载按钮
                 btnReload.setVisibility(GONE);

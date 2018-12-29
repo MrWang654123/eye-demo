@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features.adapter;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,10 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.facebook.common.util.UriUtil;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -93,7 +98,23 @@ public class QuestionOptionsAdapter extends BaseQuickAdapter<OptionsEntity, Base
 
         //语音播放提示
         if (entity.isVoicePlayingTipShow()) {
-            helper.getView(R.id.gif_voice_play).setVisibility(View.VISIBLE);
+            SimpleDraweeView gftVoicePlay = helper.getView(R.id.gif_voice_play);
+            gftVoicePlay.setVisibility(View.VISIBLE);
+            //设置Controller
+            DraweeController controller = gftVoicePlay.getController();
+            if (controller == null) {
+                Uri uri = new Uri.Builder()
+                        .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
+                        .path(String.valueOf(R.drawable.voice_playing))
+                        .build();
+                controller = Fresco.newDraweeControllerBuilder()
+                        //设置uri,加载本地的gif资源
+//                            .setUri(Uri.parse("res://"+getPackageName()+"/"+R.drawable.voice_playing))//设置uri
+                        .setUri(uri)
+                        .setAutoPlayAnimations(true)
+                        .build();
+                gftVoicePlay.setController(controller);
+            }
         } else {
             helper.getView(R.id.gif_voice_play).setVisibility(View.INVISIBLE);
         }

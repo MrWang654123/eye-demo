@@ -711,11 +711,12 @@ public class ArticleDetailActivity extends BaseActivity {
 //                .into(jzVideo.thumbImageView);
 
         //封面图
-        if (!TextUtils.isEmpty(ivMainUrl)) {
-            jzVideo.ivMain.setImageURI(ivMainUrl);
-        } else {
-            jzVideo.ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
-        }
+//        if (!TextUtils.isEmpty(ivMainUrl)) {
+//            jzVideo.ivMain.setImageURI(ivMainUrl);
+//        } else {
+//            jzVideo.ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
+//        }
+        jzVideo.ivMain.setImageURI(ivMainUrl);
 
 //        播放时4GDialog提示
         JZVideoPlayer.WIFI_TIP_DIALOG_SHOWED=false;
