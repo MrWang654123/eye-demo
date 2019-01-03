@@ -46,14 +46,19 @@
 
             <TextView
                 android:id="@+id/tv_toolbar_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_333333"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
                 android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:layout_centerInParent="true"
-                android:text="@string/app_name"/>
+                android:text="束带结发时代峰峻涉及速度快解放军开始的减肥"/>
+            <!--@string/app_name-->
 
             <TextView
                 android:layout_width="90dp"

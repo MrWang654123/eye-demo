@@ -144,7 +144,7 @@ public class TopicReportDialog extends DialogFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        if (!RepetitionClickUtil.isFastClick()) {
+        if (RepetitionClickUtil.isFastClick()) {
             return;
         }
         if (v == ivClose || v == viewSimulateOutSite) {

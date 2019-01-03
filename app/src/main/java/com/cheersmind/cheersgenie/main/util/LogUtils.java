@@ -5,9 +5,8 @@ import android.util.Log;
 import com.cheersmind.cheersgenie.BuildConfig;
 
 /**
- * Created by Administrator on 2018/7/3.
+ * 日志工具
  */
-
 public class LogUtils {
 
     private static boolean isDebug = BuildConfig.DEBUG;

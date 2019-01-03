@@ -175,7 +175,7 @@ public class CategoryDialog extends Dialog implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (!RepetitionClickUtil.isFastClick()) {
+        if (RepetitionClickUtil.isFastClick()) {
             return;
         }
         if (v == ivClose || v == viewSimulateOutSite) {

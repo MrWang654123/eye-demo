@@ -116,6 +116,8 @@
     <string name="complete_topics_count_summary">完成数量 %s/%s</string>
     <string name="exam_over_tip">测评已结束</string>
     <string name="exam_inactive_tip">测评未开始</string>
+    <string name="view_history">查看历史</string>
+    <string name="click_question_to_fast">您的手速太快啦！</string>
 
     <!--注册-->
     <string name="captcha">验证码</string>
@@ -183,7 +185,7 @@
     <string name="empty_tip_message">暂无消息</string>
     <string name="empty_tip_integral">暂无积分</string>
     <string name="empty_tip_report">暂无报告</string>
-    <string name="empty_tip_exam">暂无智评</string>
+    <string name="empty_tip_exam">暂无进行中的智评</string>
     <string name="empty_tip_history_exam">暂无历史智评</string>
     <string name="empty_tip_history_seminar">暂无历史专题</string>
     <string name="empty_tip_article_on_category">暂无该分类的文章</string>

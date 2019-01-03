@@ -328,6 +328,14 @@ public class XEmptyLayout extends LinearLayout {
         return noDataTip;
     }
 
+    /**
+     * 设置跳转关联的按钮文本
+     */
+    public void setOnGotoRelationBtnText(String btnText) {
+        btnGotoRelation.setText(btnText);
+    }
+
+
     @Override
     public void setVisibility(int visibility) {
         if (visibility == View.GONE)

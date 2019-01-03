@@ -25,6 +25,8 @@ public class MineExamDetailActivity extends BaseActivity {
     public static final String EXAM_ID = "exam_id";
     //测评状态
     public static final String EXAM_STATUS = "exam_status";
+    //测评名称
+    public static final String EXAM_NAME = "exam_name";
 
 
     /**
@@ -32,11 +34,12 @@ public class MineExamDetailActivity extends BaseActivity {
      * @param context 上下文
      * @param examId 测评ID
      */
-    public static void startMineExamDetailActivity(Context context, String examId, int examStatus) {
+    public static void startMineExamDetailActivity(Context context, String examId, int examStatus, String examName) {
         Intent intent = new Intent(context, MineExamDetailActivity.class);
         Bundle extras = new Bundle();
         extras.putString(EXAM_ID, examId);
         extras.putInt(EXAM_STATUS, examStatus);
+        extras.putString(EXAM_NAME, examName);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -68,6 +71,10 @@ public class MineExamDetailActivity extends BaseActivity {
         }
         //测评状态
         int examStatus = getIntent().getIntExtra(EXAM_STATUS, Dictionary.EXAM_STATUS_OVER);
+        //测评名称
+        String examName = getIntent().getStringExtra(EXAM_NAME);
+        //设置页面标题为测评名称
+        settingTitle(examName);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = MineExamDetailFragment.class.getSimpleName();
@@ -80,6 +87,7 @@ public class MineExamDetailActivity extends BaseActivity {
             Bundle bundle = new Bundle();
             bundle.putString(EXAM_ID, examId);
             bundle.putInt(EXAM_STATUS, examStatus);
+            bundle.putString(EXAM_NAME, examName);
             fragment.setArguments(bundle);
             //添加已完成的测评fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

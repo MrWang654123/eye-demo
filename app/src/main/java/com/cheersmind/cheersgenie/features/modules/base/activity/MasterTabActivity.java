@@ -111,7 +111,7 @@ public class MasterTabActivity extends BaseActivity {
     //任务列表监听
     TaskListDialog.OnOperationListener onOperationListener =  new TaskListDialog.OnOperationListener() {
         @Override
-        public void onOnClickItem(int position, final String examId, int examStatus) {
+        public void onOnClickItem(int position, final String examId, int examStatus, String examName) {
             switch (examStatus) {
                 //测评未开始
                 case Dictionary.EXAM_STATUS_INACTIVE: {
@@ -121,7 +121,7 @@ public class MasterTabActivity extends BaseActivity {
                 //测评已结束
                 case Dictionary.EXAM_STATUS_OVER: {
                     //跳转历史测评明细页面
-                    MineExamDetailActivity.startMineExamDetailActivity(MasterTabActivity.this, examId, examStatus);
+                    MineExamDetailActivity.startMineExamDetailActivity(MasterTabActivity.this, examId, examStatus, examName);
                     break;
                 }
                 //测评正在进行中

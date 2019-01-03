@@ -33,6 +33,9 @@ import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
+import com.cheersmind.cheersgenie.main.util.LogUtils;
+import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -85,6 +88,10 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
             switch (view.getId()) {
                 //点击答案
                 case R.id.ll_option: {
+                    if (RepetitionClickUtil.isFastClickLong()) {
+                        LogUtils.w("答题页", "点击太快");
+                        return;
+                    }
                     OptionsEntity options = recyclerAdapter.getData().get(position);
                     int preSelect = recyclerAdapter.getCurSelect();
                     recyclerAdapter.setCurSelect(position);

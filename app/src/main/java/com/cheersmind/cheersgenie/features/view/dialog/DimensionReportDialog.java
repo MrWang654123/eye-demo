@@ -704,7 +704,7 @@ public class DimensionReportDialog extends Dialog {
 
     @OnClick({R.id.iv_close, R.id.iv_close_right, R.id.viewSimulateOutSite})
     public void onViewClick(View v) {
-        if (!RepetitionClickUtil.isFastClick()) {
+        if (RepetitionClickUtil.isFastClick()) {
             return;
         }
 

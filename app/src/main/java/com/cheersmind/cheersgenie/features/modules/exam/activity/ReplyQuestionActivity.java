@@ -451,6 +451,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //释放pagerView监听器
         vpQuestion.clearOnPageChangeListeners();
+        vpQuestion.setTooFastClickListener(null);
 //        try {
 //            //释放适配器
 //            vpQuestion.clearDisappearingChildren();
@@ -966,6 +967,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        //点击太快监听
+        vpQuestion.setTooFastClickListener(new ReplyQuestionViewPager.TooFastClickListener() {
+            @Override
+            public void onTooFastClick() {
+                ToastUtil.showLong(getApplication(), getResources().getString(R.string.click_question_to_fast));
             }
         });
 

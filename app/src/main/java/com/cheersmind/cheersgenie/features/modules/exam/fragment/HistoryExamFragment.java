@@ -80,11 +80,11 @@ public class HistoryExamFragment extends LazyLoadFragment {
                     int status = item.getStatus();
                     if (status == Dictionary.EXAM_STATUS_OVER) {
                         //跳转历史测评明细页面
-                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status);
+                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status, item.getExamName());
 
                     } else if (status == Dictionary.EXAM_STATUS_DOING) {
                         //跳转历史测评明细页面
-                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status);
+                        MineExamDetailActivity.startMineExamDetailActivity(getActivity(), item.getExamId(), status, item.getExamName());
 
                     } else if (status == Dictionary.EXAM_STATUS_INACTIVE) {
                         if (getActivity() != null) {

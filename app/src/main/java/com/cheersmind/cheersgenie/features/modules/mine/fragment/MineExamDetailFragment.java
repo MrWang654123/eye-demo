@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,6 +32,8 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
     String examId;
     //测评状态
     int examStatus;
+    //测评名称
+    String examName;
 
     //标题
     @BindView(R.id.tv_toolbar_title)
@@ -67,11 +70,16 @@ public class MineExamDetailFragment extends LazyLoadFragment implements ExamLayo
         if(bundle!=null) {
             examId = bundle.getString("exam_id");
             examStatus = bundle.getInt("exam_status", Dictionary.EXAM_STATUS_OVER);
+            examName = bundle.getString("exam_name");
         }
 
         //标题
         if (tvToolbarTitle != null) {
-            tvToolbarTitle.setText("我的智评");
+            if (!TextUtils.isEmpty(examName)) {
+                tvToolbarTitle.setText(examName);
+            } else {
+                tvToolbarTitle.setText("我的智评");
+            }
         }
         //隐藏回退按钮
         if (ivLeft != null) {

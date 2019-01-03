@@ -56,7 +56,7 @@ public class QuestionCompleteXDialog extends Dialog implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if(!RepetitionClickUtil.isFastClick()){
+        if(RepetitionClickUtil.isFastClick()){
             return;
         }
         if(v == tvCancel){

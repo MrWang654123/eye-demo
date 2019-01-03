@@ -91,7 +91,7 @@ public class TaskListDialog extends Dialog {
                 }
 
                 if (listener != null) {
-                    listener.onOnClickItem(position, exam.getExamId(), status);
+                    listener.onOnClickItem(position, exam.getExamId(), status, exam.getExamName());
                 }
             }
         }
@@ -300,7 +300,7 @@ public class TaskListDialog extends Dialog {
 
     @OnClick({R.id.iv_close_right})
     public void onViewClick(View v) {
-        if (!RepetitionClickUtil.isFastClick()) {
+        if (RepetitionClickUtil.isFastClick()) {
             return;
         }
 
@@ -329,8 +329,9 @@ public class TaskListDialog extends Dialog {
          * @param position 位置
          * @param examId 测评id
          * @param examStatus 测评状态
+         * @param examName 测评名称
          */
-        void onOnClickItem(int position, String examId, int examStatus);
+        void onOnClickItem(int position, String examId, int examStatus, String examName);
     }
 
     @Override

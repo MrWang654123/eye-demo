@@ -4,13 +4,12 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
+import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.main.util.LogUtils;
+import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import java.lang.reflect.Field;
 
@@ -30,8 +29,12 @@ public class ReplyQuestionViewPager extends ViewPager {
     private int mCurPosX;
     private int mCurPosY;
 
+    private long lastClickTime;
+
     //左滑禁止时的监听
-    private LeftSildeForbidListener leftSildeForbidListener;
+    private LeftSlideForbidListener leftSildeForbidListener;
+    //点击太快的监听
+    private TooFastClickListener tooFastClickListener;
 
     public ReplyQuestionViewPager(Context context) {
         super(context);
@@ -55,6 +58,18 @@ public class ReplyQuestionViewPager extends ViewPager {
                     mPosX = (int) event.getX();
                     mPosY = (int) event.getY();
 //                    System.out.println("ACTION_DOWN mPosX = " + mPosX);
+
+                    //点击太快的过滤
+                    long curClickTime = System.currentTimeMillis();
+                    if ((curClickTime - lastClickTime) < RepetitionClickUtil.MIN_CLICK_DELAY_TIME_LONG) {
+                        LogUtils.w("答题页面ViewPager", "点击太快");
+                        if (tooFastClickListener != null) {
+                            tooFastClickListener.onTooFastClick();
+                        }
+                        return false;
+                    }
+                    lastClickTime = curClickTime;
+
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mCurPosX = (int) event.getX();
@@ -138,19 +153,34 @@ public class ReplyQuestionViewPager extends ViewPager {
     /**
      * 左滑禁止时的监听
      */
-    public interface LeftSildeForbidListener {
+    public interface LeftSlideForbidListener {
         //当左滑被禁止时
-        public void doingLeftSildeForbid();
+        void doingLeftSlideForbid();
     }
 
     /**
      * 设置左滑禁止被触发时的监听
-     * @param leftSildeForbidListener
+     * @param leftSlideForbidListener
      */
-    public void addLeftSildeForbidListener(LeftSildeForbidListener leftSildeForbidListener) {
+    public void addLeftSlideForbidListener(LeftSlideForbidListener leftSlideForbidListener) {
         this.leftSildeForbidListener = leftSildeForbidListener;
     }
 
+    /**
+     * 点击太快的监听
+     */
+    public interface TooFastClickListener {
+        //点击太快
+        void onTooFastClick();
+    }
+
+    /**
+     * 设置点击太快的监听
+     * @param tooFastClickListener
+     */
+    public void setTooFastClickListener(TooFastClickListener tooFastClickListener) {
+        this.tooFastClickListener = tooFastClickListener;
+    }
 
     /**
      * 设置滚动器

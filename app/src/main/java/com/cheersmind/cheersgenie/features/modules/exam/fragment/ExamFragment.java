@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -8,6 +9,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
+import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -17,6 +19,7 @@ import com.cheersmind.cheersgenie.main.entity.ExamEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +39,19 @@ public class ExamFragment extends ExamDoingFragment {
 
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_exam));
+        //无数据可点击
+        emptyLayout.setClickEnableForNoData(true);
+        //跳转相关的按钮文本
+        emptyLayout.setOnGotoRelationBtnText(getResources().getString(R.string.view_history));
+        //跳转相关监听
+        emptyLayout.setOnGotoRelationListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                //我的智评
+                Intent intent = new Intent(getContext(), MineExamActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
