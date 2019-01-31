@@ -130,6 +130,8 @@ public class QSApplication extends LitePalApplication {
 
         //初始化阿里反馈
         initFeedbackService();
+        //初始化通知通道
+        initNotificationChannel();
         //初始化云推送通道
         initPushService(this);
 
