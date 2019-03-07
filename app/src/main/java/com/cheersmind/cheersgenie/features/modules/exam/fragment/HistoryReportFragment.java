@@ -13,8 +13,8 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
-import com.cheersmind.cheersgenie.main.entity.HistoryReportRootEntity;
+import com.cheersmind.cheersgenie.features.entity.HistoryReportItemEntity;
+import com.cheersmind.cheersgenie.features.entity.HistoryReportRootEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;

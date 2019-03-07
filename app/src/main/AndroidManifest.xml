@@ -440,7 +440,47 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".features.modules.base.activity.CleanLeakActivity"
             android:screenOrientation="portrait"/>
+        <!--我的测评详情-->
         <activity android:name=".features.modules.mine.activity.MineExamDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--测评任务-->
+        <activity android:name=".features_v2.modules.exam.activity.ExamTaskActivity"
+            android:screenOrientation="portrait"/>
+        <!--测评任务详情页-->
+        <activity android:name=".features_v2.modules.exam.activity.ExamTaskDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--添加测评任务-->
+        <activity android:name=".features_v2.modules.exam.activity.ExamTaskAddActivity"
+            android:screenOrientation="portrait"/>
+        <!--确认选课-->
+        <activity android:name=".features_v2.modules.exam.activity.ChooseCourseActivity"
+            android:screenOrientation="portrait"/>
+        <!--成长档案-->
+        <activity android:name=".features_v2.modules.trackRecord.activity.TrackRecordActivity"
+            android:screenOrientation="portrait"/>
+        <!--学校-->
+        <activity android:name=".features_v2.modules.college.activity.CollegeRankActivity"
+            android:screenOrientation="portrait"/>
+        <!--专业-->
+        <activity android:name=".features_v2.modules.major.activity.MajorActivity"
+            android:screenOrientation="portrait"/>
+        <!--职业-->
+        <activity android:name=".features_v2.modules.occupation.activity.OccupationActivity"
+            android:screenOrientation="portrait"/>
+        <!--我的奖励-->
+        <activity android:name=".features_v2.modules.mine.activity.MineAwardActivity"
+            android:screenOrientation="portrait"/>
+        <!--专业详情-->
+        <activity android:name=".features_v2.modules.major.activity.MajorDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--院校详情-->
+        <activity android:name=".features_v2.modules.college.activity.CollegeDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--我的实践-->
+        <activity android:name=".features_v2.modules.mine.activity.MinePracticeActivity"
+            android:screenOrientation="portrait"/>
+        <!--实践子项-->
+        <activity android:name=".features_v2.modules.mine.activity.MinePracticeItemActivity"
             android:screenOrientation="portrait"/>
 
     </application>

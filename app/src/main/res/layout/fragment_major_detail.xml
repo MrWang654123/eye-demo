@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_f5f5f5">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:clipChildren="false"
+        app:layout_behavior="@string/CompatFlingBehavior">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="13dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_major_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/color_333333"
+                        android:text="物理学"/>
+
+                    <TextView
+                        android:id="@+id/tv_major_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/color_666666"
+                        android:textSize="14sp"
+                        android:text="[010101]"/>
+
+                </LinearLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_degree_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_666666"
+                        android:text="授予学位:"/>
+
+                    <TextView
+                        android:id="@+id/tv_degree_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_degree_key"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_degree_key"
+                        android:textSize="16sp"
+                        android:textColor="#55606a"
+                        android:layout_marginLeft="5dp"
+                        android:text="工学学士"/>
+                    
+                    <android.support.constraint.Guideline
+                        android:id="@+id/gl_base_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintGuide_begin="160dp"
+                        android:orientation="vertical"/>
+
+                    <TextView
+                        android:id="@+id/tv_duration_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="学制:"
+                        android:textColor="@color/color_666666"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_degree_key"
+                        app:layout_constraintLeft_toRightOf="@+id/gl_base_info" />
+
+                    <TextView
+                        android:id="@+id/tv_duration_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_duration_key"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_duration_key"
+                        android:textSize="16sp"
+                        android:textColor="#55606a"
+                        android:layout_marginLeft="5dp"
+                        android:text="4年"/>
+
+                    <TextView
+                        android:id="@+id/tv_subject_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv_degree_key"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_degree_key"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_666666"
+                        android:layout_marginTop="10dp"
+                        android:text="所属学科:"/>
+
+                    <TextView
+                        android:id="@+id/tv_subject_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_subject_key"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_subject_key"
+                        android:textSize="16sp"
+                        android:textColor="#55606a"
+                        android:layout_marginLeft="5dp"
+                        android:text="哲学"/>
+
+                    <TextView
+                        android:id="@+id/tv_category_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toLeftOf="@+id/tv_duration_key"
+                        app:layout_constraintTop_toTopOf="@+id/tv_subject_key"
+                        android:textSize="16sp"
+                        android:textColor="@color/color_666666"
+                        android:text="门类:"/>
+
+                    <TextView
+                        android:id="@+id/tv_category_val"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_category_key"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_category_key"
+                        android:textSize="16sp"
+                        android:textColor="#55606a"
+                        android:layout_marginLeft="5dp"
+                        android:text="哲学类"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_eeeeee"
+            app:layout_scrollFlags="scroll"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/heightSmalltWidget"
+            android:background="@color/white"
+            app:tabBackground="@color/white"
+            app:tabMode="fixed"
+            app:tabIndicatorColor="@color/colorAccent"
+            app:tabIndicatorHeight="1dp"
+            app:tabTextAppearance="@style/TabLayoutTextStyle"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabTextColor="@color/color_555555" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+</android.support.design.widget.CoordinatorLayout>

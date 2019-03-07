@@ -18,7 +18,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.holder.TimeLineViewHolder;
 import com.cheersmind.cheersgenie.features.utils.DateTimeUtils;
-import com.cheersmind.cheersgenie.main.entity.TaskItemEntity;
+import com.cheersmind.cheersgenie.features.entity.TaskItemEntity;
 import com.github.vipulasri.timelineview.TimelineView;
 
 import java.util.List;

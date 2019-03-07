@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.main.entity.HistoryReportItemEntity;
+import com.cheersmind.cheersgenie.features.entity.HistoryReportItemEntity;
 
 import java.util.List;
 

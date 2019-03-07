@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_corner_ffffff_3dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginTop="8dp"
+    android:orientation="vertical">
+    <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
+    <!--xmlns:fresco="http://schemas.android.com/tools"-->
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_main"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h,16:9"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            fresco:roundedCornerRadius="3dp"
+            fresco:placeholderImage="@drawable/default_image_round_article_list"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:actualImageScaleType="centerCrop"
+            />
+        <!--fresco:scaleType="fitXY"-->
+
+        <!--android:scaleType="centerCrop"-->
+        <!--android:scaleType="fitCenter"-->
+        <!--android:src="@drawable/home_sample"-->
+
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@string/placeholder_for_item"
+            android:background="@drawable/shape_corner_f6f6f6_25dp"
+            android:src="@drawable/play"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>
+

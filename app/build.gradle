@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         if ("debug".equals(BUILD_TYPE)) {
-            applicationId "com.cheersmind.cheersgenie.debug"
-//            applicationId "com.cheersmind.cheersgenie"
+//            applicationId "com.cheersmind.cheersgenie.debug"
+            applicationId "com.cheersmind.cheersgenie"
         } else {
             applicationId "com.cheersmind.cheersgenie"
         }
@@ -215,4 +215,5 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.7.1'
     implementation files('libs/com.baidu.tts_2.3.2.20180713_6101c2a.jar')
     implementation 'com.github.vipulasri:timelineview:1.0.6'
+    implementation 'com.ms-square:expandableTextView:0.1.4'
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -14,8 +13,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.holder.BaseHolder;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.main.entity.CommentEntity;
+import com.cheersmind.cheersgenie.features.entity.CommentEntity;
 
 import java.util.List;
 

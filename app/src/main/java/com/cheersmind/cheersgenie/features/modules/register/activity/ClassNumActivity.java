@@ -2,8 +2,6 @@ package com.cheersmind.cheersgenie.features.modules.register.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,11 +13,11 @@ import android.widget.TextView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
+import com.cheersmind.cheersgenie.features.entity.CategoryRootEntity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.ClassInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -28,14 +26,11 @@ import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.BindViews;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -63,7 +58,7 @@ public class ClassNumActivity extends BaseActivity {
     private static final String ZERO_WIDTH_SPACE = "\uFEFF";
 
     //班级信息
-    private ClassInfoEntity classInfo;
+    private CategoryRootEntity.ClassInfoEntity classInfo;
 
     //班级号
     String classNum;
@@ -362,7 +357,7 @@ public class ClassNumActivity extends BaseActivity {
                 try {
                     //解析班级信息
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    classInfo = InjectionWrapperUtil.injectMap(dataMap, ClassInfoEntity.class);
+                    classInfo = InjectionWrapperUtil.injectMap(dataMap, CategoryRootEntity.ClassInfoEntity.class);
                     //学校名称或者班级名称为空，则认为数据异常
                     if (TextUtils.isEmpty(classInfo.getSchoolName())
                             || TextUtils.isEmpty(classInfo.getClassName())) {
@@ -386,7 +381,7 @@ public class ClassNumActivity extends BaseActivity {
     /**
      * 刷新页面的班级信息
      */
-    private void refreshClassInfoView(ClassInfoEntity classInfo) {
+    private void refreshClassInfoView(CategoryRootEntity.ClassInfoEntity classInfo) {
 //        getPeriodName(classInfo.getPeriod())
         String classInfoStr = classInfo.getSchoolName() + " " + classInfo.getPeriodName() + " " + classInfo.getGradeName() + " " + classInfo.getClassName();
         tvClassInfo.setText(classInfoStr);

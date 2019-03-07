@@ -183,5 +183,14 @@
         <!-- 指定消失的动画xml -->
     </style>
 
+    <!--发现页子tab-->
+    <style name="discover_item_tab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/color_555555</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
 
 </resources>

@@ -3,7 +3,7 @@ package com.cheersmind.cheersgenie.features.adapter;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.main.entity.MessageEntity;
+import com.cheersmind.cheersgenie.features.entity.MessageEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

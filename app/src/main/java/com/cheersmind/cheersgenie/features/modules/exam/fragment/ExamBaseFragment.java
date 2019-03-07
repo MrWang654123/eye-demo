@@ -1,8 +1,6 @@
 package com.cheersmind.cheersgenie.features.modules.exam.fragment;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -50,8 +48,8 @@ import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.ExamRootEntity;
+import com.cheersmind.cheersgenie.features.entity.ExamEntity;
+import com.cheersmind.cheersgenie.features.entity.ExamRootEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -1599,11 +1597,68 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                     ExamEntity exam = (ExamEntity) item;
                     if (examId.equals(exam.getExamId())) {
                         //滚动到指定位置
-                        recycleView.scrollToPosition(i);
+//                        recycleView.scrollToPosition(i);
+//                        recycleView.smoothScrollToPosition(i);
+//                        recycleView.scrollTo(0, 300);
+
+                        smoothMoveToPosition(recycleView, i);
                         break;
                     }
                 }
             }
+        }
+    }
+
+
+    //目标项是否在最后一个可见项之后
+    private boolean mShouldScroll;
+    //记录目标项位置
+    private int mToPosition;
+    //是否需要额外滑动分割布局的高度
+    private boolean mShouldScrollDividerExtra;
+
+    /**
+     * 滑动到指定位置
+     */
+    private void smoothMoveToPosition(RecyclerView mRecyclerView, final int position) {
+        // 第一个可见位置
+        int firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
+        // 最后一个可见位置
+        int lastItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
+        if (position < firstItem) {
+            //处理分割分局
+            if (position == 0) {
+                // 第一种可能:跳转位置在第一个可见位置之前，使用smoothScrollToPosition
+                mRecyclerView.smoothScrollToPosition(position);
+            } else {
+                mShouldScrollDividerExtra = true;
+                mRecyclerView.smoothScrollToPosition(position);
+            }
+//            mRecyclerView.scrollToPosition(position);
+//            smoothMoveToPosition(mRecyclerView, position);
+        } else if (position <= lastItem) {
+            // 第二种可能:跳转位置在第一个可见位置之后，最后一个可见项之前
+            int movePosition = position - firstItem;
+            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
+                int top = mRecyclerView.getChildAt(movePosition).getTop();
+
+                //处理分割分局
+                if (position > 0 && scrollListener instanceof StickyRecyclerViewScrollListener) {
+                    //多滑动分割布局的高度
+                    top += ((StickyRecyclerViewScrollListener)scrollListener).getDividerHeight();
+                }
+
+                // smoothScrollToPosition 不会有效果，此时调用smoothScrollBy来滑动到指定位置
+                mRecyclerView.smoothScrollBy(0, top);
+            }
+        } else {
+            // 第三种可能:跳转位置在最后可见项之后，则先调用smoothScrollToPosition将要跳转的位置滚动到可见位置
+            // 再通过onScrollStateChanged控制再次调用smoothMoveToPosition，执行上一个判断中的方法
+            mRecyclerView.smoothScrollToPosition(position);
+//            mRecyclerView.scrollToPosition(position);
+//            smoothMoveToPosition(mRecyclerView, position);
+            mToPosition = position;
+            mShouldScroll = true;
         }
     }
 
@@ -1622,6 +1677,20 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
             super(context, fabGotoTop);
             dividerHeight = (int) getResources().getDimension(R.dimen.exam_item_vertical_margin);
             transInfoThreshold = 0;
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (mShouldScroll && RecyclerView.SCROLL_STATE_IDLE == newState) {
+                mShouldScroll = false;
+                smoothMoveToPosition(recyclerView, mToPosition);
+            }
+
+            if (mShouldScrollDividerExtra && RecyclerView.SCROLL_STATE_IDLE == newState) {
+                mShouldScrollDividerExtra = false;
+                recyclerView.smoothScrollBy(0, dividerHeight);
+            }
         }
 
         @Override
@@ -1683,6 +1752,14 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 //                    tvStickyHeaderView.setTranslationY(0);
 //                }
             }
+        }
+
+        /**
+         * 获取分割布局的高度
+         * @return 高度
+         */
+        public int getDividerHeight() {
+            return dividerHeight;
         }
     }
 

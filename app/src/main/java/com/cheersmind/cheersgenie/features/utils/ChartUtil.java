@@ -8,8 +8,8 @@ import com.cheersmind.cheersgenie.features.entity.HBarChartItem;
 import com.cheersmind.cheersgenie.features.entity.LineChartItem;
 import com.cheersmind.cheersgenie.features.entity.RadarChartItem;
 import com.cheersmind.cheersgenie.features.entity.VBarChartItem;
-import com.cheersmind.cheersgenie.main.entity.ChartCompareItem;
-import com.cheersmind.cheersgenie.main.entity.ChartScoreItem;
+import com.cheersmind.cheersgenie.features.entity.ChartCompareItem;
+import com.cheersmind.cheersgenie.features.entity.ChartScoreItem;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 
 import java.util.List;

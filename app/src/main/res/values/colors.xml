@@ -75,4 +75,7 @@
     <color name="guide_activity_status_bar_color_3">#fc8979</color>
     <color name="guide_activity_status_bar_color_4">#fff100</color>
 
+    <!--轻微透明-->
+    <color name="light_transparent">#33000000</color>
+
 </resources>

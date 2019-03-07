@@ -25,10 +25,10 @@ public class EnvHostManager {
     public static final String API_HOST_LOCAL_OTHER = "http://192.168.205.202:8080";
     public static final String WEB_HOST_LOCAL_OTHER = "http://192.168.205.202:8080";
 
-    //开发环境
-    public static final String UC_HOST_LOCAL  = "http://127.0.0.1:8080";
-    public static final String API_HOST_LOCAL = "http://127.0.0.1:8080";
-    public static final String WEB_HOST_LOCAL = "http://psytest-web.test.cheersmind.qst";
+    //本地测试环境
+    public static final String UC_HOST_LOCAL  = "http://psytest-server-local.test.cheersmind.qst";
+    public static final String API_HOST_LOCAL = "http://psytest-server-local.test.cheersmind.qst";
+    public static final String WEB_HOST_LOCAL = "http://psytest-server-local.test.cheersmind.qst";
 
     private String ucHost;
     private String apiHost;

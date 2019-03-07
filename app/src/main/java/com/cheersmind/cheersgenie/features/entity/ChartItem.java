@@ -3,21 +3,16 @@ package com.cheersmind.cheersgenie.features.entity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.main.entity.ChartCompareItem;
-import com.cheersmind.cheersgenie.main.entity.ChartScoreItem;
-import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +62,7 @@ public class ChartItem implements MultiItemEntity {
     protected String dataSetColor_1 = "#2ec8c9";
     //数据集合2的颜色
     protected String dataSetColor_2 = "#cbbfe6";
-    //数据集合2的颜色
+    //数据集合3的颜色
     protected String dataSetColor_3 = "#416dd2";
     //孔的颜色
     String holeColor = "#ffffff";
@@ -287,13 +282,13 @@ public class ChartItem implements MultiItemEntity {
 
 
     //x轴文本数量满多少个开始微调
-    static final int ADJUST_SIZE_1 = 1;
-    static final int ADJUST_SIZE_2 = 2;
-    static final int ADJUST_SIZE_3 = 6;
+    private static final int ADJUST_SIZE_1 = 1;
+    private static final int ADJUST_SIZE_2 = 2;
+    private static final int ADJUST_SIZE_3 = 6;
     //x轴文本的最大长度达到都少开始微调：第一档
-    static final int ADJUST_MAX_LENGTH_1 = 8;
+    private static final int ADJUST_MAX_LENGTH_1 = 8;
     //x轴文本的最大长度达到都少开始微调：第二档
-    static final int ADJUST_MAX_LENGTH_2 = 12;
+    private static final int ADJUST_MAX_LENGTH_2 = 12;
 
     /**
      * 获取图表的高度

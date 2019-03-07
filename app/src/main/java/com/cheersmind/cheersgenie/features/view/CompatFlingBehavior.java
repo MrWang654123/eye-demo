@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features.view;
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -147,6 +148,19 @@ public class CompatFlingBehavior extends AppBarLayout.Behavior {
                     ((RecyclerView) target).stopScroll();
                     if (BuildConfig.DEBUG) {
                         System.out.println("停止RecyclerView的Fling");
+                    }
+                }
+            }
+        }
+
+        if (target instanceof NestedScrollView) {
+            //抛掷状态，且消费y消费为0
+            if (type == TYPE_FLING && dyConsumed == 0) {
+                //往上划
+                if (isUpSlide) {
+                    ((NestedScrollView) target).stopNestedScroll(TYPE_FLING);
+                    if (BuildConfig.DEBUG) {
+                        System.out.println("停止NestedScrollView的Fling");
                     }
                 }
             }

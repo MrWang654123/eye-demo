@@ -12,7 +12,7 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
-import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
+import com.cheersmind.cheersgenie.features.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
 import com.cheersmind.cheersgenie.main.event.WXLoginEvent;
 import com.cheersmind.cheersgenie.main.service.BaseService;

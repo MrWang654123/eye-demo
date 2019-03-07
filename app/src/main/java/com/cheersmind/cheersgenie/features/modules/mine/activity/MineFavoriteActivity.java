@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -26,8 +25,8 @@ import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.ArticleRootEntity;
-import com.cheersmind.cheersgenie.main.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.features.entity.ArticleRootEntity;
+import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
@@ -40,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * 我的收藏
@@ -331,10 +329,6 @@ public class MineFavoriteActivity extends BaseActivity {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        MineDto dto = new MineDto();
-        dto.setUserId(UCManager.getInstance().getUserId());
-        dto.setPage(pageNum);
-        dto.setSize(PAGE_SIZE);
         DataRequestService.getInstance().getMyFavorite(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {

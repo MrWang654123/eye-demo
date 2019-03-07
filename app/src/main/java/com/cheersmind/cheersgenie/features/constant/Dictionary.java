@@ -188,4 +188,11 @@ public class Dictionary {
     //报告图表比较ID：我
     public static final String REPORT_CHART_COMPARE_ID_MINE = "2";
 
+    //任务状态：未完成
+    public static final int TASK_STATUS_INCOMPLETE = 0;
+    //任务状态：已完成
+    public static final int TASK_STATUS_COMPLETED = 1;
+    //测评状态：已结束未完成
+    public static final int TASK_STATUS_OVER_INCOMPLETE = 2;
+
 }

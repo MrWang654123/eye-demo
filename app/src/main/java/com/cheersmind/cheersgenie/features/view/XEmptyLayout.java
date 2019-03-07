@@ -1,11 +1,10 @@
 package com.cheersmind.cheersgenie.features.view;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+import android.support.annotation.ColorInt;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -16,14 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.cheersmind.cheersgenie.R;
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -34,7 +25,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
  * 空数据布局
  */
 public class XEmptyLayout extends LinearLayout {
-    //加载成功 隐藏emptylayout了
+    //加载成功 隐藏XEmptyLayout了
     public static final int HIDE_LAYOUT = 4;
     //网络连接有误，或者请求失败
     public static final int NETWORK_ERROR = 1;
@@ -94,15 +85,6 @@ public class XEmptyLayout extends LinearLayout {
 
         setBackgroundColor(-1);
         addView(contentView);
-        changeErrorLayoutBgMode(context);
-
-    }
-
-
-    public void changeErrorLayoutBgMode(Context context1) {
-        // mLayout.setBackgroundColor(SkinsUtil.getColor(context1,
-        // "bgcolor01"));
-        // tv.setTextColor(SkinsUtil.getColor(context1, "textcolor05"));
     }
 
     public void dismiss() {
@@ -139,7 +121,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置错误提示文本
-     * @param msg
+     * @param msg 文本
      */
     private void setErrorTip(String msg) {
         if (tvErrorTip.getVisibility() == GONE) {
@@ -150,7 +132,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置错误提示文本
-     * @param resId
+     * @param resId stringId
      */
     private void setErrorTip(int resId) {
         if (tvErrorTip.getVisibility() == GONE) {
@@ -171,13 +153,14 @@ public class XEmptyLayout extends LinearLayout {
             }
             ivErrorIcon.setImageResource(imgResource);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     /**
      * 设置无数据情况是否可点击（显示去看看吧按钮）
-     * @param clickEnableForNoData
+     * @param clickEnableForNoData true：可点击
      */
     public void setClickEnableForNoData(boolean clickEnableForNoData) {
         this.clickEnableForNoData = clickEnableForNoData;
@@ -185,12 +168,12 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置类型
-     * @param i
+     * @param type 类型
      */
-    public void setErrorType(int i) {
+    public void setErrorType(int type) {
         setVisibility(View.VISIBLE);
         ivLoading.setVisibility(GONE);
-        switch (i) {
+        switch (type) {
             //网络错误
             case NETWORK_ERROR: {
                 mErrorState = NETWORK_ERROR;
@@ -296,7 +279,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置重新加载监听
-     * @param listener
+     * @param listener 监听器
      */
     public void setOnReloadListener(View.OnClickListener listener) {
         btnReload.setOnClickListener(listener);
@@ -305,7 +288,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置跳转相关页面监听
-     * @param listener
+     * @param listener 监听器
      */
     public void setOnGotoRelationListener(View.OnClickListener listener) {
         btnGotoRelation.setOnClickListener(listener);
@@ -314,7 +297,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 设置无数据提示文本
-     * @param noDataTip
+     * @param noDataTip 无数据提示文本
      */
     public void setNoDataTip(String noDataTip) {
         this.noDataTip = noDataTip;
@@ -322,7 +305,7 @@ public class XEmptyLayout extends LinearLayout {
 
     /**
      * 获取无数据提示文本
-     * @return
+     * @return 文本
      */
     public String getNoDataTip() {
         return noDataTip;
@@ -347,8 +330,8 @@ public class XEmptyLayout extends LinearLayout {
     /**
      *
      * 描述：是否有网络连接.androidbase中AbWifiUtil中的方法
-     * @param context
-     * @return
+     * @param context 上下文
+     * @return true：有网络
      */
     public static boolean isConnectivity(Context context) {
         try {
@@ -391,6 +374,18 @@ public class XEmptyLayout extends LinearLayout {
         super.setBackgroundResource(drawableId);
         if (contentView != null) {
             contentView.setBackgroundResource(drawableId);
+        }
+    }
+
+    /**
+     * 设置背景色
+     * @param color 颜色值 AARRGGBB
+     */
+    @Override
+    public void setBackgroundColor(@ColorInt int color) {
+        super.setBackgroundColor(color);
+        if (contentView != null) {
+            contentView.setBackgroundColor(color);
         }
     }
 

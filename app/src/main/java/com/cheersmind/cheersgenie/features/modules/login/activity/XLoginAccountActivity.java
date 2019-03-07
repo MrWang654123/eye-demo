@@ -41,7 +41,7 @@ import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
-import com.cheersmind.cheersgenie.main.entity.QQTokenEntity;
+import com.cheersmind.cheersgenie.features.entity.QQTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXTokenEntity;
 import com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity;
 import com.cheersmind.cheersgenie.main.event.WXLoginEvent;

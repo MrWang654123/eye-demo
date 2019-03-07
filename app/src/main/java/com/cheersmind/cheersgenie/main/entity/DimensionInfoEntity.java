@@ -286,14 +286,16 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
         this.examId = examId;
     }
 
+    private int itemType = ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
+
     @Override
     public int getItemType() {
-        return ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
+        return itemType;
     }
 
-//    public void setItemType(int itemType) {
-//        this.itemType = itemType;
-//    }
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
 
     public boolean isLastInTopic() {
         return isLastInTopic;

@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.main.entity;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.entity.ChartCompareItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 

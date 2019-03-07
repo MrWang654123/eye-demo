@@ -46,9 +46,10 @@ import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
 import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
+import com.cheersmind.cheersgenie.features_v2.modules.mine.activity.MineAwardActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.main.entity.TotalIntegralEntity;
+import com.cheersmind.cheersgenie.features.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
@@ -61,7 +62,6 @@ import org.devio.takephoto.model.TResult;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -406,6 +406,8 @@ public class MineFragment extends TakePhotoFragment {
                 Intent intent = new Intent(getContext(), MineIntegralActivity.class);
                 startActivity(intent);
 
+                //奖励页面
+//                MineAwardActivity.startAwardActivity(getContext());
                 break;
             }
             //我的消息

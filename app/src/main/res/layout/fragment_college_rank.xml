@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <!--内容模块-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAlignedChildIndex="0"
+                android:baselineAligned="true">
+
+                <LinearLayout
+                    android:id="@+id/ll_rank_area_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center_horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cb_rank_area"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@drawable/textcolor_checkbox_common"
+                        android:drawableRight="@drawable/arrow_up_down"
+                        android:drawableEnd="@drawable/arrow_up_down"
+                        android:background="@color/transpera"
+                        android:button="@null"
+                        android:text="全国"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_rank_category_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center_horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cb_rank_category"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@drawable/textcolor_checkbox_common"
+                        android:drawableRight="@drawable/arrow_up_down"
+                        android:drawableEnd="@drawable/arrow_up_down"
+                        android:background="@color/transpera"
+                        android:button="@null"
+                        android:text="综合排名"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_rank_subject_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:gravity="center_horizontal">
+
+                    <CheckBox
+                        android:id="@+id/cb_rank_subject"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@drawable/textcolor_checkbox_common"
+                        android:drawableRight="@drawable/arrow_up_down"
+                        android:drawableEnd="@drawable/arrow_up_down"
+                        android:background="@color/transpera"
+                        android:button="@null"
+                        android:text="本科排名"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/color_eeeeee"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/swipeRefreshLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycleView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </android.support.v4.widget.SwipeRefreshLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_rank"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingBottom="10dp"
+                    android:background="#2200000e">
+
+                    <LinearLayout
+                        android:id="@+id/ll_rank_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_rank_area"
+                            android:layout_width="150dp"
+                            android:layout_height="wrap_content"
+                            android:background="#f8fafc">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_rank_province"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@color/white">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_rank_category"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_rank_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#f8fafc">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_rank_subject"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="visible">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_rank_subject"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#f8fafc">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabGotoTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            app:fabSize="mini"
+            android:src="@drawable/goto_top" />
+        <!--android:src="@drawable/ic_start"-->
+
+    </FrameLayout>
+
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -9,7 +9,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.main.entity.ExamEntity;
+import com.cheersmind.cheersgenie.features.entity.ExamEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

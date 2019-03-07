@@ -2,7 +2,6 @@ package com.cheersmind.cheersgenie.main.service;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.AccountLoginDto;
@@ -11,24 +10,25 @@ import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
+import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
 import com.cheersmind.cheersgenie.features.dto.MineDto;
 import com.cheersmind.cheersgenie.features.dto.OpenDimensionDto;
 import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
-import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.ResponseDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
-import com.cheersmind.cheersgenie.features.interfaces.ResponseStringCallback;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
+import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
+import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
+import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.util.EncryptUtil;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.google.gson.JsonArray;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -38,7 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -46,13 +45,8 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * 数据请求服务
@@ -1234,86 +1228,6 @@ public class DataRequestService {
                     }
                 });
     }
-    /*public void getImageCaptcha(String sessionId, final BaseService.ServiceCallback callback) {
-        String url = HttpConfig.URL_IMAGE_CAPTCHA
-                .replace("{session_id}", sessionId);
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        //创建okHttpClient对象
-        OkHttpClient okHttpClient = new OkHttpClient();
-        //请求超时设置
-        okHttpClient.newBuilder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(20, TimeUnit.SECONDS).build();
-        Call call = okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, final IOException e) {
-                if (callback != null) {
-                    QSApplication.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (e instanceof SocketTimeoutException) {
-                                //判断超时异常
-                                callback.onFailure(new QSCustomException("网络连接超时"));
-                            }else if (e instanceof ConnectException) {
-                                //判断连接异常
-                                callback.onFailure(new QSCustomException("网络连接异常"));
-                            } else {
-                                //默认处理
-//                                callback.onFailure(new QSCustomException(e.getMessage()));
-                                callback.onFailure(new QSCustomException("网络异常"));
-                            }
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                if (callback != null) {
-                    try {
-                        //返回结果信息
-                        final byte[] bodyBytes = response.body().bytes();
-
-                        QSApplication.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //目前的业务错误机制：只要业务验证发生任何错误，http的code都不会是200出头的正确应答code，
-                                // 而只会返回什么400+，500+之类的，并且附带错误信息串
-                                if (response.code() == 200 || response.code() == 201) {
-                                    if (bodyBytes.length == 0) {
-                                        callback.onFailure(new QSCustomException("获取验证码失败"));
-                                    }
-                                    callback.onResponse(bodyBytes);
-
-                                } else if (response.code() == 400) {
-                                    JSONObject respObj = null;
-                                    try {
-                                        respObj = new JSONObject(new String(bodyBytes));
-                                        callback.onResponse(respObj);
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        callback.onFailure(new QSCustomException("服务器返回数据异常"));
-                                    }
-
-                                } else {
-                                    callback.onFailure(new QSCustomException("获取验证码失败"));
-                                }
-                            }
-                        });
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        callback.onFailure(new QSCustomException("返回数据异常"));
-                    }
-                }
-            }
-
-        });
-    }*/
 
 
     /**
@@ -1406,6 +1320,92 @@ public class DataRequestService {
     public void getTaskList(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_TASK_LIST
                 .replace("{child_id}",childId);
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取模块列表
+     * @param dto 模块dto
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getModules(ModuleDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MODULES
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("type", dto.getType());
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取测评任务列表
+     * @param dto 模块dto
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getExamTasks(ExamTaskDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_EXAM_TASKS
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_module_id", dto.getChildModuleId());
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取测评任务的详情子项列表
+     * @param dto 模块dto
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getExamTaskDetailItems(TaskItemDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_EXAM_TASK_DETAIL_ITEMS
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_task_id", dto.getChildTaskId());
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取话题下的量表列表
+     * @param dto 话题dto
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getDimensionsInTopic(TopicDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_DIMENSIONS_IN_TOPIC
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_exam_id", dto.getChildExamId());
+        params.put("topic_id", dto.getTopicId());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
         doGet(url, callback, httpTag, context);
     }
 

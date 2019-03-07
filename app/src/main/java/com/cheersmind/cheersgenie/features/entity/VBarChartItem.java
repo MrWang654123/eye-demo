@@ -7,9 +7,6 @@ import android.view.View;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.main.entity.ChartCompareItem;
-import com.cheersmind.cheersgenie.main.entity.ChartScoreItem;
-import com.cheersmind.cheersgenie.main.entity.ReportFactorEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.mpcharts.Formmart.MyMarkerView;
 import com.github.mikephil.charting.charts.BarChart;
@@ -20,7 +17,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;

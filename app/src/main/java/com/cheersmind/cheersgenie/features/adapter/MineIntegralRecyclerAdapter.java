@@ -5,12 +5,10 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.main.entity.IntegralEntity;
-import com.google.gson.Gson;
+import com.cheersmind.cheersgenie.features.entity.IntegralEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 

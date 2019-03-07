@@ -37,16 +37,16 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.DeviceUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
+import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanFragment;
+import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.DiscoverFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.TaskItemEntity;
-import com.cheersmind.cheersgenie.main.entity.SeminarEntity;
-import com.cheersmind.cheersgenie.main.entity.SeminarRootEntity;
+import com.cheersmind.cheersgenie.features.entity.ExamEntity;
+import com.cheersmind.cheersgenie.features.entity.SeminarEntity;
+import com.cheersmind.cheersgenie.features.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -170,6 +170,13 @@ public class MasterTabActivity extends BaseActivity {
         listFragment.add(new ExamWrapFragment());
 //        listFragment.add(new ReportFragment());//最近使用
         listFragment.add(new MineFragment());
+
+//        listFragment.add(new DiscoverFragment());
+//        listFragment.add(new CareerPlanFragment());
+//        listFragment.add(new com.cheersmind.cheersgenie.features_v2.modules.base.fragment.ExamWrapFragment());
+////        listFragment.add(new ExamWrapFragment());
+//        listFragment.add(new MineFragment());
+
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);
         viewPager.addOnPageChangeListener(pageChangeListener);
@@ -201,9 +208,25 @@ public class MasterTabActivity extends BaseActivity {
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
                 .setFirstSelectedPosition(0)//设置默认选择的按钮
                 .initialise();//所有的设置需在调用该方法前完成
+//        navigationBar
+//                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"发现")
+//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
+////                        .setBadgeItem(mShapeBadgeItem))
+//                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"生涯")
+//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
+//                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"测评")
+//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
+////                        .setBadgeItem(mTextBadgeItem))
+//                .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
+//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
+//                .setFirstSelectedPosition(0)//设置默认选择的按钮
+//                .initialise();//所有的设置需在调用该方法前完成
 
         //初始隐藏悬浮按钮
         fabTask.setVisibility(View.GONE);
+
+        //修改状态栏颜色
+//        setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.white));
 
         //测试
         DisplayMetrics metrics = QSApplication.getMetrics();
@@ -321,11 +344,13 @@ public class MasterTabActivity extends BaseActivity {
                 case 0:
                     index = 0;
                     //修改状态栏颜色
+//                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.white));
                     setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 1:
                     index = 1;
                     //修改状态栏颜色
+//                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.white));
                     setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 2:

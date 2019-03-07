@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/color_f5f5f5">
+    android:background="@color/color_f5f5f5"
+    tools:context=".features.modules.base.fragment.MineFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -155,6 +156,54 @@
                 android:layout_marginRight="10dp"
                 android:background="@color/color_f2f2f2"/>
 
+            <!--<LinearLayout-->
+                <!--android:id="@+id/ll_track_record"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:background="@drawable/selector_mine_btn">-->
+
+                <!--<ImageView-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:padding="8dp"-->
+                    <!--android:scaleType="fitCenter"-->
+                    <!--android:src="@drawable/mine_user_info"/>-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="12dp"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:ellipsize="end"-->
+                    <!--style="@style/common_option_text"-->
+                    <!--android:text="成长档案"-->
+                    <!--/>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginRight="10dp">-->
+                    <!--<ImageView-->
+                        <!--android:layout_width="20dp"-->
+                        <!--android:layout_height="20dp"-->
+                        <!--android:scaleType="fitXY"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>-->
+                <!--</RelativeLayout>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.5dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@color/color_f2f2f2"/>-->
+
             <LinearLayout
                 android:id="@+id/ll_mine_integral"
                 android:layout_width="match_parent"
@@ -216,6 +265,68 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:background="@color/color_f2f2f2"/>
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/ll_mine_integral"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:background="@drawable/selector_mine_btn">-->
+
+                <!--<ImageView-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:padding="8dp"-->
+                    <!--android:scaleType="fitCenter"-->
+                    <!--android:src="@drawable/mine_integral"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_test"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="12dp"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:ellipsize="end"-->
+                    <!--style="@style/common_option_text"-->
+                    <!--android:text="成就与积分"-->
+                    <!--/>-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:orientation="horizontal">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_usable_integral_val"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:textColor="@color/colorAccent"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:gravity="right"-->
+                        <!--android:text="115"-->
+                        <!--android:textSize="16sp"/>-->
+
+                    <!--<ImageView-->
+                        <!--android:layout_width="20dp"-->
+                        <!--android:layout_height="20dp"-->
+                        <!--android:scaleType="fitXY"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>-->
+                <!--</LinearLayout>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.5dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@color/color_f2f2f2"/>-->
 
             <LinearLayout
                 android:id="@+id/ll_mine_message"
@@ -329,13 +440,61 @@
 
             </LinearLayout>
 
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:background="@color/color_f2f2f2"/>
+
+            <!--<LinearLayout-->
+                <!--android:id="@+id/ll_mine_focus"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:paddingLeft="16dp"-->
+                <!--android:background="@drawable/selector_mine_btn">-->
+
+                <!--<ImageView-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:padding="8dp"-->
+                    <!--android:scaleType="fitCenter"-->
+                    <!--android:src="@drawable/mine_favorite"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_focus"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="12dp"-->
+                    <!--android:maxLines="1"-->
+                    <!--android:ellipsize="end"-->
+                    <!--style="@style/common_option_text"-->
+                    <!--android:text="我的关注" />-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginRight="10dp">-->
+                    <!--<ImageView-->
+                        <!--android:layout_width="20dp"-->
+                        <!--android:layout_height="20dp"-->
+                        <!--android:scaleType="fitXY"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>-->
+                <!--</RelativeLayout>-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.5dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:background="@color/color_f2f2f2"/>-->
 
             <LinearLayout
                 android:id="@+id/ll_mine_report"

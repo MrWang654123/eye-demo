@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--大学排名区域-->
+    <string-array name="college_rank_area">
+        <item>中国大学</item>
+    </string-array>
+
+    <!--大学排名省份-->
+    <string-array name="college_rank_province">
+        <item>全部</item>
+        <item>北京</item>
+        <item>上海</item>
+        <item>天津</item>
+        <item>重庆</item>
+        <item>河北</item>
+        <item>河南</item>
+        <item>辽宁</item>
+        <item>黑龙江</item>
+        <item>贵州</item>
+        <item>四川</item>
+        <item>云南</item>
+        <item>广东</item>
+        <item>青海</item>
+        <item>海南</item>
+        <item>安徽</item>
+        <item>山西</item>
+        <item>山东</item>
+        <item>江苏</item>
+        <item>浙江</item>
+        <item>江西</item>
+        <item>湖南</item>
+        <item>湖北</item>
+        <item>甘肃</item>
+        <item>陕西</item>
+        <item>吉林</item>
+        <item>福建</item>
+        <item>内蒙古</item>
+        <item>广西</item>
+        <item>西藏</item>
+        <item>宁夏</item>
+        <item>新疆</item>
+    </string-array>
+
+    <!--大学排名院校类别-->
+    <string-array name="college_rank_category">
+        <item>全部</item>
+        <item>综合类</item>
+        <item>医药类</item>
+        <item>政法类</item>
+        <item>理工类</item>
+        <item>财经类</item>
+        <item>农林类</item>
+        <item>师范类</item>
+        <item>体育类</item>
+        <item>语言类</item>
+        <item>艺术类</item>
+        <item>民族类</item>
+        <item>军事类</item>
+    </string-array>
+
+    <!--大学排名主题-->
+    <string-array name="college_rank_subject">
+        <item>全部</item>
+        <item>本科排名</item>
+        <item>专科排名</item>
+    </string-array>
+
+</resources>

@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -14,8 +13,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.utils.DateTimeUtils;
-import com.cheersmind.cheersgenie.main.entity.ExamEntity;
-import com.cheersmind.cheersgenie.main.entity.SeminarEntity;
+import com.cheersmind.cheersgenie.features.entity.ExamEntity;
+import com.cheersmind.cheersgenie.features.entity.SeminarEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

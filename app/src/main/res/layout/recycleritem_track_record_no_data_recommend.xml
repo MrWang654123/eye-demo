@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:padding="10dp"
+        android:text="情绪力"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_333333"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:text="推荐成长任务"/>
+
+        <Button
+            android:id="@+id/btn_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="换一换"/>
+
+    </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/ll_task1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toLeftOf="@+id/ll_task2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            android:background="#ecf2fe"
+            android:padding="10dp"
+            android:orientation="vertical">
+            <!--app:layout_constraintHorizontal_chainStyle="spread"-->
+
+            <TextView
+                android:id="@+id/tv_task1_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp"
+                android:text="阅读分享"/>
+
+            <TextView
+                android:id="@+id/tv_task1_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="各种帮助成功事业发展之能力"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_task2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@+id/ll_task1"
+            app:layout_constraintRight_toLeftOf="@+id/ll_task3"
+            app:layout_constraintTop_toTopOf="@+id/ll_task1"
+            app:layout_constraintHorizontal_weight="1"
+            android:background="#ecf2fe"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_task2_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp"
+                android:text="阅读分享"/>
+
+            <TextView
+                android:id="@+id/tv_task2_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="各种帮助成功事业发展之能力"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_task3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ll_task2"
+            app:layout_constraintTop_toTopOf="@+id/ll_task1"
+            app:layout_constraintHorizontal_weight="1"
+            android:background="#ecf2fe"
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_task3_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_333333"
+                android:textSize="15sp"
+                android:text="阅读分享"/>
+
+            <TextView
+                android:id="@+id/tv_task3_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="各种帮助成功事业发展之能力"/>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

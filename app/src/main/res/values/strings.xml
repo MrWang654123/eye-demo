@@ -193,6 +193,23 @@
     <string name="empty_tip_category">暂无分类</string>
     <string name="empty_tip_question_definition">暂无说明</string>
     <string name="empty_tip_task_list">暂无专题</string>
+    <string name="empty_tip_exam_module">暂无测评模块</string>
+    <string name="empty_tip_exam_task">暂无测评任务</string>
+    <string name="empty_tip_exam_task_item">暂无任务内容项</string>
+    <string name="empty_tip_choose_course">暂无选课信息</string>
+    <string name="empty_tip_exam_comment">暂无留言</string>
+    <string name="empty_tip_college_rank">暂无该类院校排名</string>
+    <string name="empty_tip_career_plan_report">暂无生涯规划报告</string>
+    <string name="empty_tip_career_plan">暂无生涯数据</string>
+    <string name="empty_tip_track_record">暂无发展档案信息</string>
+    <string name="empty_tip_major_list">暂无专业数据</string>
+    <string name="empty_tip_occupation_list">暂无职业数据</string>
+    <string name="empty_tip_mine_medal">暂无勋章</string>
+    <string name="empty_tip_major_detail_info">暂无专业详情信息</string>
+    <string name="empty_tip_major_detail_college">暂无开设院校信息</string>
+    <string name="empty_tip_college_detail_info">暂无院校详情信息</string>
+    <string name="empty_tip_mine_practice">暂无实践</string>
+    <string name="empty_tip_mine_practice_item">暂无实践明细</string>
 
     <!--任务列表-->
     <string name="begin_time_fmt">开始时间 %s</string>
@@ -200,5 +217,20 @@
 
     <!--behaver-->
     <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>
+
+    <!--发现页-->
+    <string name="track_record">成长档案</string>
+    <string name="career_planning">生涯规划</string>
+    <string name="practice_center">实践中心</string>
+    <string name="knowledge_fun">知识FUN</string>
+
+    <!--发展测评模块-->
+    <string name="do_count">%s人已学过</string>
+
+    <!--生涯规划主页-->
+    <string name="college">学校</string>
+    <string name="major">专业</string>
+    <string name="occupation">职业</string>
+    <string name="college_preference">高考志愿</string>
 
 </resources>

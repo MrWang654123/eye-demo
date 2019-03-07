@@ -98,12 +98,12 @@ public class QSApplication extends LitePalApplication {
 
 
         //调试模式下不启用自定义的异常处理类
-//        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG) {
             //把自定义的异常处理类设置 给主线程
             CrashHandler myCrashHandler = CrashHandler.getInstance();
             myCrashHandler.init(getApplicationContext());
             Thread.currentThread().setUncaughtExceptionHandler(myCrashHandler);
-//        }
+        }
 
 //        //反馈
 //        FeedbackAPI.init(this, Constant.FEEDBACK_APP_KEY,Constant.FEEDBACK_APP_SECRET);
