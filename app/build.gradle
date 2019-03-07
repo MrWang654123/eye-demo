@@ -18,7 +18,7 @@ android {
         minSdkVersion 16
         //noinspection OldTargetApi
         targetSdkVersion 27
-        versionCode 11
+        versionCode 12
         versionName APP_VERSION_NAME
         flavorDimensions "versionCode"
         vectorDrawables.useSupportLibrary = true
