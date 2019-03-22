@@ -5,18 +5,18 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 import java.util.List;
 
 /**
- * 大学学历层次响应的根对象
+ * 职业分类响应的根对象
  */
-public class CollegeCategoryRootEntity {
+public class OccupationTypeRootEntity {
 
     @InjectMap(name = "items")
-    private List<CollegeCategory> items;
+    private List<OccupationRealm> items;
 
-    public List<CollegeCategory> getItems() {
+    public List<OccupationRealm> getItems() {
         return items;
     }
 
-    public void setItems(List<CollegeCategory> items) {
+    public void setItems(List<OccupationRealm> items) {
         this.items = items;
     }
 }

@@ -42,13 +42,15 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationRealm;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationTypeRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevelRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvinceRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
 import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanWrapFragment;
-import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.DiscoverFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -297,7 +299,9 @@ public class MasterTabActivity extends BaseActivity {
         //初始请求院校库的查询条件信息
         doGetCollegeProvince();//大学省份
         doGetEducationLevel();//大学学历层次
-//        doGetCollegeCategory();//大学院校类别
+        //获取职业分类
+        doGetOccupationCategory(Dictionary.OCCUPATION_TYPE_INDUSTRY);
+        doGetOccupationCategory(Dictionary.OCCUPATION_TYPE_ACT);
     }
 
     @Override
@@ -800,36 +804,57 @@ public class MasterTabActivity extends BaseActivity {
         }, httpTag, MasterTabActivity.this);
     }
 
-//    /**
-//     * 请求大学的院校类型
-//     */
-//    private void doGetCollegeCategory() {
-//        DataRequestService.getInstance().getCollegeCategory(new BaseService.ServiceCallback() {
-//            @Override
-//            public void onFailure(QSCustomException e) {
-//                e.getLocalizedMessage();
-//            }
-//
-//            @Override
-//            public void onResponse(Object obj) {
-//                try {
-//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-//                    CollegeCategoryRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeCategoryRootEntity.class);
-//
-//                    List<CollegeCategory> list = rootEntity.getItems();
-//                    //存到数据库
-//                    DataSupport.deleteAll(CollegeCategory.class);
-//                    DataSupport.saveAll(list);
-//                    List<CollegeCategory> all = DataSupport.findAll(CollegeCategory.class);
+    /**
+     * 获取职业分类数据
+     */
+    private void doGetOccupationCategory(final int type) {
+        DataRequestService.getInstance().getOccupationCategory(type, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.getLocalizedMessage();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    OccupationTypeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, OccupationTypeRootEntity.class);
+
+                    List<OccupationRealm> list = rootEntity.getItems();
+                    //清空数据
+                    DataSupport.deleteAll(OccupationRealm.class, "type = ?", String.valueOf(type));
+                    DataSupport.deleteAll(OccupationCategory.class, "type = ?", String.valueOf(type));
+                    //存到数据库
+                    List<OccupationCategory> categories = new ArrayList<>();
+                    for (OccupationRealm realm : list) {
+                        realm.setType(type);
+                        categories.addAll(realm.getCategories());
+                    }
+
+                    for (OccupationCategory category : categories) {
+                        category.setType(type);
+                    }
+
+                    DataSupport.saveAll(categories);
+                    DataSupport.saveAll(list);
+
+//                    List<OccupationRealm> all = DataSupport.findAll(OccupationRealm.class, true);
+
+//                    List<OccupationRealm> all = DataSupport.findAll(OccupationRealm.class);
 //                    System.out.println(all);
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        }, httpTag, MasterTabActivity.this);
-//    }
+//                    OccupationRealm realm = all.get(0);
+//                    List<OccupationCategory> all1 = DataSupport.findAll(OccupationCategory.class);
+//                    System.out.println(all1);
+//                    List<OccupationCategory> categories1 = realm.getCategoriesFromDB();
+//                    System.out.println(categories1);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, httpTag, MasterTabActivity.this);
+    }
 
 }
 

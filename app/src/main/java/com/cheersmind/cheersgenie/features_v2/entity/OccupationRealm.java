@@ -1,28 +1,34 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
-import com.chad.library.adapter.base.entity.AbstractExpandableItem;
-import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.cheersmind.cheersgenie.features_v2.adapter.OccupationTreeRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 行业领域
+ * 职业领域
  */
-public class OccupationRealm extends AbstractExpandableItem<OccupationCategory> implements MultiItemEntity, Serializable {
+public class OccupationRealm extends DataSupport implements Serializable {
 
-    public OccupationRealm() {
-        mExpandable = false;
-    }
+    private int id;
 
+    //行业 - 领域
     @InjectMap(name = "realm")
     private String realm;
 
-    //门类
-    @InjectMap(name = "categorys")
-    private List<OccupationCategory> categorys;
+    //ACT - 六大人格分类
+    @InjectMap(name = "personality_type")
+    private String personality_type;
+
+    //门类（必须初始化，否则存储报错）
+    @InjectMap(name = "sub_items")
+    private List<OccupationCategory> categories = new ArrayList<>();
+
+    //职业类型
+    private int type;
 
     public String getRealm() {
         return realm;
@@ -32,42 +38,43 @@ public class OccupationRealm extends AbstractExpandableItem<OccupationCategory> 
         this.realm = realm;
     }
 
-    public List<OccupationCategory> getCategorys() {
-        return categorys;
+    public String getPersonality_type() {
+        return personality_type;
     }
 
-    public void setCategorys(List<OccupationCategory> categorys) {
-        this.categorys = categorys;
+    public void setPersonality_type(String personality_type) {
+        this.personality_type = personality_type;
     }
 
-    private int level = 0;
-    private int itemType = OccupationTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL0;
-    //最里层的子项是否是兄弟中的最后一个
-    private boolean isLastInMaxLevel;
-
-    @Override
-    public int getLevel() {
-        return level;
+    public List<OccupationCategory> getCategories() {
+        return categories;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    /**
+     * 从数据库中获取List<OccupationCategory>
+     * @return List<OccupationCategory>
+     */
+    public List<OccupationCategory> getCategoriesFromDB() {
+        return DataSupport.where("OccupationRealm_id = ?", String.valueOf(id)).find(OccupationCategory.class);
     }
 
-    @Override
-    public int getItemType() {
-        return itemType;
+    public void setCategories(List<OccupationCategory> categories) {
+        this.categories = categories;
     }
 
-    public void setItemType(int itemType) {
-        this.itemType = itemType;
+    public int getId() {
+        return id;
     }
 
-    public boolean isLastInMaxLevel() {
-        return isLastInMaxLevel;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setLastInMaxLevel(boolean lastInMaxLevel) {
-        isLastInMaxLevel = lastInMaxLevel;
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

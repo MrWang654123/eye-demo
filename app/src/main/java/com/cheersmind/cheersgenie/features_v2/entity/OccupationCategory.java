@@ -1,29 +1,32 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
-import com.chad.library.adapter.base.entity.AbstractExpandableItem;
-import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.cheersmind.cheersgenie.features_v2.adapter.OccupationTreeRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * 行业所属门类
+ * 职业所属门类
  */
-public class OccupationCategory extends AbstractExpandableItem<OccupationItem> implements MultiItemEntity, Serializable {
+public class OccupationCategory extends DataSupport implements Serializable {
 
-    public OccupationCategory() {
-        mExpandable = false;
-    }
-
-    //专业所属门类名称
+    //职业所属门类
     @InjectMap(name = "category")
     private String category;
 
-    //行业集合
-    @InjectMap(name = "occupations")
-    private List<OccupationItem> occupationItems;
+    //ACT - 26种职业区域名称
+    @InjectMap(name = "area_name")
+    private String area_name;
+
+    //ACT - 职业区域ID
+    @InjectMap(name = "area_id")
+    private long area_id;
+
+    //职业类型
+    private int type;
+
+    private OccupationRealm occupationRealm;
 
     public String getCategory() {
         return category;
@@ -33,42 +36,41 @@ public class OccupationCategory extends AbstractExpandableItem<OccupationItem> i
         this.category = category;
     }
 
-    public List<OccupationItem> getOccupationItems() {
-        return occupationItems;
+    public String getArea_name() {
+        return area_name;
     }
 
-    public void setOccupationItems(List<OccupationItem> occupationItems) {
-        this.occupationItems = occupationItems;
+    public void setArea_name(String area_name) {
+        this.area_name = area_name;
     }
 
-    private int level = 1;
-    private int itemType = OccupationTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL1;
-    //最里层的子项是否是兄弟中的最后一个
-    private boolean isLastInMaxLevel;
-
-    @Override
-    public int getLevel() {
-        return level;
+    public long getArea_id() {
+        return area_id;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setArea_id(long area_id) {
+        this.area_id = area_id;
     }
 
-    @Override
-    public int getItemType() {
-        return itemType;
+    public OccupationRealm getOccupationRealm() {
+        return occupationRealm;
     }
 
-    public void setItemType(int itemType) {
-        this.itemType = itemType;
+    public void setOccupationRealm(OccupationRealm occupationRealm) {
+        this.occupationRealm = occupationRealm;
     }
 
-    public boolean isLastInMaxLevel() {
-        return isLastInMaxLevel;
+    public int getType() {
+        return type;
     }
 
-    public void setLastInMaxLevel(boolean lastInMaxLevel) {
-        isLastInMaxLevel = lastInMaxLevel;
+    public void setType(int type) {
+        this.type = type;
     }
+
+    //统一的获取名称
+    public String getName() {
+        return area_id > 0 ? area_name : category;
+    }
+
 }

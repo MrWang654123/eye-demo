@@ -21,9 +21,9 @@ public class CollegeEduLevel extends DataSupport implements Serializable {
     @InjectMap(name = "name")
     private String name;
 
-    //名称
+    //排名项（必须初始化，否则存储报错）
     @InjectMap(name = "ranking_items")
-    private List<CollegeRankItem> ranking_items = new ArrayList<CollegeRankItem>();
+    private List<CollegeRankItem> ranking_items = new ArrayList<>();
 
     public String getCode() {
         return code;

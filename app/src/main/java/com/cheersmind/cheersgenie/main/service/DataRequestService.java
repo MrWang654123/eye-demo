@@ -30,8 +30,11 @@ import com.cheersmind.cheersgenie.features_v2.dto.MajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.MajorEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
+import com.cheersmind.cheersgenie.features_v2.dto.OccupationTreeDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationType;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
@@ -1562,16 +1565,16 @@ public class DataRequestService {
 
 
     /**
-     * 获取行业树
-     * @param dto 行业树dto
+     * 获取职业树
+     * @param dto 职业树dto
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void getOccupationTree(OccupationDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getOccupationTree(OccupationTreeDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_OCCUPATION_TREE;
 
         Map<String, Object> params = new HashMap<>();
-        //专业名称
+        //职业名称
         if (!TextUtils.isEmpty(dto.getOccupation_name())) {
             try {
                 //输入中文的地方加上 URLEncoder.encode 处理
@@ -1588,9 +1591,73 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取职业列表
+     * @param dto 职业dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getOccupationList(OccupationDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_OCCUPATION_LIST;
+
+        Map<String, Object> params = new HashMap<>();
+
+        //category 和 area_id 二选一
+        OccupationType type = dto.getType();
+        if (type != null) {
+            OccupationCategory category = dto.getCategory();
+            if (category != null) {
+                if (type.getType() == Dictionary.OCCUPATION_TYPE_ACT) {//ACT：area_id
+                    if (category.getArea_id() > 0) {
+                        params.put("area_id", category.getArea_id());
+                    }
+
+                } else if (type.getType() == Dictionary.OCCUPATION_TYPE_INDUSTRY) {//国标：category
+                    if (!TextUtils.isEmpty(category.getCategory())) {
+                        try {
+                            //输入中文的地方加上 URLEncoder.encode 处理
+                            String encode = URLEncoder.encode(category.getCategory(), "utf-8");
+                            params.put("category", encode);
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        //名称搜索
+        if (!TextUtils.isEmpty(dto.getSearchText())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getSearchText(), "utf-8");
+                params.put("occupation_name", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
 
     /**
-     * 获取行业详情
+     * 获取职业分类
+     * @param type 类型，1 - 职业分类(ACT), 2 - 行业分类
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getOccupationCategory(int type, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_OCCUPATION_CATEGORY
+                .replace("{type}", String.valueOf(type));;
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取职业详情
      * @param occupationId 行业ID
      * @param callback 回调
      */
@@ -1600,7 +1667,6 @@ public class DataRequestService {
 
         doGet(url, callback, httpTag, context);
     }
-
 
     /**
      * 获取大学的省份

@@ -38,7 +38,7 @@ public class OccupationDetailActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "行业详情";
+        return "职业详情";
     }
 
 

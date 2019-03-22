@@ -8,13 +8,15 @@ import android.support.v4.app.FragmentManager;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features_v2.interfaces.BackPressedHandler;
+import com.cheersmind.cheersgenie.features_v2.modules.college.fragment.CollegeRankFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.OccupationFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.fragment.TrackRecordFragment;
 
 /**
  * 职业
  */
-public class OccupationActivity extends BaseActivity {
+public class OccupationActivity extends BaseActivity implements BackPressedHandler {
 
     /**
      * * 启动职业页面
@@ -54,6 +56,30 @@ public class OccupationActivity extends BaseActivity {
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!hasHandlerBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * 是否处理了回退
+     * @return true：回退被处理了
+     */
+    @Override
+    public boolean hasHandlerBackPressed() {
+        boolean res = false;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        String tag = OccupationFragment.class.getSimpleName();
+        Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
+        //根据fragment的处理结果赋值
+        if (fragmentByTag != null && fragmentByTag instanceof BackPressedHandler) {
+            res = ((BackPressedHandler) fragmentByTag).hasHandlerBackPressed();
+        }
+        return res;
     }
 
 }

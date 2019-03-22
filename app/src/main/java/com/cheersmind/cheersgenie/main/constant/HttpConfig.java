@@ -357,9 +357,13 @@ public class HttpConfig {
     public static final String URL_MAJOR_TREE = API_HOST + "/v2/api/careers/majors";
     //专业详情
     public static final String URL_MAJOR_DETAIL = API_HOST + "/v2/api/careers/majors/{major_code}";
-    //获取行业树（occupation_name）
+    //获取职业树（occupation_name）
     public static final String URL_OCCUPATION_TREE = API_HOST + "/v2/api/careers/occupations";
-    //行业详情
+    //获取职业列表
+    public static final String URL_OCCUPATION_LIST = API_HOST + "/v2/api/careers/occupations";
+    //获取职业分类
+    public static final String URL_OCCUPATION_CATEGORY = API_HOST + "/v2/api/careers/occupations/category?type={type}";
+    //职业详情
     public static final String URL_OCCUPATION_DETAIL = API_HOST + "/v2/api/careers/occupations/{occupation_id}";
     //获取录取分数的文理科
     public static final String URL_COLLEGE_ENROLL_KIND = API_HOST + "/v2/api/sy/gaokao/provinces/{province}/kinds";

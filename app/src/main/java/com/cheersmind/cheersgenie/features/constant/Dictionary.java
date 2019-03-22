@@ -245,4 +245,9 @@ public class Dictionary {
     //任务来源类型：校本课程
     public static final int TASK_FROM_TYPE_SCHOOL_COURSE = 1;
 
+    //职业分类：ACT
+    public static final int OCCUPATION_TYPE_ACT = 1;
+    //职业分类：按行业分类
+    public static final int OCCUPATION_TYPE_INDUSTRY = 2;
+
 }

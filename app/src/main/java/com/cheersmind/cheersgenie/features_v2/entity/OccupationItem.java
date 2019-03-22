@@ -1,13 +1,12 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.cheersmind.cheersgenie.features_v2.adapter.OccupationTreeRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
 
 /**
- * 行业
+ * 职业
  */
 public class OccupationItem implements MultiItemEntity, Serializable {
 
@@ -20,7 +19,7 @@ public class OccupationItem implements MultiItemEntity, Serializable {
     private long occupation_id;
 
     //布局类型
-    private int itemType = OccupationTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL2;
+    private int itemType;
 
     //最里层的子项是否是兄弟中的最后一个
     private boolean isLastInMaxLevel;

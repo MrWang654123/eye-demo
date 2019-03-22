@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="CheckReport"/>
-    <version value="14"/>
+    <version value="17"/>
     <list>
         <mapping class="com.cheersmind.cheersgenie.main.entity.UserInfoEntity"/>
         <mapping class="com.cheersmind.cheersgenie.main.entity.ChildInfoEntity"/>
@@ -10,5 +10,7 @@
         <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel"/>
         <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem"/>
         <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeCategory"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.OccupationRealm"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory"/>
     </list>
 </litepal>
