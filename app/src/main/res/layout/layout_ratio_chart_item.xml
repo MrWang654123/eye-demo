@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/bgLeft"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/ratio_char_item_height"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/bgRight"
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/ratio_chart_dark_left"/>
+
+    <TextView
+        android:id="@+id/bgRight"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/ratio_char_item_height"
+        app:layout_constraintLeft_toRightOf="@+id/bgLeft"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        android:background="@drawable/ratio_chart_light_right"/>
+
+    <TextView
+        android:id="@+id/tv_ratio_left"
+        android:layout_width="@dimen/ratio_char_val_size"
+        android:layout_height="@dimen/ratio_char_val_size"
+        android:textColor="@color/color_444444"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/ratio_chart_val"
+        android:gravity="center"
+        android:layout_margin="@dimen/ratio_char_val_margin"
+        android:text="62%"/>
+
+    <TextView
+        android:id="@+id/tv_result_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_ratio_left"
+        android:layout_marginLeft="@dimen/ratio_char_result_margin"
+        android:layout_marginStart="@dimen/ratio_char_result_margin"
+        android:text="感觉"/>
+
+    <TextView
+        android:id="@+id/tv_ratio_right"
+        android:layout_width="@dimen/ratio_char_val_size"
+        android:layout_height="@dimen/ratio_char_val_size"
+        android:textColor="@color/color_444444"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/ratio_chart_val"
+        android:gravity="center"
+        android:layout_margin="@dimen/ratio_char_val_margin"
+        android:text="62%"/>
+
+    <TextView
+        android:id="@+id/tv_result_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tv_ratio_right"
+        android:layout_marginRight="@dimen/ratio_char_result_margin"
+        android:layout_marginEnd="@dimen/ratio_char_result_margin"
+        android:text="感觉"/>
+
+</android.support.constraint.ConstraintLayout>

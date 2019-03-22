@@ -17,11 +17,11 @@
 
         <LinearLayout
             android:id="@+id/ll_indicate"
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="0dp"
             android:orientation="vertical"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
+            android:layout_marginLeft="23dp"
+            android:layout_marginStart="23dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_title"
             app:layout_constraintBottom_toBottomOf="@+id/tv_title"

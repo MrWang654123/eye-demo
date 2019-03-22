@@ -141,6 +141,8 @@ public class Dictionary {
     public final static int CHART_FOOTER = 200;
     //子标题
     public final static int CHART_SUB_TITLE = 500;
+    //推荐的act分类
+    public final static int CHART_RECOMMEND_ACT_TYPE = 600;
     //子项
     public final static int CHART_SUB_ITEM = 300;
     //图表描述
@@ -153,6 +155,8 @@ public class Dictionary {
     public final static int CHART_BAR_V = 3;
     //水平条状图
     public final static int CHART_BAR_H = 4;
+    //左右比例图
+    public final static int CHART_LEFT_RIGHT_RATIO = 5;
 
     //RecyclerView最大滑动速度（dp）
     public final static int RECYCLER_VIEW_MAX_VELOCITY = 2000;

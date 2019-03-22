@@ -177,33 +177,36 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                         topicInfoEntity.setChildTopic(childTopic);
 
                         //如果任务项已完成则查看话题报告
-                        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-                            //查看话题报告
-//                            ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
+//
+//                            ExamReportDto dto = new ExamReportDto();
+//                            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
+//                            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+//
+//                            //只有一个量表则查看量表报告
+//                            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
+//                                    && entity.getSubItems().size() == 1) {
+//                                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+//                                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+//
+//                            } else {
+//                                dto.setRelationId(dimensionInfoEntity.getTopicId());
+//                                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+//                            }
+//
+//                            ExamReportActivity.startExamReportActivity(getContext(), dto);
+//
+//                        } else {
+//                            //设置量表集合到话题对象中
+//                            topicInfoEntity.setDimensions(entity.getSubItems());
+//                            //点击量表项的操作
+//                            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+//                        }
 
-                            ExamReportDto dto = new ExamReportDto();
-                            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
-                            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
-
-                            //只有一个量表则查看量表报告
-                            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
-                                    && entity.getSubItems().size() == 1) {
-                                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-                                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-
-                            } else {
-                                dto.setRelationId(dimensionInfoEntity.getTopicId());
-                                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
-                            }
-
-                            ExamReportActivity.startExamReportActivity(getContext(), dto);
-
-                        } else {
-                            //设置量表集合到话题对象中
-                            topicInfoEntity.setDimensions(entity.getSubItems());
-                            //点击量表项的操作
-                            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-                        }
+                        //设置量表集合到话题对象中
+                        topicInfoEntity.setDimensions(entity.getSubItems());
+                        //点击量表项的操作
+                        operateClickDimension(dimensionInfoEntity, topicInfoEntity);
                     }
 
                     break;
@@ -816,8 +819,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                                     //处理任务是否完成
                                     if (taskItem.getChildItem() != null) {
                                         //获取任务状态
-                                        doGetTaskStatus(UCManager.getInstance().getDefaultChild().getChildId(),
-                                                taskItem.getChildItem().getChild_item_id());
+                                        doGetTaskStatus(UCManager.getInstance().getDefaultChild().getChildId(), childTaskId);
                                     }
                                 }
                             }
@@ -958,16 +960,22 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                         boolean isMeetUnlockCondition = true;
                         //存在一个未做完的前置任务项，则视为不满足解锁条件
                         for (MultiItemEntity item2 : data) {
-                            if (taskItemSet.contains(((ExamTaskItemEntity) item2).getItem_id())) {
+
+                            if (item2 instanceof ExamTaskItemEntity
+                                    && taskItemSet.contains(((ExamTaskItemEntity) item2).getItem_id())) {
+
                                 if (((ExamTaskItemEntity) item2).getChildItem() == null
                                         || ((ExamTaskItemEntity) item2).getChildItem().getStatus() != Dictionary.TASK_STATUS_COMPLETED) {
+                                    //不满足解锁条件
                                     isMeetUnlockCondition = false;
                                     break;
                                 }
                             }
                         }
 
+                        //满足条件直接本地刷新（是否需要重新请求列表？）
                         if (isMeetUnlockCondition) {
+                            taskItem.setIs_lock(Dictionary.IS_LOCKED_NO);
                             int realLayoutPosition = i + recyclerAdapter.getHeaderLayoutCount();
                             recyclerAdapter.notifyItemChanged(realLayoutPosition);
                         }
@@ -1074,6 +1082,12 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                             //刷新视图
                             int position = i + recyclerAdapter.getHeaderLayoutCount();
                             recyclerAdapter.notifyItemChanged(position);
+
+                            //处理任务是否完成
+                            if (taskItem.getChildItem() != null) {
+                                //获取任务状态
+                                doGetTaskStatus(UCManager.getInstance().getDefaultChild().getChildId(), childTaskId);
+                            }
                         }
                     }
                 }

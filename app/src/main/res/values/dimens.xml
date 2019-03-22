@@ -65,5 +65,12 @@
     <!--第三方登录-->
     <dimen name="third_login_icon_width">60dp</dimen><!--第三方登录图标宽度-->
 
+    <!--比例图表-->
+    <dimen name="ratio_char_radius">20dp</dimen><!--半径-->
+    <dimen name="ratio_char_item_height">40dp</dimen><!--图表项的高度-->
+    <dimen name="ratio_char_val_radius">16dp</dimen><!--图表项比例值半径-->
+    <dimen name="ratio_char_val_size">32dp</dimen><!--图表项比例值尺寸-->
+    <dimen name="ratio_char_val_margin">4dp</dimen><!--图表项比例值间距-->
+    <dimen name="ratio_char_result_margin">20dp</dimen><!--结果文本间距-->
 
 </resources>

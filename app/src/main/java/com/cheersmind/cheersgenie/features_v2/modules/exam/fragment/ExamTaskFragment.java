@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskStatus;
+import com.cheersmind.cheersgenie.features_v2.event.TaskStatusEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -37,8 +38,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -361,32 +365,85 @@ public class ExamTaskFragment extends LazyLoadFragment {
      * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTaskStatusNotice(ExamTaskStatus event) {
-        int status = event.getStatus();
-        //如果是完成状态，则刷新对应任务视图
-        if (status == Dictionary.TASK_STATUS_COMPLETED) {
-            String taskId = event.getTask_id();
-            String childTaskId = event.getChild_task_id();
-            List<ExamTaskEntity> data = recyclerAdapter.getData();
+    public void onTaskStatusNotice(TaskStatusEvent event) {
+        ExamTaskStatus taskStatus = event.getTaskStatus();
+        if (taskStatus != null) {
+            int status = taskStatus.getStatus();
+            //如果是完成状态，则刷新对应任务视图
+            if (status == Dictionary.TASK_STATUS_COMPLETED) {
+                String taskId = taskStatus.getTask_id();
+                String childTaskId = taskStatus.getChild_task_id();
+                List<ExamTaskEntity> data = recyclerAdapter.getData();
 
-            if (ArrayListUtil.isNotEmpty(data)) {
-                for (int i=0; i<data.size(); i++) {
-                    ExamTaskEntity item = data.get(i);
-                    try {
-                        if (item.getTask_id().equals(taskId)
-                                && item.getChildTask().getChild_task_id().equals(childTaskId)) {
-                            //设置完成状态
-                            item.getChildTask().setStatus(Dictionary.TASK_STATUS_COMPLETED);
-                            //刷新视图
-                            int position = recyclerAdapter.getHeaderLayoutCount() + i;
-                            recyclerAdapter.notifyItemChanged(position);
+                if (ArrayListUtil.isNotEmpty(data)) {
+                    for (int i = 0; i < data.size(); i++) {
+                        ExamTaskEntity item = data.get(i);
+                        try {
+                            if (item.getTask_id().equals(taskId)
+                                    && item.getChildTask().getChild_task_id().equals(childTaskId)) {
+                                //设置完成状态
+                                item.getChildTask().setStatus(Dictionary.TASK_STATUS_COMPLETED);
+                                //刷新视图
+                                int position = recyclerAdapter.getHeaderLayoutCount() + i;
+                                recyclerAdapter.notifyItemChanged(position);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+
+                    //处理任务解锁
+                    handlerUnlockTask();
                 }
             }
         }
+    }
+
+
+    /**
+     * 处理任务解锁
+     */
+    protected void handlerUnlockTask() {
+        List<ExamTaskEntity> data = recyclerAdapter.getData();
+
+        if (ArrayListUtil.isNotEmpty(data)) {
+
+            for (int i=0; i<data.size(); i++) {
+                ExamTaskEntity item = data.get(i);
+                //被锁状态
+                if (item.getIs_lock() == Dictionary.IS_LOCKED_YSE) {
+
+                    //解锁必须先做完的任务项id集合
+                    String[] taskItemIds = item.getPre_tasks().split(",");
+                    Set<String> taskIdSet = new HashSet<>(Arrays.asList(taskItemIds));
+
+                    //是否满足解锁条件
+                    boolean isMeetUnlockCondition = true;
+                    //存在一个未做完的前置任务项，则视为不满足解锁条件
+                    for (ExamTaskEntity item2 : data) {
+
+                        if (taskIdSet.contains(item2.getTask_id())) {
+
+                            if (item2.getChildTask() == null
+                                    || item2.getChildTask().getStatus() != Dictionary.TASK_STATUS_COMPLETED) {
+                                //不满足解锁条件
+                                isMeetUnlockCondition = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    //满足条件直接本地刷新（是否需要重新请求列表？）
+                    if (isMeetUnlockCondition) {
+                        item.setIs_lock(Dictionary.IS_LOCKED_NO);
+                        int realLayoutPosition = i + recyclerAdapter.getHeaderLayoutCount();
+                        recyclerAdapter.notifyItemChanged(realLayoutPosition);
+                    }
+                }
+            }
+
+        }
+
     }
 
 }

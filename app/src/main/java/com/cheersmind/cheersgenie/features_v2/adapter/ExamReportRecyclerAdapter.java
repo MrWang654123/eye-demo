@@ -1,30 +1,48 @@
 package com.cheersmind.cheersgenie.features_v2.adapter;
 
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
+import com.cheersmind.cheersgenie.features_v2.entity.ActType;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
+import com.cheersmind.cheersgenie.features_v2.view.CircleScaleView;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.List;
+import java.util.Locale;
 
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_BAR_H;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_BAR_V;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_DESC;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_HEADER;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LEFT_RIGHT_RATIO;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LINE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RADAR;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_ACT_TYPE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_ITEM;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_TITLE;
 
@@ -36,17 +54,22 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
     //是否是话题
     private boolean topic;
 
-    public ExamReportRecyclerAdapter(List<MultiItemEntity> data) {
+    private Context context;
+
+    public ExamReportRecyclerAdapter(Context context, List<MultiItemEntity> data) {
         super(data);
+        this.context = context;
 
         addItemType(CHART_HEADER, R.layout.recycleritem_exam_report_header);
         addItemType(CHART_SUB_ITEM, R.layout.recycleritem_exam_report_sub_item);
         addItemType(CHART_SUB_TITLE, R.layout.recycleritem_exam_report_sub_title);
+        addItemType(CHART_RECOMMEND_ACT_TYPE, R.layout.recycleritem_exam_report_recommend_act_type);
         addItemType(CHART_DESC, R.layout.chart_item_desc);
         addItemType(CHART_RADAR, R.layout.chart_item_radar);
         addItemType(CHART_LINE, R.layout.chart_item_line);
         addItemType(CHART_BAR_V, R.layout.chart_item_bar_v);
         addItemType(CHART_BAR_H, R.layout.chart_item_bar_h);
+        addItemType(CHART_LEFT_RIGHT_RATIO, R.layout.chart_item_ratio);
     }
 
     @Override
@@ -72,64 +95,83 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.GONE);
                 helper.getView(R.id.tv_dimension_original_score).setVisibility(View.GONE);
                 helper.getView(R.id.ll_dimension_no_score).setVisibility(View.GONE);
-                //话题
-                if (isTopic()) {
-                    //没有排名（视为没有分数和结论）
-                    if (entity.getRank() < 0.000001) {
-                        List<String> sub_result = entity.getSub_result();
+                helper.getView(R.id.ll_mbti_result).setVisibility(View.GONE);
+                //图表类型为左右堆叠图，是MBTI
+                if (entity.getChart_type() == CHART_LEFT_RIGHT_RATIO) {
+                    helper.getView(R.id.ll_mbti_result).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_mbti_result, entity.getResult());
+                    helper.setText(R.id.tv_mbti_sub_result, entity.getVice_result());
 
-                        if (ArrayListUtil.isNotEmpty(sub_result)) {
-                            StringBuilder result = new StringBuilder();
+                } else {
+                    //话题
+                    if (isTopic()) {
+                        //没有排名（视为没有分数和结论）
+                        if (entity.getRank() < 0.000001) {
+                            List<String> sub_result = entity.getSub_result();
 
-                            for (int i=0; i<sub_result.size(); i++) {
-                                String sub = sub_result.get(i);
-                                result.append(sub);
-                                if (i < sub_result.size() - 1) {
-                                    result.append("\n");
+                            if (ArrayListUtil.isNotEmpty(sub_result)) {
+                                StringBuilder result = new StringBuilder();
+
+                                for (int i = 0; i < sub_result.size(); i++) {
+                                    String sub = sub_result.get(i);
+                                    result.append(sub);
+                                    if (i < sub_result.size() - 1) {
+                                        result.append("\n");
+                                    }
+                                }
+
+                                helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.VISIBLE);
+                                helper.setText(R.id.tv_topic_sub_items_result, result.toString());
+                            }
+
+                        } else {//有排名则视为有结论
+                            helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
+                            helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
+                            //分数
+                            String scoreStr = String.valueOf(Math.round(entity.getScore()));
+                            helper.setText(R.id.tv_score, scoreStr);
+                            //分数圆环
+                            ((CircleScaleView)helper.getView(R.id.csv_score)).setCirclePercent((float)(100 - entity.getScore()), (float) entity.getScore());
+                            //结果
+                            helper.setText(R.id.tv_result, entity.getResult());
+                            //分数描述
+                            String scoreDesc = "本测评中你的个人得分" + scoreStr + "分,高于" + String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%的用户";
+                            helper.setText(R.id.tv_score_desc, scoreDesc);
+                        }
+
+                    } else {
+                        //量表：没有T分数和结论，则显示原始分；学业兴趣和职业兴趣没有分数和排名，则显示result
+                        //没有排名
+                        if (entity.getRank() < 0.000001) {
+                            //有分数
+                            if (entity.getScore() > 0.000001) {
+                                //原始分
+                                helper.getView(R.id.tv_dimension_original_score).setVisibility(View.VISIBLE);
+                                String scoreStr = "本测评中你的个人原始得分为" + entity.getScore() + "分";
+                                helper.setText(R.id.tv_dimension_original_score, scoreStr);
+
+                            } else {//无分数（学业兴趣、职业兴趣）
+                                if (!TextUtils.isEmpty(entity.getResult())) {
+                                    helper.getView(R.id.ll_dimension_no_score).setVisibility(View.VISIBLE);
+                                    helper.setText(R.id.tv_dimension_no_score_title, "推荐结果如下：");
+                                    helper.setText(R.id.tv_dimension_no_score_result, entity.getResult());
                                 }
                             }
 
-                            helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.VISIBLE);
-                            helper.setText(R.id.tv_topic_sub_items_result, result.toString());
+                        } else {//有排名则视为有结论
+                            helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
+                            helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
+                            //分数
+                            String scoreStr = String.valueOf(Math.round(entity.getScore()));
+                            helper.setText(R.id.tv_score, scoreStr);
+                            //分数圆环
+                            ((CircleScaleView)helper.getView(R.id.csv_score)).setCirclePercent((float)(100 - entity.getScore()), (float) entity.getScore());
+                            //结果
+                            helper.setText(R.id.tv_result, entity.getResult());
+                            //分数描述
+                            String scoreDesc = "本测评中你的个人得分" + scoreStr + "分,高于" + String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%的用户";
+                            helper.setText(R.id.tv_score_desc, scoreDesc);
                         }
-
-                    } else {//有排名则视为有结论
-                        helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
-                        helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-
-                        helper.setText(R.id.tv_score, String.valueOf(entity.getScore()) + "分");
-                        helper.setText(R.id.tv_result, entity.getResult());
-                        String scoreDesc = "本测评中你的个人得分" + entity.getScore() + "分,高于" + entity.getRank() * 100 + "%的用户";
-                        helper.setText(R.id.tv_score_desc, scoreDesc);
-                    }
-
-                } else {
-                    //量表：没有T分数和结论，则显示原始分；学业兴趣和职业兴趣没有分数和排名，则显示子项结果集
-                    //没有排名
-                    if (entity.getRank() < 0.000001) {
-                        //有分数
-                        if (entity.getScore() > 0.000001) {
-                            //原始分
-                            helper.getView(R.id.tv_dimension_original_score).setVisibility(View.VISIBLE);
-                            String scoreStr = "本测评中你的个人原始得分为" + entity.getScore() + "分";
-                            helper.setText(R.id.tv_dimension_original_score, scoreStr);
-
-                        } else {//无分数（学业兴趣、职业兴趣）
-                            if (!TextUtils.isEmpty(entity.getResult())) {
-                                helper.getView(R.id.ll_dimension_no_score).setVisibility(View.VISIBLE);
-                                helper.setText(R.id.tv_dimension_no_score_title, "推荐结果如下：");
-                                helper.setText(R.id.tv_dimension_no_score_result, entity.getResult());
-                            }
-                        }
-
-                    } else {//有排名则视为有结论
-                        helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
-                        helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-
-                        helper.setText(R.id.tv_score, String.valueOf(entity.getScore()) + "分");
-                        helper.setText(R.id.tv_result, entity.getResult());
-                        String scoreDesc = "本测评中你的个人得分" + entity.getScore() + "分,高于" + entity.getRank() * 100 + "%的用户";
-                        helper.setText(R.id.tv_score_desc, scoreDesc);
                     }
                 }
 
@@ -196,6 +238,55 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 chartItem.initChart(helper.getView(R.id.chart));
                 break;
             }
+            //水平比例图
+            case CHART_LEFT_RIGHT_RATIO: {
+                LinearLayout llContainer = helper.getView(R.id.ll_container);
+                //孩子视图未0才处理
+                if (llContainer.getChildCount() == 0) {
+
+                    ReportMbtiData reportMbtiData = (ReportMbtiData) item;
+                    List<ExamMbtiData> items = reportMbtiData.getItems();
+
+                    for (ExamMbtiData subItem : items) {
+                        View view = LayoutInflater.from(context).inflate(R.layout.layout_ratio_chart_item, null);
+                        View bgLeft = view.findViewById(R.id.bgLeft);
+                        View bgRight = view.findViewById(R.id.bgRight);
+                        TextView tvRatioLeft = view.findViewById(R.id.tv_ratio_left);
+                        TextView tvRatioRight = view.findViewById(R.id.tv_ratio_right);
+                        TextView tvResultLeft = view.findViewById(R.id.tv_result_left);
+                        TextView tvResultRight = view.findViewById(R.id.tv_result_right);
+                        //比例值
+                        tvRatioLeft.setText(String.format("%d%%", (int)(subItem.getLeft() * 100)));
+                        tvRatioRight.setText(String.format("%d%%", (int)(subItem.getRight() * 100)));
+
+                        //背景视图宽度比例
+                        ConstraintLayout.LayoutParams bgLeftParams = (ConstraintLayout.LayoutParams) bgLeft.getLayoutParams();
+                        bgLeftParams.horizontalWeight = (float) (subItem.getLeft() * 100);
+                        ConstraintLayout.LayoutParams bgRightParams = (ConstraintLayout.LayoutParams) bgRight.getLayoutParams();
+                        bgRightParams.horizontalWeight = (float) (subItem.getRight() * 100);
+
+                        if (subItem.getLeft() >= subItem.getRight()) {
+                            //背景
+                            bgLeft.setBackgroundResource(R.drawable.ratio_chart_dark_left);
+                            bgRight.setBackgroundResource(R.drawable.ratio_chart_light_right);
+                            //结果文本
+                            tvResultLeft.setText(subItem.getResult());
+                            tvResultRight.setVisibility(View.GONE);
+
+                        } else {
+                            //背景
+                            bgLeft.setBackgroundResource(R.drawable.ratio_chart_light_left);
+                            bgRight.setBackgroundResource(R.drawable.ratio_chart_dark_right);
+                            //结果文本
+                            tvResultRight.setText(subItem.getResult());
+                            tvResultLeft.setVisibility(View.GONE);
+                        }
+
+                        llContainer.addView(view);
+                    }
+                }
+                break;
+            }
             //子标题
             case CHART_SUB_TITLE: {
                 ReportSubTitleEntity subTitle = (ReportSubTitleEntity) item;
@@ -213,31 +304,36 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 //标题
                 helper.setText(R.id.tv_title, subItem.getItem_name());
 
+                //综合结果
                 String result = "";
-                //结果
-                if (subItem.getSort() > 0) {//sort大于0，视为学业兴趣、职业兴趣
-                    result = "本因子得分为" + subItem.getScore() +
-                            "分,在各个方向中排名第" + subItem.getSort();
-                } else {
-                    //result是否为空
-                    if (!TextUtils.isEmpty(subItem.getResult())) {
-                        //是否话题
-                        if (isTopic()) {
-                            //话题显示结果、排名
-                            //量表显示结果、得分、排名
-                            result = "本测评评价为" + subItem.getResult() +
-                                    "，得分为" + subItem.getScore() + "分";
+                if (isTopic()) {//话题
+                    //结果、排名
+                    result = "本测评评价为" + subItem.getResult() +
+                            "，得分为" + subItem.getScore() + "分";
 
-                        } else {
-                            //量表显示结果、得分、排名
-                            result = "本测评评价为" + subItem.getResult() +
-                                    "，得分为" + subItem.getScore() + "分" +
-                                    "，超过" + subItem.getRank() * 100 + "%的用户";
-                        }
+                } else {//量表
+                    if (subItem.getSort() > 0) {//sort大于0，视为学业兴趣、职业兴趣
+                        //得分、排序
+                        result = "本因子得分为" + subItem.getScore() +
+                                "分,在各个方向中排名第" + subItem.getSort();
                     } else {
-                        //得分、排名
-                        result = "本测评得分为" + subItem.getScore() + "分" +
-                                "，超过" + subItem.getRank() * 100 + "%的用户";
+                        //没有T分数和结论，则显示原始分
+                        if (subItem.getRank() < 0.000001) {//没有排名
+                            result = "本测评中你的个人原始得分为" + subItem.getScore() + "分";
+
+                        } else {//有排名
+                            //result是否为空
+                            if (!TextUtils.isEmpty(subItem.getResult())) {
+                                //结果、得分、排名
+                                result = "本测评评价为" + subItem.getResult() +
+                                        "，得分为" + subItem.getScore() + "分" +
+                                        "，超过" + subItem.getRank() * 100 + "%的用户";
+                            } else {
+                                //得分、排名
+                                result = "本测评得分为" + subItem.getScore() + "分" +
+                                        "，超过" + subItem.getRank() * 100 + "%的用户";
+                            }
+                        }
                     }
                 }
                 helper.setText(R.id.tv_result, result);
@@ -266,6 +362,30 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                     }
 
                     helper.addOnClickListener(R.id.iv_expand);
+                }
+
+                break;
+            }
+            //推荐的ACT分类
+            case CHART_RECOMMEND_ACT_TYPE: {
+                WarpLinearLayout warpLinearLayout = (WarpLinearLayout) helper.getView(R.id.warpLinearLayout);
+                if (warpLinearLayout.getChildCount() == 0) {
+                    ReportRecommendActType type = (ReportRecommendActType) item;
+                    List<ActType> items = type.getItems();
+                    //ACT分类
+                    for (int i=0; i<items.size(); i++) {
+                        final ActType actType = items.get(i);
+                        TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.dialog_category_item, null);
+                        tv.setText(actType.getArea_name());
+                        tv.setTag(i);
+                        tv.setOnClickListener(new OnMultiClickListener() {
+                            @Override
+                            public void onMultiClick(View view) {
+                                System.out.println(actType.getArea_name());
+                            }
+                        });
+                        warpLinearLayout.addView(tv);
+                    }
                 }
 
                 break;

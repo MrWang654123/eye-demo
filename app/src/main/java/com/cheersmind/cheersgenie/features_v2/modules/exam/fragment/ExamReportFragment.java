@@ -35,12 +35,15 @@ import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.entity.ActType;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.FactorResultEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
@@ -52,7 +55,6 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
-import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -207,7 +209,7 @@ public class ExamReportFragment extends LazyLoadFragment {
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //适配器
-        recyclerAdapter = new ExamReportRecyclerAdapter(null);
+        recyclerAdapter = new ExamReportRecyclerAdapter(getContext(), null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         recycleView.setAdapter(recyclerAdapter);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -516,40 +518,58 @@ public class ExamReportFragment extends LazyLoadFragment {
             //header
             resList.add(examReport.setItemType(Dictionary.CHART_HEADER));
 
-            //图表
-            List<ReportItemEntity> chartDatas = examReport.getChartDatas();
-            if (ArrayListUtil.isNotEmpty(chartDatas)) {
-                //添加子标题
-                resList.add(new ReportSubTitleEntity("数据").setItemType(Dictionary.CHART_SUB_TITLE));
-                //遍历图表
-                for (ReportItemEntity reportItem : chartDatas) {
-                    //图表类型
-                    int chartType = reportItem.getChartType();
-                    //报告项转图表项
-                    ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), chartType, reportItem);
-                    if (chartItem != null) {
-                        //添加图表
-                        resList.add(chartItem);
-                        //添加图表说明
-                        if (!TextUtils.isEmpty(reportItem.getChartDescription())) {
-                            resList.add(new ChartItemDesc(reportItem.getChartDescription()).setItemType(Dictionary.CHART_DESC));
+            //图表（堆叠图为MBTI，其他为正常图表）
+            if (examReport.getChart_type() == Dictionary.CHART_LEFT_RIGHT_RATIO) {
+                List<ExamMbtiData> mbtiData = examReport.getMbtiData();
+                if (ArrayListUtil.isNotEmpty(mbtiData)) {
+                    //添加子标题
+                    resList.add(new ReportSubTitleEntity("数据").setItemType(Dictionary.CHART_SUB_TITLE));
+                    resList.add(new ReportMbtiData(mbtiData).setItemType(Dictionary.CHART_LEFT_RIGHT_RATIO));
+                }
+
+            } else {
+                List<ReportItemEntity> chartDatas = examReport.getChartDatas();
+                if (ArrayListUtil.isNotEmpty(chartDatas)) {
+                    //添加子标题
+                    resList.add(new ReportSubTitleEntity("数据").setItemType(Dictionary.CHART_SUB_TITLE));
+                    //遍历图表
+                    for (ReportItemEntity reportItem : chartDatas) {
+                        //图表类型
+                        int chartType = reportItem.getChartType();
+                        //报告项转图表项
+                        ChartItem chartItem = ChartUtil.reportItemToChartItem(getContext(), chartType, reportItem);
+                        if (chartItem != null) {
+                            //添加图表
+                            resList.add(chartItem);
+                            //添加图表说明
+                            if (!TextUtils.isEmpty(reportItem.getChartDescription())) {
+                                resList.add(new ChartItemDesc(reportItem.getChartDescription()).setItemType(Dictionary.CHART_DESC));
+                            }
                         }
                     }
                 }
             }
 
-            //添加子标题
-            resList.add(new ReportSubTitleEntity("详细说明").setItemType(Dictionary.CHART_SUB_TITLE));
             //子项结果（详细测评）
             List<ReportSubItemEntity> subItems = examReport.getSubItems();
             if (ArrayListUtil.isNotEmpty(subItems)) {
+                //添加子标题
+                resList.add(new ReportSubTitleEntity("详细说明").setItemType(Dictionary.CHART_SUB_TITLE));
                 //设置布局类型
                 for (ReportSubItemEntity subItem : subItems) {
                     subItem.setItemType(Dictionary.CHART_SUB_ITEM);
                     resList.add(subItem);
                 }
-//                resList.addAll(subItems);
             }
+
+            //推荐职业类型
+            List<ActType> recommendActType = examReport.getRecommendActType();
+            if (ArrayListUtil.isNotEmpty(recommendActType)) {
+                //添加子标题
+                resList.add(new ReportSubTitleEntity("推荐职业类型").setItemType(Dictionary.CHART_SUB_TITLE));
+                resList.add(new ReportRecommendActType(recommendActType).setItemType(Dictionary.CHART_RECOMMEND_ACT_TYPE));
+            }
+
         }
 
         return resList;

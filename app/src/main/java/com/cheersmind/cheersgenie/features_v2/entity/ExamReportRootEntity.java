@@ -52,6 +52,22 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
     @InjectMap(name = "sub_items")
     private List<ReportSubItemEntity> subItems;
 
+    //图表类型（目前用于区分MBTI量表，等于5）
+    @InjectMap(name = "chart_type")
+    private int chart_type;
+
+    //MBTI的额外结果（典型形象）
+    @InjectMap(name = "vice_result")
+    private String vice_result;
+
+    //MBTI图表数据
+    @InjectMap(name = "mbti_date")
+    private List<ExamMbtiData> mbtiData;
+
+    //推荐的ACT职业分类
+    @InjectMap(name = "recommend")
+    private List<ActType> recommendActType;
+
     //是否是话题
     private boolean topic;
 
@@ -141,6 +157,38 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getChart_type() {
+        return chart_type;
+    }
+
+    public void setChart_type(int chart_type) {
+        this.chart_type = chart_type;
+    }
+
+    public String getVice_result() {
+        return vice_result;
+    }
+
+    public void setVice_result(String vice_result) {
+        this.vice_result = vice_result;
+    }
+
+    public List<ExamMbtiData> getMbtiData() {
+        return mbtiData;
+    }
+
+    public void setMbtiData(List<ExamMbtiData> mbtiData) {
+        this.mbtiData = mbtiData;
+    }
+
+    public List<ActType> getRecommendActType() {
+        return recommendActType;
+    }
+
+    public void setRecommendActType(List<ActType> recommendActType) {
+        this.recommendActType = recommendActType;
     }
 
     private int itemType;
