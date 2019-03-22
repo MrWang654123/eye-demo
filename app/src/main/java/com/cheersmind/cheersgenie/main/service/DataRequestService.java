@@ -21,8 +21,15 @@ import com.cheersmind.cheersgenie.features.dto.ResponseDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
+import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
+import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
+import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
+import com.cheersmind.cheersgenie.features_v2.dto.MajorDto;
+import com.cheersmind.cheersgenie.features_v2.dto.MajorEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
+import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -1049,6 +1056,31 @@ public class DataRequestService {
     }
 
     /**
+     * 获取报告V2
+     * @param dto
+     * 1、孩子测评ID
+     * 2、维度ID（必填）topicid,或者topic_dimension_id
+     * 3、维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
+     * 4、对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getReportV2New(ExamReportDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_REPORT_V2_NEW;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_exam_id", dto.getChildExamId());
+        params.put("relation_id", dto.getRelationId());
+        params.put("relation_type", dto.getRelationType());
+        params.put("compare_id", dto.getCompareId());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+        //请求
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
      * 获取报告推荐文章
      * @param childExamId 孩子测评ID
      * @param relationId 维度ID（必填）topicid,或者topic_dimension_id
@@ -1064,6 +1096,25 @@ public class DataRequestService {
                 .replace("{relation_id}", relationId)
                 .replace("{relation_type}", relationType)
                 .replace("{compare_id}", compareId +"");
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取报告推荐内容
+     * @param dto
+     * 1、孩子测评ID
+     * 2、维度ID（必填）topicid,或者topic_dimension_id
+     * 3、维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
+     * 4、对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getReportRecommendContent(ExamReportDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_REPORT_RECOMMEND_ARTICLE
+                .replace("{child_exam_id}", dto.getChildExamId())
+                .replace("{relation_id}", dto.getRelationId())
+                .replace("{relation_type}", dto.getRelationType())
+                .replace("{compare_id}", String.valueOf(dto.getCompareId()));
         doGet(url, callback, httpTag, context);
     }
 
@@ -1298,7 +1349,7 @@ public class DataRequestService {
      * @param videoId 视频ID
      * @param sign 签名
      * @param curTimestamp 当前时间戳
-     * @param callback 回调 回调
+     * @param callback 回调
      */
     public void getVideoRealUrl(String videoId, String sign, String curTimestamp,
                                 final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1314,7 +1365,7 @@ public class DataRequestService {
     /**
      * 获取任务列表
      * @param childId 孩子ID
-     * @param callback 回调 回调
+     * @param callback 回调
      * @param httpTag 通信标记
      */
     public void getTaskList(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1327,7 +1378,7 @@ public class DataRequestService {
     /**
      * 获取模块列表
      * @param dto 模块dto
-     * @param callback 回调 回调
+     * @param callback 回调
      * @param httpTag 通信标记
      */
     public void getModules(ModuleDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1348,7 +1399,7 @@ public class DataRequestService {
     /**
      * 获取测评任务列表
      * @param dto 模块dto
-     * @param callback 回调 回调
+     * @param callback 回调
      * @param httpTag 通信标记
      */
     public void getExamTasks(ExamTaskDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1370,7 +1421,7 @@ public class DataRequestService {
     /**
      * 获取测评任务的详情子项列表
      * @param dto 模块dto
-     * @param callback 回调 回调
+     * @param callback 回调
      * @param httpTag 通信标记
      */
     public void getExamTaskDetailItems(TaskItemDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1392,7 +1443,7 @@ public class DataRequestService {
     /**
      * 获取话题下的量表列表
      * @param dto 话题dto
-     * @param callback 回调 回调
+     * @param callback 回调
      * @param httpTag 通信标记
      */
     public void getDimensionsInTopic(TopicDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
@@ -1407,6 +1458,373 @@ public class DataRequestService {
         url = BaseService.settingGetParams(url, params);
 
         doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取大学排名列表
+     * @param dto 大学排名dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeRankList(CollegeRankDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_RANK_LIST;
+
+        if (dto != null) {
+            Map<String, Object> params = new HashMap<>();
+            //省份
+            if (dto.getProvince() != null && !TextUtils.isEmpty(dto.getProvince().getName())) {
+                try {
+                    //输入中文的地方加上 URLEncoder.encode 处理
+                    String encode = URLEncoder.encode(dto.getProvince().getName(), "utf-8");
+                    params.put("state", encode);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            //学历层次
+            if (dto.getEduLevel() != null && !TextUtils.isEmpty(dto.getEduLevel().getName())) {
+                try {
+                    //输入中文的地方加上 URLEncoder.encode 处理
+                    String encode = URLEncoder.encode(dto.getEduLevel().getName(), "utf-8");
+                    params.put("china_degree", encode);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            //主题排名
+            if (dto.getRankItem() != null && !TextUtils.isEmpty(dto.getRankItem().getCode())) {
+                params.put("ranking_key", dto.getRankItem().getCode());
+            }
+
+            //分页
+            params.put("page", dto.getPage());
+            params.put("size", dto.getSize());
+
+            //拼接参数
+            url = BaseService.settingGetParams(url, params);
+        }
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取勋章列表
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getMedals(final BaseService.ServiceCallback callback, String httpTag, Context context) {
+        String url = HttpConfig.URL_MEDALS;
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取专业树
+     * @param dto 专业树dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getMajorTree(MajorDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MAJOR_TREE;
+
+        Map<String, Object> params = new HashMap<>();
+        //学历层级
+        if (dto.getEdu_level() > 0) {
+            params.put("edu_level", dto.getEdu_level());
+        }
+        //专业名称
+        if (!TextUtils.isEmpty(dto.getMajor_name())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getMajor_name(), "utf-8");
+                params.put("major_name", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取专业详情
+     * @param majorCode 专业代码
+     * @param callback 回调
+     */
+    public void getMajorDetail(String majorCode, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MAJOR_DETAIL
+                .replace("{major_code}", majorCode);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取行业树
+     * @param dto 行业树dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getOccupationTree(OccupationDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_OCCUPATION_TREE;
+
+        Map<String, Object> params = new HashMap<>();
+        //专业名称
+        if (!TextUtils.isEmpty(dto.getOccupation_name())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getOccupation_name(), "utf-8");
+                params.put("occupation_name", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取行业详情
+     * @param occupationId 行业ID
+     * @param callback 回调
+     */
+    public void getOccupationDetail(long occupationId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_OCCUPATION_DETAIL
+                .replace("{occupation_id}", String.valueOf(occupationId));
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取大学的省份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeProvince(final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_PROVINCE;
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取大学的学历层次
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeEducationLevel(final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_EDUCATION_LEVEL;
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取大学的院校类型
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeCategory(final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_CATEGORY;
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取大学的详情信息
+     * @param collegeId 院校ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeDetailInfo(String collegeId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_DETAIL_INFO
+                .replace("{university_id}", collegeId);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取大学的招生基础信息（目前包括：招生办信息、招生简章）
+     * @param collegeId 院校ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeEnrollBaseInfo(String collegeId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_ENROLL_BASE_INFO
+                .replace("{universities_id}", collegeId);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取录取的文理科
+     * @param province 生源地省份
+     * @param year 年份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeEnrollKinds(String province, String year, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String encode = "";
+        try {
+            //输入中文的地方加上 URLEncoder.encode 处理
+            encode = URLEncoder.encode(province, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url = HttpConfig.URL_COLLEGE_ENROLL_KIND
+                .replace("{province}", encode);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取院校录取分数
+     * @param dto 生源地省份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeEnrollScore(CollegeEnrollScoreDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_ENROLL;
+
+        Map<String, Object> params = new HashMap<>();
+        //省份名称
+        if (!TextUtils.isEmpty(dto.getProvince())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getProvince(), "utf-8");
+                params.put("province", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        //文理科
+        if (!TextUtils.isEmpty(dto.getYear())) {
+            params.put("year", dto.getYear());
+        }
+        //文理科
+        if (!TextUtils.isEmpty(dto.getKind())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getKind(), "utf-8");
+                params.put("kind", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取专业录取分数
+     * @param dto 生源地省份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getMajorEnrollScore(MajorEnrollScoreDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MAJOR_ENROLL;
+
+        Map<String, Object> params = new HashMap<>();
+        //省份名称
+        if (!TextUtils.isEmpty(dto.getProvince())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getProvince(), "utf-8");
+                params.put("province", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        //文理科
+        if (!TextUtils.isEmpty(dto.getYear())) {
+            params.put("year", dto.getYear());
+        }
+        //文理科
+        if (!TextUtils.isEmpty(dto.getKind())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getKind(), "utf-8");
+                params.put("kind", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        //批次前缀
+        if (!TextUtils.isEmpty(dto.getBatchPre())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getBatchPre(), "utf-8");
+                params.put("bkcc", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        //批次后缀
+        if (!TextUtils.isEmpty(dto.getBatchSuf())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getBatchSuf(), "utf-8");
+                params.put("batch", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取院校的毕业信息
+     * @param collegeId 院校ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeGraduationInfo(String collegeId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_GRADUATION_INFO
+                .replace("{university_id}", collegeId);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取任务状态
+     * @param childId 孩子ID
+     * @param childTaskId 孩子任务ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getTaskStatus(String childId, String childTaskId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_TASK_STATUS
+                .replace("{child_id}", childId)
+                .replace("{child_task_id}", childTaskId);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 动作完成
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param context 上下文
+     */
+    public void postActionComplete(ActionCompleteDto dto, final BaseService.ServiceCallback callback,
+                                   String httpTag, Context context){
+        String url = HttpConfig.URL_ACTION_COMPLETE
+                .replace("{child_id}", dto.getChildId());
+        Map<String,Object> map = new HashMap<>();
+        map.put("item_id", dto.getItemId());
+        map.put("item_type", dto.getItemType());
+        //可选，不传代表不是通过具体任务的方式进入的
+        if (!TextUtils.isEmpty(dto.getChildTaskItemId())) {
+            map.put("child_task_item_id", dto.getChildTaskItemId());
+        }
+
+        doPost(url, map, false, callback, httpTag, context);
     }
 
 }

@@ -1,229 +1,83 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
-import com.cheersmind.cheersgenie.features.entity.ArticleCategory;
-import com.cheersmind.cheersgenie.features.entity.ArticleTag;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 勋章
  */
 public class MedalEntity implements Serializable {
 
-    @InjectMap(name = "id")
-    private String id;
+    //ID
+    @InjectMap(name = "medal_id")
+    private String medal_id;
 
-    //标题
-    @InjectMap(name = "article_title")
-    private String articleTitle;
+    //名称
+    @InjectMap(name = "medal_name")
+    private String medal_name;
 
-    //主图
-    @InjectMap(name = "article_img")
-    private String articleImg;
+    //图标
+    @InjectMap(name = "icon")
+    private String icon;
 
-    //浏览次数
-    @InjectMap(name = "page_view")
-    private int pageView;
+    //描述
+    @InjectMap(name = "description")
+    private String description;
 
-    //收藏次数
-    @InjectMap(name = "page_favorite")
-    private int pageFavorite;
+    //排序
+    @InjectMap(name = "sort")
+    private int sort;
 
-    //评测次数
-    @InjectMap(name = "test_count")
-    private int testCount;
+    //状态，0-未获取，1-已获取。
+    @InjectMap(name = "status")
+    private int status;
 
-    //是否关联测评，0 没有 1 有
-    @InjectMap(name = "is_reference_test")
-    private int isReferenceTest;
-
-    //简介
-    @InjectMap(name = "summary")
-    private String summary;
-
-    //标签集合
-    @InjectMap(name = "tags")
-    private List<ArticleTag> articleTags;
-
-    //文章来源类型：1-原创，2-转载
-    @InjectMap(name = "source_type")
-    private int sourceType;
-
-    //作者
-    @InjectMap(name = "article_author")
-    private String articleAuthor;
-
-    //发布时间
-    @InjectMap(name = "publish_date")
-    private String publishDate;
-
-    //文章类型：1-普通图文文章，2-视频文章，3-画册？
-    @InjectMap(name = "content_type")
-    private int contentType;
-
-    //类型
-    @InjectMap(name = "category")
-    private ArticleCategory category;
-
-    //是否收藏
-    @InjectMap(name = "is_favorite")
-    private boolean isFavorite;
-
-    //是否点赞
-    @InjectMap(name = "is_like")
-    private boolean isLike;
-
-    //评论数
-    @InjectMap(name = "comment_count")
-    private int commentCount;
-
-    //是否选中
-    private boolean isSelected;
-
-
-    public String getId() {
-        return id;
+    public String getMedal_id() {
+        return medal_id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMedal_id(String medal_id) {
+        this.medal_id = medal_id;
     }
 
-    public String getArticleTitle() {
-        return articleTitle;
+    public String getMedal_name() {
+        return medal_name;
     }
 
-    public void setArticleTitle(String articleTitle) {
-        this.articleTitle = articleTitle;
+    public void setMedal_name(String medal_name) {
+        this.medal_name = medal_name;
     }
 
-    public String getArticleImg() {
-        return articleImg;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setArticleImg(String articleImg) {
-        this.articleImg = articleImg;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public int getIsReferenceTest() {
-        return isReferenceTest;
+    public String getDescription() {
+        return description;
     }
 
-    public void setIsReferenceTest(int isReferenceTest) {
-        this.isReferenceTest = isReferenceTest;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getSummary() {
-        return summary;
+    public int getSort() {
+        return sort;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setSort(int sort) {
+        this.sort = sort;
     }
 
-    public int getContentType() {
-        return contentType;
+    public int getStatus() {
+        return status;
     }
 
-    public void setContentType(int contentType) {
-        this.contentType = contentType;
-    }
-
-    public int getPageView() {
-        return pageView;
-    }
-
-    public void setPageView(int pageView) {
-        this.pageView = pageView;
-    }
-
-    public int getPageFavorite() {
-        return pageFavorite;
-    }
-
-    public void setPageFavorite(int pageFavorite) {
-        this.pageFavorite = pageFavorite;
-    }
-
-    public int getTestCount() {
-        return testCount;
-    }
-
-    public void setTestCount(int testCount) {
-        this.testCount = testCount;
-    }
-
-    public List<ArticleTag> getArticleTags() {
-        return articleTags;
-    }
-
-    public void setArticleTags(List<ArticleTag> articleTags) {
-        this.articleTags = articleTags;
-    }
-
-    public int getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(int sourceType) {
-        this.sourceType = sourceType;
-    }
-
-    public String getArticleAuthor() {
-        return articleAuthor;
-    }
-
-    public void setArticleAuthor(String articleAuthor) {
-        this.articleAuthor = articleAuthor;
-    }
-
-    public String getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(String publishDate) {
-        this.publishDate = publishDate;
-    }
-
-    public ArticleCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(ArticleCategory category) {
-        this.category = category;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
-    public boolean isLike() {
-        return isLike;
-    }
-
-    public void setLike(boolean like) {
-        isLike = like;
-    }
-
-    public int getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

@@ -52,6 +52,10 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features.view.video.JZVideoPlayerStandardHorizontal;
+import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
+import com.cheersmind.cheersgenie.features_v2.entity.TaskReward;
+import com.cheersmind.cheersgenie.features_v2.entity.TaskRewardRoot;
+import com.cheersmind.cheersgenie.features_v2.event.ActionCompleteEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.features.entity.ArticleEntity;
 import com.cheersmind.cheersgenie.features.entity.CommentEntity;
@@ -72,6 +76,7 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.wang.avi.AVLoadingIndicatorView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -100,12 +105,24 @@ public class ArticleDetailActivity extends BaseActivity {
     private static final String ARTICLE_TITLE = "articleTitle";
     //文章ID
     private static final String ARTICLE_ID = "article_id";
+    //是否是任务的方式
+    private static final String FROM_TASK = "FROM_TASK";
+    //孩子任务项ID
+    private static final String CHILD_TASK_ITEM_ID = "CHILD_TASK_ITEM_ID";
+    //任务项类型
+    private static final String TASK_ITEM_TYPE = "TASK_ITEM_TYPE";
     //文章Id
     String articleId;
     //主图Url
     String ivMainUrl;
     //文章标题
     String articleTitle;
+    //是否是任务的方式
+    boolean isFromTask;
+    //孩子任务项Id
+    String childTaskItemId;
+    //任务项类型
+    int taskItemType = Dictionary.TASK_ITEM_TYPE_ARTICLE;
 
     //标题栏
 //    @BindView(R.id.toolbar)
@@ -255,18 +272,6 @@ public class ArticleDetailActivity extends BaseActivity {
 
     /**
      * 开启文章详情页面
-     *
-     * @param articleId
-     */
-//    public static void startArticleDetailActivity(Context context, String articleId) {
-//        startArticleDetailActivity(context, articleId, null, null);
-//    }
-
-
-    /**
-     * 开启文章详情页面
-     *
-     * @param articleId
      */
     public static void startArticleDetailActivity(Context context, String articleId, String ivMainUrl, String articleTitle) {
         Intent intent = new Intent(context, ArticleDetailActivity.class);
@@ -274,6 +279,29 @@ public class ArticleDetailActivity extends BaseActivity {
         extras.putString(ARTICLE_ID, articleId);
         extras.putString(IV_MAIN_URL, ivMainUrl);
         extras.putString(ARTICLE_TITLE, articleTitle);
+        extras.putBoolean(FROM_TASK, false);
+        intent.putExtras(extras);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 以任务方式开启文章详情页面
+     */
+    public static void startArticleDetailActivityByTask(
+            Context context,
+            String articleId,
+            String ivMainUrl,
+            String articleTitle,
+            String childTaskItemId,
+            int taskItemType) {
+        Intent intent = new Intent(context, ArticleDetailActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ARTICLE_ID, articleId);
+        extras.putString(IV_MAIN_URL, ivMainUrl);
+        extras.putString(ARTICLE_TITLE, articleTitle);
+        extras.putBoolean(FROM_TASK, true);
+        extras.putString(CHILD_TASK_ITEM_ID, childTaskItemId);
+        extras.putInt(TASK_ITEM_TYPE, taskItemType);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -327,7 +355,7 @@ public class ArticleDetailActivity extends BaseActivity {
 //        divider.setDrawable(ContextCompat.getDrawable(ArticleDetailActivity.this,R.drawable.recycler_divider_line_eeeeee));
 //        recycleView.addItemDecoration(divider);
 
-        //nestedscrollview滑动监听（禁止了内部的recyclerview的滑动，所以上拉加载得监听它）
+        //nestedScrollview滑动监听（禁止了内部的recyclerView的滑动，所以上拉加载得监听它）
         svMainBlock.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -347,15 +375,6 @@ public class ArticleDetailActivity extends BaseActivity {
                 .placeholder(R.drawable.ico_head)//占位图
                 .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
                 .diskCacheStrategy(DiskCacheStrategy.NONE);//磁盘缓存策略：不缓存
-
-        //默认Glide处理参数
-//        defaultOptions = new RequestOptions()
-////                .transform(multi)
-//                .centerCrop()
-//                .skipMemoryCache(false)//不忽略内存
-//                .placeholder(R.drawable.default_image_round_article_list)//占位图
-//                .dontAnimate()//Glide默认是渐变动画，设置dontAnimate()不要动画
-//                .diskCacheStrategy(DiskCacheStrategy.ALL);
 
         //初始化webView
         initWebView();
@@ -381,39 +400,16 @@ public class ArticleDetailActivity extends BaseActivity {
 
         ivMainUrl = getIntent().getStringExtra(IV_MAIN_URL);
         articleTitle = getIntent().getStringExtra(ARTICLE_TITLE);
-//        if (TextUtils.isEmpty(ivMainUrl) || TextUtils.isEmpty(articleTitle)) {
-//            ToastUtil.showShort(ArticleDetailActivity.this, "数据传递有误");
-//            return;
-//        }
+        isFromTask = getIntent().getBooleanExtra(FROM_TASK, false);
+        childTaskItemId = getIntent().getStringExtra(CHILD_TASK_ITEM_ID);
+        taskItemType = getIntent().getIntExtra(TASK_ITEM_TYPE, Dictionary.TASK_ITEM_TYPE_ARTICLE);
 
-        //主图
-        /*Glide.with(this)
-                .load(ivMainUrl)
-                .apply(defaultOptions)
-                .into(ivMain);*/
-        //主图
-//        if (!TextUtils.isEmpty(ivMainUrl)) {
-//            ivMain.setImageURI(ivMainUrl);
-////            ivMain.setImageURI("http://img5.imgtn.bdimg.com/it/u=415293130,2419074865&fm=26&gp=0.jpg");
-//        } else {
-//            ivMain.setActualImageResource(R.drawable.default_image_round_article_list);
-//        }
         ivMain.setImageURI(ivMainUrl);
         //文章标题
         tvArticleTitle.setText(articleTitle);
 
         //加载文章详情
         loadArticleDetail(articleId);
-
-        //加载评论数据
-//        articleId = "1";
-//        loadCommentData(articleId);
-
-        //处理图片宽高
-//        String tempContent = HtmlUtil.getNewContentByHandleImage(testArticleContent);
-//        webArticleContent.loadDataWithBaseURL(null, tempContent, "text/html","utf-8",null);
-
-//        initVideo();
     }
 
 
@@ -914,7 +910,10 @@ public class ArticleDetailActivity extends BaseActivity {
                 try {
                     //解析数据
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    final ArticleEntity articleEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleEntity.class);
+                    ArticleEntity articleEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleEntity.class);
+
+                    //处理封面图为空的情况
+                    handlerEmptyCover(articleEntity);
 
                     //视频视图处理
                     initVideo(articleEntity);
@@ -926,34 +925,11 @@ public class ArticleDetailActivity extends BaseActivity {
                     //刷新点赞视图
                     refreshLikeView(articleEntity.isLike(), articleEntity.getPageLike());
 
-                    int delay = 150;//默认延迟加载关联测评和评论
-                    //文章内容过长，则加长延迟时间
-                    if (!TextUtils.isEmpty(articleEntity.getArticleContent())
-                            && articleEntity.getArticleContent().length() > 300) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            delay = 300;
-                        } else {
-                            delay = 500;
-                        }
-                    }
-                    getHandler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //有关联的测评，则刷新关联测评的视图
-                            if (articleEntity.getTopicInfo() != null) {
-                                //refreshRelativeExamView(articleEntity);
-                                topicInfo = articleEntity.getTopicInfo();
-                                //请求关联测评
-                                getReferenceExam(topicInfo);
-                            }
+                    //加载关联测评和评论
+                    loadCommentDataAndReferenceExamWrap(articleEntity);
 
-                            //文章评论模块开启则加载评论信息
-                            if (articleEntity.isShowComment()) {
-                                //加载评论
-                                loadCommentData(articleId);
-                            }
-                        }
-                    }, delay);
+                    //提交任务完成操作
+                    doPostActionComplete(articleEntity);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -964,10 +940,112 @@ public class ArticleDetailActivity extends BaseActivity {
         }, httpTag,ArticleDetailActivity.this);
     }
 
+    /**
+     * 加载关联测评和评论
+     * @param article 文章
+     */
+    private void loadCommentDataAndReferenceExamWrap(final ArticleEntity article) {
+        int delay = 150;//默认延迟加载
+        //文章内容过长，则加长延迟时间
+        if (!TextUtils.isEmpty(article.getArticleContent())
+                && article.getArticleContent().length() > 300) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                delay = 300;
+            } else {
+                delay = 500;
+            }
+        }
+        getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //有关联的测评，则刷新关联测评的视图
+                if (article.getTopicInfo() != null) {
+                    //refreshRelativeExamView(articleEntity);
+                    topicInfo = article.getTopicInfo();
+                    //请求关联测评
+                    getReferenceExam(topicInfo);
+                }
+
+                //文章评论模块开启则加载评论信息
+                if (article.isShowComment()) {
+                    //加载评论
+                    loadCommentData(articleId);
+                }
+            }
+        }, delay);
+    }
+
+    /**
+     * 处理空封面情况
+     * @param article 文章对象
+     */
+    private void handlerEmptyCover(ArticleEntity article) {
+        if (TextUtils.isEmpty(ivMainUrl) && !TextUtils.isEmpty(article.getArticleImg())) {
+            ivMainUrl = article.getArticleImg();
+            ivMain.setImageURI(ivMainUrl);
+        }
+    }
+
+    /**
+     * 动作完成
+     * @param article 文章
+     */
+    private void doPostActionComplete(final ArticleEntity article) {
+        ActionCompleteDto dto = new ActionCompleteDto();
+        dto.setItemId(article.getId());
+        //是否来自任务页
+        if (isFromTask) {
+            dto.setItemType(taskItemType);
+            dto.setChildTaskItemId(childTaskItemId);
+        } else {
+            //文章类型转成任务项类型
+            switch (article.getContentType()) {
+                //文章
+                case Dictionary.ARTICLE_TYPE_SIMPLE: {
+                    taskItemType = Dictionary.TASK_ITEM_TYPE_ARTICLE;
+                    break;
+                }
+                //视频
+                case Dictionary.ARTICLE_TYPE_VIDEO: {
+                    taskItemType = Dictionary.TASK_ITEM_TYPE_VIDEO;
+                    break;
+                }
+            }
+            dto.setItemType(taskItemType);
+        }
+        //孩子ID
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
+
+        DataRequestService.getInstance().postActionComplete(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    TaskRewardRoot root = InjectionWrapperUtil.injectMap(dataMap, TaskRewardRoot.class);
+                    List<TaskReward> items = root.getItems();
+
+                    //发送动作完成事件
+                    EventBus.getDefault().post(new ActionCompleteEvent(article.getId()));
+
+                    //获取奖励的提示
+                    //……
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag,ArticleDetailActivity.this);
+    }
 
     /**
      * 请求关联测评
-     * @param topicInfo
+     * @param topicInfo 话题
      */
     private void getReferenceExam(final TopicInfo topicInfo) {
         String childId = UCManager.getInstance().getDefaultChild().getChildId();

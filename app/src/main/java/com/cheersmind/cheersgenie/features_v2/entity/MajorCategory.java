@@ -2,45 +2,47 @@ package com.cheersmind.cheersgenie.features_v2.entity;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.cheersmind.cheersgenie.features_v2.adapter.MajorRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.adapter.MajorTreeRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * 专业
+ * 专业所属门类
  */
-public class MajorEntity extends AbstractExpandableItem<MajorEntity> implements MultiItemEntity, Serializable {
+public class MajorCategory extends AbstractExpandableItem<MajorItem> implements MultiItemEntity, Serializable {
 
-    public MajorEntity() {
+    public MajorCategory() {
         mExpandable = false;
     }
 
-    @InjectMap(name = "id")
-    private String id;
+    //专业所属门类名称
+    @InjectMap(name = "category")
+    private String category;
 
-    //标题
-    @InjectMap(name = "article_title")
-    private String articleTitle;
+    //专业集合
+    @InjectMap(name = "majors")
+    private List<MajorItem> majorItems;
 
-    public String getId() {
-        return id;
+    public String getCategory() {
+        return category;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public String getArticleTitle() {
-        return articleTitle;
+    public List<MajorItem> getMajorItems() {
+        return majorItems;
     }
 
-    public void setArticleTitle(String articleTitle) {
-        this.articleTitle = articleTitle;
+    public void setMajorItems(List<MajorItem> majorItems) {
+        this.majorItems = majorItems;
     }
 
-    private int level = 0;
-    private int itemType = MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL0;
+    private int level = 1;
+    private int itemType = MajorTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL1;
     //最里层的子项是否是兄弟中的最后一个
     private boolean isLastInMaxLevel;
 

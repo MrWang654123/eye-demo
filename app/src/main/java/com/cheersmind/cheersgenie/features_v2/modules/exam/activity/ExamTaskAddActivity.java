@@ -8,27 +8,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.ExamTaskAddFragment;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.ExamTaskFragment;
 
 /**
  * 添加测评任务
  */
 public class ExamTaskAddActivity extends BaseActivity {
 
-    //模块ID
-    private static final String MODULE_ID = "MODULE_ID";
-
     /**
      * 启动添加测评任务页面
      * @param context 上下文
-     * @param moduleId 模块ID
+     * @param childModuleId 孩子模块ID
      */
-    public static void startExamTaskAddActivity(Context context, String moduleId) {
+    public static void startExamTaskAddActivity(Context context, String childModuleId) {
         Intent intent = new Intent(context, ExamTaskAddActivity.class);
         Bundle extras = new Bundle();
-        extras.putString(MODULE_ID, moduleId);
+        extras.putString(DtoKey.CHILD_MODULE_ID, childModuleId);
         intent.putExtras(extras);
         context.startActivity(intent);
     }
@@ -51,7 +48,7 @@ public class ExamTaskAddActivity extends BaseActivity {
 
     @Override
     protected void onInitData() {
-        String moduleId = getIntent().getStringExtra(MODULE_ID);
+        String childModuleId = getIntent().getStringExtra(DtoKey.CHILD_MODULE_ID);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = ExamTaskAddFragment.class.getSimpleName();
@@ -62,7 +59,7 @@ public class ExamTaskAddActivity extends BaseActivity {
             ExamTaskAddFragment fragment = new ExamTaskAddFragment();
             //添加初始数据
             Bundle bundle = new Bundle();
-            bundle.putString(MODULE_ID, moduleId);
+            bundle.putString(DtoKey.CHILD_MODULE_ID, childModuleId);
             fragment.setArguments(bundle);
             //添加已完成的测评fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

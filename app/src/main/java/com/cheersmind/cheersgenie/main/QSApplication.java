@@ -247,6 +247,7 @@ public class QSApplication extends LitePalApplication {
             EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_LOCAL);
             EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_LOCAL);
             EnvHostManager.getInstance().setWebHost(EnvHostManager.WEB_HOST_LOCAL);
+            EnvHostManager.getInstance().setVideoSignKey(EnvHostManager.VIDEO_SIGN_KEY_DEVELOP);
         }else if("develop".equals(hostType)){
             EnvHostManager.getInstance().setUcHost(EnvHostManager.UC_HOST_DEVELOP);
             EnvHostManager.getInstance().setApiHost(EnvHostManager.API_HOST_DEVELOP);

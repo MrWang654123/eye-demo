@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.features_v2.modules.mine.fragment;
 
+import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -86,7 +88,7 @@ public class MineMedalFragment extends LazyLoadFragment {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             MedalEntity entity = recyclerAdapter.getData().get(position);
-//            ExamTaskDetailActivity.startExamTaskDetailActivity(getContext(), entity);
+            popupExitWindows(entity);
         }
     };
 
@@ -183,8 +185,8 @@ public class MineMedalFragment extends LazyLoadFragment {
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        dto.setPage(pageNum);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+//        dto.setPage(pageNum);
+        DataRequestService.getInstance().getMedals(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -224,7 +226,7 @@ public class MineMedalFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -257,8 +259,8 @@ public class MineMedalFragment extends LazyLoadFragment {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        dto.setPage(pageNum);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+//        dto.setPage(pageNum);
+        DataRequestService.getInstance().getMedals(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能
@@ -286,10 +288,6 @@ public class MineMedalFragment extends LazyLoadFragment {
 
                     totalCount = rootEntity.getTotal();
                     List<MedalEntity> dataList = rootEntity.getItems();
-//                    MessageEntity messageEntity = dataList.get(0);
-//                    for (int i=0; i<20; i++) {
-//                        dataList.add(messageEntity);
-//                    }
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
@@ -308,7 +306,7 @@ public class MineMedalFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -330,6 +328,30 @@ public class MineMedalFragment extends LazyLoadFragment {
 
             }
         }, httpTag, getActivity());
+    }
+
+
+    /**
+     * 勋章说明弹窗
+     * @param medal 勋章
+     */
+    private void popupExitWindows(MedalEntity medal) {
+        if (getContext() != null) {
+            AlertDialog dialog = new AlertDialog.Builder(getContext())
+                    .setTitle(medal.getMedal_name())
+                    .setMessage(medal.getDescription())
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create();
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+            }
+            dialog.show();
+        }
     }
 
 }

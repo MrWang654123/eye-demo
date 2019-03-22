@@ -28,7 +28,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:gravity="center_horizontal">
 
                     <CheckBox
@@ -45,16 +46,17 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/ll_rank_category_toggle"
+                    android:id="@+id/ll_rank_level_toggle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:gravity="center_horizontal">
 
                     <CheckBox
-                        android:id="@+id/cb_rank_category"
+                        android:id="@+id/cb_rank_level"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
@@ -63,7 +65,7 @@
                         android:drawableEnd="@drawable/arrow_up_down"
                         android:background="@color/transpera"
                         android:button="@null"
-                        android:text="综合排名"/>
+                        android:text="本科"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -72,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:gravity="center_horizontal">
 
                     <CheckBox
@@ -85,6 +88,8 @@
                         android:drawableEnd="@drawable/arrow_up_down"
                         android:background="@color/transpera"
                         android:button="@null"
+                        android:ellipsize="end"
+                        android:singleLine="true"
                         android:text="本科排名"/>
                 </LinearLayout>
 
@@ -122,38 +127,29 @@
                     android:background="#2200000e">
 
                     <LinearLayout
-                        android:id="@+id/ll_rank_area"
+                        android:id="@+id/ll_rank_province"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:visibility="gone">
 
                         <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_rank_area"
-                            android:layout_width="150dp"
+                            android:id="@+id/rv_rank_province"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#f8fafc">
-
-                        </android.support.v7.widget.RecyclerView>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_rank_province"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@color/white">
 
                         </android.support.v7.widget.RecyclerView>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/ll_rank_category"
+                        android:id="@+id/ll_rank_level"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <android.support.v7.widget.RecyclerView
-                            android:id="@+id/rv_rank_category"
+                            android:id="@+id/rv_rank_level"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:background="#f8fafc">

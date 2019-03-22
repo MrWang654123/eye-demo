@@ -5,6 +5,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeBasicInfo;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -47,6 +50,8 @@ public class CollegeDetailFragment extends LazyLoadFragment {
     SimpleDraweeView ivMain;
     @BindView(R.id.tv_college_name)
     TextView tvCollegeName;
+    @BindView(R.id.tv_tag)
+    TextView tv_tag;
 
 
     @Override
@@ -65,16 +70,23 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         }
 
         List<Pair<String, Fragment>> items = new ArrayList<>();
-        CollegeDetailInfoFragment fragment1 = new CollegeDetailInfoFragment();
+
         Bundle bundle1 = new Bundle();
-        bundle1.putSerializable(DtoKey.COLLEGE_ID, college.getId());
-        fragment1.setArguments(bundle);
+        bundle1.putString(DtoKey.COLLEGE_ID, college.getId());
+
+        CollegeDetailInfoFragment fragment1 = new CollegeDetailInfoFragment();
+        fragment1.setArguments(bundle1);
+
         CollegeDetailEnrollFragment fragment2 = new CollegeDetailEnrollFragment();
-        Bundle bundle2 = new Bundle();
-        bundle2.putSerializable(DtoKey.COLLEGE_ID, college.getId());
-        fragment2.setArguments(bundle);
-        items.add(new Pair<String, Fragment>("简介", fragment1));
-        items.add(new Pair<String, Fragment>("录取", fragment2));
+        fragment2.setArguments(bundle1);
+
+        CollegeDetailGraduationFragment fragment3 = new CollegeDetailGraduationFragment();
+        fragment3.setArguments(bundle1);
+
+        items.add(new Pair<String, Fragment>("概况", fragment1));
+        items.add(new Pair<String, Fragment>("录取招生", fragment2));
+        items.add(new Pair<String, Fragment>("毕业信息", fragment3));
+
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
@@ -93,8 +105,45 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         });
 
         //基本信息
-        ivMain.setImageURI(college.getArticleImg());
-        tvCollegeName.setText(college.getArticleTitle().length() > 5 ? college.getArticleTitle().substring(0, 5) : college.getArticleTitle());
+        ivMain.setImageURI(college.getLogo_url());
+        tvCollegeName.setText(college.getCn_name());
+        //标签
+        List<String> tags = new ArrayList<>();
+        CollegeBasicInfo basicInfo = college.getBasicInfo();
+        List<String> institute_quality = basicInfo.getInstitute_quality();
+        //特色
+        if (ArrayListUtil.isNotEmpty(institute_quality)) {
+            tags.addAll(institute_quality);
+        }
+        //院校类型
+        if (!TextUtils.isEmpty(basicInfo.getInstitute_type())) {
+            tags.add(basicInfo.getInstitute_type());
+        }
+        //公立私立
+        if (!TextUtils.isEmpty(basicInfo.getPublic_or_private())) {
+            if ("public".equals(basicInfo.getPublic_or_private())) {
+                tags.add("公立");
+            } else {
+                tags.add("私立");
+            }
+        }
+        //院校所属
+        if (!TextUtils.isEmpty(basicInfo.getChina_belong_to())) {
+            tags.add(basicInfo.getChina_belong_to());
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (String tag : tags) {
+            builder.append(tag);
+            builder.append("、");
+        }
+        if (builder.lastIndexOf("、") == builder.length() - 1) {
+            String substring = builder.substring(0, builder.length() - 2);
+            tv_tag.setText(substring);
+        } else {
+            tv_tag.setText(builder.toString());
+        }
+
     }
 
     @Override

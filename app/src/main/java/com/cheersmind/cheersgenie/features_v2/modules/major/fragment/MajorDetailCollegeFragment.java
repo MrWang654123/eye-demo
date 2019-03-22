@@ -28,6 +28,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.MajorDetail;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -54,8 +55,8 @@ import butterknife.Unbinder;
 public class MajorDetailCollegeFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
-    //专业ID
-    private String majorId;
+    //专业详情
+    private MajorDetail majorDetail;
 
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -177,7 +178,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
         //获取数据
         Bundle bundle = getArguments();
         if (bundle != null) {
-            majorId = bundle.getString(DtoKey.MAJOR_ID);
+            majorDetail = (MajorDetail) bundle.getSerializable(DtoKey.MAJOR_DETAIL);
         }
 
         dto = new ArticleDto(pageNum, PAGE_SIZE);

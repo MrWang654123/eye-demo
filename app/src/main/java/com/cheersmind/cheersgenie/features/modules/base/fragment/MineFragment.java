@@ -31,6 +31,7 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.MessageReadEvent;
 import com.cheersmind.cheersgenie.features.event.ModifyNicknameEvent;
@@ -38,7 +39,6 @@ import com.cheersmind.cheersgenie.features.event.ModifyProfileEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteActivity;
-import com.cheersmind.cheersgenie.features.modules.mine.activity.MineIntegralActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
@@ -49,7 +49,6 @@ import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.features_v2.modules.mine.activity.MineAwardActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
-import com.cheersmind.cheersgenie.features.entity.TotalIntegralEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
@@ -224,7 +223,7 @@ public class MineFragment extends TakePhotoFragment {
 
     /**
      * 消息被置为已读的通知
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
@@ -250,7 +249,7 @@ public class MineFragment extends TakePhotoFragment {
     /**
      *
      * 修改头像的通知
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
@@ -271,7 +270,7 @@ public class MineFragment extends TakePhotoFragment {
     /**
      *
      * 修改昵称的通知
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
@@ -292,7 +291,7 @@ public class MineFragment extends TakePhotoFragment {
 
     /**
      * 刷新积分的消息
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
@@ -403,11 +402,11 @@ public class MineFragment extends TakePhotoFragment {
             }
             //我的积分
             case R.id.ll_mine_integral: {
-                Intent intent = new Intent(getContext(), MineIntegralActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getContext(), MineIntegralActivity.class);
+//                startActivity(intent);
 
                 //奖励页面
-//                MineAwardActivity.startAwardActivity(getContext());
+                MineAwardActivity.startAwardActivity(getContext());
                 break;
             }
             //我的消息

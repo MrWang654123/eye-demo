@@ -23,12 +23,19 @@ public class MineMedalRecyclerAdapter extends BaseQuickAdapter<MedalEntity, Base
 
     @Override
     protected void convert(BaseViewHolder helper, MedalEntity item) {
-        //标题
-        helper.setText(R.id.tv_title, item.getArticleTitle().length() > 4 ? item.getArticleTitle().substring(0, 4) : item.getArticleTitle());
+        //名称
+        helper.setText(R.id.tv_title, item.getMedal_name());
 
-        //主图
-        SimpleDraweeView imageView = helper.getView(R.id.iv_main);
-        imageView.setImageURI(item.getArticleImg());
+        if (item.getStatus() == 1) {
+            //图标
+            SimpleDraweeView imageView = helper.getView(R.id.iv_main);
+            imageView.setImageURI(item.getIcon());
+        } else {
+            //图标
+            SimpleDraweeView imageView = helper.getView(R.id.iv_main);
+            imageView.setImageURI(item.getIcon());
+            imageView.setActualImageResource(R.drawable.medal_default);
+        }
     }
 
 }

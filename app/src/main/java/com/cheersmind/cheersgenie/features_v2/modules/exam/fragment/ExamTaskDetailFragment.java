@@ -71,7 +71,6 @@ public class ExamTaskDetailFragment extends LazyLoadFragment {
                 Bundle bundle1 = new Bundle();
                 bundle1.putString(DtoKey.CHILD_TASK_ID, examTask.getChildTask().getChild_task_id());
                 bundle1.putInt(DtoKey.TASK_STATUS, examTask.getChildTask().getStatus());
-                bundle1.putString(DtoKey.TASK_DESC, examTask.getDescription());
                 fragment1.setArguments(bundle1);
 
                 ExamTaskCommentFragment fragment2 = new ExamTaskCommentFragment();

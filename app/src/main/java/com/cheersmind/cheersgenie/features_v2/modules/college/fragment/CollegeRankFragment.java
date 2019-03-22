@@ -12,24 +12,28 @@ import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
-import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankAreaRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankCategoryRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankLevelRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankProvinceRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankSubjectRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRank;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankArea;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankCategory;
-import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.CollegeRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankLevel;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankSubject;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeRootEntity;
 import com.cheersmind.cheersgenie.features_v2.interfaces.BackPressedHandler;
 import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -38,6 +42,8 @@ import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.Arrays;
 import java.util.List;
@@ -104,57 +110,62 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
     private int pageNum = 1;
     //后台总记录数
     private int totalCount = 0;
+    //院校排名dto
+    CollegeRankDto dto;
 
     //排名触发器：多选框
     @BindView(R.id.cb_rank_area)
     CheckBox cb_rank_area;
-    @BindView(R.id.cb_rank_category)
-    CheckBox cb_rank_category;
+    @BindView(R.id.cb_rank_level)
+    CheckBox cb_rank_level;
     @BindView(R.id.cb_rank_subject)
     CheckBox cb_rank_subject;
     //排名布局
     @BindView(R.id.fl_rank)
     FrameLayout flRank;
-    //排名区域布局
-    @BindView(R.id.ll_rank_area)
-    LinearLayout llRankArea;
+    //排名省份布局
+    @BindView(R.id.ll_rank_province)
+    LinearLayout llRankProvince;
+    //排名学历层次布局
+    @BindView(R.id.ll_rank_level)
+    LinearLayout llRankLevel;
     //排名类别布局
-    @BindView(R.id.ll_rank_category)
-    LinearLayout llRankCategory;
+//    @BindView(R.id.ll_rank_category)
+//    LinearLayout llRankCategory;
     //排名主题布局
     @BindView(R.id.ll_rank_subject)
     LinearLayout llRankSubject;
-    //排名区域
-    @BindView(R.id.rv_rank_area)
-    RecyclerView rvRankArea;
     //排名省份
     @BindView(R.id.rv_rank_province)
     RecyclerView rvRankProvince;
+    //排名学历层次
+    @BindView(R.id.rv_rank_level)
+    RecyclerView rvRankLevel;
     //排名院校类别
-    @BindView(R.id.rv_rank_category)
-    RecyclerView rvRankCategory;
+//    @BindView(R.id.rv_rank_category)
+//    RecyclerView rvRankCategory;
     //排名主题
     @BindView(R.id.rv_rank_subject)
     RecyclerView rvRankSubject;
 
-    CollegeRankAreaRecyclerAdapter areaRecyclerAdapter;
     CollegeRankProvinceRecyclerAdapter provinceRecyclerAdapter;
-    CollegeRankCategoryRecyclerAdapter categoryRecyclerAdapter;
+    CollegeRankLevelRecyclerAdapter levelRecyclerAdapter;
+//    CollegeRankCategoryRecyclerAdapter categoryRecyclerAdapter;
     CollegeRankSubjectRecyclerAdapter subjectRecyclerAdapter;
 
     //大学排名条件
-    CollegeRank collegeRank;
+//    CollegeRank collegeRank;
 
     //排名省份的recycler item点击监听
     BaseQuickAdapter.OnItemClickListener provinceRecyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            String province = provinceRecyclerAdapter.getData().get(position);
+            CollegeProvince collegeProvince = provinceRecyclerAdapter.getData().get(position);
             //点击是不同项
-            if (!collegeRank.getCollegeRankArea().getProvince().equals(province)) {
-                collegeRank.getCollegeRankArea().setProvince(province);
+            if (!dto.getProvince().getName().equals(collegeProvince.getName())) {
+                dto.setProvince(collegeProvince);
                 //刷新触发布局文本
-                refreshRankToggleText(collegeRank);
+                refreshRankToggleText(dto);
                 //刷新列表
                 provinceRecyclerAdapter.notifyDataSetChanged();
                 //刷新数据
@@ -165,17 +176,21 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         }
     };
 
-    //排名院校类别的recycler item点击监听
-    BaseQuickAdapter.OnItemClickListener categoryRecyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
+    //排名学历层次的recycler item点击监听
+    BaseQuickAdapter.OnItemClickListener levelRecyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            String category = categoryRecyclerAdapter.getData().get(position);
-            if (!collegeRank.getCollegeRankCategory().getCategoryName().equals(category)) {
-                collegeRank.getCollegeRankCategory().setCategoryName(category);
+            CollegeEduLevel eduLevel = levelRecyclerAdapter.getData().get(position);
+            //点击是不同项
+            if (!dto.getEduLevel().getName().equals(eduLevel.getName())) {
+                //改变排名主题数据
+                subjectRecyclerAdapter.setNewData(eduLevel.getRanking_items());
+                dto.setRankItem(eduLevel.getRanking_items().get(0));
+                dto.setEduLevel(eduLevel);
                 //刷新触发布局文本
-                refreshRankToggleText(collegeRank);
+                refreshRankToggleText(dto);
                 //刷新列表
-                categoryRecyclerAdapter.notifyDataSetChanged();
+                levelRecyclerAdapter.notifyDataSetChanged();
                 //刷新数据
                 refreshData();
             }
@@ -188,11 +203,11 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
     BaseQuickAdapter.OnItemClickListener subjectRecyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            String subject = subjectRecyclerAdapter.getData().get(position);
-            if (!collegeRank.getCollegeRankSubject().getSubjectName().equals(subject)) {
-                collegeRank.getCollegeRankSubject().setSubjectName(subject);
+            CollegeRankItem rankItem = subjectRecyclerAdapter.getData().get(position);
+            if (!dto.getRankItem().getName().equals(rankItem.getName())) {
+                dto.setRankItem(rankItem);
                 //刷新触发布局文本
-                refreshRankToggleText(collegeRank);
+                refreshRankToggleText(dto);
                 //刷新列表
                 subjectRecyclerAdapter.notifyDataSetChanged();
                 //刷新数据
@@ -256,6 +271,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
 
+        dto = new CollegeRankDto(pageNum, PAGE_SIZE);
         //初始化排名数据
         initRankData();
     }
@@ -277,46 +293,31 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
     private void initRankData() {
         //初始隐藏排名布局
         flRank.setVisibility(View.GONE);
-        //初始化排名选中数据
-        collegeRank = new CollegeRank();
-        CollegeRankArea collegeRankArea = new CollegeRankArea();
-        collegeRankArea.setAreaName("中国大学");
-        collegeRankArea.setProvince("全部");
-        CollegeRankCategory collegeRankCategory = new CollegeRankCategory();
-        collegeRankCategory.setCategoryName("全部");
-        CollegeRankSubject collegeRankSubject = new CollegeRankSubject();
-        collegeRankSubject.setSubjectName("全部");
-        collegeRank.setCollegeRankArea(collegeRankArea);
-        collegeRank.setCollegeRankCategory(collegeRankCategory);
-        collegeRank.setCollegeRankSubject(collegeRankSubject);
-
-        //区域列表
-        String[] rankAreas = getResources().getStringArray(R.array.college_rank_area);
-        areaRecyclerAdapter = new CollegeRankAreaRecyclerAdapter(
-                getContext(), R.layout.recycleritem_college_rank_common, Arrays.asList(rankAreas), collegeRank);
-        rvRankArea.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvRankArea.setAdapter(areaRecyclerAdapter);
+        //初始化筛选条件选中数据
+        List<CollegeProvince> provinces = DataSupport.findAll(CollegeProvince.class);
+        List<CollegeEduLevel> levels = DataSupport.findAll(CollegeEduLevel.class, true);
+        dto.setProvince(provinces.get(0));
+        dto.setEduLevel(levels.get(0));
+        dto.setRankItem(levels.get(0).getRanking_items().get(0));
 
         //省份列表
-        String[] rankProvinces = getResources().getStringArray(R.array.college_rank_province);
         provinceRecyclerAdapter = new CollegeRankProvinceRecyclerAdapter(
-                getContext(), R.layout.recycleritem_college_rank_province, Arrays.asList(rankProvinces), collegeRank);
+                getContext(), R.layout.recycleritem_college_rank_province, provinces, dto);
         provinceRecyclerAdapter.setOnItemClickListener(provinceRecyclerItemClickListener);
         rvRankProvince.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRankProvince.setAdapter(provinceRecyclerAdapter);
 
-        //院校类别列表
-        String[] rankCategory = getResources().getStringArray(R.array.college_rank_category);
-        categoryRecyclerAdapter = new CollegeRankCategoryRecyclerAdapter(
-                getContext(), R.layout.recycleritem_college_rank_common, Arrays.asList(rankCategory), collegeRank);
-        categoryRecyclerAdapter.setOnItemClickListener(categoryRecyclerItemClickListener);
-        rvRankCategory.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvRankCategory.setAdapter(categoryRecyclerAdapter);
+        //学历层次
+        levelRecyclerAdapter = new CollegeRankLevelRecyclerAdapter(
+                getContext(), R.layout.recycleritem_college_rank_common, levels, dto);
+        levelRecyclerAdapter.setOnItemClickListener(levelRecyclerItemClickListener);
+        rvRankLevel.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvRankLevel.setAdapter(levelRecyclerAdapter);
 
         //主题列表
-        String[] rankSubject = getResources().getStringArray(R.array.college_rank_subject);
+        List<CollegeRankItem> ranking_items = levels.get(0).getRanking_items();
         subjectRecyclerAdapter = new CollegeRankSubjectRecyclerAdapter(
-                getContext(), R.layout.recycleritem_college_rank_common, Arrays.asList(rankSubject), collegeRank);
+                getContext(), R.layout.recycleritem_college_rank_common, ranking_items, dto);
         subjectRecyclerAdapter.setOnItemClickListener(subjectRecyclerItemClickListener);
         rvRankSubject.setLayoutManager(new LinearLayoutManager(getContext()));
         rvRankSubject.setAdapter(subjectRecyclerAdapter);
@@ -326,14 +327,14 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    cb_rank_category.setChecked(false);
+                    cb_rank_level.setChecked(false);
                     cb_rank_subject.setChecked(false);
 
                     if (flRank.getVisibility() != View.VISIBLE) {
                         showRankLayout();
                     }
-                    llRankArea.setVisibility(View.VISIBLE);
-                    llRankCategory.setVisibility(View.GONE);
+                    llRankProvince.setVisibility(View.VISIBLE);
+                    llRankLevel.setVisibility(View.GONE);
                     llRankSubject.setVisibility(View.GONE);
                 } else {
                     if (isAllNoCheck()) {
@@ -342,7 +343,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
                 }
             }
         });
-        cb_rank_category.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cb_rank_level.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -352,9 +353,10 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
                     if (flRank.getVisibility() != View.VISIBLE) {
                         showRankLayout();
                     }
-                    llRankArea.setVisibility(View.GONE);
-                    llRankCategory.setVisibility(View.VISIBLE);
+                    llRankProvince.setVisibility(View.GONE);
+                    llRankLevel.setVisibility(View.VISIBLE);
                     llRankSubject.setVisibility(View.GONE);
+
                 } else {
                     if (isAllNoCheck()) {
                         hideRankLayout();
@@ -367,14 +369,15 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     cb_rank_area.setChecked(false);
-                    cb_rank_category.setChecked(false);
+                    cb_rank_level.setChecked(false);
 
                     if (flRank.getVisibility() != View.VISIBLE) {
                         showRankLayout();
                     }
-                    llRankArea.setVisibility(View.GONE);
-                    llRankCategory.setVisibility(View.GONE);
+                    llRankProvince.setVisibility(View.GONE);
+                    llRankLevel.setVisibility(View.GONE);
                     llRankSubject.setVisibility(View.VISIBLE);
+
                 } else {
                     if (isAllNoCheck()) {
                         hideRankLayout();
@@ -384,14 +387,14 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         });
 
         //刷新排名触发布局的文本
-        refreshRankToggleText(collegeRank);
+        refreshRankToggleText(dto);
     }
 
     /**
      * 点击事件
      * @param view 被点击的视图
      */
-    @OnClick({R.id.fl_rank, R.id.ll_rank_area_toggle, R.id.ll_rank_category_toggle, R.id.ll_rank_subject_toggle})
+    @OnClick({R.id.fl_rank})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //排名布局
@@ -399,63 +402,6 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
                 hideRankLayout();
                 break;
             }
-//            //排名区域触发布局
-//            case R.id.ll_rank_area_toggle: {
-//                if (flRank.getVisibility() == View.VISIBLE) {
-//                    //排名布局是显示状态，如果当前排名数据布局是同一个则隐藏排名布局，否则直接替换
-//                    if (llRankArea.getVisibility() == View.VISIBLE) {
-//                        hideRankLayout();
-//                    } else {
-//                        llRankArea.setVisibility(View.VISIBLE);
-//                        llRankCategory.setVisibility(View.GONE);
-//                        llRankSubject.setVisibility(View.GONE);
-//                    }
-//                } else {
-//                    showRankLayout();
-//                    llRankArea.setVisibility(View.VISIBLE);
-//                    llRankCategory.setVisibility(View.GONE);
-//                    llRankSubject.setVisibility(View.GONE);
-//                }
-//                break;
-//            }
-//            //排名院校类别触发布局
-//            case R.id.ll_rank_category_toggle: {
-//                if (flRank.getVisibility() == View.VISIBLE) {
-//                    //排名布局是显示状态，如果当前排名数据布局是同一个则隐藏排名布局，否则直接替换
-//                    if (llRankCategory.getVisibility() == View.VISIBLE) {
-//                        hideRankLayout();
-//                    } else {
-//                        llRankArea.setVisibility(View.GONE);
-//                        llRankCategory.setVisibility(View.VISIBLE);
-//                        llRankSubject.setVisibility(View.GONE);
-//                    }
-//                } else {
-//                    showRankLayout();
-//                    llRankArea.setVisibility(View.GONE);
-//                    llRankCategory.setVisibility(View.VISIBLE);
-//                    llRankSubject.setVisibility(View.GONE);
-//                }
-//                break;
-//            }
-//            //排名主题触发布局
-//            case R.id.ll_rank_subject_toggle: {
-//                if (flRank.getVisibility() == View.VISIBLE) {
-//                    //排名布局是显示状态，如果当前排名数据布局是同一个则隐藏排名布局，否则直接替换
-//                    if (llRankSubject.getVisibility() == View.VISIBLE) {
-//                        hideRankLayout();
-//                    } else {
-//                        llRankArea.setVisibility(View.GONE);
-//                        llRankCategory.setVisibility(View.GONE);
-//                        llRankSubject.setVisibility(View.VISIBLE);
-//                    }
-//                } else {
-//                    showRankLayout();
-//                    llRankArea.setVisibility(View.GONE);
-//                    llRankCategory.setVisibility(View.GONE);
-//                    llRankSubject.setVisibility(View.VISIBLE);
-//                }
-//                break;
-//            }
         }
     }
 
@@ -472,7 +418,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
     private void hideRankLayout() {
         flRank.setVisibility(View.GONE);
         cb_rank_area.setChecked(false);
-        cb_rank_category.setChecked(false);
+        cb_rank_level.setChecked(false);
         cb_rank_subject.setChecked(false);
     }
 
@@ -480,36 +426,28 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
      * 是否都没有选中
      */
     private boolean isAllNoCheck() {
-        return !cb_rank_area.isChecked() && !cb_rank_category.isChecked() && !cb_rank_subject.isChecked();
+        return !cb_rank_area.isChecked() && !cb_rank_level.isChecked() && !cb_rank_subject.isChecked();
     }
 
     /**
      * 刷新排名触发布局的文本
-     * @param collegeRank 排名数据
+     * @param collegeRankDto 排名条件
      */
-    private void refreshRankToggleText(CollegeRank collegeRank) {
-        if (collegeRank == null) return;
+    private void refreshRankToggleText(CollegeRankDto collegeRankDto) {
+        if (collegeRankDto == null) return;
 
         //区域、省份
-        if (collegeRank.getCollegeRankArea().getProvince().equals("全部")) {
+        if (collegeRankDto.getProvince().getName().equals("全部")) {
             cb_rank_area.setText("全国");
         } else {
-            cb_rank_area.setText(collegeRank.getCollegeRankArea().getProvince());
+            cb_rank_area.setText(collegeRankDto.getProvince().getName());
         }
 
-        //院校类别
-        if (collegeRank.getCollegeRankCategory().getCategoryName().equals("全部")) {
-            cb_rank_category.setText("院校类别");
-        } else {
-            cb_rank_category.setText(collegeRank.getCollegeRankCategory().getCategoryName());
-        }
+        //学历层次
+        cb_rank_level.setText(collegeRankDto.getEduLevel().getName());
 
-        //主题
-        if (collegeRank.getCollegeRankSubject().getSubjectName().equals("全部")) {
-            cb_rank_subject.setText("其他");
-        } else {
-            cb_rank_subject.setText(collegeRank.getCollegeRankSubject().getSubjectName());
-        }
+        //排名主题
+        cb_rank_subject.setText(collegeRankDto.getRankItem().getName());
     }
 
     /**
@@ -525,8 +463,8 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getCollegeRankList(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -599,8 +537,8 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getCollegeRankList(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能

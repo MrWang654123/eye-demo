@@ -128,6 +128,9 @@ public class HttpConfig {
     //修改昵称（用户信息）
     public static final String URL_MODIFY_USER_INFO = API_HOST + "/v2/api/users";
 
+    //获取系统所有勋章列表
+    public static final String URL_MEDALS = API_HOST + "/v2/api/medals";
+
 
     /**-----------------------------------------------------------------------
      *---------------------------业务相关-----------------------------------
@@ -273,6 +276,9 @@ public class HttpConfig {
 //    public static String URL_REPORT_V2 = API_HOST + "/v2/api/exams/reports?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
     public static String URL_REPORT_V2 = API_HOST + "/v2/api/reports/students/{child_exam_id}?relation_id={relation_id}&relation_type={relation_type}&sample_id={sample_id}";
 
+    //获取报告新
+    public static String URL_REPORT_V2_NEW = API_HOST + "/v2/api/exams/personal/reports";
+
     //获取报告推荐文章
     public static String URL_REPORT_RECOMMEND_ARTICLE = API_HOST + "/v2/api/exams/reports/actions/get_recommend_articles?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
 
@@ -327,5 +333,42 @@ public class HttpConfig {
     public static final String URL_EXAM_TASK_DETAIL_ITEMS = API_HOST + "/v2/api/children/{child_id}/child_task_items";
     //获取话题下的量表列表（child_exam_id、topic_id）
     public static final String URL_DIMENSIONS_IN_TOPIC = API_HOST + "/v2/api/children/{child_id}/child_dimensions";
+    //获取任务状态
+    public static final String URL_TASK_STATUS = API_HOST + "/v2/api/children/{child_id}/child_task_status?child_task_id={child_task_id}";
+    //动作完成
+    public static final String URL_ACTION_COMPLETE = API_HOST + "/v2/api/children/{child_id}/complete_item";
+
+
+    /*----------------院校库相关------------------*/
+
+    //获取院校的省份
+    public static final String URL_COLLEGE_PROVINCE = API_HOST + "/v2/api/sy/regions";
+    //获取院校的学历层级
+    public static final String URL_COLLEGE_EDUCATION_LEVEL = API_HOST + "/v2/api/sy/degrees";
+    //获取院校的院校类型
+    public static final String URL_COLLEGE_CATEGORY = API_HOST + "/v2/api/sy/basic_categories";
+    //获取院校排名列表
+    public static final String URL_COLLEGE_RANK_LIST = API_HOST + "/v2/api/sy/universities";
+    //获取院校的详情信息
+    public static final String URL_COLLEGE_DETAIL_INFO = API_HOST + "/v2/api/sy/universities/{university_id}/general_situation";
+    //获取院校的招生基本信息
+    public static final String URL_COLLEGE_ENROLL_BASE_INFO = API_HOST + "/v2/api/sy/universities/{universities_id}/enrollment_infos";
+    //获取专业树（edu_level、major_name）
+    public static final String URL_MAJOR_TREE = API_HOST + "/v2/api/careers/majors";
+    //专业详情
+    public static final String URL_MAJOR_DETAIL = API_HOST + "/v2/api/careers/majors/{major_code}";
+    //获取行业树（occupation_name）
+    public static final String URL_OCCUPATION_TREE = API_HOST + "/v2/api/careers/occupations";
+    //行业详情
+    public static final String URL_OCCUPATION_DETAIL = API_HOST + "/v2/api/careers/occupations/{occupation_id}";
+    //获取录取分数的文理科
+    public static final String URL_COLLEGE_ENROLL_KIND = API_HOST + "/v2/api/sy/gaokao/provinces/{province}/kinds";
+    //获取院校历年录取数据
+    public static final String URL_COLLEGE_ENROLL = API_HOST + "/v2/api/sy/gaokao/score_line_university";
+    //获取专业历年录取数据
+    public static final String URL_MAJOR_ENROLL = API_HOST + "/v2/api/sy/gaokao/score_line_majors";
+    //获取院校的毕业信息
+    public static final String URL_COLLEGE_GRADUATION_INFO = API_HOST + "/v2/api/sy/universities/{university_id}/graduation_info";
+
 
 }

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".features_v2.modules.major.fragment.MajorDetailInfoFragment">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_f5f5f5">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nsv_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--总体就业率-->
+                <LinearLayout
+                    android:id="@+id/ll_employment_ratio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/color_333333"
+                        android:text="总体就业率"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/color_eeeeee"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/color_999999"
+                            android:text="(指直接就业、国内读研、出国(境)留学等未失业毕业生占总毕业生比例)"/>
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/barChartGraduationRatio"
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="15dp"
+                            android:layout_height="260dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!--就业与薪资-->
+                <LinearLayout
+                    android:id="@+id/ll_info_ratio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/color_333333"
+                        android:text="就业与薪资"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/color_eeeeee"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:id="@+id/cl_job_ratio"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="20dp">
+
+                            <ImageView
+                                android:id="@+id/iv_job_ratio"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/mine_exam"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/tv_job_ratio_key"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/color_555555"
+                                app:layout_constraintLeft_toRightOf="@+id/iv_job_ratio"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginLeft="17dp"
+                                android:layout_marginStart="17dp"
+                                android:textSize="16sp"
+                                android:text="毕业直接工作比例*"/>
+
+                            <TextView
+                                android:id="@+id/tv_job_ratio_val"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#7dd320"
+                                app:layout_constraintLeft_toLeftOf="@+id/tv_job_ratio_key"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_job_ratio_key"
+                                android:textSize="30sp"
+                                android:textStyle="bold"
+                                android:text="0.0"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#7dd320"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_job_ratio_val"
+                                app:layout_constraintBottom_toBottomOf="@+id/tv_job_ratio_val"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="3dp"
+                                android:text="%"/>
+
+                            <TextView
+                                android:id="@+id/tv_job_ratio_desc"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/color_999999"
+                                app:layout_constraintLeft_toLeftOf="@+id/tv_job_ratio_val"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_job_ratio_val"
+                                app:layout_constraintRight_toRightOf="parent"
+                                android:textSize="14sp"
+                                android:text="*指毕业后直接就业的毕业生占比（包含产业）"/>
+
+                        </android.support.constraint.ConstraintLayout>
+
+                        <android.support.constraint.ConstraintLayout
+                            android:id="@+id/cl_salary"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/iv_salary"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/mine_exam"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/tv_salary_key"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/color_555555"
+                                app:layout_constraintLeft_toRightOf="@+id/iv_salary"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginLeft="17dp"
+                                android:layout_marginStart="17dp"
+                                android:textSize="16sp"
+                                android:text="毕业5年薪水"/>
+
+                            <TextView
+                                android:id="@+id/tv_salary_val"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#23a6ff"
+                                app:layout_constraintLeft_toLeftOf="@+id/tv_salary_key"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_salary_key"
+                                android:textSize="30sp"
+                                android:textStyle="bold"
+                                android:text="17022"/>
+
+                        </android.support.constraint.ConstraintLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!--国内读研-->
+                <LinearLayout
+                    android:id="@+id/ll_postgraduate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:layout_marginTop="15dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/color_333333"
+                        android:text="国内读研"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/color_eeeeee"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="15dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <android.support.constraint.ConstraintLayout
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/iv_postgraduate"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/mine_exam"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/tv_postgraduate_key"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/color_555555"
+                                app:layout_constraintLeft_toRightOf="@+id/iv_postgraduate"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:layout_marginLeft="17dp"
+                                android:layout_marginStart="17dp"
+                                android:textSize="16sp"
+                                android:text="读研率"/>
+
+                            <TextView
+                                android:id="@+id/tv_postgraduate_val"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#23a6ff"
+                                app:layout_constraintLeft_toLeftOf="@+id/tv_postgraduate_key"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_postgraduate_key"
+                                android:textSize="30sp"
+                                android:textStyle="bold"
+                                android:text="0.0"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#23a6ff"
+                                app:layout_constraintLeft_toRightOf="@+id/tv_postgraduate_val"
+                                app:layout_constraintBottom_toBottomOf="@+id/tv_postgraduate_val"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="3dp"
+                                android:text="%"/>
+
+                            <TextView
+                                android:id="@+id/tv_postgraduate_desc"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/color_999999"
+                                app:layout_constraintLeft_toLeftOf="@+id/tv_postgraduate_val"
+                                app:layout_constraintTop_toBottomOf="@+id/tv_postgraduate_val"
+                                app:layout_constraintRight_toRightOf="parent"
+                                android:textSize="14sp"
+                                android:text="（包含考研和保研）"/>
+
+                        </android.support.constraint.ConstraintLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabGotoTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_gravity="right|bottom"
+            android:visibility="visible"
+            app:fabSize="mini"
+            android:src="@drawable/goto_top" />
+
+    </FrameLayout>
+
+    <!--空布局-->
+    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+        android:id="@+id/emptyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+</FrameLayout>

@@ -208,14 +208,17 @@
     <string name="empty_tip_major_detail_info">暂无专业详情信息</string>
     <string name="empty_tip_major_detail_college">暂无开设院校信息</string>
     <string name="empty_tip_college_detail_info">暂无院校详情信息</string>
+    <string name="empty_tip_college_detail_enroll">暂无院校招生信息</string>
+    <string name="empty_tip_college_detail_graduation">暂无毕业信息</string>
     <string name="empty_tip_mine_practice">暂无实践</string>
     <string name="empty_tip_mine_practice_item">暂无实践明细</string>
+    <string name="empty_tip_enroll_score">未找到符合条件的数据\n试试其他条件呗~</string>
 
     <!--任务列表-->
     <string name="begin_time_fmt">开始时间 %s</string>
     <string name="begin_end_fmt">结束时间 %s</string>
 
-    <!--behaver-->
+    <!--behavior-->
     <string name="CompatFlingBehavior">com.cheersmind.cheersgenie.features.view.CompatFlingBehavior</string>
 
     <!--发现页-->
@@ -226,11 +229,20 @@
 
     <!--发展测评模块-->
     <string name="do_count">%s人已学过</string>
+    <string name="task_item_lock_tip">请先完成%s</string>
 
     <!--生涯规划主页-->
+    <string name="career_plan">生涯发展</string>
     <string name="college">学校</string>
     <string name="major">专业</string>
     <string name="occupation">职业</string>
-    <string name="college_preference">高考志愿</string>
+    <string name="career_report">档案</string>
+
+    <!--院校库-->
+    <string name="undergraduate_count">本科生: %s</string>
+    <string name="postgraduate_count">研究生: %s</string>
+    <string name="international_count">国际学生: %s</string>
+    <string name="male_ratio">男生: %s</string>
+    <string name="female_ratio">女生: %s</string>
 
 </resources>

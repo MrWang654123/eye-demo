@@ -42,6 +42,12 @@
         <item>新疆</item>
     </string-array>
 
+    <!--大学排名学历层次-->
+    <string-array name="college_rank_level">
+        <item>本科</item>
+        <item>专科</item>
+    </string-array>
+
     <!--大学排名院校类别-->
     <string-array name="college_rank_category">
         <item>全部</item>
@@ -61,9 +67,23 @@
 
     <!--大学排名主题-->
     <string-array name="college_rank_subject">
-        <item>全部</item>
         <item>本科排名</item>
-        <item>专科排名</item>
+        <item>综合类排名</item>
+        <item>医药类排名</item>
+        <item>政法类排名</item>
+        <item>理工类排名</item>
+        <item>财经类排名</item>
+        <item>农林类排名</item>
+        <item>师范类排名</item>
+        <item>体育类排名</item>
+        <item>语言类排名</item>
+        <item>艺术类排名</item>
+        <item>民族类排名</item>
+        <item>军事类排名</item>
+        <item>QS</item>
+        <item>TIMES</item>
+        <item>ARWU</item>
+        <item>US News Global</item>
     </string-array>
 
 </resources>

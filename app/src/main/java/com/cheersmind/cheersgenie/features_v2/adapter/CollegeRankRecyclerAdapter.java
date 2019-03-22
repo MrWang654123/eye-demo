@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -16,27 +17,70 @@ import java.util.List;
  */
 public class CollegeRankRecyclerAdapter extends BaseQuickAdapter<CollegeEntity, BaseViewHolder> {
 
+    //最大的质量标签数量
+    private static final int MAX_QUALITY_TAG_COUNT = 3;
+
     public CollegeRankRecyclerAdapter(Context context, int layoutResId, @Nullable List<CollegeEntity> data) {
         super(layoutResId, data);
     }
 
     @Override
     protected void convert(BaseViewHolder helper, CollegeEntity item) {
-        //标题
-        helper.setText(R.id.tv_title, item.getArticleTitle().length() > 9 ? item.getArticleTitle().substring(0, 10) : item.getArticleTitle());
+        //中文名称
+        helper.setText(R.id.tv_title, item.getCn_name());
 
-        //简介
-        helper.setText(R.id.tv_desc, item.getSummary());
-//        if (!TextUtils.isEmpty(item.getSummary())) {
-//            helper.getView(R.id.tv_desc).setVisibility(View.VISIBLE);
-//            helper.setText(R.id.tv_desc, item.getSummary());
-//        } else {
-//            helper.getView(R.id.tv_desc).setVisibility(View.GONE);
-//        }
-
-        //主图
+        //Logo
         SimpleDraweeView imageView = helper.getView(R.id.iv_main);
-        imageView.setImageURI(item.getArticleImg());
+        imageView.setImageURI(item.getLogo_url());
+
+        //标签
+        if (item.getBasicInfo().getInstitute_quality() == null
+                || item.getBasicInfo().getInstitute_quality().size() == 0) {
+            helper.getView(R.id.tv_tag0).setVisibility(View.GONE);
+            helper.getView(R.id.tv_tag1).setVisibility(View.GONE);
+            helper.getView(R.id.tv_tag2).setVisibility(View.GONE);
+        } else {
+            //设置标签
+            int tagLength = item.getBasicInfo().getInstitute_quality().size();
+            for (int i=0; i<tagLength; i++) {
+                String tag = item.getBasicInfo().getInstitute_quality().get(i);
+
+                if (i == 0) {
+                    helper.getView(R.id.tv_tag0).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_tag0, tag);
+                } else if (i == 1) {
+                    helper.getView(R.id.tv_tag1).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_tag1, tag);
+                } else if (i == 2) {
+                    helper.getView(R.id.tv_tag2).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_tag2, tag);
+                }
+            }
+
+            //剩余未被占用的TextView数量
+            int remainSize = MAX_QUALITY_TAG_COUNT - tagLength;
+            if (remainSize > 0) {
+                for (int i=remainSize-1; i>=0; i--) {
+                    if (i == 0) {
+                        helper.getView(R.id.tv_tag0).setVisibility(View.GONE);
+                    } else if (i == 1) {
+                        helper.getView(R.id.tv_tag1).setVisibility(View.GONE);
+                    } else if (i == 2) {
+                        helper.getView(R.id.tv_tag2).setVisibility(View.GONE);
+                    }
+                }
+            }
+        }
+
+        //院校类别
+        helper.setText(R.id.tv_category, item.getBasicInfo().getInstitute_type());
+
+        //公立私立
+        if ("public".equals(item.getBasicInfo().getPublic_or_private())) {
+            helper.setText(R.id.tv_public, "公立");
+        } else {
+            helper.setText(R.id.tv_public, "私立");
+        }
 
         int rank = helper.getLayoutPosition() - getHeaderLayoutCount() + 1;
         //排名

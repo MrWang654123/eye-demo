@@ -482,6 +482,12 @@
         <!--实践子项-->
         <activity android:name=".features_v2.modules.mine.activity.MinePracticeItemActivity"
             android:screenOrientation="portrait"/>
+        <!--行业详情-->
+        <activity android:name=".features_v2.modules.occupation.activity.OccupationDetailActivity"
+            android:screenOrientation="portrait"/>
+        <!--测评报告页-->
+        <activity android:name=".features_v2.modules.exam.activity.ExamReportActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

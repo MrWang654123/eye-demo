@@ -51,5 +51,13 @@
         <attr name="thirdColor" format="color" /><!--圆环渐变结束色-->
     </declare-styleable>
 
+    <!--比例圆环-->
+    <declare-styleable name="CircleScaleView">
+        <attr name="oneColor" format="color|reference" />
+        <attr name="twoColor" format="color|reference" />
+        <attr name="threeColor" format="color|reference" />
+        <attr name="ringWidth" format="dimension" />
+        <attr name="radius" format="dimension" />
+    </declare-styleable>
 
 </resources>

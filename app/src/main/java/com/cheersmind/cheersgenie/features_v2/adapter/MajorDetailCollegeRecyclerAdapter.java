@@ -22,21 +22,12 @@ public class MajorDetailCollegeRecyclerAdapter extends BaseQuickAdapter<CollegeE
 
     @Override
     protected void convert(BaseViewHolder helper, CollegeEntity item) {
-        //标题
-        helper.setText(R.id.tv_title, item.getArticleTitle().length() > 9 ? item.getArticleTitle().substring(0, 10) : item.getArticleTitle());
+        //中文名称
+        helper.setText(R.id.tv_title, item.getCn_name());
 
-        //简介
-        helper.setText(R.id.tv_desc, item.getSummary());
-//        if (!TextUtils.isEmpty(item.getSummary())) {
-//            helper.getView(R.id.tv_desc).setVisibility(View.VISIBLE);
-//            helper.setText(R.id.tv_desc, item.getSummary());
-//        } else {
-//            helper.getView(R.id.tv_desc).setVisibility(View.GONE);
-//        }
-
-        //主图
+        //Logo
         SimpleDraweeView imageView = helper.getView(R.id.iv_main);
-        imageView.setImageURI(item.getArticleImg());
+        imageView.setImageURI(item.getLogo_url());
     }
 
 }

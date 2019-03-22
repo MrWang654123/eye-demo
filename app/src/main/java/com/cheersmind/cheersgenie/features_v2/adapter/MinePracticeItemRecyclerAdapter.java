@@ -17,7 +17,7 @@ public class MinePracticeItemRecyclerAdapter extends BaseMultiItemQuickAdapter<P
     public MinePracticeItemRecyclerAdapter(List<PracticeItemEntity> data) {
         super(data);
         addItemType(PracticeItemEntity.TYPE_HEADER, R.layout.recycleritem_mine_practice_item_header);
-        addItemType(ExamTaskItemEntity.TYPE_ARTICLE, R.layout.recycleritem_mine_practice_item_article);
+        addItemType(PracticeItemEntity.TYPE_ARTICLE, R.layout.recycleritem_mine_practice_item_article);
     }
 
     @Override

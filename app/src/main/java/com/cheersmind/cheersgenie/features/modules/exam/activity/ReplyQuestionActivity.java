@@ -60,6 +60,9 @@ import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionCompleteXDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
@@ -534,6 +537,17 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 quitDialog.dismiss();
                 quitDialog.cancel();
                 quitDialog = null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            //释放通用报告对话框
+            if (examReportDto != null) {
+                examReportDto.clearListener();
+                examReportDto.dismiss();
+                examReportDto = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1129,6 +1143,115 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     /**
      * 提交所有问题答案
      */
+//    private void doPostSubmitQuestions() {
+//        LoadingView.getInstance().show(ReplyQuestionActivity.this, httpTag);
+//        DataRequestService.getInstance().postQuestionAnswersSubmit(
+//                dimensionInfoEntity.getChildDimension().getChildDimensionId(),
+//                costTime,
+//                arrayMapCurHasedReply.values(),
+//                new BaseService.ServiceCallback() {
+//                    @Override
+//                    public void onFailure(QSCustomException e) {
+//                        onFailureDefault(e);
+//                    }
+//
+//                    @Override
+//                    public void onResponse(Object obj) {
+//                        LoadingView.getInstance().dismiss();
+////                        ToastUtil.showShort(getApplicationContext(), "提交问题成功，继续下一步？？");
+//                        //标记问题提交成功
+//                        hasSubmitSuccess = true;
+//                        //释放所有计时器
+//                        releaseAllTimer();
+//
+//                        try {
+//                            //提交分量表返回添加了topic_id和topic_dimension_id
+//                            Map map = JsonUtil.fromJson(obj.toString(), Map.class);
+//                            final DimensionInfoChildEntity dimensionChild = InjectionWrapperUtil.injectMap(map, DimensionInfoChildEntity.class);
+//
+//                            //设置孩子量表对象
+//                            dimensionInfoEntity.setChildDimension(dimensionChild);
+//                            //设置话题量表ID
+//                            if (!TextUtils.isEmpty(dimensionChild.getTopicDimensionId())) {
+//                                dimensionInfoEntity.setTopicDimensionId(dimensionChild.getTopicDimensionId());
+//                            }
+//
+//                            //设置话题ID
+//                            if (topicInfoEntity == null) {
+//                                topicInfoEntity = new TopicInfoEntity();
+//                            }
+//                            //话题对象的ID为空，才进行设置
+//                            if (TextUtils.isEmpty(topicInfoEntity.getTopicId())
+//                                    && !TextUtils.isEmpty(dimensionChild.getTopicId())) {
+//                                topicInfoEntity.setTopicId(dimensionChild.getTopicId());
+//                            }
+//
+//                            //如果孩子话题为空，量表对象传null，让测评页面刷新数据（测评页面显示“查看报告”按钮的前提就是要有孩子话题对象）
+//                            //孩子话题不为空，但是孩子话题对象的ID为空，说明这个孩子话题对象是本地创建的，必须让测评页面刷新数据（刷新后孩子话题对象中才会有孩子测评ID，用于查看话题报告）
+//                            if (topicInfoEntity.getChildTopic() == null
+//                                    || TextUtils.isEmpty(topicInfoEntity.getChildTopic().getChildTopicId())) {
+//                                //置空孩子量表对象
+//                                dimensionInfoEntity.setChildDimension(null);
+//                                //发送问题提交成功的事件通知，附带量表对象
+//                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
+//                            } else {
+//                                //发送问题提交成功的事件通知，附带量表对象
+//                                EventBus.getDefault().post(new QuestionSubmitSuccessEvent(dimensionInfoEntity));
+//                            }
+//
+//                            //设置孩子量表对象
+//                            dimensionInfoEntity.setChildDimension(dimensionChild);
+//                            //发送最新操作测评通知：完成操作
+//                            EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
+//
+//                            //积分提示
+//                            integralTipDialog = IntegralUtil.buildIntegralTipDialog(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+//                                @Override
+//                                public void onAnimationEnd() {
+//                                    try {
+//                                        //判断话题是否已完成
+//                                        if (dimensionChild.isTopicComplete()) {
+//                                            //确保话题对象有孩子话题对象，且孩子测评ID不为空
+//                                            if (topicInfoEntity.getChildTopic() == null) {
+//                                                TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
+//                                                topicInfoEntity.setChildTopic(topicInfoChild);
+//                                            }
+//                                            //设置孩子测评ID
+//                                            topicInfoEntity.getChildTopic().setChildExamId(dimensionChild.getChildExamId());
+//
+//                                            //请求话题报告（需要TopicId和ChildExamId）
+//                                            queryTopicReport(topicInfoEntity);
+//
+//                                        } else {
+//                                            //请求量表报告
+//                                            queryDimensionReport(dimensionInfoEntity);
+//                                        }
+//
+//                                        //标记已经显示了报告弹窗
+//                                        hasShowReportDialog = true;
+//
+//                                    } catch (Exception e) {
+//                                        onFailure(new QSCustomException("获取报告失败"));
+//                                    }
+//                                }
+//
+//                            });
+//
+//                            if (integralTipDialog != null) {
+//                                integralTipDialog.show();
+//                            }
+//
+//                        } catch (Exception e) {
+//                            onFailure(new QSCustomException("获取报告失败"));
+//                        }
+//                    }
+//                }, httpTag, ReplyQuestionActivity.this);
+//    }
+
+
+    /**
+     * 提交所有问题答案V2
+     */
     private void doPostSubmitQuestions() {
         LoadingView.getInstance().show(ReplyQuestionActivity.this, httpTag);
         DataRequestService.getInstance().postQuestionAnswersSubmit(
@@ -1144,7 +1267,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     @Override
                     public void onResponse(Object obj) {
                         LoadingView.getInstance().dismiss();
-//                        ToastUtil.showShort(getApplicationContext(), "提交问题成功，继续下一步？？");
                         //标记问题提交成功
                         hasSubmitSuccess = true;
                         //释放所有计时器
@@ -1190,41 +1312,38 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
-                            //积分提示
-                            integralTipDialog = IntegralUtil.buildIntegralTipDialog(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
-                                @Override
-                                public void onAnimationEnd() {
-                                    try {
-                                        //判断话题是否已完成
-                                        if (dimensionChild.isTopicComplete()) {
-                                            //确保话题对象有孩子话题对象，且孩子测评ID不为空
-                                            if (topicInfoEntity.getChildTopic() == null) {
-                                                TopicInfoChildEntity topicInfoChild = new TopicInfoChildEntity();
-                                                topicInfoEntity.setChildTopic(topicInfoChild);
-                                            }
-                                            //设置孩子测评ID
-                                            topicInfoEntity.getChildTopic().setChildExamId(dimensionChild.getChildExamId());
+                            try {
+                                //显示报告弹窗
+                                ExamReportDto dto = new ExamReportDto();
+                                dto.setChildExamId(dimensionChild.getChildExamId());//孩子测评ID
+                                dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                                //判断显示话题报告还是量表报告
+                                if (dimensionChild.isTopicComplete()) {
+                                    //只有一个量表则显示量表报告
+                                    if (ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
+                                            && topicInfoEntity.getDimensions().size() == 1) {
+                                        dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
 
-                                            //请求话题报告（需要TopicId和ChildExamId）
-                                            queryTopicReport(topicInfoEntity);
-
-                                        } else {
-                                            //请求量表报告
-                                            queryDimensionReport(dimensionInfoEntity);
-                                        }
-
-                                        //标记已经显示了报告弹窗
-                                        hasShowReportDialog = true;
-
-                                    } catch (Exception e) {
-                                        onFailure(new QSCustomException("获取报告失败"));
+                                    } else {
+                                        dto.setRelationId(dimensionInfoEntity.getTopicId());
+                                        dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
                                     }
+
+                                } else {
+                                    dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
                                 }
+                                //显示弹窗
+                                showExamReportDialog(dto);
 
-                            });
+                                //标记已经显示了报告弹窗
+                                hasShowReportDialog = true;
 
-                            if (integralTipDialog != null) {
-                                integralTipDialog.show();
+                            } catch (Exception e) {
+//                                onFailure(new QSCustomException("获取报告失败"));
+                                //跳转到下一个页面
+                                gotoNextActivity();
                             }
 
                         } catch (Exception e) {
@@ -1233,6 +1352,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     }
                 }, httpTag, ReplyQuestionActivity.this);
     }
+
 
     TopicReportDialog topicReportDialog;
     /**
@@ -1259,6 +1379,26 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }
     }
 
+    ExamReportDialog examReportDto;
+
+    /**
+     * 显示测评报告弹窗
+     * @param dto 报告dto
+     */
+    private void showExamReportDialog(ExamReportDto dto) throws QSCustomException {
+        if (examReportDto == null) {
+            examReportDto = new ExamReportDialog().setReportDto(dto).setListener(new ExamReportDialog.OnOperationListener() {
+                @Override
+                public void onExit() {
+                    //跳转到下一个页面
+                    gotoNextActivity();
+                }
+            });
+        }
+        if (examReportDto != null) {
+            examReportDto.show(getSupportFragmentManager(), "报告");
+        }
+    }
 
     /**
      * 跳转到下一个页面
@@ -1277,6 +1417,11 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     case Dictionary.FROM_ACTIVITY_TO_QUESTION_MINE: {
                         //我的智评明细
                         toActivity = MineExamDetailActivity.class;
+                        break;
+                    }
+                    case Dictionary.FROM_ACTIVITY_TO_TASK_DETAIL: {
+                        //任务详情页
+                        toActivity = ExamTaskDetailActivity.class;
                         break;
                     }
                     default: {
@@ -1528,7 +1673,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      * 开启限时计时
      */
     private void startLimitCountTimer(){
-//        releaseLimitCountTimer();//不需要
+        releaseLimitCountTimer();//不需要
         //初始化计时器
         if (countTimer == null) {
             countTimer = new CountTimer(LIMIT_TIME, 1000);

@@ -3,34 +3,28 @@ package com.cheersmind.cheersgenie.features_v2.modules.major.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
-import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features_v2.adapter.TrackRecordRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.entity.TrackRecordEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.TrackRecordRootEntity;
-import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.service.BaseService;
-import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
-import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.features_v2.adapter.MajorSuitOccupationRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.entity.MajorDetail;
+import com.cheersmind.cheersgenie.features_v2.entity.MajorIntroduce;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationDetailActivity;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -39,7 +33,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,8 +45,9 @@ import butterknife.Unbinder;
 public class MajorDetailInfoFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
-    //专业ID
-    private String majorId;
+
+    //专业详情
+    private MajorDetail majorDetail;
 
     @BindView(R.id.nsv_main)
     NestedScrollView nsvMain;
@@ -63,6 +57,14 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
     //置顶按钮
     @BindView(R.id.fabGotoTop)
     FloatingActionButton fabGotoTop;
+
+    @BindView(R.id.ll_introduce)
+    LinearLayout llIntroduce;
+    @BindView(R.id.ll_course)
+    LinearLayout llCourse;
+    @BindView(R.id.ll_suit_occupation)
+    LinearLayout llSuitOccupation;
+
     //可伸缩文本
     @BindView(R.id.expand_text_view)
     ExpandableTextView expandableTextView;
@@ -72,14 +74,24 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
     @BindView(R.id.expand_collapse)
     ImageButton iBtnExpandCollapse;
 
-    //页长度
-    private static final int PAGE_SIZE = 10;
-    //页码
-    private int pageNum = 1;
-    //后台总记录数
-    private int totalCount = 0;
+    //课程
+    @BindView(R.id.tv_course)
+    TextView tvCourse;
 
-    ArticleDto dto;
+    //对口职业列表
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
+    MajorSuitOccupationRecyclerAdapter recyclerAdapter;
+
+    //recycler item点击监听
+    BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            OccupationItem entity = recyclerAdapter.getData().get(position);
+            OccupationDetailActivity.startOccupationDetailActivity(getContext(), entity);
+        }
+    };
 
 
     @Override
@@ -101,26 +113,24 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
         //获取数据
         Bundle bundle = getArguments();
         if (bundle != null) {
-            majorId = bundle.getString(DtoKey.MAJOR_ID);
+            majorDetail = (MajorDetail) bundle.getSerializable(DtoKey.MAJOR_DETAIL);
         }
 
-        //设置无数据提示文本
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_major_detail_info));
-        //重载监听
-        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                //加载数据
-                loadData();
-            }
-        });
-        //初始化为加载状态
-        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        //设置无数据提示文本
+//        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_major_detail_info));
+//        //重载监听
+//        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
+//            @Override
+//            public void onMultiClick(View view) {
+//                //加载数据
+//                loadData();
+//            }
+//        });
+//        //初始化为加载状态
+//        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
-
-        dto = new ArticleDto(pageNum, PAGE_SIZE);
 
         //提示文本点击监听
         tvExpandableTip.setOnClickListener(new OnMultiClickListener() {
@@ -140,20 +150,17 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
                 }
             }
         });
-        expandableTextView.setText("• 专业简介\n" +
-                "哲学是人文科学领域内的基础学科，是对基本和普遍之问题的研究。在希腊文中，哲学是爱智慧的意思。学哲学，就是学习智慧。哲学的爱智，无论是对自然的惊讶，还是认识人自己，都不仅仅是一种对知识的追求，更重要的是一种对生活意义的关切，对生活境界的陶冶。哲学，是使人崇高起来的学问。哲学的爱智，还是一种反思的、批判的思想活动，它要追究各种知识的根据，思考历史进步的尺度，询问真善美的标准，探索生活信念的前提。\n" +
-                "• 培养目标\n" +
-                "哲学专业是培养具有一定马克思主义哲学理论素养和系统的专业基础知识，能运用科学的世界观和方法论分析当代世界与中国的现实问题的应用型、复合型高级专门人才的学科\n" +
-                "• 培养要求\n" +
-                "他们具有一定的哲学理论思维能力、创新能力、口头与文字表达能力、社会活动能力和一定的科研能力，具有较高外语水平的理论研究人才以及能在国家机关、文教事业新闻出版、企业等部门从事实际工作。\n" +
-                "• 名人学者\n" +
-                "老子、庄子、孔子、苏格拉底、柏拉图、歌德等。");
+
+        //设置recyclerView不影响嵌套滚动
+        recyclerView.setNestedScrollingEnabled(false);
+        //使其失去焦点。
+        recyclerView.setFocusable(false);
+
+        initView(majorDetail);
     }
 
     @Override
     protected void lazyLoad() {
-        //加载数据
-        loadData();
     }
 
     @Override
@@ -171,7 +178,8 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
 
     /**
      * 停止Fling的消息
-     * @param event
+     *
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopFlingNotice(StopFlingEvent event) {
@@ -181,59 +189,56 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
         }
     }
 
-
     /**
-     * 加载数据
+     * 初始化专业详情
+     *
+     * @param majorDetail 专业详情
      */
-    private void loadData() {
-        //通信等待提示
-        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+    private void initView(MajorDetail majorDetail) {
+        if (majorDetail == null) return;
 
-        try {
-            dto.setPage(pageNum);
-            DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
-                @Override
-                public void onFailure(QSCustomException e) {
-                    //空布局：网络连接有误，或者请求失败
-                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+        //简介
+        List<MajorIntroduce> introduces = majorDetail.getIntroduces();
+        if (ArrayListUtil.isNotEmpty(introduces)) {
+            StringBuilder builder = new StringBuilder();
+            for (int i=0; i<introduces.size(); i++) {
+                MajorIntroduce introduce = introduces.get(i);
+
+                builder.append("<b>");
+                builder.append(introduce.getTitle());
+                builder.append("</b><br/>");
+                builder.append(introduce.getContent());
+                if (i != introduces.size() - 1) {
+                    builder.append("<br/>");
                 }
+            }
 
-                @Override
-                public void onResponse(Object obj) {
-                    //空布局：隐藏
-                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+            if (builder.length() > 0) {
+                expandableTextView.setText(Html.fromHtml(builder.toString()));
+            }
+        } else {
+            llIntroduce.setVisibility(View.GONE);
+        }
 
-                    try {
-                        Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                        TrackRecordRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, TrackRecordRootEntity.class);
+        //课程概览
+        if (!TextUtils.isEmpty(majorDetail.getCourse())) {
+            tvCourse.setText(majorDetail.getCourse());
+        } else {
+            llCourse.setVisibility(View.GONE);
+        }
 
-                        totalCount = rootEntity.getTotal();
-                        List<TrackRecordEntity> dataList = rootEntity.getItems();
+        //对口职业
+        if (ArrayListUtil.isNotEmpty(majorDetail.getSuitOccupations())) {
+            recyclerAdapter = new MajorSuitOccupationRecyclerAdapter(
+                    R.layout.recycleritem_major_suit_occupation, majorDetail.getSuitOccupations());
+            recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(recyclerAdapter);
 
-                        //空数据处理
-                        if (ArrayListUtil.isEmpty(dataList)) {
-                            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                            return;
-                        }
-
-                        //页码+1
-                        pageNum++;
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        //空布局：加载失败
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-                    }
-                }
-            }, httpTag, getActivity());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            //空布局：网络连接有误，或者请求失败
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+        } else {
+            llSuitOccupation.setVisibility(View.GONE);
         }
     }
-
 
 }
 

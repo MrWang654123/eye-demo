@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview.TimePickerView;
+import com.bigkoo.pickerview.builder.TimePickerBuilder;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.TimePickerView;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
@@ -87,7 +89,7 @@ public class UserInfoInitActivity extends BaseActivity {
 
     /**
      * 开启注册环节的用户信息完善页面
-     * @param context
+     * @param context 上下文
      * @param classNum 班级号
      */
     public static void startUserInfoInitActivity(Context context, String classNum, int parentRole) {
@@ -223,8 +225,6 @@ public class UserInfoInitActivity extends BaseActivity {
     @OnClick({R.id.btn_confirm, R.id.iv_time_select, R.id.et_birthday, R.id.iv_clear, R.id.iv_clear_nickname})
     public void onViewClick(View view) {
 
-        Calendar calendar1 = Calendar.getInstance();
-
         switch (view.getId()) {
             case R.id.iv_time_select:
             case R.id.et_birthday: {
@@ -257,12 +257,47 @@ public class UserInfoInitActivity extends BaseActivity {
         }
     }
 
+//    /**
+//     * 日期时间控件
+//     * @param selectedDate
+//     */
+//    private void showDate(Calendar selectedDate) {
+//        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+//            @Override
+//            public void onTimeSelect(Date date, View v) {
+//                String time = getTime(date);
+//                etBirthday.setText(time);
+//            }
+//        })
+//                .setType(new boolean[]{true, true, true, false, false, false})// 默认全部显示
+//                .setCancelText("取消")//取消按钮文字
+//                .setSubmitText("确定")//确认按钮文字
+////                .setContentSize(18)//滚轮文字大小
+////                .setTitleSize(20)//标题文字大小
+////                //.setTitleText("Title")//标题文字
+//                .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示
+//                .isCyclic(true)//是否循环滚动
+////                //.setTitleColor(Color.BLACK)//标题文字颜色
+////                .setSubmitColor(Color.BLUE)//确定按钮文字颜色
+////                .setCancelColor(Color.BLUE)//取消按钮文字颜色
+////                //.setTitleBgColor(0xFF666666)//标题背景颜色 Night mode
+////                .setBgColor(0xFF333333)//滚轮背景颜色 Night mode
+//                .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/
+//                .setRangDate(startDate,Calendar.getInstance())//起始终止年月日设定
+////                //.setLabel("年","月","日","时","分","秒")//默认设置为年月日时分秒
+//                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+//                //.isDialog(true)//是否显示为对话框样式
+//                .build();
+//
+//        pvTime.show();
+//    }
+
     /**
      * 日期时间控件
-     * @param selectedDate
+     * @param selectedDate 初始选择的日期
      */
     private void showDate(Calendar selectedDate) {
-        TimePickerView pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {
+        TimePickerView pvTime = new TimePickerBuilder(this, new OnTimeSelectListener() {
             @Override
             public void onTimeSelect(Date date, View v) {
                 String time = getTime(date);
@@ -294,8 +329,8 @@ public class UserInfoInitActivity extends BaseActivity {
 
     /**
      * date转str
-     * @param date
-     * @return
+     * @param date 日期对象
+     * @return 日期字符串
      */
     private String getTime(Date date) {//可根据需要自行截取数据显示
         //"YYYY-MM-DD HH:MM:SS"        "yyyy-MM-dd"
@@ -305,9 +340,9 @@ public class UserInfoInitActivity extends BaseActivity {
 
     /**
      * str转date
-     * @param dateStr
-     * @param formatStr
-     * @return
+     * @param dateStr 日期字符串
+     * @param formatStr 格式串
+     * @return 日期对象
      */
     private Date getDateFromStr(String dateStr, String formatStr) {
         SimpleDateFormat format = new SimpleDateFormat(formatStr);
@@ -367,7 +402,7 @@ public class UserInfoInitActivity extends BaseActivity {
 //                "birthday":"data",          //孩子生日
 //                "parent_role":"int"         //家长角色：1-父亲，2-母亲，3-爷爷/外公，4-奶奶/外婆  99其他
 //        }
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("group_no", classNum);
         map.put("sex", gender);
         map.put("name", username);
@@ -411,7 +446,7 @@ public class UserInfoInitActivity extends BaseActivity {
 
     /**
      * 验证数据格式
-     * @return
+     * @return true：验证通过
      */
     private boolean checkData() {
         String username = etUsername.getText().toString();

@@ -103,7 +103,7 @@ public abstract class BaseActivity extends AppCompatActivity implements MessageH
 
 
     //通信tag
-    protected String httpTag = System.currentTimeMillis() + "";
+    protected String httpTag = String.valueOf(System.currentTimeMillis());
 
 
     /**

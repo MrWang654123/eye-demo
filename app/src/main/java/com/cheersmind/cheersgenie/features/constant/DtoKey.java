@@ -28,24 +28,17 @@ public class DtoKey {
      */
     public static final String TASK_STATUS = "TASK_STATUS";
     /**
-     * 任务描述
-     */
-    public static final String TASK_DESC = "TASK_DESC";
-    /**
      * 孩子任务ID
      */
     public static final String CHILD_TASK_ID = "CHILD_TASK_ID";
-
-
-    /*----------  发展测评end  ----------*/
-
-
-    /*----------  生涯规划  ----------*/
-
     /**
      * 添加测评任务
      */
     public static final String ADD_EXAM_TASK = "ADD_EXAM_TASK";
+    /**
+     * 通用报告Dto
+     */
+    public static final String EXAM_REPORT_DTO = "EXAM_REPORT_DTO";
 
 
     /*----------  资源库begin  ----------*/
@@ -59,9 +52,9 @@ public class DtoKey {
      */
     public static final String MAJOR = "MAJOR";
     /**
-     * 专业ID
+     * 专业详情
      */
-    public static final String MAJOR_ID = "MAJOR_ID";
+    public static final String MAJOR_DETAIL = "MAJOR_DETAIL";
     /**
      * 院校
      */
@@ -70,6 +63,10 @@ public class DtoKey {
      * 院校ID
      */
     public static final String COLLEGE_ID = "COLLEGE_ID";
+    /**
+     * 行业
+     */
+    public static final String OCCUPATION = "OCCUPATION";
 
 
     /*----------  我的实践begin  ----------*/
@@ -83,6 +80,5 @@ public class DtoKey {
      * 实践ID
      */
     public static final String PRACTICE_ID = "PRACTICE_ID";
-
 
 }

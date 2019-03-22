@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,25 +12,30 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
-import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskStatus;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Map;
@@ -101,6 +107,13 @@ public class ExamTaskFragment extends LazyLoadFragment {
     private int totalCount = 0;
 
     ExamTaskDto dto;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //注册事件
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected int setContentView() {
@@ -177,6 +190,12 @@ public class ExamTaskFragment extends LazyLoadFragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //注销事件
+        EventBus.getDefault().unregister(this);
+    }
 
     /**
      * 刷新数据
@@ -334,6 +353,40 @@ public class ExamTaskFragment extends LazyLoadFragment {
 
             }
         }, httpTag, getActivity());
+    }
+
+
+    /**
+     * 任务状态的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTaskStatusNotice(ExamTaskStatus event) {
+        int status = event.getStatus();
+        //如果是完成状态，则刷新对应任务视图
+        if (status == Dictionary.TASK_STATUS_COMPLETED) {
+            String taskId = event.getTask_id();
+            String childTaskId = event.getChild_task_id();
+            List<ExamTaskEntity> data = recyclerAdapter.getData();
+
+            if (ArrayListUtil.isNotEmpty(data)) {
+                for (int i=0; i<data.size(); i++) {
+                    ExamTaskEntity item = data.get(i);
+                    try {
+                        if (item.getTask_id().equals(taskId)
+                                && item.getChildTask().getChild_task_id().equals(childTaskId)) {
+                            //设置完成状态
+                            item.getChildTask().setStatus(Dictionary.TASK_STATUS_COMPLETED);
+                            //刷新视图
+                            int position = recyclerAdapter.getHeaderLayoutCount() + i;
+                            recyclerAdapter.notifyItemChanged(position);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
 }

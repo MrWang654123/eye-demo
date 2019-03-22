@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRank;
 
 import java.util.List;
@@ -16,32 +18,32 @@ import java.util.List;
 /**
  * 院校排名的省份recycler适配器
  */
-public class CollegeRankProvinceRecyclerAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class CollegeRankProvinceRecyclerAdapter extends BaseQuickAdapter<CollegeProvince, BaseViewHolder> {
 
     private Context context;
     //排名数据
-    private CollegeRank collegeRank;
+    private CollegeRankDto rankDto;
 
-    public CollegeRankProvinceRecyclerAdapter(Context context, int layoutResId, @Nullable List<String> data, CollegeRank collegeRank) {
+    public CollegeRankProvinceRecyclerAdapter(Context context, int layoutResId, @Nullable List<CollegeProvince> data, CollegeRankDto rankDto) {
         super(layoutResId, data);
         this.context = context;
-        this.collegeRank = collegeRank;
+        this.rankDto = rankDto;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
+    protected void convert(BaseViewHolder helper, CollegeProvince item) {
         ((TextView)helper.getView(R.id.tv_title)).setTextColor(
                 ContextCompat.getColor(context, R.color.color_555555));
         //选中变色
-        if (collegeRank != null
-                && collegeRank.getCollegeRankArea() != null
-                && !TextUtils.isEmpty(collegeRank.getCollegeRankArea().getProvince())) {
-            if (collegeRank.getCollegeRankArea().getProvince().equals(item)) {
+        if (rankDto != null
+                && rankDto.getProvince() != null
+                && !TextUtils.isEmpty(rankDto.getProvince().getName())) {
+            if (rankDto.getProvince().getName().equals(item.getName())) {
                 ((TextView) helper.getView(R.id.tv_title)).setTextColor(
                         ContextCompat.getColor(context, R.color.color_e46c3e));
             }
         }
-        helper.setText(R.id.tv_title, item);
+        helper.setText(R.id.tv_title, item.getName());
     }
 
 }

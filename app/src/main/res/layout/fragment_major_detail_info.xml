@@ -24,11 +24,10 @@
 
                 <!--简介-->
                 <LinearLayout
+                    android:id="@+id/ll_introduce"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
@@ -54,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         expandableTextView:animAlphaStart="1"
-                        expandableTextView:maxCollapsedLines="8"
+                        expandableTextView:maxCollapsedLines="5"
                         expandableTextView:animDuration="200">
 
                         <TextView
@@ -104,11 +103,10 @@
 
                 <!--开设课程-->
                 <LinearLayout
+                    android:id="@+id/ll_course"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
                     android:orientation="vertical">
 
@@ -121,7 +119,7 @@
                         android:layout_marginLeft="15dp"
                         android:textSize="18sp"
                         android:textColor="@color/color_333333"
-                        android:text="主修课程"/>
+                        android:text="课程概览"/>
 
                     <View
                         android:layout_width="match_parent"
@@ -129,6 +127,7 @@
                         android:background="@color/color_eeeeee"/>
 
                     <TextView
+                        android:id="@+id/tv_course"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/color_555555"
@@ -139,15 +138,13 @@
 
                 </LinearLayout>
 
-                <!--相似专业-->
+                <!--对口职业-->
                 <LinearLayout
+                    android:id="@+id/ll_suit_occupation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -159,21 +156,19 @@
                         android:layout_marginLeft="15dp"
                         android:textSize="18sp"
                         android:textColor="@color/color_333333"
-                        android:text="相似专业"/>
+                        android:text="对口职业"/>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/color_eeeeee"/>
 
-                    <TextView
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/color_444444"
-                        android:textSize="17sp"
-                        android:lineSpacingMultiplier="1.2"
-                        android:padding="15dp"
-                        android:text="士大夫、是拒方、微软、四大金刚、升级到封、撒旦解放吗、风格和"/>
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
 
                 </LinearLayout>
 

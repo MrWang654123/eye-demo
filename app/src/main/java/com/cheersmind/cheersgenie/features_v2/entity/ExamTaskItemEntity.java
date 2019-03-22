@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features_v2.entity;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
@@ -12,15 +13,8 @@ import java.io.Serializable;
  */
 public class ExamTaskItemEntity extends AbstractExpandableItem<DimensionInfoEntity> implements Serializable, MultiItemEntity {
 
-    //测评
-    public static final int TYPE_EXAM = 1;
-    //量表
-    public static final int TYPE_DIMENSION = 2;
-    //文章（目前视频、音频都归属于文章）
-    public static final int TYPE_ARTICLE = 3;
-
     //显示项类型
-    private int itemType = TYPE_ARTICLE;
+    private int itemType = Dictionary.TASK_ITEM_TYPE_ARTICLE;
 
     //任务ID
     @InjectMap(name = "task_id")
@@ -49,6 +43,10 @@ public class ExamTaskItemEntity extends AbstractExpandableItem<DimensionInfoEnti
     //0不锁定 1锁定
     @InjectMap(name = "is_lock")
     private int is_lock;
+
+    //前置任务项ID集合
+    @InjectMap(name = "pre_items")
+    private String pre_items;
 
     //孩子子项
     @InjectMap(name = "child_item")
@@ -119,14 +117,27 @@ public class ExamTaskItemEntity extends AbstractExpandableItem<DimensionInfoEnti
         this.childItem = childItem;
     }
 
+    public String getPre_items() {
+        return pre_items;
+    }
+
+    public void setPre_items(String pre_items) {
+        this.pre_items = pre_items;
+    }
+
     @Override
     public int getItemType() {
 
-        if (item_type == 1) {
-            itemType = TYPE_EXAM;
-        } else {
-            itemType = TYPE_ARTICLE;
-        }
+//        if (item_type == 1) {
+//            itemType = TYPE_EXAM;
+//
+//        } else if (item_type == 2) {
+//            itemType = TYPE_DIMENSION;
+//
+//        } else {
+//            itemType = TYPE_ARTICLE;
+//        }
+        itemType = getItem_type();
 
         return itemType;
     }

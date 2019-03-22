@@ -11,9 +11,7 @@ import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.MajorEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.college.fragment.CollegeDetailFragment;
-import com.cheersmind.cheersgenie.features_v2.modules.major.fragment.MajorDetailFragment;
 
 /**
  * 院校详情

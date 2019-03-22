@@ -1,7 +1,8 @@
-package com.cheersmind.cheersgenie.features_v2.modules.base.fragment;
+package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -9,23 +10,28 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
-import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
+import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
+import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskStatus;
 import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeRankActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskAddActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
@@ -33,12 +39,18 @@ import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorActivi
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 import java.util.Map;
@@ -53,10 +65,7 @@ import butterknife.Unbinder;
  */
 public class CareerPlanFragment extends LazyLoadFragment {
 
-    private static final String MODULE_ID = "MODULE_ID";
-
-    //模块ID
-    private String moduleId;
+    Unbinder unbinder;
 
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
@@ -71,8 +80,9 @@ public class CareerPlanFragment extends LazyLoadFragment {
     //置顶按钮
     @BindView(R.id.fabGotoTop)
     FloatingActionButton fabGotoTop;
-
-    Unbinder unbinder;
+    //添加自定义任务按钮
+    @BindView(R.id.fabAddTaskItem)
+    FloatingActionButton fabAddTaskItem;
 
     //适配器的数据列表
     ExamTaskRecyclerAdapter recyclerAdapter;
@@ -100,19 +110,34 @@ public class CareerPlanFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            //显示消息对话框
+
             ExamTaskEntity entity = recyclerAdapter.getData().get(position);
-            ExamTaskDetailActivity.startExamTaskDetailActivity(getContext(), entity);
+            //判断任务项是否被锁，友好提示
+            if (entity.getIs_lock() == Dictionary.IS_LOCKED_YSE) {
+                lockedTaskTip(entity);
+
+            } else {
+                ExamTaskDetailActivity.startExamTaskDetailActivity(getContext(), entity);
+            }
         }
     };
 
 
     //页长度
-    private static final int PAGE_SIZE = 3;
+    private static final int PAGE_SIZE = 10;
     //页码
     private int pageNum = 1;
     //后台总记录数
     private int totalCount = 0;
+
+    ExamTaskDto dto;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //注册事件
+        EventBus.getDefault().register(this);
+    }
 
     @Override
     protected int setContentView() {
@@ -135,7 +160,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(getContext()));
+//        recyclerAdapter.addHeaderView(new View(getContext()));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
@@ -161,6 +186,8 @@ public class CareerPlanFragment extends LazyLoadFragment {
 
                 if (verticalOffset >= 0) {
                     swipeRefreshLayout.setEnabled(true);
+                    //停止Fling
+                    recycleView.stopScroll();
                 } else {
                     swipeRefreshLayout.setEnabled(false);
                 }
@@ -172,7 +199,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadMoreData();
+                loadData();
             }
         });
         //空布局背景色
@@ -182,17 +209,17 @@ public class CareerPlanFragment extends LazyLoadFragment {
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
+        //初始隐藏添加任务按钮
+        fabAddTaskItem.setVisibility(View.INVISIBLE);
 
-        //获取数据
-        Bundle bundle = getArguments();
-        if(bundle!=null) {
-            moduleId = bundle.getString(MODULE_ID);
-        }
+        dto = new ExamTaskDto(pageNum, PAGE_SIZE);
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        dto.setChildId(childId);
     }
 
     @Override
     protected void lazyLoad() {
-        loadMoreData();
+        loadData();
     }
 
     @Override
@@ -201,10 +228,16 @@ public class CareerPlanFragment extends LazyLoadFragment {
         unbinder.unbind();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //注销事件
+        EventBus.getDefault().unregister(this);
+    }
 
     @OnClick({R.id.fabAddTaskItem, R.id.cl_college,
             R.id.cl_major, R.id.cl_occupation,
-            R.id.cl_college_preference})
+            R.id.cl_career_report})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //添加任务
@@ -212,7 +245,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
 //                ExamTaskAddActivity.startExamTaskAddActivity(getContext(), "123123123123123");
                 Intent intent = new Intent(getContext(), ExamTaskAddActivity.class);
                 Bundle extras = new Bundle();
-                extras.putString(MODULE_ID, moduleId);
+                extras.putString(DtoKey.CHILD_MODULE_ID, dto.getChildModuleId());
                 intent.putExtras(extras);
                 startActivityForResult(intent, REQUEST_CODE_ADD_TASK, extras);
                 break;
@@ -232,16 +265,25 @@ public class CareerPlanFragment extends LazyLoadFragment {
                 OccupationActivity.startOccupationActivity(getContext());
                 break;
             }
-            //高考志愿
-            case R.id.cl_college_preference: {
-                if (getActivity() != null) {
-                    ToastUtil.showShort(getActivity().getApplication(), "点击子tab");
-                }
+            //成长档案
+            case R.id.cl_career_report: {
+                TrackRecordActivity.startTrackRecordActivity(getContext());
                 break;
             }
         }
     }
 
+    /**
+     * 加载数据
+     */
+    private void loadData() {
+        //如果孩子模块ID为空，则先获取模块，否则直接获取任务列表
+        if (TextUtils.isEmpty(dto.getChildModuleId())) {
+            loadCareerPlanModule();
+        } else {
+            loadMoreData();
+        }
+    }
 
     /**
      * 刷新数据
@@ -252,8 +294,8 @@ public class CareerPlanFragment extends LazyLoadFragment {
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getExamTasks(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -326,8 +368,8 @@ public class CareerPlanFragment extends LazyLoadFragment {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getExamTasks(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能
@@ -369,6 +411,8 @@ public class CareerPlanFragment extends LazyLoadFragment {
                     //当前列表无数据
                     if (recyclerAdapter.getData().size() == 0) {
                         recyclerAdapter.setNewData(dataList);
+                        //第一次加载任务成功才显示添加自定义任务按钮
+                        fabAddTaskItem.setVisibility(View.VISIBLE);
 
                     } else {
                         recyclerAdapter.addData(dataList);
@@ -413,6 +457,125 @@ public class CareerPlanFragment extends LazyLoadFragment {
             recyclerAdapter.addData(selectItem);
             totalCount++;
             recycleView.scrollToPosition(recyclerAdapter.getHeaderLayoutCount() + recyclerAdapter.getData().size());
+        }
+    }
+
+
+    /**
+     * 加载生涯规划模块
+     */
+    private void loadCareerPlanModule() {
+        //关闭下拉刷新功能
+        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
+        //显示通信等待提示
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+
+        ModuleDto dto = new ModuleDto(1, 1);
+        dto.setType(2);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
+        DataRequestService.getInstance().getModules(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ExamModuleRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ExamModuleRootEntity.class);
+
+                    List<ExamModuleEntity> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
+
+                    ExamModuleEntity examModule = dataList.get(0);
+                    if (examModule.getChildModule() == null || TextUtils.isEmpty(examModule.getChildModule().getChild_module_id())) {
+                        throw new QSCustomException("暂无数据");
+                    }
+
+                    CareerPlanFragment.this.dto.setChildModuleId(examModule.getChildModule().getChild_module_id());
+                    //加载模块下的任务列表
+                    loadMoreData();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 任务被锁定的提示
+     */
+    protected void lockedTaskTip(ExamTaskEntity task) {
+
+        if(!TextUtils.isEmpty(task.getPre_tasks())){
+            String [] taskIds = task.getPre_tasks().split(",");
+            List<ExamTaskEntity> tasks = recyclerAdapter.getData();
+            if(taskIds.length > 0 && tasks.size() > 0){
+                StringBuilder stringBuffer = new StringBuilder("");
+
+                for(ExamTaskEntity item : tasks) {
+                    for (String taskId : taskIds) {
+                        if (taskId.equals(item.getTask_id())) {
+                            stringBuffer.append(item.getTask_name());
+                            stringBuffer.append("、");
+                        }
+                    }
+                }
+
+                if(stringBuffer.length() > 0 && getActivity() != null) {
+                    String str = getActivity().getResources().getString(R.string.task_item_lock_tip, stringBuffer.substring(0, stringBuffer.length() - 1));
+                    ToastUtil.showLong(getActivity().getApplication(), str);
+                }
+            }
+        } else {
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), "未找到解锁条件，请稍后再试");
+            }
+        }
+    }
+
+
+    /**
+     * 任务状态的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTaskStatusNotice(ExamTaskStatus event) {
+        int status = event.getStatus();
+        //如果是完成状态，则刷新对应任务视图
+        if (status == Dictionary.TASK_STATUS_COMPLETED) {
+            String taskId = event.getTask_id();
+            String childTaskId = event.getChild_task_id();
+            List<ExamTaskEntity> data = recyclerAdapter.getData();
+
+            if (ArrayListUtil.isNotEmpty(data)) {
+                for (int i=0; i<data.size(); i++) {
+                    ExamTaskEntity item = data.get(i);
+                    try {
+                        if (item.getTask_id().equals(taskId)
+                                && item.getChildTask().getChild_task_id().equals(childTaskId)) {
+                            //设置完成状态
+                            item.getChildTask().setStatus(Dictionary.TASK_STATUS_COMPLETED);
+                            //刷新视图
+                            int position = recyclerAdapter.getHeaderLayoutCount() + i;
+                            recyclerAdapter.notifyItemChanged(position);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
     }
 

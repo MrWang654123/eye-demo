@@ -49,10 +49,8 @@ import butterknife.Unbinder;
  */
 public class ExamTaskAddFragment extends LazyLoadFragment {
 
-    private static final String MODULE_ID = "MODULE_ID";
-
-    //模块ID
-    private String moduleId;
+    //孩子模块ID
+    private String childModuleId;
 
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -180,7 +178,7 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         //获取数据
         Bundle bundle = getArguments();
         if(bundle!=null) {
-            moduleId = bundle.getString(MODULE_ID);
+            childModuleId = bundle.getString(DtoKey.CHILD_MODULE_ID);
         }
     }
 

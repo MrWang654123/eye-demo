@@ -711,8 +711,8 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
                     //存在一个未做完的量表，则视为不满足解锁条件
                     for (DimensionInfoEntity dimension : dimensions) {
                         if (dimensionSet.contains(dimension.getDimensionId())) {
-                            if (dimension.getChildDimension() != null
-                                    && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+                            if (dimension.getChildDimension() == null
+                                    || dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                                 isMeetUnlockCondition = false;
                             }
                         }
@@ -1267,7 +1267,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
         }
 
         //被锁定
-        if(dimensionInfoEntity.getIsLocked() == 1){
+        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE){
             //锁定提示
             lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
 
@@ -1284,7 +1284,7 @@ public class ExamBaseFragment extends LazyLoadFragment implements SearchListener
 
             } else {//已经开启过的状态
                 //未完成状态
-                if(entity.getStatus() == 0){
+                if(entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE){
                     //跳转到量表详细页面，传递量表对象和话题对象
                     DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                             dimensionInfoEntity, topicInfoEntity,

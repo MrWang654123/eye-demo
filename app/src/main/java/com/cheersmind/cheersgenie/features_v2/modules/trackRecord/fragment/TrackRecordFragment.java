@@ -115,8 +115,8 @@ public class TrackRecordFragment extends LazyLoadFragment {
 //        ivMain.setImageURI(examTask != null ? examTask.getArticleImg() : "");
 
         List<Pair<String, Fragment>> items = new ArrayList<>();
-        items.add(new Pair<String, Fragment>("发展档案", new TrackRecordDetailFragment()));
-        items.add(new Pair<String, Fragment>("生涯规划", new CareerPlanReportFragment()));
+        items.add(new Pair<String, Fragment>("生涯发展档案", new CareerPlanReportFragment()));
+        items.add(new Pair<String, Fragment>("能力发展档案", new TrackRecordDetailFragment()));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);

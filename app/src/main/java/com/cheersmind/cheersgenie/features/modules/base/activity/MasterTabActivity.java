@@ -29,10 +29,12 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.entity.ExamEntity;
+import com.cheersmind.cheersgenie.features.entity.SeminarEntity;
+import com.cheersmind.cheersgenie.features.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.ExamWrapFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
@@ -40,13 +42,15 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
-import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanFragment;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevelRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvinceRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
+import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanWrapFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.DiscoverFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
-import com.cheersmind.cheersgenie.features.entity.ExamEntity;
-import com.cheersmind.cheersgenie.features.entity.SeminarEntity;
-import com.cheersmind.cheersgenie.features.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -60,6 +64,7 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,8 +105,8 @@ public class MasterTabActivity extends BaseActivity {
     //是否已经第一次访问过了任务列表
     private boolean hasFirstShowTaskList;
     //任务弹窗偏移
-    int offset_x;
-    int offset_y;
+//    int offset_x;
+//    int offset_y;
     //专题
     private SeminarEntity seminarEntity;
     //测评集合
@@ -165,17 +170,17 @@ public class MasterTabActivity extends BaseActivity {
         //向ViewPager添加各页面
         listFragment = new ArrayList<>();
         //首页改为探索
-//        listFragment.add(new HomeFragment());
-        listFragment.add(new ExploreFragment());
-        listFragment.add(new ExamWrapFragment());
-//        listFragment.add(new ReportFragment());//最近使用
-        listFragment.add(new MineFragment());
-
-//        listFragment.add(new DiscoverFragment());
-//        listFragment.add(new CareerPlanFragment());
-//        listFragment.add(new com.cheersmind.cheersgenie.features_v2.modules.base.fragment.ExamWrapFragment());
-////        listFragment.add(new ExamWrapFragment());
+////        listFragment.add(new HomeFragment());
+//        listFragment.add(new ExploreFragment());
+//        listFragment.add(new ExamWrapFragment());
+////        listFragment.add(new ReportFragment());//最近使用
 //        listFragment.add(new MineFragment());
+
+        listFragment.add(new ExploreFragment());
+        listFragment.add(new CareerPlanWrapFragment());
+        listFragment.add(new com.cheersmind.cheersgenie.features_v2.modules.base.fragment.ExamWrapFragment());
+//        listFragment.add(new ExamWrapFragment());
+        listFragment.add(new MineFragment());
 
         MyFragAdapter myAdapter = new MyFragAdapter(getSupportFragmentManager(), this, listFragment);
         viewPager.setAdapter(myAdapter);
@@ -195,32 +200,32 @@ public class MasterTabActivity extends BaseActivity {
         navigationBar.setTabSelectedListener(onTabSelectedListener);
         navigationBar.offsetTopAndBottom(20);
         //添加子项
-        navigationBar
-                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"探索")
-                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
-//                        .setBadgeItem(mShapeBadgeItem))
-                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")
-                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
-//                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
-//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
-//                        .setBadgeItem(mTextBadgeItem))
-                .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
-                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
-                .setFirstSelectedPosition(0)//设置默认选择的按钮
-                .initialise();//所有的设置需在调用该方法前完成
 //        navigationBar
-//                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"发现")
+//                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"探索")
 //                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
 ////                        .setBadgeItem(mShapeBadgeItem))
-//                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"生涯")
+//                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")
 //                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
-//                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"测评")
-//                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
+////                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"报告")
+////                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
 ////                        .setBadgeItem(mTextBadgeItem))
 //                .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
 //                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
 //                .setFirstSelectedPosition(0)//设置默认选择的按钮
 //                .initialise();//所有的设置需在调用该方法前完成
+        navigationBar
+                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"发现")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
+//                        .setBadgeItem(mShapeBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"生涯")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
+                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"测评")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
+//                        .setBadgeItem(mTextBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
+                .setFirstSelectedPosition(0)//设置默认选择的按钮
+                .initialise();//所有的设置需在调用该方法前完成
 
         //初始隐藏悬浮按钮
         fabTask.setVisibility(View.GONE);
@@ -233,6 +238,8 @@ public class MasterTabActivity extends BaseActivity {
         Configuration configuration = getResources().getConfiguration();
         System.out.println("MasterTabActivity：测试【DisplayMetrics】【Configuration】");
 
+//        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+//        System.out.println(childId);
     }
 
     @Override
@@ -258,16 +265,11 @@ public class MasterTabActivity extends BaseActivity {
             getSynthesizerManager().initialTts();
         }
 
-        httpTag = String.valueOf(System.currentTimeMillis());
         //是否已经第一次访问过了任务列表
-        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
-        hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
+//        String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
+//        hasFirstShowTaskList = getHasFirstShowTaskList(defaultChildId);
         //请求任务列表
-        doGetTaskList(httpTag);
-
-        //任务弹窗偏移
-        offset_x = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_x);
-        offset_y = (int) getResources().getDimension(R.dimen.task_list_popup_window_offset_y);
+//        doGetTaskList(httpTag);
 
         //初始化声音
         SoundPlayUtils.getInstance().init(getApplicationContext());
@@ -292,6 +294,10 @@ public class MasterTabActivity extends BaseActivity {
             e.printStackTrace();
         }
 
+        //初始请求院校库的查询条件信息
+        doGetCollegeProvince();//大学省份
+        doGetEducationLevel();//大学学历层次
+//        doGetCollegeCategory();//大学院校类别
     }
 
     @Override
@@ -299,7 +305,7 @@ public class MasterTabActivity extends BaseActivity {
         super.onStart();
 
         //如果当前是“我的”，则刷新积分
-        if (viewPager != null && viewPager.getCurrentItem() == 2) {
+        if (viewPager != null && viewPager.getCurrentItem() == 3) {
             //发送刷新积分通知
             EventBus.getDefault().post(new RefreshIntegralEvent());
         }
@@ -350,7 +356,6 @@ public class MasterTabActivity extends BaseActivity {
                 case 1:
                     index = 1;
                     //修改状态栏颜色
-//                    setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.white));
                     setStatusBarBackgroundColor(MasterTabActivity.this, getResources().getColor(R.color.colorPrimary));
                     break;
                 case 2:
@@ -552,7 +557,7 @@ public class MasterTabActivity extends BaseActivity {
 //                Manifest.permission.CHANGE_WIFI_STATE
         };
 
-        ArrayList<String> toApplyList = new ArrayList<String>();
+        ArrayList<String> toApplyList = new ArrayList<>();
 
         for (String perm : permissions) {
             if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
@@ -719,6 +724,112 @@ public class MasterTabActivity extends BaseActivity {
             "\t\t}]\n" +
             "\t}]\n" +
             "}";
+
+
+
+    /**
+     * 请求大学的省份
+     */
+    private void doGetCollegeProvince() {
+        DataRequestService.getInstance().getCollegeProvince(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.getLocalizedMessage();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CollegeProvinceRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeProvinceRootEntity.class);
+
+                    List<CollegeProvince> list = rootEntity.getItems();
+//                    System.out.println(list);
+                    //存到数据库
+                    DataSupport.deleteAll(CollegeProvince.class);
+                    DataSupport.saveAll(list);
+//                    List<CollegeProvince> all = DataSupport.findAll(CollegeProvince.class);
+//                    System.out.println(all);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, httpTag, MasterTabActivity.this);
+    }
+
+    /**
+     * 请求大学的学历层次
+     */
+    private void doGetEducationLevel() {
+        DataRequestService.getInstance().getCollegeEducationLevel(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.getLocalizedMessage();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    DataSupport.deleteAll(CollegeRankItem.class);
+                    DataSupport.deleteAll(CollegeEduLevel.class);
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CollegeEduLevelRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeEduLevelRootEntity.class);
+
+                    List<CollegeEduLevel> list = rootEntity.getItems();
+                    //存到数据库
+                    //排名项
+                    List<CollegeRankItem>  rankItems = new ArrayList<>();
+                    for (CollegeEduLevel eduLevel : list) {
+                        rankItems.addAll(eduLevel.getRanking_items());
+                    }
+                    DataSupport.saveAll(rankItems);
+//                    List<CollegeRankItem> all2 = DataSupport.findAll(CollegeRankItem.class);
+//                    System.out.println(all2);
+                    //学历层次
+                    DataSupport.saveAll(list);
+//                    List<CollegeEduLevel> all = DataSupport.findAll(CollegeEduLevel.class, true);
+//                    System.out.println(all);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, httpTag, MasterTabActivity.this);
+    }
+
+//    /**
+//     * 请求大学的院校类型
+//     */
+//    private void doGetCollegeCategory() {
+//        DataRequestService.getInstance().getCollegeCategory(new BaseService.ServiceCallback() {
+//            @Override
+//            public void onFailure(QSCustomException e) {
+//                e.getLocalizedMessage();
+//            }
+//
+//            @Override
+//            public void onResponse(Object obj) {
+//                try {
+//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+//                    CollegeCategoryRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeCategoryRootEntity.class);
+//
+//                    List<CollegeCategory> list = rootEntity.getItems();
+//                    //存到数据库
+//                    DataSupport.deleteAll(CollegeCategory.class);
+//                    DataSupport.saveAll(list);
+//                    List<CollegeCategory> all = DataSupport.findAll(CollegeCategory.class);
+//                    System.out.println(all);
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }, httpTag, MasterTabActivity.this);
+//    }
 
 }
 

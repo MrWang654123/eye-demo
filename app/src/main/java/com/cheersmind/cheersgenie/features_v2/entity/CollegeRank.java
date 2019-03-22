@@ -8,11 +8,15 @@ public class CollegeRank {
     //区域
     private CollegeRankArea collegeRankArea;
 
+    //学历层次
+    private CollegeRankLevel collegeRankLevel;
+
     //院校类别
     private CollegeRankCategory collegeRankCategory;
 
-    //主题
+    //排名主题
     private CollegeRankSubject collegeRankSubject;
+
 
     public CollegeRankArea getCollegeRankArea() {
         return collegeRankArea;
@@ -36,5 +40,13 @@ public class CollegeRank {
 
     public void setCollegeRankSubject(CollegeRankSubject collegeRankSubject) {
         this.collegeRankSubject = collegeRankSubject;
+    }
+
+    public CollegeRankLevel getCollegeRankLevel() {
+        return collegeRankLevel;
+    }
+
+    public void setCollegeRankLevel(CollegeRankLevel collegeRankLevel) {
+        this.collegeRankLevel = collegeRankLevel;
     }
 }

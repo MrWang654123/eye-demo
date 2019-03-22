@@ -136,9 +136,15 @@ public class Dictionary {
 
     //图表类型
     //header
-    public final static int CHART_HEADER = 999;
+    public final static int CHART_HEADER = 100;
     //footer
-    public final static int CHART_FOOTER = 1000;
+    public final static int CHART_FOOTER = 200;
+    //子标题
+    public final static int CHART_SUB_TITLE = 500;
+    //子项
+    public final static int CHART_SUB_ITEM = 300;
+    //图表描述
+    public final static int CHART_DESC = 400;
     //网状图
     public final static int CHART_RADAR = 1;
     //曲线图
@@ -179,6 +185,8 @@ public class Dictionary {
     public static final int FROM_ACTIVITY_TO_QUESTION_MAIN = 1;
     //从我的智评页进入答题页
     public static final int FROM_ACTIVITY_TO_QUESTION_MINE = 2;
+    //从任务详情页进入答题页
+    public static final int FROM_ACTIVITY_TO_TASK_DETAIL = 3;
 
 
     //报告图表比较ID：全国
@@ -192,7 +200,45 @@ public class Dictionary {
     public static final int TASK_STATUS_INCOMPLETE = 0;
     //任务状态：已完成
     public static final int TASK_STATUS_COMPLETED = 1;
-    //测评状态：已结束未完成
+    //任务状态：已结束未完成
     public static final int TASK_STATUS_OVER_INCOMPLETE = 2;
+
+    //任务项类型：通用场景
+    public static final int TASK_ITEM_TYPE_TOPIC_COMMON = 1;
+    //任务项类型：量表
+    public static final int TASK_ITEM_TYPE_DIMENSION = 2;
+    //任务项类型：文章
+    public static final int TASK_ITEM_TYPE_ARTICLE = 3;
+    //任务项类型：视频
+    public static final int TASK_ITEM_TYPE_VIDEO = 4;
+    //任务项类型：音频
+    public static final int TASK_ITEM_TYPE_AUDIO = 5;
+    //任务项类型：实践
+    public static final int TASK_ITEM_TYPE_PRACTICE = 6;
+    //任务项类型：确认选课结果
+    public static final int TASK_ITEM_TYPE_CHOOSE_COURSE = 7;
+    //任务项类型：高考3+6选3
+    public static final int TASK_ITEM_TYPE_TOPIC_363 = 21;
+    //任务项类型：高考3+7选3
+    public static final int TASK_ITEM_TYPE_TOPIC_373 = 22;
+    //任务项类型：高考3+2选1+4选2
+    public static final int TASK_ITEM_TYPE_TOPIC_321_42 = 23;
+
+    //是否被锁：否
+    public static final int IS_LOCKED_NO = 0;
+    //是否被锁：是
+    public static final int IS_LOCKED_YSE = 1;
+
+    //RecyclerView层级0的布局类型
+    public final static int RECYCLER_VIEW_LAYOUT_TYPE_LEVEL0 = 0;
+    //RecyclerView层级1的布局类型
+    public final static int RECYCLER_VIEW_LAYOUT_TYPE_LEVEL1 = 1;
+    //RecyclerView层级2的布局类型
+    public final static int RECYCLER_VIEW_LAYOUT_TYPE_LEVEL2 = 2;
+
+    //任务来源类型：默认
+    public static final int TASK_FROM_TYPE_DEFAULT = 0;
+    //任务来源类型：校本课程
+    public static final int TASK_FROM_TYPE_SCHOOL_COURSE = 1;
 
 }

@@ -84,15 +84,27 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
     @InjectMap(name = "background_color")
     private String backgroundColor;
 
-    //测评ID（目前只有文章详细中的量表对象有返回该字段）
+    //测评ID（文章详细中的量表对象和任务子项中有返回该字段）
     @InjectMap(name = "exam_id")
     private String examId;
 
-    //item类型
-//    private int itemType = ExamDimensionBaseRecyclerAdapter.LAYOUT_TYPE_DIMENSION;
+    //孩子测评ID（目前运用于任务子项）
+    @InjectMap(name = "child_exam_id")
+    private String child_exam_id;
 
-    //是否最后一个量表
+    //是否是复制的（目前运用于任务子项）
+    @InjectMap(name = "is_duplicated")
+    private boolean is_duplicated;
+
+    //是否是动态的（目前运用于任务子项）
+    @InjectMap(name = "is_dynamic")
+    private boolean is_dynamic;
+
+    //是否是兄弟中的最后一个量表
     private boolean isLastInTopic;
+
+    //是否是兄弟中的第一个量表
+    private boolean isFirstInTopic;
 
     public String getDimensionId() {
         return dimensionId;
@@ -303,5 +315,37 @@ public class DimensionInfoEntity implements MultiItemEntity, Serializable {
 
     public void setLastInTopic(boolean lastInTopic) {
         isLastInTopic = lastInTopic;
+    }
+
+    public String getChild_exam_id() {
+        return child_exam_id;
+    }
+
+    public void setChild_exam_id(String child_exam_id) {
+        this.child_exam_id = child_exam_id;
+    }
+
+    public boolean isIs_duplicated() {
+        return is_duplicated;
+    }
+
+    public void setIs_duplicated(boolean is_duplicated) {
+        this.is_duplicated = is_duplicated;
+    }
+
+    public boolean isIs_dynamic() {
+        return is_dynamic;
+    }
+
+    public void setIs_dynamic(boolean is_dynamic) {
+        this.is_dynamic = is_dynamic;
+    }
+
+    public boolean isFirstInTopic() {
+        return isFirstInTopic;
+    }
+
+    public void setFirstInTopic(boolean firstInTopic) {
+        isFirstInTopic = firstInTopic;
     }
 }

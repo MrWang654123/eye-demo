@@ -5,7 +5,7 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 import java.io.Serializable;
 
 /**
- * 孩子测评任务
+ * 孩子测评任务项
  */
 public class TaskDetailItemChildEntity implements Serializable {
 

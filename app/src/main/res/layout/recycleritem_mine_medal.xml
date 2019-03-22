@@ -26,7 +26,7 @@
         app:layout_constraintVertical_bias="0.0"
         fresco:roundAsCircle="true"
         fresco:actualImageScaleType="centerCrop"
-        fresco:placeholderImage="@drawable/discover_item_tab"
+        fresco:placeholderImage="@drawable/medal_default"
         fresco:placeholderImageScaleType="centerCrop"
         fresco:pressedStateOverlayImage="@color/light_transparent"
         fresco:roundWithOverlayColor="@color/white"/>

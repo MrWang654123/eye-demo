@@ -1,11 +1,8 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
-import com.cheersmind.cheersgenie.features.entity.ArticleCategory;
-import com.cheersmind.cheersgenie.features.entity.ArticleTag;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 院校
@@ -15,69 +12,21 @@ public class CollegeEntity implements Serializable {
     @InjectMap(name = "id")
     private String id;
 
-    //标题
-    @InjectMap(name = "article_title")
-    private String articleTitle;
+    //中文名称
+    @InjectMap(name = "cn_name")
+    private String cn_name;
 
-    //主图
-    @InjectMap(name = "article_img")
-    private String articleImg;
+    //logo图片
+    @InjectMap(name = "logo_url")
+    private String logo_url;
 
-    //浏览次数
-    @InjectMap(name = "page_view")
-    private int pageView;
+    //英文名称
+    @InjectMap(name = "en_name")
+    private int en_name;
 
-    //收藏次数
-    @InjectMap(name = "page_favorite")
-    private int pageFavorite;
-
-    //评测次数
-    @InjectMap(name = "test_count")
-    private int testCount;
-
-    //是否关联测评，0 没有 1 有
-    @InjectMap(name = "is_reference_test")
-    private int isReferenceTest;
-
-    //简介
-    @InjectMap(name = "summary")
-    private String summary;
-
-    //标签集合
-    @InjectMap(name = "tags")
-    private List<ArticleTag> articleTags;
-
-    //文章来源类型：1-原创，2-转载
-    @InjectMap(name = "source_type")
-    private int sourceType;
-
-    //作者
-    @InjectMap(name = "article_author")
-    private String articleAuthor;
-
-    //发布时间
-    @InjectMap(name = "publish_date")
-    private String publishDate;
-
-    //文章类型：1-普通图文文章，2-视频文章，3-画册？
-    @InjectMap(name = "content_type")
-    private int contentType;
-
-    //类型
-    @InjectMap(name = "category")
-    private ArticleCategory category;
-
-    //是否收藏
-    @InjectMap(name = "is_favorite")
-    private boolean isFavorite;
-
-    //是否点赞
-    @InjectMap(name = "is_like")
-    private boolean isLike;
-
-    //评论数
-    @InjectMap(name = "comment_count")
-    private int commentCount;
+    //基本信息
+    @InjectMap(name = "basic_info")
+    private CollegeBasicInfo basicInfo;
 
     //是否选中
     private boolean isSelected;
@@ -91,132 +40,36 @@ public class CollegeEntity implements Serializable {
         this.id = id;
     }
 
-    public String getArticleTitle() {
-        return articleTitle;
+    public String getCn_name() {
+        return cn_name;
     }
 
-    public void setArticleTitle(String articleTitle) {
-        this.articleTitle = articleTitle;
+    public void setCn_name(String cn_name) {
+        this.cn_name = cn_name;
     }
 
-    public String getArticleImg() {
-        return articleImg;
+    public String getLogo_url() {
+        return logo_url;
     }
 
-    public void setArticleImg(String articleImg) {
-        this.articleImg = articleImg;
+    public void setLogo_url(String logo_url) {
+        this.logo_url = logo_url;
     }
 
-    public int getIsReferenceTest() {
-        return isReferenceTest;
+    public int getEn_name() {
+        return en_name;
     }
 
-    public void setIsReferenceTest(int isReferenceTest) {
-        this.isReferenceTest = isReferenceTest;
+    public void setEn_name(int en_name) {
+        this.en_name = en_name;
     }
 
-    public String getSummary() {
-        return summary;
+    public CollegeBasicInfo getBasicInfo() {
+        return basicInfo;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public int getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(int contentType) {
-        this.contentType = contentType;
-    }
-
-    public int getPageView() {
-        return pageView;
-    }
-
-    public void setPageView(int pageView) {
-        this.pageView = pageView;
-    }
-
-    public int getPageFavorite() {
-        return pageFavorite;
-    }
-
-    public void setPageFavorite(int pageFavorite) {
-        this.pageFavorite = pageFavorite;
-    }
-
-    public int getTestCount() {
-        return testCount;
-    }
-
-    public void setTestCount(int testCount) {
-        this.testCount = testCount;
-    }
-
-    public List<ArticleTag> getArticleTags() {
-        return articleTags;
-    }
-
-    public void setArticleTags(List<ArticleTag> articleTags) {
-        this.articleTags = articleTags;
-    }
-
-    public int getSourceType() {
-        return sourceType;
-    }
-
-    public void setSourceType(int sourceType) {
-        this.sourceType = sourceType;
-    }
-
-    public String getArticleAuthor() {
-        return articleAuthor;
-    }
-
-    public void setArticleAuthor(String articleAuthor) {
-        this.articleAuthor = articleAuthor;
-    }
-
-    public String getPublishDate() {
-        return publishDate;
-    }
-
-    public void setPublishDate(String publishDate) {
-        this.publishDate = publishDate;
-    }
-
-    public ArticleCategory getCategory() {
-        return category;
-    }
-
-    public void setCategory(ArticleCategory category) {
-        this.category = category;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
-
-    public boolean isLike() {
-        return isLike;
-    }
-
-    public void setLike(boolean like) {
-        isLike = like;
-    }
-
-    public int getCommentCount() {
-        return commentCount;
-    }
-
-    public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+    public void setBasicInfo(CollegeBasicInfo basicInfo) {
+        this.basicInfo = basicInfo;
     }
 
     public boolean isSelected() {

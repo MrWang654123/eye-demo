@@ -5,15 +5,15 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 import java.util.List;
 
 /**
- * 专业列表响应的根对象
+ * 院校录取分数响应的根对象
  */
-public class MajorRootEntity {
+public class CollegeEnrollScoreRootEntity {
 
     @InjectMap(name = "total")
     private int total;
 
     @InjectMap(name = "items")
-    private List<MajorEntity> items;
+    private List<CollegeEnrollScoreItemEntity> items;
 
     public int getTotal() {
         return total;
@@ -23,11 +23,11 @@ public class MajorRootEntity {
         this.total = total;
     }
 
-    public List<MajorEntity> getItems() {
+    public List<CollegeEnrollScoreItemEntity> getItems() {
         return items;
     }
 
-    public void setItems(List<MajorEntity> items) {
+    public void setItems(List<CollegeEnrollScoreItemEntity> items) {
         this.items = items;
     }
 }

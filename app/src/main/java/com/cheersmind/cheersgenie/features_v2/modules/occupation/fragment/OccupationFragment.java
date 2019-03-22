@@ -8,14 +8,17 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features_v2.adapter.MajorRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.entity.MajorEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.MajorRootEntity;
+import com.cheersmind.cheersgenie.features_v2.adapter.OccupationTreeRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationRealm;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationTreeRootEntity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -46,7 +49,7 @@ public class OccupationFragment extends LazyLoadFragment {
     XEmptyLayout emptyLayout;
 
     //适配器的数据列表
-    MajorRecyclerAdapter recyclerAdapter;
+    OccupationTreeRecyclerAdapter recyclerAdapter;
 
     //上拉加载更多的监听
     BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
@@ -61,10 +64,11 @@ public class OccupationFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            MajorEntity major = (MajorEntity) recyclerAdapter.getData().get(position);
-            int realPosition = position + adapter.getHeaderLayoutCount();
-            if (major != null) {
-                if (major.isExpanded()) {
+            MultiItemEntity multiItem = recyclerAdapter.getData().get(position);
+
+            if (multiItem instanceof OccupationRealm) {
+                int realPosition = position + adapter.getHeaderLayoutCount();
+                if (((OccupationRealm)multiItem).isExpanded()) {
                     adapter.collapse(realPosition);
                 } else {
                     adapter.expand(position);
@@ -74,23 +78,31 @@ public class OccupationFragment extends LazyLoadFragment {
                         recycleView.scrollToPosition(realPosition + 2);
                     }
                 }
+
+            } else if (multiItem instanceof OccupationCategory) {
+                int realPosition = position + adapter.getHeaderLayoutCount();
+                if (((OccupationCategory)multiItem).isExpanded()) {
+                    adapter.collapse(realPosition);
+                } else {
+                    adapter.expand(position);
+                    //防止展开后第一时间看不到子项的滚动逻辑
+                    int size = recyclerAdapter.getData().size();
+                    if ((position + 1 + 2) <= size) {
+                        recycleView.scrollToPosition(realPosition + 2);
+                    }
+                }
+
+            } else if (multiItem instanceof OccupationItem) {
+                //跳转到详情
+                OccupationDetailActivity.startOccupationDetailActivity(getContext(), (OccupationItem) multiItem);
             }
         }
     };
 
 
-    //页长度
-    private static final int PAGE_SIZE = 20;
-    //页码
-    private int pageNum = 1;
-    //后台总记录数
-    private int totalCount = 0;
-
-    ArticleDto dto;
-
     @Override
     protected int setContentView() {
-        return R.layout.fragment_occupation;
+        return R.layout.fragment_major_list;
     }
 
     @Override
@@ -98,7 +110,7 @@ public class OccupationFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new MajorRecyclerAdapter( null);
+        recyclerAdapter = new OccupationTreeRecyclerAdapter( null);
 //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -120,10 +132,12 @@ public class OccupationFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
 
         //设置无数据提示文本
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_occupation_list));
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_major_list));
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
+                //设置为加载状态
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
                 loadData();
             }
         });
@@ -131,14 +145,9 @@ public class OccupationFragment extends LazyLoadFragment {
         if (getContext() != null) {
             emptyLayout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
         }
+        //初始设置为加载状态
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
-        //获取数据
-//        Bundle bundle = getArguments();
-//        if(bundle!=null) {
-//            type = bundle.getInt(DtoKey.MAJOR_TYPE);
-//        }
-
-        dto = new ArticleDto(pageNum, PAGE_SIZE);
     }
 
     @Override
@@ -158,12 +167,12 @@ public class OccupationFragment extends LazyLoadFragment {
     private void loadData() {
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
-        if (recyclerAdapter.getData().size() == 0) {
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
+//        if (recyclerAdapter.getData().size() == 0) {
+//            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        }
 
-        dto.setPage(pageNum);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+//        dto.setPage(pageNum);
+        DataRequestService.getInstance().getOccupationTree(new OccupationDto(), new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 if (recyclerAdapter.getData().size() == 0) {
@@ -182,10 +191,9 @@ public class OccupationFragment extends LazyLoadFragment {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    MajorRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, MajorRootEntity.class);
+                    OccupationTreeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, OccupationTreeRootEntity.class);
 
-                    totalCount = rootEntity.getTotal();
-                    List<MajorEntity> dataList = rootEntity.getItems();
+                    List<OccupationRealm> dataList = rootEntity.getItems();
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
@@ -193,7 +201,7 @@ public class OccupationFragment extends LazyLoadFragment {
                         return;
                     }
 
-                    List<MultiItemEntity> multiItemEntities = majorToRecyclerMulti(dataList);
+                    List<MultiItemEntity> multiItemEntities = occupationToRecyclerMulti(dataList);
                     //目前每次都是重置列表数据
                     recyclerAdapter.setNewData(multiItemEntities);
                     //初始展开
@@ -201,9 +209,6 @@ public class OccupationFragment extends LazyLoadFragment {
 
                     //全部加载结束
                     recyclerAdapter.loadMoreEnd(true);
-
-                    //页码+1
-                    pageNum++;
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -222,83 +227,39 @@ public class OccupationFragment extends LazyLoadFragment {
 
 
     /**
-     * List<MajorEntity>转成转成用于适配recycler的分组数据模型List<MultiItemEntity>
-     * @param majorList 专业集合
+     * List<OccupationRealm>转成转成用于适配recycler的分组数据模型List<MultiItemEntity>
+     * @param occupationRealms 行业领域集合
      * @return List<MultiItemEntity>
      */
-    protected List<MultiItemEntity> majorToRecyclerMulti(List<MajorEntity> majorList) {
+    protected List<MultiItemEntity> occupationToRecyclerMulti(List<OccupationRealm> occupationRealms) {
         List<MultiItemEntity> resList = null;
 
-        if (ArrayListUtil.isNotEmpty(majorList)) {
+        if (ArrayListUtil.isNotEmpty(occupationRealms)) {
             resList = new ArrayList<>();
-            //一级
-            resList.add(majorList.get(0));
-            resList.add(majorList.get(1));
-            resList.add(majorList.get(2));
+            //行业领域
+            for (OccupationRealm realm : occupationRealms) {
+                //行业门类
+                List<OccupationCategory> categorys = realm.getCategorys();
+                if (ArrayListUtil.isNotEmpty(categorys)) {
+                    for (OccupationCategory category : categorys) {
+                        realm.addSubItem(category);
+                        //行业
+                        List<OccupationItem> occupationItems = category.getOccupationItems();
+                        if (ArrayListUtil.isNotEmpty(occupationItems)) {
+                            for (int i=0; i<occupationItems.size(); i++) {
+                                OccupationItem occupationItem = occupationItems.get(i);
+                                category.addSubItem(occupationItem);
+                                //标记是当前兄弟中的最后一个
+                                if (i == occupationItems.size() - 1) {
+                                    occupationItem.setLastInMaxLevel(true);
+                                }
+                            }
+                        }
+                    }
+                }
 
-            //二级
-            majorList.get(3).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(4).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(5).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(6).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(7).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(8).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL1);
-            majorList.get(3).setLevel(1);
-            majorList.get(4).setLevel(1);
-            majorList.get(5).setLevel(1);
-            majorList.get(6).setLevel(1);
-            majorList.get(7).setLevel(1);
-            majorList.get(8).setLevel(1);
-            majorList.get(0).addSubItem(majorList.get(3));
-            majorList.get(0).addSubItem(majorList.get(4));
-            majorList.get(1).addSubItem(majorList.get(5));
-            majorList.get(1).addSubItem(majorList.get(6));
-            majorList.get(2).addSubItem(majorList.get(7));
-            majorList.get(2).addSubItem(majorList.get(8));
-
-            //三级
-            majorList.get(9).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(10).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(11).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(12).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(13).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(14).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(15).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(16).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(17).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(18).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-            majorList.get(19).setItemType(MajorRecyclerAdapter.LAYOUT_TYPE_LEVEL2);
-
-            majorList.get(9).setLevel(2);
-            majorList.get(10).setLevel(2);
-            majorList.get(11).setLevel(2);
-            majorList.get(12).setLevel(2);
-            majorList.get(13).setLevel(2);
-            majorList.get(14).setLevel(2);
-            majorList.get(15).setLevel(2);
-            majorList.get(16).setLevel(2);
-            majorList.get(17).setLevel(2);
-            majorList.get(18).setLevel(2);
-            majorList.get(19).setLevel(2);
-
-            majorList.get(3).addSubItem(majorList.get(9));
-            majorList.get(3).addSubItem(majorList.get(10));
-            majorList.get(10).setLastInMaxLevel(true);
-            majorList.get(4).addSubItem(majorList.get(11));
-            majorList.get(4).addSubItem(majorList.get(12));
-            majorList.get(12).setLastInMaxLevel(true);
-            majorList.get(5).addSubItem(majorList.get(13));
-            majorList.get(5).addSubItem(majorList.get(14));
-            majorList.get(14).setLastInMaxLevel(true);
-            majorList.get(6).addSubItem(majorList.get(15));
-            majorList.get(6).addSubItem(majorList.get(16));
-            majorList.get(16).setLastInMaxLevel(true);
-            majorList.get(7).addSubItem(majorList.get(17));
-            majorList.get(7).addSubItem(majorList.get(18));
-            majorList.get(18).setLastInMaxLevel(true);
-            majorList.get(8).addSubItem(majorList.get(19));
-            majorList.get(19).setLastInMaxLevel(true);
-//            majorList.get(8).addSubItem(majorList.get(20));
+                resList.add(realm);
+            }
         }
 
         return resList;

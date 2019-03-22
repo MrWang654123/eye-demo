@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
-    <dbname value="CheckReport"></dbname>
-    <version value="7"></version>
+    <dbname value="CheckReport"/>
+    <version value="14"/>
     <list>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.UserInfoEntity"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.OrgExinfo"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.ChildInfoEntity"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity"></mapping>
-        <mapping class="com.cheersmind.cheersgenie.main.entity.ProjectEntity"></mapping>
+        <mapping class="com.cheersmind.cheersgenie.main.entity.UserInfoEntity"/>
+        <mapping class="com.cheersmind.cheersgenie.main.entity.ChildInfoEntity"/>
+        <mapping class="com.cheersmind.cheersgenie.main.entity.WXUserInfoEntity"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem"/>
+        <mapping class="com.cheersmind.cheersgenie.features_v2.entity.CollegeCategory"/>
     </list>
 </litepal>
