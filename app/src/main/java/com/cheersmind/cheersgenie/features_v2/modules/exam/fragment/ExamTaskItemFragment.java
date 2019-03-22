@@ -177,36 +177,36 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                         topicInfoEntity.setChildTopic(childTopic);
 
                         //如果任务项已完成则查看话题报告
-//                        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-//
-//                            ExamReportDto dto = new ExamReportDto();
-//                            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
-//                            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
-//
-//                            //只有一个量表则查看量表报告
-//                            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
-//                                    && entity.getSubItems().size() == 1) {
-//                                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-//                                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-//
-//                            } else {
-//                                dto.setRelationId(dimensionInfoEntity.getTopicId());
-//                                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
-//                            }
-//
-//                            ExamReportActivity.startExamReportActivity(getContext(), dto);
-//
-//                        } else {
-//                            //设置量表集合到话题对象中
-//                            topicInfoEntity.setDimensions(entity.getSubItems());
-//                            //点击量表项的操作
-//                            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-//                        }
+                        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
 
-                        //设置量表集合到话题对象中
-                        topicInfoEntity.setDimensions(entity.getSubItems());
-                        //点击量表项的操作
-                        operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                            ExamReportDto dto = new ExamReportDto();
+                            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
+                            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+
+                            //只有一个量表则查看量表报告
+                            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
+                                    && entity.getSubItems().size() == 1) {
+                                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+
+                            } else {
+                                dto.setRelationId(dimensionInfoEntity.getTopicId());
+                                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+                            }
+
+                            ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+                        } else {
+                            //设置量表集合到话题对象中
+                            topicInfoEntity.setDimensions(entity.getSubItems());
+                            //点击量表项的操作
+                            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+                        }
+
+//                        //设置量表集合到话题对象中
+//                        topicInfoEntity.setDimensions(entity.getSubItems());
+//                        //点击量表项的操作
+//                        operateClickDimension(dimensionInfoEntity, topicInfoEntity);
                     }
 
                     break;

@@ -114,14 +114,18 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
                                 for (int i = 0; i < sub_result.size(); i++) {
                                     String sub = sub_result.get(i);
-                                    result.append(sub);
+                                    //非空
+                                    if (!TextUtils.isEmpty(sub) && !"null".equalsIgnoreCase(sub)) {
+                                        result.append(sub);
+                                    }
+                                    //非最后一个
                                     if (i < sub_result.size() - 1) {
                                         result.append("\n");
                                     }
                                 }
 
                                 helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.VISIBLE);
-                                helper.setText(R.id.tv_topic_sub_items_result, result.toString());
+                                helper.setText(R.id.tv_topic_sub_items_result, result.length() > 0 ? result.toString() : "暂无综合结果");
                             }
 
                         } else {//有排名则视为有结论
@@ -307,9 +311,15 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 //综合结果
                 String result = "";
                 if (isTopic()) {//话题
-                    //结果、排名
-                    result = "本测评评价为" + subItem.getResult() +
-                            "，得分为" + subItem.getScore() + "分";
+                    //result是否为空
+                    if (!TextUtils.isEmpty(subItem.getResult())) {
+                        //结果、得分
+                        result = "本测评评价为" + subItem.getResult() +
+                                "，得分为" + subItem.getScore() + "分";
+                    } else {
+                        //得分
+                        result = "本测评得分为" + subItem.getScore() + "分";
+                    }
 
                 } else {//量表
                     if (subItem.getSort() > 0) {//sort大于0，视为学业兴趣、职业兴趣
@@ -319,6 +329,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                     } else {
                         //没有T分数和结论，则显示原始分
                         if (subItem.getRank() < 0.000001) {//没有排名
+                            //得分
                             result = "本测评中你的个人原始得分为" + subItem.getScore() + "分";
 
                         } else {//有排名
