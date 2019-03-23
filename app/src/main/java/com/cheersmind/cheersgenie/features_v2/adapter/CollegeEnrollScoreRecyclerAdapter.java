@@ -42,14 +42,18 @@ public class CollegeEnrollScoreRecyclerAdapter extends BaseMultiItemQuickAdapter
             case LAYOUT_TYPE_ITEM2: {
                 CollegeEnrollScoreItemEntity scoreItem = (CollegeEnrollScoreItemEntity) item;
                 //批次
-                if (!TextUtils.isEmpty(scoreItem.getBkcc()) && !TextUtils.isEmpty(scoreItem.getBatch())) {
-                    helper.setText(R.id.tv_batch, scoreItem.getBkcc() + scoreItem.getBatch());
+                if (!TextUtils.isEmpty(scoreItem.getBatch())) {
+                    if (!TextUtils.isEmpty(scoreItem.getBkcc())) {
+                        helper.setText(R.id.tv_batch, scoreItem.getBkcc() + scoreItem.getBatch());
+                    } else {
+                        helper.setText(R.id.tv_batch, scoreItem.getBatch());
+                    }
                 } else {
                     helper.setText(R.id.tv_batch, "--");
                 }
 
-                //平均分
-                helper.setText(R.id.tv_avg_score,"--");
+                //年份
+                helper.setText(R.id.tv_year, String.valueOf(scoreItem.getYear()));
 
                 //最低分和排名
                 if (scoreItem.getLow_score() > 0) {
@@ -63,7 +67,12 @@ public class CollegeEnrollScoreRecyclerAdapter extends BaseMultiItemQuickAdapter
                 }
 
                 //线差
-                helper.setText(R.id.tv_diff_val, "--");
+                if (scoreItem.getLow_score() > 0 && scoreItem.getProvince_score() > 0) {
+                    helper.setText(R.id.tv_diff_val, String.valueOf(scoreItem.getLow_score() - scoreItem.getProvince_score()));
+
+                } else {
+                    helper.setText(R.id.tv_diff_val, "--");
+                }
 
                 //录取数
                 if (scoreItem.getLuqu_num() > 0) {

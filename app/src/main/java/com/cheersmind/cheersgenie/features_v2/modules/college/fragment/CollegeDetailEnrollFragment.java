@@ -34,12 +34,12 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollBaseInfo;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollConstitution;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollConstitutionItem;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollOffice;
-import com.cheersmind.cheersgenie.features_v2.entity.CollegeScoreCondition;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreKind;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreKindRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeScoreCondition;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorEnrollScoreItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorEnrollScoreRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorScoreCondition;
@@ -76,6 +76,8 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
 
     //院校ID
     private String collegeId;
+    //院校名称
+    private String collegeName;
 
     @BindView(R.id.nsv_main)
     NestedScrollView nsvMain;
@@ -123,10 +125,6 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
         }
     };
 
-    private static final int CONDITION_TYPE_COLLEGE = 1;
-    private static final int CONDITION_TYPE_MAJOR = 2;
-    int conditionType = CONDITION_TYPE_COLLEGE;
-
     //院校录取
     @BindView(R.id.ll_college_score)
     LinearLayout llCollegeScore;
@@ -138,9 +136,6 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
     //省份筛选器文本
     @BindView(R.id.tv_college_score_province)
     TextView tvCollegeScoreProvince;
-    //年份筛选器文本
-    @BindView(R.id.tv_college_score_year)
-    TextView tvCollegeScoreYear;
     //文科分科筛选器文本
     @BindView(R.id.tv_college_score_kind)
     TextView tvCollegeScoreKind;
@@ -178,10 +173,10 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
     MajorScoreCondition majorScoreCondition;
 
     //选择器
-    private OptionsPickerView pvProvince, pvYear, pvKind, pvMajorProvince, pvMajorYear, pvMajorKind;
+    private OptionsPickerView pvProvince, pvKind, pvMajorProvince, pvMajorYear, pvMajorKind;
     //省份
     List<CollegeProvince> provinces;
-    //年份
+    //年份（用于专业）
     List<String> years;
     //文理分科（院校录取）
     List<CollegeEnrollScoreKind> kindsForCollege;
@@ -209,6 +204,7 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             collegeId = bundle.getString(DtoKey.COLLEGE_ID);
+            collegeName = bundle.getString(DtoKey.COLLEGE_NAME);
         }
 
         //设置无数据提示文本
@@ -248,200 +244,15 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
         initPickerView();
     }
 
-    /**
-     * 初始化筛选条件视图
-     */
-    private void initConditionView() {
-        tvCollegeScoreProvince.setText(provinces.get(0).getName());
-        tvCollegeScoreYear.setText(years.get(0));
-        tvCollegeScoreKind.setText("文理分科");
-    }
-
-    /**
-     * 初始化筛选条件数据
-     */
-    private void initConditionData() {
-        provinces = DataSupport.findAll(CollegeProvince.class);
-        years = new ArrayList<>();
-        years.add("2018");
-        years.add("2017");
-        years.add("2016");
-        years.add("2015");
-
-        collegeScoreCondition = new CollegeScoreCondition();
-        collegeScoreCondition.setProvince(provinces.get(0));
-        collegeScoreCondition.setYear(years.get(0));
-
-        majorScoreCondition = new MajorScoreCondition();
-        majorScoreCondition.setProvince(provinces.get(0));
-        majorScoreCondition.setYear(years.get(0));
-    }
-
-    /**
-     * 初始化选择器
-     */
-    private void initPickerView() {
-        pvProvince = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                CollegeProvince collegeProvince = provinces.get(options1);
-                //设置省份筛选器文本
-                tvCollegeScoreProvince.setText(collegeProvince.getName());
-                //更新年份条件
-                collegeScoreCondition.setProvince(collegeProvince);
-                //加载文理分科
-                loadKind(collegeScoreCondition.getProvince().getName(),
-                        collegeScoreCondition.getYear(),
-                        CONDITION_TYPE_COLLEGE, true);
-            }
-        })
-                .setTitleText("生源地")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-//                .setBgColor(Color.BLACK)
-//                .setTitleBgColor(Color.DKGRAY)
-//                .setTitleColor(Color.LTGRAY)
-//                .setCancelColor(Color.YELLOW)
-//                .setSubmitColor(Color.YELLOW)
-//                .setTextColorCenter(Color.LTGRAY)
-//                .isRestoreItem(true)//切换时是否还原，设置默认选中第一项。
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-//                .setLabels("省", "市", "区")
-//                .setOutSideColor(0x00000000) //设置外部遮罩颜色
-//                .setOptionsSelectChangeListener(new OnOptionsSelectChangeListener() {
-//                    @Override
-//                    public void onOptionsSelectChanged(int options1, int options2, int options3) {
-//                        String str = "options1: " + options1 + "\noptions2: " + options2 + "\noptions3: " + options3;
-//                        Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
-//                    }
-//                })
-                .build();
-
-//        pvOptions.setSelectOptions(1,1);
-        pvProvince.setPicker(provinces);//一级选择器
-
-
-        pvYear = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                String year = years.get(options1);
-                //设置年份筛选器文本
-                tvCollegeScoreYear.setText(year);
-                //更新年份条件
-                collegeScoreCondition.setYear(year);
-                //加载文理分科
-                loadKind(collegeScoreCondition.getProvince().getName(),
-                        collegeScoreCondition.getYear(),
-                        CONDITION_TYPE_COLLEGE, true);
-            }
-        })
-                .setTitleText("年份")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .build();
-
-        pvYear.setPicker(years);//一级选择器
-
-        pvKind = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                CollegeEnrollScoreKind kind = kindsForCollege.get(options1);
-                tvCollegeScoreKind.setText(kind.getKind());
-                collegeScoreCondition.setKind(kind);
-                loadCollegeEnrollScore(collegeScoreCondition, true);
-            }
-        })
-                .setTitleText("文理分科")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .build();
-
-//        pvYear.setPicker(years);//一级选择器
-
-        pvMajorProvince = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                CollegeProvince collegeProvince = provinces.get(options1);
-                //设置省份筛选器文本
-                tvMajorScoreProvince.setText(collegeProvince.getName());
-                //更新年份条件
-                majorScoreCondition.setProvince(collegeProvince);
-                //加载文理分科
-                loadKind(majorScoreCondition.getProvince().getName(),
-                        majorScoreCondition.getYear(),
-                        CONDITION_TYPE_MAJOR, true);
-            }
-        })
-                .setTitleText("生源地")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .build();
-
-//        pvOptions.setSelectOptions(1,1);
-        pvMajorProvince.setPicker(provinces);//一级选择器
-
-
-        pvMajorYear = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                String year = years.get(options1);
-                //设置年份筛选器文本
-                tvMajorScoreYear.setText(year);
-                //更新年份条件
-                majorScoreCondition.setYear(year);
-                //加载文理分科
-                loadKind(majorScoreCondition.getProvince().getName(),
-                        majorScoreCondition.getYear(),
-                        CONDITION_TYPE_MAJOR, true);
-            }
-        })
-                .setTitleText("年份")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .build();
-
-        pvMajorYear.setPicker(years);//一级选择器
-
-        pvMajorKind = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int options1, int options2, int options3, View v) {
-                CollegeEnrollScoreKind kind = kindsForMajor.get(options1);
-                tvMajorScoreKind.setText(kind.getKind());
-                majorScoreCondition.setKind(kind);
-                loadMajorEnrollScore(majorScoreCondition, true);
-            }
-        })
-                .setTitleText("文理分科")
-                .setContentTextSize(20)//设置滚轮文字大小
-                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
-                .setSelectOptions(0)//默认选中项
-                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
-                .build();
-
-//        pvYear.setPicker(years);//一级选择器
-    }
-
     @Override
     protected void lazyLoad() {
         //加载招生基本信息
         loadEnrollBaseInfo();
         //加载文理科信息（院校录取）
-        loadKind(collegeScoreCondition.getProvince().getName(),
-                collegeScoreCondition.getYear(),
-                CONDITION_TYPE_COLLEGE, false);
+        loadKindByProvince(collegeScoreCondition.getProvince().getName(), false);
         //加载文理科信息（专业录取）
-        loadKind(majorScoreCondition.getProvince().getName(),
-                majorScoreCondition.getYear(),
-                CONDITION_TYPE_MAJOR, false);
+        loadKindByProvinceYear(majorScoreCondition.getProvince().getName(),
+                majorScoreCondition.getYear(), false);
     }
 
     @Override
@@ -470,18 +281,13 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
         }
     }
 
-    @OnClick({R.id.tv_college_score_province, R.id.tv_college_score_year, R.id.tv_college_score_kind,
+    @OnClick({R.id.tv_college_score_province, R.id.tv_college_score_kind,
             R.id.tv_major_score_province, R.id.tv_major_score_year, R.id.tv_major_score_kind})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //生源地省份
             case R.id.tv_college_score_province: {
                 pvProvince.show();
-                break;
-            }
-            //年份
-            case R.id.tv_college_score_year: {
-                pvYear.show();
                 break;
             }
             //文理科
@@ -514,6 +320,161 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
     }
 
     /**
+     * 初始化筛选条件视图
+     */
+    private void initConditionView() {
+        tvCollegeScoreProvince.setText(provinces.get(0).getName());
+        tvCollegeScoreKind.setText("文理分科");
+
+        tvMajorScoreProvince.setText(provinces.get(0).getName());
+        tvMajorScoreYear.setText(years.get(0));
+        tvMajorScoreKind.setText("文理分科");
+    }
+
+    /**
+     * 初始化筛选条件数据
+     */
+    private void initConditionData() {
+        provinces = DataSupport.findAll(CollegeProvince.class);
+        years = new ArrayList<>();
+//        years.add("2018");
+        years.add("2017");
+        years.add("2016");
+        years.add("2015");
+
+        collegeScoreCondition = new CollegeScoreCondition();
+        collegeScoreCondition.setProvince(provinces.get(0));
+
+        majorScoreCondition = new MajorScoreCondition();
+        majorScoreCondition.setProvince(provinces.get(0));
+        majorScoreCondition.setYear(years.get(0));
+    }
+
+    /**
+     * 初始化选择器
+     */
+    private void initPickerView() {
+        pvProvince = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                CollegeProvince collegeProvince = provinces.get(options1);
+                //设置省份筛选器文本
+                tvCollegeScoreProvince.setText(collegeProvince.getName());
+                //更新条件
+                collegeScoreCondition.setProvince(collegeProvince);
+                //加载文理分科
+                loadKindByProvince(collegeScoreCondition.getProvince().getName(), true);
+            }
+        })
+                .setTitleText("生源地")
+                .setContentTextSize(20)//设置滚轮文字大小
+                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
+                .setSelectOptions(0)//默认选中项
+//                .setBgColor(Color.BLACK)
+//                .setTitleBgColor(Color.DKGRAY)
+//                .setTitleColor(Color.LTGRAY)
+//                .setCancelColor(Color.YELLOW)
+//                .setSubmitColor(Color.YELLOW)
+//                .setTextColorCenter(Color.LTGRAY)
+//                .isRestoreItem(true)//切换时是否还原，设置默认选中第一项。
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+//                .setLabels("省", "市", "区")
+//                .setOutSideColor(0x00000000) //设置外部遮罩颜色
+//                .setOptionsSelectChangeListener(new OnOptionsSelectChangeListener() {
+//                    @Override
+//                    public void onOptionsSelectChanged(int options1, int options2, int options3) {
+//                        String str = "options1: " + options1 + "\noptions2: " + options2 + "\noptions3: " + options3;
+//                        Toast.makeText(MainActivity.this, str, Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+                .build();
+
+//        pvOptions.setSelectOptions(1,1);
+        pvProvince.setPicker(provinces);//一级选择器
+
+        pvKind = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                CollegeEnrollScoreKind kind = kindsForCollege.get(options1);
+                tvCollegeScoreKind.setText(kind.getKind());
+                collegeScoreCondition.setKind(kind);
+                loadCollegeEnrollScore(collegeScoreCondition, true);
+            }
+        })
+                .setTitleText("文理分科")
+                .setContentTextSize(20)//设置滚轮文字大小
+                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
+                .setSelectOptions(0)//默认选中项
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .build();
+
+//        pvYear.setPicker(years);//一级选择器
+
+        pvMajorProvince = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                CollegeProvince collegeProvince = provinces.get(options1);
+                //设置省份筛选器文本
+                tvMajorScoreProvince.setText(collegeProvince.getName());
+                //更新省份条件
+                majorScoreCondition.setProvince(collegeProvince);
+                //加载文理分科
+                loadKindByProvinceYear(majorScoreCondition.getProvince().getName(),
+                        majorScoreCondition.getYear(), true);
+            }
+        })
+                .setTitleText("生源地")
+                .setContentTextSize(20)//设置滚轮文字大小
+                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
+                .setSelectOptions(0)//默认选中项
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .build();
+
+//        pvOptions.setSelectOptions(1,1);
+        pvMajorProvince.setPicker(provinces);//一级选择器
+
+        pvMajorYear = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                String year = years.get(options1);
+                //设置年份筛选器文本
+                tvMajorScoreYear.setText(year);
+                //更新年份条件
+                majorScoreCondition.setYear(year);
+                //加载文理分科
+                loadKindByProvinceYear(majorScoreCondition.getProvince().getName(),
+                        majorScoreCondition.getYear(), true);
+            }
+        })
+                .setTitleText("年份")
+                .setContentTextSize(20)//设置滚轮文字大小
+                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
+                .setSelectOptions(0)//默认选中项
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .build();
+
+        pvMajorYear.setPicker(years);//一级选择器
+
+        pvMajorKind = new OptionsPickerBuilder(getContext(), new OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int options1, int options2, int options3, View v) {
+                CollegeEnrollScoreKind kind = kindsForMajor.get(options1);
+                tvMajorScoreKind.setText(kind.getKind());
+                majorScoreCondition.setKind(kind);
+                loadMajorEnrollScore(majorScoreCondition, true);
+            }
+        })
+                .setTitleText("文理分科")
+                .setContentTextSize(20)//设置滚轮文字大小
+                .setDividerColor(Color.LTGRAY)//设置分割线的颜色
+                .setSelectOptions(0)//默认选中项
+                .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。
+                .build();
+
+//        pvYear.setPicker(years);//一级选择器
+    }
+
+    /**
      * 获取院校录取分数
      */
     private void loadCollegeEnrollScore(CollegeScoreCondition condition, final boolean showLoading) {
@@ -524,8 +485,8 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
 
         CollegeEnrollScoreDto dto = new CollegeEnrollScoreDto(
                 condition.getProvince().getName(),
-                condition.getYear(),
-                condition.getKind().getKind());
+                condition.getKind().getKind(),
+                collegeName);
 
         DataRequestService.getInstance().getCollegeEnrollScore(dto, new BaseService.ServiceCallback() {
             @Override
@@ -572,7 +533,7 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
 
                     for (int i = 0; i < dataList.size(); i++) {
                         CollegeEnrollScoreItemEntity item = dataList.get(i);
-                        if (i / 2 == 0) {
+                        if (i % 2 == 0) {
                             item.setItemType(CollegeEnrollScoreRecyclerAdapter.LAYOUT_TYPE_ITEM1);
                         } else {
                             item.setItemType(CollegeEnrollScoreRecyclerAdapter.LAYOUT_TYPE_ITEM2);
@@ -601,7 +562,8 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
         MajorEnrollScoreDto dto = new MajorEnrollScoreDto(
                 condition.getProvince().getName(),
                 condition.getYear(),
-                condition.getKind().getKind());
+                condition.getKind().getKind(),
+                collegeName);
 
         DataRequestService.getInstance().getMajorEnrollScore(dto, new BaseService.ServiceCallback() {
             @Override
@@ -648,7 +610,7 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
 
                     for (int i = 0; i < dataList.size(); i++) {
                         MajorEnrollScoreItemEntity item = dataList.get(i);
-                        if (i / 2 == 0) {
+                        if (i % 2 == 0) {
                             item.setItemType(MajorEnrollScoreRecyclerAdapter.LAYOUT_TYPE_ITEM1);
                         } else {
                             item.setItemType(MajorEnrollScoreRecyclerAdapter.LAYOUT_TYPE_ITEM2);
@@ -666,15 +628,15 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
     }
 
     /**
-     * 加载文理科信息
+     * 加载文理分科根据省份
      */
-    private void loadKind(String province, String year, final int type, final boolean showLoading) {
+    private void loadKindByProvince(String province, final boolean showLoading) {
         //通信等待提示
         if (showLoading) {
             LoadingView.getInstance().show(getContext(), httpTag);
         }
 
-        DataRequestService.getInstance().getCollegeEnrollKinds(province, year, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getKindsByProvince(province, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 e.printStackTrace();
@@ -692,26 +654,61 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
                     List<CollegeEnrollScoreKind> dataList = rootEntity.getItems();
                     if (ArrayListUtil.isNotEmpty(dataList)) {
                         //院校录取
-                        if (type == CONDITION_TYPE_COLLEGE) {
-                            kindsForCollege = dataList;
-                            //设置文科分科选筛选器数据
-                            pvKind.setPicker(kindsForCollege);
-                            //设置文科分科选筛选器文本
-                            tvCollegeScoreKind.setText(kindsForCollege.get(0).getKind());
-                            //设置条件数据
-                            collegeScoreCondition.setKind(kindsForCollege.get(0));
-                            loadCollegeEnrollScore(collegeScoreCondition, showLoading);
+                        kindsForCollege = dataList;
+                        //设置文理分科选筛选器数据
+                        pvKind.setPicker(kindsForCollege);
+                        //设置文理分科选筛选器文本
+                        tvCollegeScoreKind.setText(kindsForCollege.get(0).getKind());
+                        //设置条件数据
+                        collegeScoreCondition.setKind(kindsForCollege.get(0));
+                        loadCollegeEnrollScore(collegeScoreCondition, showLoading);
 
-                        } else if (type == CONDITION_TYPE_MAJOR) {//专业录取
-                            kindsForMajor = dataList;
-                            //设置文科分科选筛选器数据
-                            pvMajorKind.setPicker(kindsForMajor);
-                            //设置文科分科选筛选器文本
-                            tvMajorScoreKind.setText(kindsForMajor.get(0).getKind());
-                            //设置条件数据
-                            majorScoreCondition.setKind(kindsForMajor.get(0));
-                            loadMajorEnrollScore(majorScoreCondition, showLoading);
-                        }
+                    } else {
+                        throw new QSCustomException("");
+                    }
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 加载文理分科根据省份、年份
+     */
+    private void loadKindByProvinceYear(String province, String year, final boolean showLoading) {
+        //通信等待提示
+        if (showLoading) {
+            LoadingView.getInstance().show(getContext(), httpTag);
+        }
+
+        DataRequestService.getInstance().getKindsByProvinceYear(province, year, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                if (ArrayListUtil.isNotEmpty(kindsForCollege)) {
+                    kindsForCollege.clear();
+                }
+                tvCollegeScoreKind.setText("文理分科");
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CollegeEnrollScoreKindRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeEnrollScoreKindRootEntity.class);
+                    List<CollegeEnrollScoreKind> dataList = rootEntity.getItems();
+                    if (ArrayListUtil.isNotEmpty(dataList)) {
+                        //专业录取
+                        kindsForMajor = dataList;
+                        //设置文理分科选筛选器数据
+                        pvMajorKind.setPicker(kindsForMajor);
+                        //设置文理分科选筛选器文本
+                        tvMajorScoreKind.setText(kindsForMajor.get(0).getKind());
+                        //设置条件数据
+                        majorScoreCondition.setKind(kindsForMajor.get(0));
+                        loadMajorEnrollScore(majorScoreCondition, showLoading);
 
                     } else {
                         throw new QSCustomException("");

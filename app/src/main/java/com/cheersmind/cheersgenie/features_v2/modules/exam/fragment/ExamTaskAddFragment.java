@@ -14,27 +14,23 @@ import android.widget.Button;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskAddRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskAddActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +65,7 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     Unbinder unbinder;
 
     //适配器的数据列表
-    ExamTaskAddRecyclerAdapter recyclerAdapter;
+    ExamTaskRecyclerAdapter recyclerAdapter;
 
 
     //下拉刷新的监听
@@ -123,6 +119,8 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     //是否做全选操作：true做全选；false做全不选
     private boolean isDoSelectAll = true;
 
+    ExamTaskDto dto;
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_exam_task_add;
@@ -133,7 +131,7 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new ExamTaskAddRecyclerAdapter(getContext(), R.layout.recycleritem_exam_task_add, null);
+        recyclerAdapter = new ExamTaskRecyclerAdapter(getContext(), R.layout.recycleritem_exam_task, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -164,7 +162,7 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
         //设置无数据提示文本
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_exam_task));
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_add_task));
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
@@ -180,6 +178,11 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         if(bundle!=null) {
             childModuleId = bundle.getString(DtoKey.CHILD_MODULE_ID);
         }
+
+        dto = new ExamTaskDto(pageNum, PAGE_SIZE);
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        dto.setChildId(childId);
+        dto.setChildModuleId(childModuleId);
     }
 
     @Override
@@ -203,8 +206,8 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getExamCanAddTasks(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -277,8 +280,8 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        ArticleDto dto = new ArticleDto(pageNum, PAGE_SIZE);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getExamCanAddTasks(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能

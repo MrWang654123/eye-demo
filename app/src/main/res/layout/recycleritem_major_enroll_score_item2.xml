@@ -18,6 +18,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/tv_batch"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:text="专业名称"/>
 
     <TextView
@@ -54,6 +56,8 @@
         app:layout_constraintLeft_toRightOf="@+id/tv_min_score"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:text="录取数"/>
 
 </android.support.constraint.ConstraintLayout>

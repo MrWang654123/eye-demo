@@ -8,10 +8,11 @@ public class MajorEnrollScoreDto {
     public MajorEnrollScoreDto() {
     }
 
-    public MajorEnrollScoreDto(String province, String year, String kind) {
+    public MajorEnrollScoreDto(String province, String year, String kind, String collegeName) {
         this.province = province;
         this.year = year;
         this.kind = kind;
+        this.collegeName = collegeName;
     }
 
     //生源地省份
@@ -28,6 +29,9 @@ public class MajorEnrollScoreDto {
 
     //批次后缀
     private String batchSuf;
+
+    //院校名称
+    private String collegeName;
 
     public String getProvince() {
         return province;
@@ -67,5 +71,13 @@ public class MajorEnrollScoreDto {
 
     public void setBatchSuf(String batchSuf) {
         this.batchSuf = batchSuf;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 }

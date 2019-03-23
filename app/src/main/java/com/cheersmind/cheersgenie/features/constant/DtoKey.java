@@ -64,6 +64,14 @@ public class DtoKey {
      */
     public static final String COLLEGE_ID = "COLLEGE_ID";
     /**
+     * 院校名称
+     */
+    public static final String COLLEGE_NAME = "COLLEGE_NAME";
+    /**
+     * 重点学科类型（国家重点、一流学科）
+     */
+    public static final String KEY_SUBJECT_TYPE = "KEY_SUBJECT_TYPE";
+    /**
      * 行业
      */
     public static final String OCCUPATION = "OCCUPATION";

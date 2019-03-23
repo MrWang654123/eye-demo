@@ -73,6 +73,7 @@ public class CollegeDetailFragment extends LazyLoadFragment {
 
         Bundle bundle1 = new Bundle();
         bundle1.putString(DtoKey.COLLEGE_ID, college.getId());
+        bundle1.putString(DtoKey.COLLEGE_NAME, college.getCn_name());
 
         CollegeDetailInfoFragment fragment1 = new CollegeDetailInfoFragment();
         fragment1.setArguments(bundle1);
@@ -80,14 +81,19 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         CollegeDetailEnrollFragment fragment2 = new CollegeDetailEnrollFragment();
         fragment2.setArguments(bundle1);
 
-        CollegeDetailGraduationFragment fragment3 = new CollegeDetailGraduationFragment();
+        CollegeDetailMajorWrapFragment fragment3 = new CollegeDetailMajorWrapFragment();
         fragment3.setArguments(bundle1);
+
+        CollegeDetailGraduationFragment fragment4 = new CollegeDetailGraduationFragment();
+        fragment4.setArguments(bundle1);
 
         items.add(new Pair<String, Fragment>("概况", fragment1));
         items.add(new Pair<String, Fragment>("录取招生", fragment2));
-        items.add(new Pair<String, Fragment>("毕业信息", fragment3));
+        items.add(new Pair<String, Fragment>("专业", fragment3));
+        items.add(new Pair<String, Fragment>("毕业信息", fragment4));
 
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
+        viewPager.setOffscreenPageLimit(3);
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
 

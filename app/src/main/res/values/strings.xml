@@ -213,6 +213,8 @@
     <string name="empty_tip_mine_practice">暂无实践</string>
     <string name="empty_tip_mine_practice_item">暂无实践明细</string>
     <string name="empty_tip_enroll_score">未找到符合条件的数据\n试试其他条件呗~</string>
+    <string name="empty_tip_college_detail_major">暂无开设专业数据</string>
+    <string name="empty_tip_add_task">暂无可添加的任务</string>
 
     <!--任务列表-->
     <string name="begin_time_fmt">开始时间 %s</string>

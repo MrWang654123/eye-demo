@@ -8,9 +8,6 @@ public class CollegeScoreCondition {
     //生源地省份
     private CollegeProvince province;
 
-    //年份
-    private String year;
-
     //文理科
     private CollegeEnrollScoreKind kind;
 
@@ -20,14 +17,6 @@ public class CollegeScoreCondition {
 
     public void setProvince(CollegeProvince province) {
         this.province = province;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
     }
 
     public CollegeEnrollScoreKind getKind() {

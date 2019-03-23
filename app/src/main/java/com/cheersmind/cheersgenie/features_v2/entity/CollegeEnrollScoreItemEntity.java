@@ -24,7 +24,7 @@ public class CollegeEnrollScoreItemEntity implements MultiItemEntity, Serializab
 
     //年份
     @InjectMap(name = "year")
-    private String year;
+    private int year;
 
     //文理科
     @InjectMap(name = "kind")
@@ -74,11 +74,11 @@ public class CollegeEnrollScoreItemEntity implements MultiItemEntity, Serializab
         this.school = school;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 

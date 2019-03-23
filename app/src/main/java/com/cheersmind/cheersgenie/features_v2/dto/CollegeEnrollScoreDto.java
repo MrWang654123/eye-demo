@@ -8,20 +8,20 @@ public class CollegeEnrollScoreDto {
     public CollegeEnrollScoreDto() {
     }
 
-    public CollegeEnrollScoreDto(String province, String year, String kind) {
+    public CollegeEnrollScoreDto(String province, String kind, String collegeName) {
         this.province = province;
-        this.year = year;
         this.kind = kind;
+        this.collegeName = collegeName;
     }
 
     //生源地省份
     private String province;
 
-    //年份
-    private String year;
-
     //文理科
     private String kind;
+
+    //院校名称
+    private String collegeName;
 
     public String getProvince() {
         return province;
@@ -31,19 +31,19 @@ public class CollegeEnrollScoreDto {
         this.province = province;
     }
 
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
     public String getKind() {
         return kind;
     }
 
     public void setKind(String kind) {
         this.kind = kind;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 }

@@ -17,11 +17,11 @@
         android:gravity="center_horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/tv_avg_score"
+        app:layout_constraintRight_toLeftOf="@+id/tv_year"
         android:text="录取批次"/>
 
     <TextView
-        android:id="@+id/tv_avg_score"
+        android:id="@+id/tv_year"
         android:layout_width="55dp"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
@@ -30,7 +30,7 @@
         app:layout_constraintLeft_toRightOf="@+id/tv_batch"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/tv_min_score"
-        android:text="平均分"/>
+        android:text="年份"/>
 
     <TextView
         android:id="@+id/tv_min_score"
@@ -39,7 +39,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:gravity="center_horizontal"
-        app:layout_constraintLeft_toRightOf="@+id/tv_avg_score"
+        app:layout_constraintLeft_toRightOf="@+id/tv_year"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/tv_diff_val"
         android:text="最低分/排名"/>

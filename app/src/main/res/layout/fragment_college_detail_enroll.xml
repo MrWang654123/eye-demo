@@ -266,18 +266,6 @@
                                 android:text="生源地"/>
 
                             <TextView
-                                android:id="@+id/tv_college_score_year"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="10dp"
-                                android:textSize="16sp"
-                                android:textColor="@color/color_555555"
-                                android:gravity="center"
-                                android:drawableRight="@drawable/arrow_up_down"
-                                android:text="年份"/>
-
-                            <TextView
                                 android:id="@+id/tv_college_score_kind"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -288,6 +276,19 @@
                                 android:gravity="center"
                                 android:drawableRight="@drawable/arrow_up_down"
                                 android:text="文理科"/>
+
+                            <TextView
+                                android:id="@+id/tv_college_score_year"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="10dp"
+                                android:textSize="16sp"
+                                android:textColor="@color/color_555555"
+                                android:gravity="center"
+                                android:drawableRight="@drawable/arrow_up_down"
+                                android:visibility="invisible"
+                                android:text="年份"/>
 
                         </LinearLayout>
 

@@ -31,6 +31,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.MajorEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationTreeDto;
+import com.cheersmind.cheersgenie.features_v2.dto.SetupCollegeDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
@@ -1420,6 +1421,20 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取可添加任务列表
+     * @param dto 模块dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getExamCanAddTasks(ExamTaskDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_EXAM_CAN_ADD_TASKS
+                .replace("{child_id}",dto.getChildId())
+                .replace("{child_module_id}",dto.getChildModuleId());
+
+        doGet(url, callback, httpTag, context);
+    }
+
 
     /**
      * 获取测评任务的详情子项列表
@@ -1723,13 +1738,12 @@ public class DataRequestService {
     }
 
     /**
-     * 获取录取的文理科
+     * 录取文理分科根据省份
      * @param province 生源地省份
-     * @param year 年份
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void getCollegeEnrollKinds(String province, String year, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getKindsByProvince(String province, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String encode = "";
         try {
             //输入中文的地方加上 URLEncoder.encode 处理
@@ -1737,8 +1751,33 @@ public class DataRequestService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String url = HttpConfig.URL_COLLEGE_ENROLL_KIND
+
+        String url = HttpConfig.URL_KIND_BY_PROVINCE
                 .replace("{province}", encode);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 录取文理分科根据省份、年份
+     * @param province 生源地省份
+     * @param year 年份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getKindsByProvinceYear(String province, String year, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String encode = "";
+        try {
+            //输入中文的地方加上 URLEncoder.encode 处理
+            encode = URLEncoder.encode(province, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = HttpConfig.URL_KIND_BY_PROVINCE_YEAR
+                .replace("{province}", encode)
+                .replace("{year}", year);
+
         doGet(url, callback, httpTag, context);
     }
 
@@ -1763,15 +1802,22 @@ public class DataRequestService {
             }
         }
         //文理科
-        if (!TextUtils.isEmpty(dto.getYear())) {
-            params.put("year", dto.getYear());
-        }
-        //文理科
         if (!TextUtils.isEmpty(dto.getKind())) {
             try {
                 //输入中文的地方加上 URLEncoder.encode 处理
                 String encode = URLEncoder.encode(dto.getKind(), "utf-8");
                 params.put("kind", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //院校名称
+        if (!TextUtils.isEmpty(dto.getCollegeName())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getCollegeName(), "utf-8");
+                params.put("school", encode);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -1839,6 +1885,17 @@ public class DataRequestService {
             }
         }
 
+        //院校名称
+        if (!TextUtils.isEmpty(dto.getCollegeName())) {
+            try {
+                //输入中文的地方加上 URLEncoder.encode 处理
+                String encode = URLEncoder.encode(dto.getCollegeName(), "utf-8");
+                params.put("school", encode);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
         //拼接参数
         url = BaseService.settingGetParams(url, params);
 
@@ -1891,6 +1948,65 @@ public class DataRequestService {
         }
 
         doPost(url, map, false, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取院校的开设专业
+     * @param collegeId 院校ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeSetUpMajor(String collegeId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_SET_UP_MAJOR
+                .replace("{id}", collegeId);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取院校的重点学科
+     * @param collegeId 院校ID
+     * @param type 类型：national_key 国家重点学科 double_first_class 双一流建设学科
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeKeySubject(String collegeId, String type, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_KEY_SUBJECT
+                .replace("{id}", collegeId)
+                .replace("{national_key}", type);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取专业的开设院校
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getMajorSetupCollege(SetupCollegeDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MAJOR_SETUP_COLLEGE
+                .replace("{major_code}", dto.getMajor_code());
+
+        Map<String, Object> params = new HashMap<>();
+        //地区编码
+        if (!TextUtils.isEmpty(dto.getState())) {
+            params.put("state", dto.getState());
+        }
+        //学校类别 //暂时没使用
+        if (!TextUtils.isEmpty(dto.getState())) {
+            params.put("institute_type", dto.getInstitute_type());
+        }
+
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
     }
 
 }

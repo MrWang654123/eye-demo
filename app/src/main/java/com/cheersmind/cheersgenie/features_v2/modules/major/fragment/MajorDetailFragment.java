@@ -212,6 +212,7 @@ public class MajorDetailFragment extends LazyLoadFragment {
         items.add(new Pair<String, Fragment>("开设院校", fragment2));
         items.add(new Pair<String, Fragment>("就业前景", fragment3));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
+        viewPager.setOffscreenPageLimit(2);
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
     }

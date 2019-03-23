@@ -329,6 +329,8 @@ public class HttpConfig {
     public static final String URL_MODULES = API_HOST + "/v2/api/children/{child_id}/child_modules";
     //获取测评任务列表（child_module_id）
     public static final String URL_EXAM_TASKS = API_HOST + "/v2/api/children/{child_id}/child_tasks";
+    //获取可添加任务列表（child_module_id）
+    public static final String URL_EXAM_CAN_ADD_TASKS = API_HOST + "/v2/api/children/{child_id}/available_tasks?child_module_id={child_module_id}";
     //获取测评任务详情子项列表（child_task_id）
     public static final String URL_EXAM_TASK_DETAIL_ITEMS = API_HOST + "/v2/api/children/{child_id}/child_task_items";
     //获取话题下的量表列表（child_exam_id、topic_id）
@@ -353,10 +355,16 @@ public class HttpConfig {
     public static final String URL_COLLEGE_DETAIL_INFO = API_HOST + "/v2/api/sy/universities/{university_id}/general_situation";
     //获取院校的招生基本信息
     public static final String URL_COLLEGE_ENROLL_BASE_INFO = API_HOST + "/v2/api/sy/universities/{universities_id}/enrollment_infos";
+    //获取院校的开设专业
+    public static final String URL_COLLEGE_SET_UP_MAJOR = API_HOST + "/v2/api/sy/universities/{id}/major_special";
+    //获取院校的重点学科
+    public static final String URL_COLLEGE_KEY_SUBJECT = API_HOST + "/v2/api/sy/universities/{id}/major/national_key/{national_key}";
     //获取专业树（edu_level、major_name）
     public static final String URL_MAJOR_TREE = API_HOST + "/v2/api/careers/majors";
     //专业详情
     public static final String URL_MAJOR_DETAIL = API_HOST + "/v2/api/careers/majors/{major_code}";
+    //专业的开设院校
+    public static final String URL_MAJOR_SETUP_COLLEGE = API_HOST + "/v2/api/careers/majors/{major_code}/universities";
     //获取职业树（occupation_name）
     public static final String URL_OCCUPATION_TREE = API_HOST + "/v2/api/careers/occupations";
     //获取职业列表
@@ -366,7 +374,9 @@ public class HttpConfig {
     //职业详情
     public static final String URL_OCCUPATION_DETAIL = API_HOST + "/v2/api/careers/occupations/{occupation_id}";
     //获取录取分数的文理科
-    public static final String URL_COLLEGE_ENROLL_KIND = API_HOST + "/v2/api/sy/gaokao/provinces/{province}/kinds";
+    public static final String URL_KIND_BY_PROVINCE = API_HOST + "/v2/api/sy/gaokao/provinces/{province}/kinds";
+    //获取录取分数的文理科
+    public static final String URL_KIND_BY_PROVINCE_YEAR = API_HOST + "/v2/api/sy/gaokao/provinces/{province}/years/{year}/kinds";
     //获取院校历年录取数据
     public static final String URL_COLLEGE_ENROLL = API_HOST + "/v2/api/sy/gaokao/score_line_university";
     //获取专业历年录取数据

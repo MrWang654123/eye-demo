@@ -19,6 +19,10 @@ public class MajorItem implements MultiItemEntity, Serializable {
     @InjectMap(name = "major_name")
     private String major_name;
 
+    //专业评级
+    @InjectMap(name = "assessment_level")
+    private String assessment_level;
+
     //布局类型
     private int itemType = MajorTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL2;
 
@@ -56,5 +60,13 @@ public class MajorItem implements MultiItemEntity, Serializable {
 
     public void setLastInMaxLevel(boolean lastInMaxLevel) {
         isLastInMaxLevel = lastInMaxLevel;
+    }
+
+    public String getAssessment_level() {
+        return assessment_level;
+    }
+
+    public void setAssessment_level(String assessment_level) {
+        this.assessment_level = assessment_level;
     }
 }

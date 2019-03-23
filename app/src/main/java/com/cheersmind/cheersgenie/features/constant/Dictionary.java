@@ -250,4 +250,9 @@ public class Dictionary {
     //职业分类：按行业分类
     public static final int OCCUPATION_TYPE_INDUSTRY = 2;
 
+    //重点学科类型：国家重点
+    public static final String KEY_SUBJECT_TYPE_COUNTRY = "national_key";
+    //重点学科类型：一流学科
+    public static final String KEY_SUBJECT_TYPE_FIRST_RATE = "double_first_class";
+
 }

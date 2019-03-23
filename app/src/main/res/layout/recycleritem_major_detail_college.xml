@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/shape_corner_ffffff_3dp"
     android:orientation="vertical">
     <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
@@ -19,10 +20,8 @@
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_main"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_percent="0.17"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -38,46 +37,53 @@
             android:id="@+id/tv_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_333333"
-            android:textStyle="bold"
+            android:textSize="18sp"
+            android:textColor="@color/color_444444"
             android:layout_marginLeft="15dp"
             android:layout_marginStart="15dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintLeft_toRightOf="@+id/iv_main"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:text="情绪发展" />
+            app:layout_constraintTop_toTopOf="@+id/iv_main"
+            app:layout_constraintRight_toLeftOf="@+id/iv_right_arrow"
+            android:text="情绪发展收款方康师傅" />
 
-        <TextView
-            android:id="@+id/tv_desc"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/color_999999"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:lineSpacingMultiplier="1.1"
-            android:layout_marginTop="2dp"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
-            app:layout_constraintRight_toRightOf="@id/tv_title"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"
-            android:text="情绪发展数据的疯狂世界的封建士大夫上的飞机上的撒旦解放" />
-
+        <!--所在地-->
         <TextView
             android:id="@+id/tv_location"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/color_898989"
-            android:maxLines="2"
-            android:ellipsize="end"
-            android:lineSpacingMultiplier="1.1"
-            android:layout_marginTop="2dp"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_desc"
-            app:layout_constraintRight_toRightOf="@id/tv_desc"
-            app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-            android:text="北京、上海"/>
+            android:textColor="@color/color_777777"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_main"
+            app:layout_constraintRight_toLeftOf="@+id/tv_major_level"
+            android:textSize="14sp"
+            android:text="福建-福州"/>
+
+        <!--专业评级-->
+        <TextView
+            android:id="@+id/tv_major_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/ali_feedback_red"
+            app:layout_constraintLeft_toRightOf="@+id/tv_location"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+            app:layout_goneMarginLeft="0dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:textSize="16sp"
+            android:text="A+"/>
+
+        <ImageView
+            android:id="@+id/iv_right_arrow"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitXY"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            tools:ignore="ContentDescription" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -91,4 +97,3 @@
         android:background="@color/color_eeeeee"/>
 
 </LinearLayout>
-

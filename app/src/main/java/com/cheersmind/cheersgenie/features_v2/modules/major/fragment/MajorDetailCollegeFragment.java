@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -13,23 +12,18 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
-import com.cheersmind.cheersgenie.features_v2.adapter.CollegeRankRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.adapter.MajorDetailCollegeRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.adapter.SetupCollegeRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.SetupCollegeDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.CollegeRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorDetail;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.entity.SetupCollegeRootEntity;
+import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -71,7 +65,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
     FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
-    MajorDetailCollegeRecyclerAdapter recyclerAdapter;
+    SetupCollegeRecyclerAdapter recyclerAdapter;
 
 
     //下拉刷新的监听
@@ -96,8 +90,8 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//            ExamTaskEntity entity = recyclerAdapter.getData().get(position);
-//            ExamTaskDetailActivity.startExamTaskDetailActivity(getContext(), entity);
+            CollegeEntity college = recyclerAdapter.getData().get(position);
+            CollegeDetailActivity.startCollegeDetailActivity(getContext(), college);
         }
     };
 
@@ -109,7 +103,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
     //后台总记录数
     private int totalCount = 0;
 
-    ArticleDto dto;
+    SetupCollegeDto dto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,7 +122,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new MajorDetailCollegeRecyclerAdapter(getContext(), R.layout.recycleritem_major_detail_college, null);
+        recyclerAdapter = new SetupCollegeRecyclerAdapter(getContext(), R.layout.recycleritem_major_detail_college, null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
 //        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
         //设置上拉加载更多的监听
@@ -181,7 +175,10 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
             majorDetail = (MajorDetail) bundle.getSerializable(DtoKey.MAJOR_DETAIL);
         }
 
-        dto = new ArticleDto(pageNum, PAGE_SIZE);
+        dto = new SetupCollegeDto(pageNum, PAGE_SIZE);
+        if (majorDetail != null) {
+            dto.setMajor_code(majorDetail.getMajor_code());
+        }
     }
 
     @Override
@@ -204,7 +201,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
 
     /**
      * 停止Fling的消息
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
 //    @Subscribe
@@ -224,7 +221,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
         dto.setPage(pageNum);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getMajorSetupCollege(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -248,7 +245,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    CollegeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeRootEntity.class);
+                    SetupCollegeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, SetupCollegeRootEntity.class);
 
                     totalCount = rootEntity.getTotal();
                     List<CollegeEntity> dataList = rootEntity.getItems();
@@ -298,7 +295,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
         }
 
         dto.setPage(pageNum);
-        DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getMajorSetupCollege(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能
@@ -322,7 +319,7 @@ public class MajorDetailCollegeFragment extends LazyLoadFragment {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    CollegeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeRootEntity.class);
+                    SetupCollegeRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, SetupCollegeRootEntity.class);
 
                     totalCount = rootEntity.getTotal();
                     List<CollegeEntity> dataList = rootEntity.getItems();
