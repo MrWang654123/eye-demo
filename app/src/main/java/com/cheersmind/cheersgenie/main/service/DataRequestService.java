@@ -2009,4 +2009,16 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取生涯规划档案
+     * @param childExamId 孩子测评ID
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getCareerPlanRecord(String childExamId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_CAREER_PLAN_RECORD
+                .replace("{child_exam_id}", childExamId);
+        doGet(url, callback, httpTag, context);
+    }
+
 }

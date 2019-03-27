@@ -27,6 +27,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.entity.UserInfo;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
@@ -114,8 +115,13 @@ public class TrackRecordFragment extends LazyLoadFragment {
         //主图
 //        ivMain.setImageURI(examTask != null ? examTask.getArticleImg() : "");
 
+        //获取数据
+        Bundle bundle = getArguments();
+        CareerPlanReportFragment fragment1 = new CareerPlanReportFragment();
+        fragment1.setArguments(bundle);
+
         List<Pair<String, Fragment>> items = new ArrayList<>();
-        items.add(new Pair<String, Fragment>("生涯发展档案", new CareerPlanReportFragment()));
+        items.add(new Pair<String, Fragment>("生涯发展档案", fragment1));
         items.add(new Pair<String, Fragment>("能力发展档案", new TrackRecordDetailFragment()));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
         //标签绑定viewpager

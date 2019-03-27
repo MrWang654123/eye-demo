@@ -3,8 +3,6 @@ package com.cheersmind.cheersgenie.features.modules.exam.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
@@ -12,11 +10,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
@@ -28,7 +24,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,10 +43,8 @@ import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.BaseQuestionFragment;
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
-import com.cheersmind.cheersgenie.features.modules.login.activity.PhoneNumLoginActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -64,21 +57,17 @@ import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.OptionsEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.QuestionRootEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.LogUtils;
-import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.SoundPlayUtils;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
@@ -86,10 +75,10 @@ import com.cheersmind.cheersgenie.main.view.LoadingView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -113,8 +102,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     private DimensionInfoEntity dimensionInfoEntity;
     //从哪个页面进入的答题页
     int fromActivityToQuestion;
-
-    private String testQuestionStr = "{\"total\":4,\"items\":[{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":{\"id\":\"107e3310-f5f8-47a9-809e-f9def6862d18\",\"exam_id\":\"6\",\"update_time\":\"2018-08-03T20:52:27.000+0800\",\"child_id\":\"10123\",\"create_time\":\"2018-08-03T20:29:15.000+0800\",\"score\":2,\"child_factor_id\":\"21fa62b2-6ea2-436f-b1b8-dedcef77e410\",\"user_id\":2200133574,\"option_id\":\"b11ee725-50dd-9823-3968-204c4d8ec05b\",\"flowers\":0,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"option_text\":\"\"},\"orderby\":1,\"stem\":\"复习时我准备充分，但真正开始考试时我大脑变得空白。\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"e8c6b2ac-3fd6-5a32-a23c-06d6aef1f7a9\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"21599dd4-3b37-159d-6033-68e5259a8378\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"b11ee725-50dd-9823-3968-204c4d8ec05b\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"6147a64a-cb5f-a108-00b1-8ad868f58c3d\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"b5ef3f9c-6812-90d4-1ede-f1bf55c068b8\",\"type\":1,\"question_id\":\"7ba91a4c-37c0-89f6-8b40-ac23a9026017\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":2,\"stem\":\"我感觉自己对考试准备得不充分。\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"a75482f4-0f95-ef6a-2e15-4d6b9f7443f1\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"ef7dedf5-04bd-255d-fdd2-54ab408bdaff\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"3798273a-a7a4-2145-bf13-b64de72b1008\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"e204f91f-81a1-7add-5ee6-d66d5de50a67\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"ef9fec44-f811-b206-3ff7-d0aee53a2001\",\"type\":1,\"question_id\":\"ac8f0ded-6e17-c026-da44-7661019b442d\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":16,\"stem\":\"即使我觉得考试内容很熟悉，我还是出错很多。\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"091fb9c5-5a78-2efa-2d24-ece8ba1d7751\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"bfc8f9c4-5f17-5b8c-3053-c2748eaf1544\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"6d0cc932-eaff-c947-2a41-e5f86719482f\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"e6444ed4-69e3-c36c-05b8-4871228eb65e\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"ec18d2f8-9106-656c-fe07-e7eede29d728\",\"type\":1,\"question_id\":\"68119618-b06c-2e24-3ac9-035c373b1ff0\",\"show_value\":100}]},{\"factor_id\":\"ebaa15c9-b234-d935-3d07-0dcbed75bbcb\",\"child_question\":null,\"orderby\":20,\"stem\":\"在快要考试之前，匆忙、胡乱地学习。\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_type\":11,\"options\":[{\"content\":\"完全不符合\",\"score\":1,\"orderby\":1,\"option_id\":\"3d1cda7d-cbc3-da80-23e6-36ed20c6c6ea\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":0},{\"content\":\"比较不符合\",\"score\":2,\"orderby\":2,\"option_id\":\"160b8beb-390a-8d38-19a6-633746a76aa8\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":25},{\"content\":\"部分符合\",\"score\":3,\"orderby\":3,\"option_id\":\"d22874b4-9af7-a4f4-44f9-514dea5aa14e\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":50},{\"content\":\"大部分符合\",\"score\":4,\"orderby\":4,\"option_id\":\"b1ae845d-2d62-4bfe-74e8-725764f05bf3\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":75},{\"content\":\"完全符合\",\"score\":5,\"orderby\":5,\"option_id\":\"6ac69a5c-87c8-3653-4dc9-5ca477c6f633\",\"type\":1,\"question_id\":\"a82465f6-d3f5-7737-e48f-8ad4b9d469d5\",\"show_value\":100}]}]}";
 
     //暂停按钮
     @BindView(R.id.iv_stop)
@@ -168,22 +155,15 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     int curPosition;
 
     //保存上一次答过的题目，key：问题ID，value：问题对象
-    private ArrayMap<String, QuestionInfoEntity> arrayMapBeforeHasedReply = new ArrayMap();
+    private ArrayMap<String, QuestionInfoEntity> arrayMapBeforeHasReply = new ArrayMap<String, QuestionInfoEntity>();
     //保存本次答过的题目,key：问题ID（注意是问题ID），value：答案dto
-    private ArrayMap<String, AnswerDto> arrayMapCurHasedReply = new ArrayMap();
+    private ArrayMap<String, AnswerDto> arrayMapCurHasReply = new ArrayMap<String, AnswerDto>();
 
     //答题总耗时
     int costTime = 0;
     //是否提交成功
     boolean hasSubmitSuccess = false;
 
-
-    // 主控制类，所有合成控制方法从这个类开始
-//    protected MySyntherizer synthesizer;
-    //权限
-//    String[] permissions = new String[] {
-//            Manifest.permission.READ_EXTERNAL_STORAGE
-//    };
 
     //说明弹窗按钮
     @BindView(R.id.fabDesc)
@@ -198,23 +178,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     /**
      * 打开作答页面
-     * @param context
-     * @param dimensionInfoEntity
-     */
-//    public static void startReplyQuestionActivity(Context context, DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity) {
-//        Intent intent = new Intent(context, ReplyQuestionActivity.class);
-//        Bundle extras = new Bundle();
-//        extras.putSerializable(DIMENSION_INFO, dimensionInfoEntity);
-//        extras.putSerializable(TOPIC_INFO, topicInfoEntity);
-//        intent.putExtras(extras);
-//        context.startActivity(intent);
-//    }
-
-
-    /**
-     * 打开作答页面
-     * @param context
-     * @param dimensionInfoEntity
+     * @param context 上下文
+     * @param dimensionInfoEntity 量表
      */
     public static void startReplyQuestionActivity(Context context,
                                                   DimensionInfoEntity dimensionInfoEntity,
@@ -302,7 +267,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         loadChildQuestions(dimensionInfoEntity.getChildDimension().getChildDimensionId());
 
         //初始化计时时间值
-//        costTime = dimensionInfoEntity.getChildDimension().getCostTime();
         costTime = 0;
 
         // android 6.0以上动态权限申请
@@ -404,11 +368,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     @Override
     protected void onStart() {
         super.onStart();
-
-//        //已经加载了题目且当前未显示报告弹窗，则开启计时
-//        if (ArrayListUtil.isNotEmpty(questionList) && !hasShowReportDialog) {
-//            startAllTimer();
-//        }
 
         //已经加载了题目且当前未显示弹窗，则开启计时
         if (ArrayListUtil.isNotEmpty(questionList)
@@ -569,10 +528,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            arrayMapBeforeHasedReply.clear();
-            arrayMapBeforeHasedReply = null;
-            arrayMapCurHasedReply.clear();
-            arrayMapCurHasedReply = null;
+            arrayMapBeforeHasReply.clear();
+            arrayMapBeforeHasReply = null;
+            arrayMapCurHasReply.clear();
+            arrayMapCurHasReply = null;
             topicInfoEntity = null;
             dimensionInfoEntity = null;
 
@@ -695,7 +654,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     /**
      * 等待最新操作测评在服务端刷新的消息
-     * @param event
+     * @param event 事件
      */
 //    @Subscribe(threadMode = ThreadMode.MAIN)
     @Subscribe(sticky = true)
@@ -706,35 +665,21 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     /**
      * 加载问题集合
-     * @param childDimensionId
+     * @param childDimensionId 孩子量表ID
      */
     private void loadChildQuestions(String childDimensionId){
         //正在加载提示
         xemptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-//        LoadingView.getInstance().show(this);
 
         DataRequestService.getInstance().getChildQuestionsV2(childDimensionId, 0, 1000, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 xemptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-//                onFailureDefault(e);
-                /*LoadingView.getInstance().dismiss();
-
-                Map dataMap = JsonUtil.fromJson(testQuestionStr,Map.class);
-                QuestionRootEntity rootData = InjectionWrapperUtil.injectMap(dataMap,QuestionRootEntity.class);
-                questionList = rootData.getItems();
-                //排序问题集合，已答的在前面
-                sortForQuestionList(questionList);
-                //初始化问题卡片（fragment）
-                initQuestionFragment(questionList);
-                //跳转到第一个显示的题目（默认：未答过的第一题）
-                gotoFirstShowQuestion();*/
             }
 
             @Override
             public void onResponse(Object obj) {
                 xemptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-//                LoadingView.getInstance().dismiss();
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(),Map.class);
                     QuestionRootEntity rootData = InjectionWrapperUtil.injectMap(dataMap,QuestionRootEntity.class);
@@ -753,7 +698,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     EventBus.getDefault().register(ReplyQuestionActivity.this);
 
                 } catch (Exception e) {
-//                    onFailure(new QSCustomException("加载问题失败"));
                     e.printStackTrace();
                     //视为找不到文章数据
                     xemptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
@@ -769,18 +713,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
      */
     private void gotoFirstShowQuestion() {
         //已答过的题目数量
-        int hasAnswer = arrayMapBeforeHasedReply.size();
+        int hasAnswer = arrayMapBeforeHasReply.size();
 
-//        //已经全部答完，但是未提交
-//        if (hasAnswer == questionList.size()) {
-//            //显示自动提交的按钮
-//            showAutoSubmitButton();
-//
-//            //显示提交对话框
-//            showQuestionCompleteDialog();
-//        }
-
-        //当前pageview索引为未答过的第一题，如何已经全部答完，则显示最后一题
+        //当前pageView索引为未答过的第一题，如何已经全部答完，则显示最后一题
         int curPageIndex = (hasAnswer == questionList.size() ? questionList.size() -1 : hasAnswer);
         //跳转
         vpQuestion.setCurrentItem(curPageIndex);
@@ -788,7 +723,6 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         if (curPageIndex == 0) {
             //更新视图信息
             updateLastNextText(curPageIndex);
-
         }
 
         //已经全部答完，但是未提交（必须在setCurrentItem之后：限时器）
@@ -838,7 +772,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
     private void saveBeforeHasedReply(QuestionInfoEntity questionInfoEntity) {
         if (questionInfoEntity == null) return;
         questionInfoEntity.setHasAnswer(true);
-        arrayMapBeforeHasedReply.put(questionInfoEntity.getQuestionId(), questionInfoEntity);
+        arrayMapBeforeHasReply.put(questionInfoEntity.getQuestionId(), questionInfoEntity);
     }
 
     /**
@@ -851,8 +785,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //当前题目如果为上一次进入作答页面时作答过的，则检测答案选项是否改变，有改变的情况才添加到当前作答的题目答案集合中
         String questionId = optionsEntity.getQuestionId();//问题ID
         //上一次已答过
-        if (arrayMapBeforeHasedReply.containsKey(questionId)) {
-            QuestionInfoEntity questionInfoEntity = arrayMapBeforeHasedReply.get(questionId);
+        if (arrayMapBeforeHasReply.containsKey(questionId)) {
+            QuestionInfoEntity questionInfoEntity = arrayMapBeforeHasReply.get(questionId);
             QuestionInfoChildEntity questionInfoChildEntity = questionInfoEntity.getChildQuestion();
 
             if (questionInfoChildEntity != null) {
@@ -860,8 +794,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 //答案没改变则忽略
                 if (!TextUtils.isEmpty(optionId) && optionId.equals(optionsEntity.getOptionId())) {
                     //之前修改过一次，第N次修改后，答案又和初始时一样，则把该题答案从当前题目答案集合中移除
-                    if (arrayMapCurHasedReply.containsKey(questionId)) {
-                        arrayMapCurHasedReply.remove(questionId);
+                    if (arrayMapCurHasReply.containsKey(questionId)) {
+                        arrayMapCurHasReply.remove(questionId);
                     }
                     return;
                 }
@@ -870,7 +804,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         //添加到当前题目答案的集合：key为问题ID
         AnswerDto answerDto = assembleAnswerDto(childFactorId, optionsEntity, optionText);
-        arrayMapCurHasedReply.put(questionId, answerDto);
+        arrayMapCurHasReply.put(questionId, answerDto);
 //        LogUtils.w("当前题目答案的集合长度：" + arrayMapCurHasedReply.size());
     }
 
@@ -1015,37 +949,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }
     }
 
-    /*@OnClick({R.id.btn_pre, R.id.fabVoicePlay, R.id.fabDesc})
-    public void onViewClick(View view) {
-        switch (view.getId()) {
-            //上一题
-            case R.id.btn_pre: {
-                toPreQuestion();
-                break;
-            }
-            //语音播放
-            case R.id.fabVoicePlay: {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Fragment fragment = fragments.get(curPosition);
-                        if (fragment instanceof VoiceControlListener) {
-                            ((VoiceControlListener)fragment).play();
-                        }
-                    }
-                }).start();
-
-                break;
-            }
-            //说明
-            case R.id.fabDesc: {
-                popupDescWindows();
-                break;
-            }
-        }
-    }*/
-
-    @OnClick({R.id.btn_pre, R.id.fabDesc, R.id.fabVoicePlay})
+    @OnClick({R.id.btn_pre, R.id.fabDesc, R.id.fabVoicePlay, R.id.iv_clock})
     public void onViewClick(View view) {
         switch (view.getId()) {
             //上一题
@@ -1080,7 +984,43 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 if (fragment instanceof VoiceControlListener) {
                     ((VoiceControlListener)fragment).play();
                 }
+                break;
             }
+            //时钟图标（用于测试时快速答题）
+            case R.id.iv_clock: {
+                String hostType = BuildConfig.HOST_TYPE;
+                //调试模式或者非生产环境
+                if(BuildConfig.DEBUG || !"product".equals(hostType)){
+                    fastAnswerClickLimitCount++;
+                    if (fastAnswerClickLimitCount == 3) {
+                        fastAnswer();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    //快速答题点击次数
+    private int fastAnswerClickLimitCount;
+
+    /**
+     * 快速答题
+     */
+    private void fastAnswer() {
+        //处理答题信息
+        if (arrayMapBeforeHasReply.size() < questionList.size()) {
+            for (int i=arrayMapBeforeHasReply.size(); i<questionList.size(); i++) {
+                QuestionInfoEntity item = questionList.get(i);
+                List<OptionsEntity> options = item.getOptions();
+                int selectIndex = new Random().nextInt(options.size());
+                saveCurHasedReply(item.getChildFactorId(), options.get(selectIndex), "测试答题");
+            }
+
+            //显示自动提交的按钮
+            showAutoSubmitButton();
+            //显示提交对话框
+            showQuestionCompleteDialog();
         }
     }
 
@@ -1104,7 +1044,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         int curPageIndex = vpQuestion.getCurrentItem();
         //最后能显示的索引
         int lastCanShowPageIndex = vpQuestion.getLastCanShowPageIndex();
-        //当前页是否是能显示的最后一页（默认是：未答的第一题的索引）
+        //当前页是否是能显示的最后一页（默认：未答的第一题的索引）
         boolean curPageIsCanShowLastPage = curPageIndex == lastCanShowPageIndex;
 
         //不是所有题目的最后一题
@@ -1126,13 +1066,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
             }
 
         } else if (curPageIndex == questionList.size() -1) {//最后一题
-            //提交所有答案
-//            ToastUtil.showShort(ReplyQuestionActivity.this, "提交答案中，请稍等……");
-//            doPostSubmitQuestions();
-
             //显示自动提交的按钮
             showAutoSubmitButton();
-
             //显示提交对话框
             showQuestionCompleteDialog();
         }
@@ -1140,9 +1075,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
     IntegralTipDialog integralTipDialog;
 
-    /**
-     * 提交所有问题答案
-     */
+//    /**
+//     * 提交所有问题答案
+//     */
 //    private void doPostSubmitQuestions() {
 //        LoadingView.getInstance().show(ReplyQuestionActivity.this, httpTag);
 //        DataRequestService.getInstance().postQuestionAnswersSubmit(
@@ -1257,7 +1192,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         DataRequestService.getInstance().postQuestionAnswersSubmit(
                 dimensionInfoEntity.getChildDimension().getChildDimensionId(),
                 costTime,
-                arrayMapCurHasedReply.values(),
+                arrayMapCurHasReply.values(),
                 new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {
@@ -1494,14 +1429,14 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         //问题已经提交成功了，则直接return
         if (hasSubmitSuccess) return;
         //当前有作答
-        if (arrayMapCurHasedReply.size() == 0) {
+        if (arrayMapCurHasReply.size() == 0) {
             return;
         }
 
         DataRequestService.getInstance().postQuestionAnswersSave(
                 dimensionInfoEntity.getChildDimension().getChildDimensionId(),
                 costTime,
-                arrayMapCurHasedReply.values(),
+                arrayMapCurHasReply.values(),
                 new BaseService.ServiceCallback() {
                     @Override
                     public void onFailure(QSCustomException e) {

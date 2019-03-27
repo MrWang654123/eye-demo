@@ -87,7 +87,6 @@ public class CareerPlanFragment extends LazyLoadFragment {
     //适配器的数据列表
     ExamTaskRecyclerAdapter recyclerAdapter;
 
-
     //下拉刷新的监听
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
@@ -131,6 +130,9 @@ public class CareerPlanFragment extends LazyLoadFragment {
     private int totalCount = 0;
 
     ExamTaskDto dto;
+
+    //孩子测评ID：用于生涯档案
+    String childExamId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -267,7 +269,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
             }
             //成长档案
             case R.id.cl_career_report: {
-                TrackRecordActivity.startTrackRecordActivity(getContext());
+                TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
                 break;
             }
         }
@@ -497,6 +499,11 @@ public class CareerPlanFragment extends LazyLoadFragment {
                     ExamModuleEntity examModule = dataList.get(0);
                     if (examModule.getChildModule() == null || TextUtils.isEmpty(examModule.getChildModule().getChild_module_id())) {
                         throw new QSCustomException("暂无数据");
+                    }
+
+                    //保存孩子测评ID
+                    if (examModule.getChildModule() != null) {
+                        childExamId = examModule.getChildModule().getChild_exam_id();
                     }
 
                     CareerPlanFragment.this.dto.setChildModuleId(examModule.getChildModule().getChild_module_id());

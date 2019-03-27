@@ -39,7 +39,10 @@ public class DtoKey {
      * 通用报告Dto
      */
     public static final String EXAM_REPORT_DTO = "EXAM_REPORT_DTO";
-
+    /**
+     * 孩子测评id
+     */
+    public static final String CHILD_EXAM_ID = "CHILD_EXAM_ID";
 
     /*----------  资源库begin  ----------*/
 

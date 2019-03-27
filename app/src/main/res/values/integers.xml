@@ -5,4 +5,8 @@
 
     <!--recyclerView限制最大滑动速度-->
     <integer name="recycler_view_max_velocity">3000</integer>
+
+    <!--生涯规划档案简单量表每行的数量-->
+    <integer name="career_plan_record_simple_dimension_count">2</integer>
+
 </resources>

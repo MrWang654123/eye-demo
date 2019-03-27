@@ -276,6 +276,9 @@ public class HttpConfig {
 //    public static String URL_REPORT_V2 = API_HOST + "/v2/api/exams/reports?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
     public static String URL_REPORT_V2 = API_HOST + "/v2/api/reports/students/{child_exam_id}?relation_id={relation_id}&relation_type={relation_type}&sample_id={sample_id}";
 
+    //获取生涯规划档案
+    public static String URL_CAREER_PLAN_RECORD = API_HOST + "/v2/api/archives/growth/{child_exam_id}";
+
     //获取报告新
     public static String URL_REPORT_V2_NEW = API_HOST + "/v2/api/exams/personal/reports";
 

@@ -801,7 +801,7 @@ public class DiscoverFragment extends LazyLoadFragment {
             }
             //成长档案
             case R.id.cl_track_record: {
-                TrackRecordActivity.startTrackRecordActivity(getContext());
+//                TrackRecordActivity.startTrackRecordActivity(getContext());
                 break;
             }
             //生涯规划

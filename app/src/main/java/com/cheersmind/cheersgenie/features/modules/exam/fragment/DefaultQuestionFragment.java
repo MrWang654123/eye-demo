@@ -239,9 +239,6 @@ public class DefaultQuestionFragment extends BaseQuestionFragment implements Voi
     }
 
 
-
-
-
     @Override
     public void clickQuestionOption() {
         if (getActivity() != null && getActivity() instanceof SoundPlayListener) {
