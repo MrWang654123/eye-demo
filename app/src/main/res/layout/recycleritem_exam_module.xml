@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/shape_corner_ffffff_3dp"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
+    android:layout_marginLeft="0dp"
+    android:layout_marginStart="0dp"
+    android:layout_marginRight="0dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
     android:orientation="vertical">
     <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
     <!--xmlns:fresco="http://schemas.android.com/tools"-->
+    <!--android:background="@drawable/shape_corner_ffffff_3dp"-->
+
+    <!--android:layout_marginLeft="15dp"-->
+    <!--android:layout_marginStart="15dp"-->
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_main"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="h,16:9"
+            android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            fresco:roundedCornerRadius="3dp"
+            fresco:roundedCornerRadius="5dp"
             fresco:roundTopLeft="true"
             fresco:roundTopRight="true"
             fresco:roundBottomLeft="false"
@@ -36,42 +47,93 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textColor="@color/color_333333"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:text="情绪发展"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="学生心理健康"
             />
 
-        <TextView
-            android:id="@+id/tv_begin_time"
+
+        <LinearLayout
+            android:id="@+id/ll_begin_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/color_333333"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+            android:layout_marginTop="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
-            android:layout_marginTop="15dp"
-            android:text="2019年2月1日"
-            />
+            app:layout_constraintRight_toLeftOf="@+id/ll_end_time"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_end_time"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="1dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="1dp"
+                android:background="@drawable/shape_corner_ffd604_3dp"
+                android:text="开始"
+                android:textColor="@color/color_333333"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_begin_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/color_666666"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:text="2019-01-02"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_end_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="16sp"
-            android:textColor="@color/color_333333"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_begin_time"
-            app:layout_constraintTop_toBottomOf="@+id/tv_begin_time"
-            android:layout_marginTop="5dp"
-            android:text="2019年12月1日"
-            />
+            app:layout_constraintLeft_toRightOf="@+id/ll_begin_time"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_begin_time"
+            app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_corner_ffd604_3dp"
+                android:paddingBottom="1dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="1dp"
+                android:text="结束"
+                android:textColor="@color/color_333333"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/color_666666"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:text="2019-03-25"
+                />
+
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 

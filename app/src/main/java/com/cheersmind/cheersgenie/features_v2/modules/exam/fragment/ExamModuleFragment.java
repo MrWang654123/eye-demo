@@ -1,16 +1,17 @@
 package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.animation.ScaleInAnimation;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
@@ -48,10 +49,6 @@ public class ExamModuleFragment extends LazyLoadFragment {
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
-
-    //置顶按钮
-    @BindView(R.id.fabGotoTop)
-    FloatingActionButton fabGotoTop;
 
     Unbinder unbinder;
 
@@ -109,7 +106,8 @@ public class ExamModuleFragment extends LazyLoadFragment {
 
         //适配器
         recyclerAdapter = new ExamModuleRecyclerAdapter(getContext(), R.layout.recycleritem_exam_module, null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter.openLoadAnimation(new ScaleInAnimation());
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
@@ -119,21 +117,22 @@ public class ExamModuleFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(getContext()));
-        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        recyclerAdapter.addHeaderView(new View(getContext()));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        manager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        recycleView.setLayoutManager(manager);
+        // 将SnapHelper attach 到RecyclerView
+        LinearSnapHelper snapHelper = new LinearSnapHelper();
+        snapHelper.attachToRecyclerView(recycleView);
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-        recycleView.addItemDecoration(divider);
+        if (getContext() != null) {
+            DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_h_f5f5f5_15dp));
+            recycleView.addItemDecoration(divider);
+        }
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
-        //滑动监听
-        try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
@@ -147,9 +146,6 @@ public class ExamModuleFragment extends LazyLoadFragment {
                 loadMoreArticleData();
             }
         });
-
-        //初始隐藏置顶按钮
-        fabGotoTop.setVisibility(View.INVISIBLE);
 
         dto = new ModuleDto(pageNum, PAGE_SIZE);
         dto.setType(1);
@@ -220,7 +216,7 @@ public class ExamModuleFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -282,9 +278,9 @@ public class ExamModuleFragment extends LazyLoadFragment {
 
                     totalCount = rootEntity.getTotal();
                     List<ExamModuleEntity> dataList = rootEntity.getItems();
-//                    MessageEntity messageEntity = dataList.get(0);
-//                    for (int i=0; i<20; i++) {
-//                        dataList.add(messageEntity);
+                    ExamModuleEntity entity = dataList.get(0);
+//                    for (int i=0; i<10; i++) {
+//                        dataList.add(entity);
 //                    }
 
                     //空数据处理
@@ -304,7 +300,7 @@ public class ExamModuleFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();

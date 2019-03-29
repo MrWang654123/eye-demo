@@ -2,11 +2,15 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
+import com.cheersmind.cheersgenie.main.QSApplication;
+import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.text.ParseException;
@@ -24,8 +28,15 @@ public class ExamModuleRecyclerAdapter extends BaseQuickAdapter<ExamModuleEntity
     SimpleDateFormat formatIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     SimpleDateFormat formatNormal = new SimpleDateFormat("yyyy/MM/dd");
 
+    private int width;
+    private Context context;
+
     public ExamModuleRecyclerAdapter(Context context, int layoutResId, @Nullable List<ExamModuleEntity> data) {
         super(layoutResId, data);
+        this.context = context;
+        int temp = QSApplication.getMetrics().widthPixels;
+        width = QSApplication.getMetrics().widthPixels - DensityUtil.dip2px(context, 48);
+        System.out.println(width);
     }
 
     @Override
@@ -48,6 +59,12 @@ public class ExamModuleRecyclerAdapter extends BaseQuickAdapter<ExamModuleEntity
 
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+
+        if (getData().size() > 1) {
+            View view = helper.getView(R.id.ll_container);
+            ViewGroup.LayoutParams params = view.getLayoutParams();
+            params.width = width;
         }
     }
 
