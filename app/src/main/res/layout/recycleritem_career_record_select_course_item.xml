@@ -72,13 +72,7 @@
             android:textSize="16sp"
             android:textColor="@color/color_666666"
             android:lineSpacingMultiplier="1.2"
-            android:layout_marginBottom="30dp"
             android:text="评价：没有三家分晋时间飞逝副书记福建省的密封面试辅导是否及时分解舒服舒服惊世毒妃设计费设计费技术附件"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/color_a6a6a6"/>
 
     </LinearLayout>
 
@@ -108,5 +102,12 @@
             android:text="继续去完成"/>
 
     </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/color_a6a6a6"/>
 
 </LinearLayout>

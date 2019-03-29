@@ -9,6 +9,9 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
  */
 public class BaseRecordItem extends AbstractExpandableItem<BaseRecordItem> implements MultiItemEntity {
 
+    //是否是兄弟中的最后一个
+    private boolean lastInBrother;
+
     //是否完成
     private boolean finish;
 
@@ -41,5 +44,13 @@ public class BaseRecordItem extends AbstractExpandableItem<BaseRecordItem> imple
 
     public void setFinish(boolean finish) {
         this.finish = finish;
+    }
+
+    public boolean isLastInBrother() {
+        return lastInBrother;
+    }
+
+    public void setLastInBrother(boolean lastInBrother) {
+        this.lastInBrother = lastInBrother;
     }
 }

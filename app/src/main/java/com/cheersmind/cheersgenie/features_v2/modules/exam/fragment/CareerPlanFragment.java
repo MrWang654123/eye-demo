@@ -33,6 +33,7 @@ import com.cheersmind.cheersgenie.features_v2.event.TaskStatusEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeRankActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskAddActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
@@ -239,7 +240,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
 
     @OnClick({R.id.fabAddTaskItem, R.id.cl_college,
             R.id.cl_major, R.id.cl_occupation,
-            R.id.cl_career_report})
+            R.id.cl_career_report, R.id.btn_select_course})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //添加任务
@@ -270,6 +271,11 @@ public class CareerPlanFragment extends LazyLoadFragment {
             //成长档案
             case R.id.cl_career_report: {
                 TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+                break;
+            }
+            //选科助手
+            case R.id.btn_select_course: {
+                SelectCourseAssistantActivity.startSelectCourseAssistantActivity(getContext(), childExamId);
                 break;
             }
         }

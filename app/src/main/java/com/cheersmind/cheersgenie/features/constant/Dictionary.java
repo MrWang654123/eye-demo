@@ -191,6 +191,10 @@ public class Dictionary {
     public static final int FROM_ACTIVITY_TO_QUESTION_MINE = 2;
     //从任务详情页进入答题页
     public static final int FROM_ACTIVITY_TO_TASK_DETAIL = 3;
+    //从成长档案进入答题页
+    public static final int FROM_ACTIVITY_TO_TRACK_RECORD = 4;
+    //从系统推荐选科进入答题页
+    public static final int FROM_ACTIVITY_TO_SYS_RMD_COURSE = 5;
 
 
     //报告图表比较ID：全国

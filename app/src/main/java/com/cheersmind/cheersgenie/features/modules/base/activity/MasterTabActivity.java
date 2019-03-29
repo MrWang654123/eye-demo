@@ -51,6 +51,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvinceRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
 import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanWrapFragment;
+import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.DiscoverFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -178,7 +179,7 @@ public class MasterTabActivity extends BaseActivity {
 ////        listFragment.add(new ReportFragment());//最近使用
 //        listFragment.add(new MineFragment());
 
-        listFragment.add(new ExploreFragment());
+        listFragment.add(new DiscoverFragment());
         listFragment.add(new CareerPlanWrapFragment());
         listFragment.add(new com.cheersmind.cheersgenie.features_v2.modules.base.fragment.ExamWrapFragment());
 //        listFragment.add(new ExamWrapFragment());

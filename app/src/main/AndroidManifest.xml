@@ -488,6 +488,15 @@
         <!--测评报告页-->
         <activity android:name=".features_v2.modules.exam.activity.ExamReportActivity"
             android:screenOrientation="portrait"/>
+        <!--选科助手-->
+        <activity android:name=".features_v2.modules.exam.activity.SelectCourseAssistantActivity"
+            android:screenOrientation="portrait"/>
+        <!--推荐专业-->
+        <activity android:name=".features_v2.modules.exam.activity.RecommendMajorActivity"
+            android:screenOrientation="portrait"/>
+        <!--课程相关专业-->
+        <activity android:name=".features_v2.modules.exam.activity.CourseRelateMajorActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

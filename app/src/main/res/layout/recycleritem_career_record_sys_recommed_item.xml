@@ -37,8 +37,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/color_444444"
             android:textSize="16sp"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="查看可报考专业"/>
 
         <Button
@@ -46,8 +47,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/color_444444"
             android:textSize="16sp"
+            style="?android:attr/buttonBarButtonStyle"
             android:text="查看要求较高专业"/>
 
     </LinearLayout>

@@ -5,6 +5,14 @@ package com.cheersmind.cheersgenie.features.constant;
  */
 public class DtoKey {
 
+    /*----------  通用  ----------*/
+
+    /**
+     * 类型
+     */
+    public static final String TYPE = "TYPE";
+
+
     /*----------  发展测评begin  ----------*/
 
     /**
@@ -43,6 +51,17 @@ public class DtoKey {
      * 孩子测评id
      */
     public static final String CHILD_EXAM_ID = "CHILD_EXAM_ID";
+
+    /**
+     * 科目code组
+     */
+    public static final String COURSE_CODE_GROUP = "COURSE_CODE_GROUP";
+
+    /**
+     * 科目名称组
+     */
+    public static final String COURSE_NAME_GROUP = "COURSE_NAME_GROUP";
+
 
     /*----------  资源库begin  ----------*/
 

@@ -77,7 +77,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 SelectCourseRecord entity = (SelectCourseRecord) item;
                 helper.getView(R.id.ll_has_result).setVisibility(View.GONE);
                 helper.getView(R.id.ll_no_result).setVisibility(View.GONE);
-
+                //完成
                 if (entity.isFinish()) {
                     helper.getView(R.id.ll_has_result).setVisibility(View.VISIBLE);
                     //推荐的科目
@@ -100,6 +100,10 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 } else {
                     helper.getView(R.id.ll_no_result).setVisibility(View.VISIBLE);
                 }
+
+                helper.addOnClickListener(R.id.btn_select_course);
+                helper.addOnClickListener(R.id.btn_can_select_major);
+                helper.addOnClickListener(R.id.btn_high_require_major);
                 break;
             }
             //高考选科item
@@ -107,10 +111,12 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
                 helper.getView(R.id.ll_result_common).setVisibility(View.GONE);
                 helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
+                helper.getView(R.id.btn_report).setVisibility(View.GONE);
                 //标题
                 helper.setText(R.id.tv_title, entity.getDimension_name());
                 //通用结果
                 if (ArrayListUtil.isEmpty(entity.getDimensions())) {
+                    //完成
                     if (entity.isFinish()) {
                         helper.getView(R.id.btn_report).setVisibility(View.VISIBLE);
                         helper.getView(R.id.ll_result_common).setVisibility(View.VISIBLE);
@@ -157,11 +163,22 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                             helper.setText(R.id.tv_appraise, "暂无评价");
                         }
 
-                    } else {
+                    } else {//未完成
                         helper.getView(R.id.btn_report).setVisibility(View.GONE);
                         helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
                     }
                 }
+
+                //分割线
+                if (entity.isLastInBrother()) {
+                    helper.getView(R.id.divider).setVisibility(View.GONE);
+                } else {
+                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
+                }
+
+                helper.addOnClickListener(R.id.btn_report);
+                helper.addOnClickListener(R.id.btn_to_exam);
+
                 break;
             }
             //系统推荐选科header
@@ -188,10 +205,13 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 SelectCourseRecord entity = (SelectCourseRecord) item;
                 //可报考专业百分比
                 helper.setText(R.id.tv_can_select_major_ratio,
-                        "-基于所选学科您可报考的专业占所有大学专业的" + entity.getCustom_major_per() * 100 + "%");
+                        "-基于推荐结果您可报考的专业占所有大学专业的" + entity.getRecommend_major_per() * 100 + "%");
                 //要求较高专业百分比
                 helper.setText(R.id.tv_high_require_major_ratio,
-                        "-对于所选学科要求较高的专业占所有大学专业的" + entity.getCustom_high_major_per() * 100 + "%");
+                        "-对于推荐结果要求较高的专业占所有大学专业的" + entity.getRecommend_high_major_per() * 100 + "%");
+
+                helper.addOnClickListener(R.id.btn_can_select_major);
+                helper.addOnClickListener(R.id.btn_high_require_major);
                 break;
             }
             //子项header
@@ -289,6 +309,17 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                     helper.getView(R.id.btn_report).setVisibility(View.GONE);
                     helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
                 }
+
+                //分割线
+                if (entity.isLastInBrother()) {
+                    helper.getView(R.id.divider).setVisibility(View.GONE);
+                } else {
+                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
+                }
+
+                helper.addOnClickListener(R.id.btn_report);
+                helper.addOnClickListener(R.id.btn_to_exam);
+
                 break;
             }
 
@@ -304,6 +335,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                     helper.getView(R.id.iv_report).setVisibility(View.GONE);
                     helper.setText(R.id.tv_title, entity.getDimension_name());
                 }
+
                 break;
             }
         }

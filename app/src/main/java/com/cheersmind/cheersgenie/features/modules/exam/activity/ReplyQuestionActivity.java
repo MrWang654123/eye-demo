@@ -55,6 +55,8 @@ import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
@@ -1254,9 +1256,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                                 dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
                                 //判断显示话题报告还是量表报告
                                 if (dimensionChild.isTopicComplete()) {
-                                    //只有一个量表则显示量表报告
-                                    if (ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
-                                            && topicInfoEntity.getDimensions().size() == 1) {
+                                    //只有一个量表则显示量表报告（或者话题对象中的量表集合为空）
+                                    if ((ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
+                                            && topicInfoEntity.getDimensions().size() == 1)
+                                            || ArrayListUtil.isEmpty(topicInfoEntity.getDimensions())) {
                                         dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
                                         dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
 
@@ -1282,7 +1285,9 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             }
 
                         } catch (Exception e) {
-                            onFailure(new QSCustomException("获取报告失败"));
+//                            onFailure(new QSCustomException("获取报告失败"));
+                            //跳转到下一个页面
+                            gotoNextActivity();
                         }
                     }
                 }, httpTag, ReplyQuestionActivity.this);
@@ -1357,6 +1362,16 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     case Dictionary.FROM_ACTIVITY_TO_TASK_DETAIL: {
                         //任务详情页
                         toActivity = ExamTaskDetailActivity.class;
+                        break;
+                    }
+                    case Dictionary.FROM_ACTIVITY_TO_TRACK_RECORD: {
+                        //成长档案
+                        toActivity = TrackRecordActivity.class;
+                        break;
+                    }
+                    case Dictionary.FROM_ACTIVITY_TO_SYS_RMD_COURSE: {
+                        //系统推荐选科
+                        toActivity = SelectCourseAssistantActivity.class;
                         break;
                     }
                     default: {

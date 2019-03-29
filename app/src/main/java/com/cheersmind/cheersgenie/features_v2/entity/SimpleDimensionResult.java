@@ -13,8 +13,16 @@ public class SimpleDimensionResult extends BaseRecordItem {
     @InjectMap(name = "dimension_name")
     private String dimension_name;
 
+    //测评评价，如果没有值，表示该量表未完成
     @InjectMap(name = "appraisal")
     private String appraisal;
+
+    @InjectMap(name = "topic_id")
+    private String topic_id;
+
+    //是否完成
+    @InjectMap(name = "finish")
+    private boolean finish;
 
     private int itemType;
 
@@ -50,5 +58,23 @@ public class SimpleDimensionResult extends BaseRecordItem {
 
     public void setAppraisal(String appraisal) {
         this.appraisal = appraisal;
+    }
+
+    public String getTopic_id() {
+        return topic_id;
+    }
+
+    public void setTopic_id(String topic_id) {
+        this.topic_id = topic_id;
+    }
+
+    @Override
+    public boolean isFinish() {
+        return finish;
+    }
+
+    @Override
+    public void setFinish(boolean finish) {
+        this.finish = finish;
     }
 }

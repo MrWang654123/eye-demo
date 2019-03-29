@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features.entity;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import org.litepal.crud.DataSupport;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * 简单文章实体
  */
-public class SimpleArticleEntity extends DataSupport implements Serializable {
+public class SimpleArticleEntity extends DataSupport implements Serializable, MultiItemEntity {
 
     @InjectMap(name = "id")
     private String id;
@@ -215,4 +216,16 @@ public class SimpleArticleEntity extends DataSupport implements Serializable {
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
+
+    private int itemType;
+
+    @Override
+    public int getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
 }

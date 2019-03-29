@@ -18,12 +18,16 @@ import com.cheersmind.cheersgenie.features.dto.PhoneNumLoginDto;
 import com.cheersmind.cheersgenie.features.dto.RegisterDto;
 import com.cheersmind.cheersgenie.features.dto.ResetPasswordDto;
 import com.cheersmind.cheersgenie.features.dto.ResponseDto;
+import com.cheersmind.cheersgenie.features.dto.SelectCourseDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
+import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
+import com.cheersmind.cheersgenie.features_v2.dto.CourseRelateMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.dto.MajorDto;
@@ -31,9 +35,11 @@ import com.cheersmind.cheersgenie.features_v2.dto.MajorEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationTreeDto;
+import com.cheersmind.cheersgenie.features_v2.dto.RecommendMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.SetupCollegeDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
+import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationType;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -55,6 +61,7 @@ import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
@@ -2018,6 +2025,125 @@ public class DataRequestService {
     public void getCareerPlanRecord(String childExamId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CAREER_PLAN_RECORD
                 .replace("{child_exam_id}", childExamId);
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取系统推荐选科
+     * @param childExamId 孩子测评ID
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getSysRmdCourse(String childExamId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_SYS_RMD_COURSE
+                .replace("{child_exam_id}", childExamId);
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取选科
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getSelectCourse(SelectCourseDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_GET_SELECT_COURSE
+                .replace("{child_id}", dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+
+    /**
+     * 确认选科
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param context 上下文
+     */
+    public void postConfirmSelectCourse(ConfirmSelectCourseDto dto, final BaseService.ServiceCallback callback,
+                                        String httpTag, Context context){
+        String url = HttpConfig.URL_CONFIRM_SELECT_COURSE
+                .replace("{child_id}", dto.getChildId());
+        Map<String,Object> map = new HashMap<>();
+        map.put("child_exam_id", dto.getChildExamId());
+
+        List<ChooseCourseEntity> items = dto.getItems();
+        if (ArrayListUtil.isNotEmpty(items)) {
+            int[] courses = new int[items.size()];
+            for (int i=0; i<items.size(); i++) {
+                ChooseCourseEntity course = items.get(i);
+                courses[i] = course.getSubject_code();
+            }
+
+            map.put("subjects", courses);
+//            String s = new Gson().toJson(map);
+//            System.out.println(s);
+        }
+
+        doPost(url, map, false, callback, httpTag, context);
+    }
+
+
+    /**
+     * 获取推荐专业
+     * @param dto 推荐专业dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getRecommendMajor(RecommendMajorDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_RECOMMEND_MAJOR
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_exam_id", dto.getChildExamId());
+        params.put("from_types", dto.getFromTypes());
+
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取科目相关专业
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCourseRelateMajor(CourseRelateMajorDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COURSE_RELATE_MAJOR
+                .replace("{child_id}",dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+        //科目ID组
+        if (!TextUtils.isEmpty(dto.getSubjectGroup())) {
+            params.put("subject_group", dto.getSubjectGroup());
+        }
+
+        //类型
+        params.put("type", dto.getType());
+
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
         doGet(url, callback, httpTag, context);
     }
 

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"
+        android:background="@color/color_f5f5f5"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingRight="15dp"
+        android:paddingEnd="15dp"
+        android:padding="15dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/color_444444"
+                android:textSize="16sp"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:text="1、性格测试"/>
+
+            <TextView
+                android:id="@+id/btn_report"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorAccent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:text="详细报告"/>
+
+        </LinearLayout>
+
+        <!--有推荐选科的结果-->
+        <LinearLayout
+            android:id="@+id/ll_result_common"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--推荐课程-->
+            <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+                android:id="@+id/wllCourse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:grivate="left"
+                app:horizontal_Space="10dp"
+                app:isFull="false"
+                app:vertical_Space="15dp">
+
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+
+            </com.cheersmind.cheersgenie.features.view.WarpLinearLayout>
+
+            <!--推荐职业-->
+            <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+                android:id="@+id/wllOccupation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                app:grivate="left"
+                app:horizontal_Space="10dp"
+                app:isFull="false"
+                app:vertical_Space="15dp">
+
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+                <include layout="@layout/record_result_item"/>
+
+            </com.cheersmind.cheersgenie.features.view.WarpLinearLayout>
+
+            <TextView
+                android:id="@+id/tv_appraise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_666666"
+                android:lineSpacingMultiplier="1.2"
+                android:text="评价：没有三家分晋时间飞逝副书记福建省的密封面试辅导是否及时分解舒服舒服惊世毒妃设计费设计费技术附件"/>
+
+        </LinearLayout>
+
+        <!--未完成的布局-->
+        <LinearLayout
+            android:id="@+id/ll_no_complete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/color_666666"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:text="该测评未完成，完成后才能查看具体数据"/>
+
+            <Button
+                android:id="@+id/btn_to_exam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_555555"
+                android:textSize="15sp"
+                android:layout_gravity="center_horizontal"
+                android:text="继续去完成"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

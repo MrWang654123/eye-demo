@@ -4,35 +4,37 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.ExamDimensionBaseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
+import com.cheersmind.cheersgenie.features.event.QuestionSubmitSuccessEvent;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
-import com.cheersmind.cheersgenie.features.modules.exam.activity.TopicDetailActivity;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.CareerPlanRecordRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.RecordItemHeader;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfo;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -40,6 +42,8 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,15 +86,25 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            MultiItemEntity item = ((CareerPlanRecordRecyclerAdapter) adapter).getItem(position);
+            //简单量表
+            if (item != null && item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SIMPLE_DIMENSION) {
+                SimpleDimensionResult entity = (SimpleDimensionResult) item;
 
-//            ExamTaskEntity entity = recyclerAdapter.getData().get(position);
-//            //判断任务项是否被锁，友好提示
-//            if (entity.getIs_lock() == Dictionary.IS_LOCKED_YSE) {
-//                lockedTaskTip(entity);
-//
-//            } else {
-//                ExamTaskDetailActivity.startExamTaskDetailActivity(getContext(), entity);
-//            }
+                TopicInfo topicInfo = new TopicInfo();
+                topicInfo.setTopicId(entity.getTopic_id());
+                topicInfo.setDimensionId(entity.getDimension_id());
+
+                //完成
+                if (entity.isFinish()) {
+                    //查看报告
+                    getReferenceExam(topicInfo, POST_OPT_TYPE_REPORT);
+
+                } else {
+                    //跳转量表详情
+                    getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
+                }
+            }
         }
     };
 
@@ -100,25 +114,122 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
             MultiItemEntity item = ((CareerPlanRecordRecyclerAdapter) adapter).getItem(position);
             if (item != null) {
-                //查看报告
-                if (view.getId() == R.id.btn_report) {
+                switch (view.getId()) {
+                    //查看报告
+                    case R.id.btn_report: {
+                        TopicInfo topicInfo = new TopicInfo();
 
-//                    ExamReportDto dto = new ExamReportDto();
-//                    dto.setChildExamId(childExamId);//孩子测评ID
-//                    dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
-//                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
-//
-//                    //高考选科子项
-//                    if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM) {
-//                        SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
-//                        dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-//
-//                    } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM) {//职业探索子项
-//                        OccupationRecordItem entity = (OccupationRecordItem) item;
-//                    }
-//
-//                    ExamReportActivity.startExamReportActivity(getContext(), dto);
+                        //高考选科子项
+                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM) {
+                            SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
+                            topicInfo.setTopicId(entity.getTopic_id());
+                            topicInfo.setDimensionId(entity.getDimension_id());
+
+                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM) {//职业探索子项
+                            OccupationRecordItem entity = (OccupationRecordItem) item;
+                            topicInfo.setTopicId(entity.getTopic_id());
+                            topicInfo.setDimensionId(entity.getDimension_id());
+                        }
+
+                        getReferenceExam(topicInfo, POST_OPT_TYPE_REPORT);
+
+                        break;
+                    }
+                    //继续答题
+                    case R.id.btn_to_exam: {
+                        TopicInfo topicInfo = new TopicInfo();
+
+                        //高考选科子项
+                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM) {
+                            SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
+                            topicInfo.setTopicId(entity.getTopic_id());
+                            topicInfo.setDimensionId(entity.getDimension_id());
+
+                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM) {//职业探索子项
+                            OccupationRecordItem entity = (OccupationRecordItem) item;
+                            topicInfo.setTopicId(entity.getTopic_id());
+                            topicInfo.setDimensionId(entity.getDimension_id());
+                        }
+                        getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
+                        break;
+                    }
+                    //选科助手
+                    case R.id.btn_select_course: {
+                        SelectCourseAssistantActivity.startSelectCourseAssistantActivity(getContext(), childExamId);
+                        break;
+                    }
+                    //查看可报考专业
+                    case R.id.btn_can_select_major: {
+                        List<String> courseCodes = null;
+                        List<String> courseNames = null;
+                        //系统推荐
+                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SYS_RECOMMEND_ITEM) {
+                            SelectCourseRecord entity = (SelectCourseRecord) item;
+                            courseCodes = entity.getRecommend_subject_codes();
+                            courseNames = entity.getRecommend_subjects();
+
+                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_HEADER) {//手选
+                            SelectCourseRecord entity = (SelectCourseRecord) item;
+                            courseCodes = entity.getCustom_subject_codes();
+                            courseNames = entity.getCustom_subjects();
+                        }
+
+                        StringBuilder courseGroup = new StringBuilder();
+                        if (ArrayListUtil.isNotEmpty(courseCodes)) {
+                            for (String code : courseCodes) {
+                                courseGroup.append(code);
+                            }
+                        }
+
+                        StringBuilder courseName = new StringBuilder();
+                        if (ArrayListUtil.isNotEmpty(courseNames)) {
+                            for (String name : courseNames) {
+                                courseName.append(name).append("、");
+                            }
+                        }
+
+                        String nameStr = courseName.length() > 0 ? courseName.substring(0, courseName.length() - 1) : courseName.toString();
+                        CourseRelateMajorActivity.startCourseRelateMajorActivity(getContext(), 1, courseGroup.toString(), nameStr);
+
+                        break;
+                    }
+                    //查看高要求专业
+                    case R.id.btn_high_require_major: {
+                        List<String> courseCodes = null;
+                        List<String> courseNames = null;
+                        //系统推荐
+                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SYS_RECOMMEND_ITEM) {
+                            SelectCourseRecord entity = (SelectCourseRecord) item;
+                            courseCodes = entity.getRecommend_subject_codes();
+                            courseNames = entity.getRecommend_subjects();
+
+                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_HEADER) {//手选
+                            SelectCourseRecord entity = (SelectCourseRecord) item;
+                            courseCodes = entity.getCustom_subject_codes();
+                            courseNames = entity.getCustom_subjects();
+                        }
+
+                        StringBuilder courseGroup = new StringBuilder();
+                        if (ArrayListUtil.isNotEmpty(courseCodes)) {
+                            for (String code : courseCodes) {
+                                courseGroup.append(code);
+                            }
+                        }
+
+                        StringBuilder courseName = new StringBuilder();
+                        if (ArrayListUtil.isNotEmpty(courseNames)) {
+                            for (String name : courseNames) {
+                                courseName.append(name).append("、");
+                            }
+                        }
+
+                        String nameStr = courseName.length() > 0 ? courseName.substring(0, courseName.length() - 1) : courseName.toString();
+                        CourseRelateMajorActivity.startCourseRelateMajorActivity(getContext(), 2, courseGroup.toString(), nameStr);
+
+                        break;
+                    }
                 }
+
             } else {
                 if (getActivity() != null) {
                     ToastUtil.showShort(getActivity().getApplication(), R.string.operate_fail);
@@ -165,12 +276,8 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
         //适配器
         recyclerAdapter = new CareerPlanRecordRecyclerAdapter(getContext(), null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         recycleView.setAdapter(recyclerAdapter);
-        //设置子项点击监听
-        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
-        //设置子项的孩子视图点击监听
-        recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
 //        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         //网格布局管理器
         final int count = getResources().getInteger(R.integer.career_plan_record_simple_dimension_count);
@@ -183,6 +290,10 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         });
         //必须在setAdapter之后
         recycleView.setLayoutManager(gridLayoutManager);
+        //设置子项点击监听
+        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
+        //设置子项的孩子视图点击监听
+        recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
 
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
@@ -257,8 +368,6 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                         //空布局：隐藏
                         emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
-                        //测试数据
-//                        Map dataMap = JsonUtil.fromJson(testDataStr, Map.class);
                         Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                         CareerPlanRecordRootEntity data = InjectionWrapperUtil.injectMap(dataMap, CareerPlanRecordRootEntity.class);
 
@@ -296,7 +405,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
      * @param record CareerPlanRecordRootEntity
      * @return 适配recycler的分组数据模型
      */
-    protected List<MultiItemEntity> careerPlanRecordToRecyclerMulti(CareerPlanRecordRootEntity record) throws CloneNotSupportedException {
+    protected List<MultiItemEntity> careerPlanRecordToRecyclerMulti(CareerPlanRecordRootEntity record) {
         List<MultiItemEntity> resList = null;
 
         if (record != null && record.getSubject_archive() != null && record.getOccupation_archive() != null) {
@@ -322,6 +431,8 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                 //系统推荐选科Item
                 SelectCourseRecord sysRmdItem = new SelectCourseRecord();
                 sysRmdItem.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_SYS_RECOMMEND_ITEM);
+                sysRmdItem.setRecommend_subjects(subject_archive.getRecommend_subjects());
+                sysRmdItem.setRecommend_subject_codes(subject_archive.getRecommend_subject_codes());
                 sysRmdItem.setRecommend_major_per(subject_archive.getRecommend_major_per());
                 sysRmdItem.setRecommend_high_major_per(subject_archive.getRecommend_high_major_per());
                 //添加到系统推荐选科header中
@@ -334,6 +445,12 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                 selectCourseRecord.setCustom_subject_codes(subject_archive.getCustom_subject_codes());
                 selectCourseRecord.setCustom_major_per(subject_archive.getCustom_major_per());
                 selectCourseRecord.setCustom_subject_codes(subject_archive.getCustom_subject_codes());
+                //标记是否完成
+                if (ArrayListUtil.isNotEmpty(subject_archive.getCustom_subjects())) {
+                    selectCourseRecord.setFinish(true);
+                } else {
+                    selectCourseRecord.setFinish(false);
+                }
                 resList.add(selectCourseRecord);
 
                 resList.add(sysRmdHeader);
@@ -352,7 +469,8 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
             //高考选科子项
             List<SelectCourseRecordItem> items = subject_archive.getItems();
-            for (SelectCourseRecordItem item : items) {
+            for (int i=0; i<items.size(); i++) {
+                SelectCourseRecordItem item = items.get(i);
                 item.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM);
                 //添加到系统推荐选科header中
                 if (sysRmdHeader.isFinish()) {
@@ -360,6 +478,11 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
                 } else {//否则直接添加
                     resList.add(item);
+                }
+
+                //标记兄弟中的最后一个
+                if (i == items.size() - 1) {
+                    item.setLastInBrother(true);
                 }
 
                 //有简单量表
@@ -402,15 +525,121 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
             //职业探索子项
             List<OccupationRecordItem> items1 = occupation_archive.getItems();
-            for (OccupationRecordItem item : items1) {
+            for (int i=0; i<items1.size(); i++) {
+                OccupationRecordItem item = items1.get(i);
                 item.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM);
                 //添加到子项Header中
                 itemHeader1.addSubItem(item);
+
+                //标记兄弟中的最后一个
+                if (i == items.size() - 1) {
+                    item.setLastInBrother(true);
+                }
             }
         }
 
         return resList;
     }
+
+
+    /**
+     * 问题提交成功的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onQuestionSubmitNotice(QuestionSubmitSuccessEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            DimensionInfoEntity dimension = event.getDimension();
+            onQuestionSubmit(dimension);
+        }
+
+    }
+
+    /**
+     * 问题提交成功的通知事件的处理
+     * @param dimension 量表对象
+     */
+    protected void onQuestionSubmit(DimensionInfoEntity dimension) {
+        loadReport(childExamId);
+    }
+
+
+    //后续操作类型：查看报告
+    private final static int POST_OPT_TYPE_REPORT = 1;
+    //后续操作类型：继续作答
+    private final static int POST_OPT_TYPE_GO_ON = 2;
+
+    /**
+     * 请求测评
+     * @param topicInfo 简单话题
+     * @param postOptType 后续的操作乐星
+     */
+    private void getReferenceExam(final TopicInfo topicInfo, final int postOptType) {
+        //通信等待加载提示
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getChildDimension(childId, topicInfo.getTopicId(), topicInfo.getDimensionId(), new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //关闭通信等待加载提示
+                LoadingView.getInstance().dismiss();
+
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), R.string.operate_fail);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待加载提示
+                    LoadingView.getInstance().dismiss();
+
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
+
+                    if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
+                        throw new QSCustomException("量表数据为空");
+                    }
+
+                    //查看报告
+                    if (postOptType == POST_OPT_TYPE_REPORT) {
+                        ExamReportDto dto = new ExamReportDto();
+                        dto.setChildExamId(childExamId);//孩子测评ID
+                        dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
+                        dto.setRelationId(dimension.getTopicDimensionId());//话题量表ID
+
+                        ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+                    } else if (postOptType == POST_OPT_TYPE_GO_ON) {//继续作答
+                        //进入量表详情页面
+                        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
+                        //话题ID
+                        topicInfoEntity.setTopicId(topicInfo.getTopicId());
+                        //测评ID
+                        topicInfoEntity.setExamId(dimension.getExamId());
+                        DimensionDetailActivity.startDimensionDetailActivity(
+                                getContext(), dimension,
+                                topicInfoEntity,
+                                Dictionary.EXAM_STATUS_DOING,
+                                Dictionary.FROM_ACTIVITY_TO_TRACK_RECORD);
+                    }
+
+                } catch (QSCustomException e) {
+                    onFailure(e);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getContext());
+    }
+
 
 }
 

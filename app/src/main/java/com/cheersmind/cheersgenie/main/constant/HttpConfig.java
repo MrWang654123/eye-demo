@@ -276,11 +276,20 @@ public class HttpConfig {
 //    public static String URL_REPORT_V2 = API_HOST + "/v2/api/exams/reports?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
     public static String URL_REPORT_V2 = API_HOST + "/v2/api/reports/students/{child_exam_id}?relation_id={relation_id}&relation_type={relation_type}&sample_id={sample_id}";
 
+    //获取报告新
+    public static String URL_REPORT_V2_NEW = API_HOST + "/v2/api/exams/personal/reports";
+
     //获取生涯规划档案
     public static String URL_CAREER_PLAN_RECORD = API_HOST + "/v2/api/archives/growth/{child_exam_id}";
 
-    //获取报告新
-    public static String URL_REPORT_V2_NEW = API_HOST + "/v2/api/exams/personal/reports";
+    //获取系统推荐选科
+    public static String URL_SYS_RMD_COURSE = API_HOST + "/v2/api/assistant/overview/{child_exam_id}";
+
+    //获取选科
+    public static String URL_GET_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/subjects";
+
+    //确认选科
+    public static String URL_CONFIRM_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/confirm_subjects";
 
     //获取报告推荐文章
     public static String URL_REPORT_RECOMMEND_ARTICLE = API_HOST + "/v2/api/exams/reports/actions/get_recommend_articles?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
@@ -293,6 +302,12 @@ public class HttpConfig {
 
     //获取任务列表（专题海报）
     public static String URL_TASK_LIST = API_HOST + "/v2/api/children/{child_id}/seminars";
+
+    //获取推荐专业列表
+    public static final String URL_RECOMMEND_MAJOR = API_HOST + "/v2/api/children/{child_id}/recommend_majors";
+
+    //获取课程相关专业列表
+    public static final String URL_COURSE_RELATE_MAJOR = API_HOST + "/v2/api/children/{child_id}/subject_group_majors";
 
 
     /*----------------文章相关------------------*/

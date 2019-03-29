@@ -184,6 +184,16 @@
 
                     </LinearLayout>
 
+                    <Button
+                        android:id="@+id/btn_select_course"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="选科助手"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        app:layout_scrollFlags="scroll"/>
+
                 </android.support.design.widget.AppBarLayout>
 
                 <android.support.v7.widget.RecyclerView

@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:background="@drawable/shape_corner_eeeeee"
+        android:paddingTop="@dimen/padding_common"
+        android:paddingBottom="@dimen/padding_common"
         android:orientation="horizontal">
-        <!--android:background="@drawable/shape_corner_e5e5e5_10dp"-->
+        <!--android:background="@drawable/shape_corner_eeeeee"-->
 
         <TextView
             android:layout_width="5dp"
@@ -33,20 +32,22 @@
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:layout_weight="1">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/color_777777"
-                android:textSize="16sp"
+                android:textColor="@color/color_666666"
+                android:textSize="15sp"
                 android:text="上次未完成的测评"/>
+
             <TextView
                 android:id="@+id/tv_last_dimension_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_555555"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:paddingVertical="3dp"
+                android:layout_marginTop="3dp"
                 android:text="我是否热爱我的班级？"/>
 
         </LinearLayout>
@@ -59,9 +60,20 @@
             android:background="@drawable/btn_common_small"
             android:gravity="center"
             android:textColor="@color/color_333333"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/padding_common"
+            android:layout_marginEnd="@dimen/padding_common"
             android:text="继续完成"/>
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/padding_common"
+        android:layout_marginStart="@dimen/padding_common"
+        android:layout_marginRight="@dimen/padding_common"
+        android:layout_marginEnd="@dimen/padding_common"
+        android:background="@color/color_f5f5f5"/>
+
 </LinearLayout>
 

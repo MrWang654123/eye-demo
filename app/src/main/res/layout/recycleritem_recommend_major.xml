@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
+        <!--xmlns:fresco="http://schemas.android.com/tools"-->
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_select"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="12dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/tab_mine_normal"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundedCornerRadius="3dp" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constrainedWidth="true"
+            android:textColor="@color/color_444444"
+            android:textSize="16sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            app:layout_constraintLeft_toRightOf="@+id/iv_select"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/iv_right_arrow"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginRight="15dp"
+            android:text="工程管理"/>
+
+        <ImageView
+            android:id="@+id/iv_right_arrow"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitXY"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="15dp"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            tools:ignore="ContentDescription" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:visibility="visible"
+        android:background="@color/color_eeeeee"/>
+
+</LinearLayout>

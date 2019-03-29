@@ -8,8 +8,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -25,11 +23,11 @@ public class ChooseCourseRecyclerAdapter extends BaseQuickAdapter<ChooseCourseEn
     @Override
     protected void convert(BaseViewHolder helper, ChooseCourseEntity item) {
         //标题
-        helper.setText(R.id.tv_title, item.getArticleTitle().length() > 5 ? item.getArticleTitle().substring(0, 5) : item.getArticleTitle());
+        helper.setText(R.id.tv_title, item.getSubject_name());
 
         //主图
-        SimpleDraweeView imageView = helper.getView(R.id.iv_main);
-        imageView.setImageURI(item.getArticleImg());
+//        SimpleDraweeView imageView = helper.getView(R.id.iv_main);
+//        imageView.setImageURI(item.getArticleImg());
 
         //选中图标
         if (item.isSelected()) {
