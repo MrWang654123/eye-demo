@@ -2147,4 +2147,17 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取发展档案
+     * @param childId 孩子ID
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void getDevelopmentRecord(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_DEVELOPMENT_RECORD
+                .replace("{child_id}", childId);
+
+        doGet(url, callback, httpTag, context);
+    }
+
 }

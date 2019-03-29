@@ -4,46 +4,45 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.ReportMultiRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
+import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.adapter.TrackRecordRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.TrackRecordEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.TrackRecordRootEntity;
+import com.cheersmind.cheersgenie.features_v2.adapter.CareerPlanRecordRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.adapter.DevelopmentRecordRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.adapter.DiscoverRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecord;
+import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordItem;
+import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
-import com.cheersmind.cheersgenie.main.entity.ReportResultEntity;
-import com.cheersmind.cheersgenie.main.entity.ReportRootEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfo;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,9 +52,9 @@ import butterknife.Unbinder;
 
 
 /**
- * 成长档案明细
+ * 发展档案
  */
-public class TrackRecordDetailFragment extends LazyLoadFragment {
+public class DevelopmentRecordFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
 
@@ -70,26 +69,29 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
     FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
-    TrackRecordRecyclerAdapter recyclerAdapter;
+    DevelopmentRecordRecyclerAdapter recyclerAdapter;
 
-    //上拉加载更多的监听
-    BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
+    //recycler item点击监听
+    BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
-        public void onLoadMoreRequested() {
-            //加载数据
-            loadData();
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            MultiItemEntity item = ((DevelopmentRecordRecyclerAdapter) adapter).getItem(position);
+            //子项
+            if (item != null && item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM) {
+                DevelopmentRecordItem entity = (DevelopmentRecordItem) item;
+                //孩子测评ID、话题量表ID不为空
+                if (!TextUtils.isEmpty(entity.getChild_exam_id()) && !TextUtils.isEmpty(entity.getTopic_dimension_id())) {
+                    ExamReportDto dto = new ExamReportDto();
+                    dto.setChildExamId(entity.getChild_exam_id());//孩子测评ID
+                    dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
+                    dto.setRelationId(entity.getTopic_dimension_id());//话题量表ID
+                    //查看报告
+                    ExamReportActivity.startExamReportActivity(getContext(), dto);
+                }
+            }
         }
     };
-
-    //页长度
-    private static final int PAGE_SIZE = 10;
-    //页码
-    private int pageNum = 1;
-    //后台总记录数
-    private int totalCount = 0;
-
-    ArticleDto dto;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,24 +110,20 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new TrackRecordRecyclerAdapter(null);
+        recyclerAdapter = new DevelopmentRecordRecyclerAdapter(null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
-        //设置上拉加载更多的监听
-        recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
-        //禁用未满页自动触发上拉加载
-        recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置加载更多视图
-        recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
-        //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
-        recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
         recyclerAdapter.addHeaderView(new View(getContext()));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
+        //设置子项点击监听
+        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-        recycleView.addItemDecoration(divider);
+        if (getContext() != null) {
+            DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_f5f5f5_10dp));
+            recycleView.addItemDecoration(divider);
+        }
 
         //滑动监听
         try {
@@ -149,8 +147,6 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
-
-        dto = new ArticleDto(pageNum, PAGE_SIZE);
     }
 
     @Override
@@ -174,7 +170,7 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
 
     /**
      * 停止Fling的消息
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStopFlingNotice(StopFlingEvent event) {
@@ -184,7 +180,6 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
 
     }
 
-
     /**
      * 加载数据
      */
@@ -193,8 +188,8 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
 //        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         try {
-            dto.setPage(pageNum);
-            DataRequestService.getInstance().getArticles(dto, new BaseService.ServiceCallback() {
+            String childId = UCManager.getInstance().getDefaultChild().getChildId();
+            DataRequestService.getInstance().getDevelopmentRecord(childId, new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
                     //空布局：网络连接有误，或者请求失败
@@ -208,10 +203,9 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
 
                     try {
                         Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                        TrackRecordRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, TrackRecordRootEntity.class);
+                        DevelopmentRecordRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, DevelopmentRecordRootEntity.class);
 
-                        totalCount = rootEntity.getTotal();
-                        List<TrackRecordEntity> dataList = rootEntity.getItems();
+                        List<DevelopmentRecord> dataList = rootEntity.getItems();
 
                         //空数据处理
                         if (ArrayListUtil.isEmpty(dataList)) {
@@ -219,32 +213,11 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
                             return;
                         }
 
-                        //测试处理
-                        for (TrackRecordEntity entity : dataList) {
-                            if (TextUtils.isEmpty(entity.getSummary()) || entity.getSummary().length() < 20) {
-                                entity.setItemType(TrackRecordEntity.TYPE_NO_DATA_RECOMMEND);
-                            }
-                        }
+                        List<MultiItemEntity> multiItemEntities = developmentRecordToMultiItem(dataList);
 
-                        //当前列表无数据
-                        if (recyclerAdapter.getData().size() == 0) {
-                            recyclerAdapter.setNewData(dataList);
-
-                        } else {
-                            recyclerAdapter.addData(dataList);
-                        }
-
-                        //判断是否全部加载结束
-                        if (recyclerAdapter.getData().size() >= totalCount) {
-                            //全部加载结束
-                            recyclerAdapter.loadMoreEnd();
-                        } else {
-                            //本次加载完成
-                            recyclerAdapter.loadMoreComplete();
-                        }
-
-                        //页码+1
-                        pageNum++;
+                        recyclerAdapter.setNewData(multiItemEntities);
+                        //初始展开
+                        recyclerAdapter.expandAll();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -261,6 +234,37 @@ public class TrackRecordDetailFragment extends LazyLoadFragment {
         }
     }
 
+
+    /**
+     * DevelopmentRecord转成List<MultiItemEntity>
+     * @param dataList DevelopmentRecord
+     * @return List<MultiItemEntity>
+     */
+    private List<MultiItemEntity> developmentRecordToMultiItem(List<DevelopmentRecord> dataList) {
+        List<MultiItemEntity> resList = null;
+
+        if (ArrayListUtil.isNotEmpty(dataList)) {
+            resList = new ArrayList<>();
+            for (DevelopmentRecord record : dataList) {
+                DevelopmentRecord header = new DevelopmentRecord();
+                header.setCapability_name(record.getCapability_name());
+                header.setFinish_radio(record.getFinish_radio());
+                header.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_SUMMARY);
+
+                List<DevelopmentRecordItem> items = record.getItems();
+                if (ArrayListUtil.isNotEmpty(items)) {
+                    for (DevelopmentRecordItem item : items) {
+                        item.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM);
+                        header.addSubItem(item);
+                    }
+                }
+
+                resList.add(header);
+            }
+        }
+
+        return resList;
+    }
 
 }
 

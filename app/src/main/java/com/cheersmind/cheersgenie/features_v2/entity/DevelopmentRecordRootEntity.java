@@ -7,13 +7,13 @@ import java.util.List;
 /**
  * 发展档案列表响应的根对象
  */
-public class TrackRecordRootEntity {
+public class DevelopmentRecordRootEntity {
 
     @InjectMap(name = "total")
     private int total;
 
     @InjectMap(name = "items")
-    private List<TrackRecordEntity> items;
+    private List<DevelopmentRecord> items;
 
     public int getTotal() {
         return total;
@@ -23,11 +23,11 @@ public class TrackRecordRootEntity {
         this.total = total;
     }
 
-    public List<TrackRecordEntity> getItems() {
+    public List<DevelopmentRecord> getItems() {
         return items;
     }
 
-    public void setItems(List<TrackRecordEntity> items) {
+    public void setItems(List<DevelopmentRecord> items) {
         this.items = items;
     }
 }

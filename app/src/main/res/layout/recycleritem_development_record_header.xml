@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_main"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        fresco:roundedCornerRadius="0dp"
+        fresco:roundTopLeft="true"
+        fresco:roundTopRight="true"
+        fresco:roundBottomLeft="true"
+        fresco:roundBottomRight="true"
+        fresco:placeholderImage="@drawable/default_image_round"
+        fresco:placeholderImageScaleType="centerCrop"
+        />
+
+    <!--android:scaleType="centerCrop"-->
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@color/color_444444"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_ratio"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:text="心理健康发展"/>
+
+    <TextView
+        android:id="@+id/tv_ratio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/color_444444"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="已完成86%"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -366,7 +366,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
                     //描述
                     if (!TextUtils.isEmpty(subItem.getDescription())) {
-                        helper.setText(R.id.tv_desc, subItem.getDescription().trim());
+                        helper.setText(R.id.tv_desc, Html.fromHtml(subItem.getDescription().trim()));
 
                     } else {
                         helper.setText(R.id.tv_desc, "暂无描述信息");
