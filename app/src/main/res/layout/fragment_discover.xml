@@ -44,7 +44,7 @@
                 android:gravity="center"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="10dp"
-                android:text="探索"/>
+                android:text="@string/title_discover"/>
 
             <TextView
                 android:layout_width="90dp"

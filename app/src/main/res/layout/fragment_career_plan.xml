@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_f5f5f5"
@@ -49,7 +50,7 @@
                                 android:id="@+id/sdv_college"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
-                                app:layout_constraintWidth_percent="0.6"
+                                app:layout_constraintWidth_percent="0.65"
                                 app:layout_constraintDimensionRatio="h,1:1"
                                 app:layout_constraintHorizontal_bias="0.8"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -58,10 +59,12 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 fresco:roundAsCircle="true"
                                 fresco:actualImageScaleType="centerCrop"
-                                fresco:placeholderImage="@drawable/career_plan_item"
-                                fresco:placeholderImageScaleType="centerCrop"
+                                fresco:placeholderImage="@drawable/career_tab_college"
+                                fresco:placeholderImageScaleType="centerInside"
                                 fresco:pressedStateOverlayImage="@color/light_transparent"
-                                fresco:roundWithOverlayColor="@color/color_f5f5f5"/>
+                                fresco:roundWithOverlayColor="@color/color_f5f5f5"
+                                fresco:backgroundImage="@color/white"
+                                />
 
                             <TextView
                                 android:id="@+id/tv_college"
@@ -85,7 +88,7 @@
                                 android:id="@+id/sdv_major"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
-                                app:layout_constraintWidth_percent="0.6"
+                                app:layout_constraintWidth_percent="0.65"
                                 app:layout_constraintDimensionRatio="h,1:1"
                                 app:layout_constraintHorizontal_bias="0.6"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -94,10 +97,11 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 fresco:roundAsCircle="true"
                                 fresco:actualImageScaleType="centerCrop"
-                                fresco:placeholderImage="@drawable/career_plan_item"
-                                fresco:placeholderImageScaleType="centerCrop"
+                                fresco:placeholderImage="@drawable/career_tab_major"
+                                fresco:placeholderImageScaleType="centerInside"
                                 fresco:pressedStateOverlayImage="@color/light_transparent"
-                                fresco:roundWithOverlayColor="@color/color_f5f5f5"/>
+                                fresco:roundWithOverlayColor="@color/color_f5f5f5"
+                                fresco:backgroundImage="@color/white"/>
 
                             <TextView
                                 android:id="@+id/tv_major"
@@ -121,7 +125,7 @@
                                 android:id="@+id/sdv_occupation"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
-                                app:layout_constraintWidth_percent="0.6"
+                                app:layout_constraintWidth_percent="0.65"
                                 app:layout_constraintDimensionRatio="h,1:1"
                                 app:layout_constraintHorizontal_bias="0.4"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -130,10 +134,11 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 fresco:roundAsCircle="true"
                                 fresco:actualImageScaleType="centerCrop"
-                                fresco:placeholderImage="@drawable/career_plan_item"
-                                fresco:placeholderImageScaleType="centerCrop"
+                                fresco:placeholderImage="@drawable/career_tab_occupation"
+                                fresco:placeholderImageScaleType="centerInside"
                                 fresco:pressedStateOverlayImage="@color/light_transparent"
-                                fresco:roundWithOverlayColor="@color/color_f5f5f5"/>
+                                fresco:roundWithOverlayColor="@color/color_f5f5f5"
+                                fresco:backgroundImage="@color/white"/>
 
                             <TextView
                                 android:id="@+id/tv_occupation"
@@ -157,7 +162,7 @@
                                 android:id="@+id/sdv_career_report"
                                 android:layout_width="0dp"
                                 android:layout_height="0dp"
-                                app:layout_constraintWidth_percent="0.6"
+                                app:layout_constraintWidth_percent="0.65"
                                 app:layout_constraintDimensionRatio="h,1:1"
                                 app:layout_constraintHorizontal_bias="0.2"
                                 app:layout_constraintTop_toTopOf="parent"
@@ -166,10 +171,11 @@
                                 app:layout_constraintRight_toRightOf="parent"
                                 fresco:roundAsCircle="true"
                                 fresco:actualImageScaleType="centerCrop"
-                                fresco:placeholderImage="@drawable/career_plan_item"
-                                fresco:placeholderImageScaleType="centerCrop"
+                                fresco:placeholderImage="@drawable/career_tab_track_record"
+                                fresco:placeholderImageScaleType="centerInside"
                                 fresco:pressedStateOverlayImage="@color/light_transparent"
-                                fresco:roundWithOverlayColor="@color/color_f5f5f5"/>
+                                fresco:roundWithOverlayColor="@color/color_f5f5f5"
+                                fresco:backgroundImage="@color/white"/>
 
                             <TextView
                                 android:id="@+id/tv_career_report"
@@ -184,16 +190,48 @@
 
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btn_select_course"
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_report_tip"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="选科助手"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        app:layout_scrollFlags="scroll"/>
+                        android:paddingLeft="@dimen/margin_common"
+                        android:paddingStart="@dimen/margin_common"
+                        android:paddingRight="@dimen/margin_common"
+                        android:paddingEnd="@dimen/margin_common"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:layout_marginLeft="@dimen/padding_common"
+                        android:layout_marginStart="@dimen/padding_common"
+                        android:layout_marginRight="@dimen/padding_common"
+                        android:layout_marginEnd="@dimen/padding_common"
+                        android:background="@color/colorPrimary">
+                        
+                        <ImageView
+                            android:id="@+id/iv_report_tip"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:src="@drawable/warn"
+                            tools:ignore="ContentDescription" />
 
+                        <TextView
+                            android:id="@+id/tv_report_tip"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/color_444444"
+                            app:layout_constraintLeft_toRightOf="@+id/iv_report_tip"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            android:lineSpacingMultiplier="1.1"
+                            android:layout_marginLeft="10dp"
+                            android:text="您需要完成所有的必修课程后，可以查看个人生涯规划报告"/>
+                        
+                    </android.support.constraint.ConstraintLayout>
+                    
                 </android.support.design.widget.AppBarLayout>
 
                 <android.support.v7.widget.RecyclerView

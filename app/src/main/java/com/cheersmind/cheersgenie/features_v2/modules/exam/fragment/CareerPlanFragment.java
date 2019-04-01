@@ -163,13 +163,15 @@ public class CareerPlanFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-//        recyclerAdapter.addHeaderView(new View(getContext()));
+        recyclerAdapter.addHeaderView(new View(getContext()));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-        recycleView.addItemDecoration(divider);
+        if (getContext() != null) {
+            DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_custom));
+            recycleView.addItemDecoration(divider);
+        }
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //滑动监听
@@ -240,7 +242,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
 
     @OnClick({R.id.fabAddTaskItem, R.id.cl_college,
             R.id.cl_major, R.id.cl_occupation,
-            R.id.cl_career_report, R.id.btn_select_course})
+            R.id.cl_career_report, R.id.cl_report_tip})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //添加任务
@@ -274,7 +276,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
                 break;
             }
             //选科助手
-            case R.id.btn_select_course: {
+            case R.id.cl_report_tip: {
                 SelectCourseAssistantActivity.startSelectCourseAssistantActivity(getContext(), childExamId);
                 break;
             }

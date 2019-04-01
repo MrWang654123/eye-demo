@@ -166,7 +166,7 @@
                 android:id="@+id/iv_article"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/crop__ic_done"
+                android:src="@drawable/task_icon_article"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 tools:ignore="ContentDescription"/>
@@ -175,7 +175,7 @@
                 android:id="@+id/iv_video"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/crop__ic_done"
+                android:src="@drawable/task_icon_video"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 tools:ignore="ContentDescription"/>
@@ -184,7 +184,7 @@
                 android:id="@+id/iv_audio"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/crop__ic_done"
+                android:src="@drawable/task_icon_audio"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 tools:ignore="ContentDescription"/>
@@ -193,7 +193,7 @@
                 android:id="@+id/iv_topic"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/crop__ic_done"
+                android:src="@drawable/task_icon_exam"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 tools:ignore="ContentDescription"/>
@@ -202,7 +202,7 @@
                 android:id="@+id/iv_practice"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/crop__ic_done"
+                android:src="@drawable/task_icon_practice"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 tools:ignore="ContentDescription"/>

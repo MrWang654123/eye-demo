@@ -46,7 +46,7 @@ public class CareerPlanWrapFragment extends LazyLoadFragment {
 
         //标题
         if (tvToolbarTitle != null) {
-            tvToolbarTitle.setText(R.string.title_exam);
+            tvToolbarTitle.setText(R.string.title_career_plan);
         }
         //隐藏回退按钮
         if (ivLeft != null) {

@@ -16,6 +16,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.animation.ScaleAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamModuleRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
@@ -107,7 +108,8 @@ public class ExamModuleFragment extends LazyLoadFragment {
         //适配器
         recyclerAdapter = new ExamModuleRecyclerAdapter(getContext(), R.layout.recycleritem_exam_module, null);
 //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
-        recyclerAdapter.openLoadAnimation(new ScaleInAnimation());
+        recyclerAdapter.openLoadAnimation(new ScaleInAnimation(0.8f));
+//        recyclerAdapter.openLoadAnimation(new ScaleAnimation());
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
