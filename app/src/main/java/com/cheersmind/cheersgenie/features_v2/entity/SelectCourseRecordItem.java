@@ -33,9 +33,20 @@ public class SelectCourseRecordItem extends BaseRecordItem {
     @InjectMap(name = "result")
     private List<String> result;
 
+    //前置量表
+    @InjectMap(name = "pre_dimension")
+    private String pre_dimension;
+
     //学习效能比较特殊，需要展示量表列表
     @InjectMap(name = "dimensions")
     private List<SimpleDimensionResult> dimensions;
+
+    //ACT方式的26大职业分类
+    @InjectMap(name = "act_areas")
+    private List<OccupationCategory> act_areas;
+
+    //位置
+    private int index;
 
     public List<String> getResult() {
         return result;
@@ -91,5 +102,29 @@ public class SelectCourseRecordItem extends BaseRecordItem {
 
     public void setAppraisal(String appraisal) {
         this.appraisal = appraisal;
+    }
+
+    public String getPre_dimension() {
+        return pre_dimension;
+    }
+
+    public void setPre_dimension(String pre_dimension) {
+        this.pre_dimension = pre_dimension;
+    }
+
+    public List<OccupationCategory> getAct_areas() {
+        return act_areas;
+    }
+
+    public void setAct_areas(List<OccupationCategory> act_areas) {
+        this.act_areas = act_areas;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

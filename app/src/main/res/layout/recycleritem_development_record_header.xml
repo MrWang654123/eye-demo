@@ -19,7 +19,7 @@
         fresco:roundTopRight="true"
         fresco:roundBottomLeft="true"
         fresco:roundBottomRight="true"
-        fresco:placeholderImage="@drawable/default_image_round"
+        fresco:placeholderImage="@drawable/development_record_header"
         fresco:placeholderImageScaleType="centerCrop"
         />
 

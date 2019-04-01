@@ -58,7 +58,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/tv_required"
             app:layout_constraintBottom_toTopOf="@+id/tv_desc"
-            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintVertical_chainStyle="spread"
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="packed"

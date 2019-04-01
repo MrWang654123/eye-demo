@@ -10,26 +10,26 @@ import java.util.List;
 public class OccupationRecord extends BaseRecordItem {
 
     //推荐职业领域集群
-    @InjectMap(name = "career_areas")
-    private List<String> career_areas;
+    @InjectMap(name = "act_areas")
+    private List<OccupationCategory> act_areas;
 
     //子项结果集
     @InjectMap(name = "items")
-    private List<OccupationRecordItem> items;
+    private List<SelectCourseRecordItem> items;
 
-    public List<String> getCareer_areas() {
-        return career_areas;
+    public List<OccupationCategory> getAct_areas() {
+        return act_areas;
     }
 
-    public void setCareer_areas(List<String> career_areas) {
-        this.career_areas = career_areas;
+    public void setAct_areas(List<OccupationCategory> act_areas) {
+        this.act_areas = act_areas;
     }
 
-    public List<OccupationRecordItem> getItems() {
+    public List<SelectCourseRecordItem> getItems() {
         return items;
     }
 
-    public void setItems(List<OccupationRecordItem> items) {
+    public void setItems(List<SelectCourseRecordItem> items) {
         this.items = items;
     }
 }

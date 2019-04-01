@@ -94,9 +94,13 @@ public class DtoKey {
      */
     public static final String KEY_SUBJECT_TYPE = "KEY_SUBJECT_TYPE";
     /**
-     * 行业
+     * 职业
      */
     public static final String OCCUPATION = "OCCUPATION";
+    /**
+     * 职业门类
+     */
+    public static final String OCCUPATION_CATEGORY = "OCCUPATION_CATEGORY";
 
 
     /*----------  我的实践begin  ----------*/

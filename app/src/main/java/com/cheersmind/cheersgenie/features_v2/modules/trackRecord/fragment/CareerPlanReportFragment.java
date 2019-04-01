@@ -23,8 +23,8 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.CareerPlanRecordRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecord;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.RecordItemHeader;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecordItem;
@@ -32,6 +32,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.SimpleOccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -118,38 +119,20 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                     //查看报告
                     case R.id.btn_report: {
                         TopicInfo topicInfo = new TopicInfo();
-
-                        //高考选科子项
-                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM) {
-                            SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
-                            topicInfo.setTopicId(entity.getTopic_id());
-                            topicInfo.setDimensionId(entity.getDimension_id());
-
-                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM) {//职业探索子项
-                            OccupationRecordItem entity = (OccupationRecordItem) item;
-                            topicInfo.setTopicId(entity.getTopic_id());
-                            topicInfo.setDimensionId(entity.getDimension_id());
-                        }
+                        SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
+                        topicInfo.setTopicId(entity.getTopic_id());
+                        topicInfo.setDimensionId(entity.getDimension_id());
 
                         getReferenceExam(topicInfo, POST_OPT_TYPE_REPORT);
-
                         break;
                     }
                     //继续答题
                     case R.id.btn_to_exam: {
                         TopicInfo topicInfo = new TopicInfo();
+                        SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
+                        topicInfo.setTopicId(entity.getTopic_id());
+                        topicInfo.setDimensionId(entity.getDimension_id());
 
-                        //高考选科子项
-                        if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM) {
-                            SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
-                            topicInfo.setTopicId(entity.getTopic_id());
-                            topicInfo.setDimensionId(entity.getDimension_id());
-
-                        } else if (item.getItemType() == CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM) {//职业探索子项
-                            OccupationRecordItem entity = (OccupationRecordItem) item;
-                            topicInfo.setTopicId(entity.getTopic_id());
-                            topicInfo.setDimensionId(entity.getDimension_id());
-                        }
                         getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
                         break;
                     }
@@ -238,6 +221,14 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         }
     };
 
+    //职业分类点击监听
+    CareerPlanRecordRecyclerAdapter.OnActCategoryClickListener actCategoryClickListener = new CareerPlanRecordRecyclerAdapter.OnActCategoryClickListener() {
+        @Override
+        public void onClick(OccupationCategory category) {
+            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+        }
+    };
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -294,6 +285,8 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //设置子项的孩子视图点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //act职业分类点击监听
+        recyclerAdapter.setActCategoryClickListener(actCategoryClickListener);
 
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
@@ -472,6 +465,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             for (int i=0; i<items.size(); i++) {
                 SelectCourseRecordItem item = items.get(i);
                 item.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_SELECT_COURSE_ITEM);
+                item.setIndex(i);
                 //添加到系统推荐选科header中
                 if (sysRmdHeader.isFinish()) {
                     sysRmdHeader.addSubItem(item);
@@ -509,9 +503,9 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             //职业探索header
             OccupationRecord occupationHeader = new OccupationRecord();
             occupationHeader.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_HEADER);
-            occupationHeader.setCareer_areas(occupation_archive.getCareer_areas());
+            occupationHeader.setAct_areas(occupation_archive.getAct_areas());
             //标记是否完成
-            if (ArrayListUtil.isNotEmpty(occupation_archive.getCareer_areas())) {
+            if (ArrayListUtil.isNotEmpty(occupation_archive.getAct_areas())) {
                 occupationHeader.setFinish(true);
             } else {
                 occupationHeader.setFinish(false);
@@ -524,10 +518,11 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             resList.add(itemHeader1);
 
             //职业探索子项
-            List<OccupationRecordItem> items1 = occupation_archive.getItems();
+            List<SelectCourseRecordItem> items1 = occupation_archive.getItems();
             for (int i=0; i<items1.size(); i++) {
-                OccupationRecordItem item = items1.get(i);
+                SelectCourseRecordItem item = items1.get(i);
                 item.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_OCCUPATION_EXPLORE_ITEM);
+                item.setIndex(i);
                 //添加到子项Header中
                 itemHeader1.addSubItem(item);
 
@@ -573,7 +568,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     /**
      * 请求测评
      * @param topicInfo 简单话题
-     * @param postOptType 后续的操作乐星
+     * @param postOptType 后续的操作类型
      */
     private void getReferenceExam(final TopicInfo topicInfo, final int postOptType) {
         //通信等待加载提示

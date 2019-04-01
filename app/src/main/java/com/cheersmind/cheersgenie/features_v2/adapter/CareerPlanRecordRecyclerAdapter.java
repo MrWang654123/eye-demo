@@ -13,8 +13,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecord;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.RecordItemHeader;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecordItem;
@@ -92,10 +92,10 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
 
                     //可报考专业百分比
                     helper.setText(R.id.tv_can_select_major_ratio,
-                            "-基于所选学科您可报考的专业占所有大学专业的" + entity.getCustom_major_per() * 100 + "%");
+                            Html.fromHtml("-您可报考的专业占所有大学专业的<font color='" + context.getResources().getColor(R.color.colorAccent) +"'>" + entity.getCustom_major_per() * 100 + "%</font>"));
                     //要求较高专业百分比
                     helper.setText(R.id.tv_high_require_major_ratio,
-                            "-对于所选学科要求较高的专业占所有大学专业的" + entity.getCustom_high_major_per() * 100 + "%");
+                            Html.fromHtml("-要求较高的专业占所有大学专业的<font color='" + context.getResources().getColor(R.color.colorAccent) +"'>" + entity.getCustom_high_major_per() * 100 + "%</font>"));
 
                 } else {
                     helper.getView(R.id.ll_no_result).setVisibility(View.VISIBLE);
@@ -112,8 +112,9 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 helper.getView(R.id.ll_result_common).setVisibility(View.GONE);
                 helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
                 helper.getView(R.id.btn_report).setVisibility(View.GONE);
+                helper.getView(R.id.ll_lock).setVisibility(View.GONE);
                 //标题
-                helper.setText(R.id.tv_title, entity.getDimension_name());
+                helper.setText(R.id.tv_title, (entity.getIndex() + 1) + "、" + entity.getDimension_name());
                 //通用结果
                 if (ArrayListUtil.isEmpty(entity.getDimensions())) {
                     //完成
@@ -158,14 +159,23 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
 
                         //评价
                         if (!TextUtils.isEmpty(entity.getAppraisal())) {
-                            helper.setText(R.id.tv_appraise, Html.fromHtml(entity.getAppraisal()));
+                            helper.setText(R.id.tv_appraise, Html.fromHtml("<b>评价：</b>" + entity.getAppraisal()));
                         } else {
                             helper.setText(R.id.tv_appraise, "暂无评价");
                         }
 
                     } else {//未完成
                         helper.getView(R.id.btn_report).setVisibility(View.GONE);
-                        helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
+                        //被锁
+                        if (!TextUtils.isEmpty(entity.getPre_dimension())) {
+                            //被锁提示
+                            helper.getView(R.id.ll_lock).setVisibility(View.VISIBLE);
+                            helper.setText(R.id.tv_lock_tip, "请先完成" + entity.getPre_dimension());
+
+                        } else {
+                            //未完成提示
+                            helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
@@ -205,10 +215,10 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                 SelectCourseRecord entity = (SelectCourseRecord) item;
                 //可报考专业百分比
                 helper.setText(R.id.tv_can_select_major_ratio,
-                        "-基于推荐结果您可报考的专业占所有大学专业的" + entity.getRecommend_major_per() * 100 + "%");
+                        Html.fromHtml("-您可报考的专业占所有大学专业的<font color='" + context.getResources().getColor(R.color.colorAccent) +"'>" + entity.getRecommend_major_per() * 100 + "%</font>"));
                 //要求较高专业百分比
                 helper.setText(R.id.tv_high_require_major_ratio,
-                        "-对于推荐结果要求较高的专业占所有大学专业的" + entity.getRecommend_high_major_per() * 100 + "%");
+                        Html.fromHtml("-要求较高的专业占所有大学专业的<font color='" + context.getResources().getColor(R.color.colorAccent) +"'>" + entity.getRecommend_high_major_per() * 100 + "%</font>"));
 
                 helper.addOnClickListener(R.id.btn_can_select_major);
                 helper.addOnClickListener(R.id.btn_high_require_major);
@@ -233,10 +243,18 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                     helper.getView(R.id.warpLinearLayout).setVisibility(View.VISIBLE);
                     WarpLinearLayout layout = helper.getView(R.id.warpLinearLayout);
                     if (layout.getChildCount() == 0) {
-                        for (String str : entity.getCareer_areas()) {
-                            TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
-                            tv.setText(str);
-                            layout.addView(tv);
+                        for (final OccupationCategory category : entity.getAct_areas()) {
+                            TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
+                            textView.setText(category.getArea_name());
+                            textView.setOnClickListener(new OnMultiClickListener() {
+                                @Override
+                                public void onMultiClick(View view) {
+                                    if (actCategoryClickListener != null) {
+                                        actCategoryClickListener.onClick(category);
+                                    }
+                                }
+                            });
+                            layout.addView(textView);
                         }
                     }
                 } else {
@@ -246,28 +264,37 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
             }
             //职业探索item
             case LAYOUT_OCCUPATION_EXPLORE_ITEM: {
-                OccupationRecordItem entity = (OccupationRecordItem) item;
+                SelectCourseRecordItem entity = (SelectCourseRecordItem) item;
                 helper.getView(R.id.ll_result_common).setVisibility(View.GONE);
                 helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
 
-                helper.setText(R.id.tv_title, entity.getDimension_name());
+                helper.setText(R.id.tv_title, (entity.getIndex() + 1) + "、" + entity.getDimension_name());
 
                 //是否完成
                 if (entity.isFinish()) {
                     helper.getView(R.id.btn_report).setVisibility(View.VISIBLE);
                     helper.getView(R.id.ll_result_common).setVisibility(View.VISIBLE);
                     //推荐
-                    List<String> result = entity.getResult();
-                    if (ArrayListUtil.isNotEmpty(result)) {
+                    List<OccupationCategory> categories = entity.getAct_areas();
+                    if (ArrayListUtil.isNotEmpty(categories)) {
                         helper.getView(R.id.warpLinearLayout).setVisibility(View.VISIBLE);
                         WarpLinearLayout layout = helper.getView(R.id.warpLinearLayout);
                         //结果数量小于等于视图数量
-                        if (result.size() <= layout.getChildCount()) {
+                        if (categories.size() <= layout.getChildCount()) {
                             for (int i=0; i<layout.getChildCount(); i++) {
                                 TextView textView = (TextView) layout.getChildAt(i);
-                                if (i < result.size()) {
+                                if (i < categories.size()) {
                                     textView.setVisibility(View.VISIBLE);
-                                    textView.setText(result.get(i));
+                                    final OccupationCategory category = categories.get(i);
+                                    textView.setText(category.getArea_name());
+                                    textView.setOnClickListener(new OnMultiClickListener() {
+                                        @Override
+                                        public void onMultiClick(View view) {
+                                            if (actCategoryClickListener != null) {
+                                                actCategoryClickListener.onClick(category);
+                                            }
+                                        }
+                                    });
                                 } else {
                                     textView.setVisibility(View.GONE);
                                 }
@@ -277,20 +304,32 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                             for (int i=0; i<childCount; i++) {
                                 TextView textView = (TextView) layout.getChildAt(i);
                                 textView.setVisibility(View.VISIBLE);
-                                textView.setText(result.get(i));
-                            }
-
-                            int addCount = result.size() - childCount;
-                            for (int i=0; i<addCount; i++) {
-                                TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
-                                tv.setText(result.get(childCount + i));
-                                tv.setOnClickListener(new OnMultiClickListener() {
+                                final OccupationCategory category = categories.get(i);
+                                textView.setText(category.getArea_name());
+                                textView.setOnClickListener(new OnMultiClickListener() {
                                     @Override
                                     public void onMultiClick(View view) {
-//                                        System.out.println(actType.getArea_name());
+                                        if (actCategoryClickListener != null) {
+                                            actCategoryClickListener.onClick(category);
+                                        }
                                     }
                                 });
-                                layout.addView(tv);
+                            }
+
+                            int addCount = categories.size() - childCount;
+                            for (int i=0; i<addCount; i++) {
+                                TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
+                                final OccupationCategory category = categories.get(childCount + i);
+                                textView.setText(category.getArea_name());
+                                textView.setOnClickListener(new OnMultiClickListener() {
+                                    @Override
+                                    public void onMultiClick(View view) {
+                                        if (actCategoryClickListener != null) {
+                                            actCategoryClickListener.onClick(category);
+                                        }
+                                    }
+                                });
+                                layout.addView(textView);
                             }
                         }
 
@@ -300,7 +339,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
 
                     //评价
                     if (!TextUtils.isEmpty(entity.getAppraisal())) {
-                        helper.setText(R.id.tv_appraise, Html.fromHtml(entity.getAppraisal()));
+                        helper.setText(R.id.tv_appraise, Html.fromHtml("<b>评价：</b>" + entity.getAppraisal()));
                     } else {
                         helper.setText(R.id.tv_appraise, "暂无评价");
                     }
@@ -341,5 +380,17 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
         }
     }
 
+    private OnActCategoryClickListener actCategoryClickListener;
+
+    /**
+     * ACT职业分类点击监听
+     */
+    public interface OnActCategoryClickListener {
+        void onClick(OccupationCategory category);
+    }
+
+    public void setActCategoryClickListener(OnActCategoryClickListener actCategoryClickListener) {
+        this.actCategoryClickListener = actCategoryClickListener;
+    }
 }
 

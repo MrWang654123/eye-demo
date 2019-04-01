@@ -8,27 +8,29 @@
     android:paddingStart="15dp"
     android:paddingRight="15dp"
     android:paddingEnd="15dp"
-    android:padding="15dp"
+    android:paddingTop="15dp"
     android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
-            android:background="@color/colorAccent"
-            android:padding="3dp"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
-            android:paddingRight="10dp"
-            android:paddingEnd="10dp"
             android:text="系统推荐"/>
+        <!--android:padding="3dp"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingStart="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:paddingEnd="10dp"-->
 
         <ImageView
             android:id="@+id/iv_expand"
@@ -55,6 +57,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/color_555555"
             android:textSize="16sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:text="推荐科目:"/>
 
         <com.cheersmind.cheersgenie.features.view.WarpLinearLayout

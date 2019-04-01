@@ -10,24 +10,21 @@ import android.support.v4.app.FragmentManager;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
-import com.cheersmind.cheersgenie.features_v2.modules.major.fragment.MajorDetailFragment;
-import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.OccupationDetailFragment;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.SimpleOccupationFragment;
 
 /**
- * 职业详情
+ * 职业列表（用于直接从Act26大门类跳转过来）
  */
-public class OccupationDetailActivity extends BaseActivity {
+public class SimpleOccupationActivity extends BaseActivity {
 
     /**
-     * 启动行业详情页面
+     * * 启动职业页面
      * @param context 上下文
-     * @param occupationItem 行业
      */
-    public static void startOccupationDetailActivity(Context context, OccupationItem occupationItem) {
-        Intent intent = new Intent(context, OccupationDetailActivity.class);
-        intent.putExtra(DtoKey.OCCUPATION, occupationItem);
+    public static void startOccupationActivity(Context context, OccupationCategory category) {
+        Intent intent = new Intent(context, SimpleOccupationActivity.class);
+        intent.putExtra(DtoKey.OCCUPATION_CATEGORY, category);
         context.startActivity(intent);
     }
 
@@ -38,31 +35,29 @@ public class OccupationDetailActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "职业详情";
+        return "职业列表";
     }
 
 
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(OccupationDetailActivity.this, getResources().getColor(R.color.white));
+        setStatusBarBackgroundColor(SimpleOccupationActivity.this, getResources().getColor(R.color.white));
     }
 
     @Override
     protected void onInitData() {
-        //行业
-        OccupationItem occupationItem = (OccupationItem) getIntent().getSerializableExtra(DtoKey.OCCUPATION);
+        OccupationCategory category = (OccupationCategory) getIntent().getSerializableExtra(DtoKey.OCCUPATION_CATEGORY);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        String tag = OccupationDetailFragment.class.getSimpleName();
+        String tag = SimpleOccupationFragment.class.getSimpleName();
         Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
         //空则添加
         if (fragmentByTag == null) {
-            //行业详情
-            OccupationDetailFragment fragment = new OccupationDetailFragment();
-            //添加初始数据
+            //职业
+            SimpleOccupationFragment fragment = new SimpleOccupationFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable(DtoKey.OCCUPATION, occupationItem);
+            bundle.putSerializable(DtoKey.OCCUPATION_CATEGORY, category);
             fragment.setArguments(bundle);
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

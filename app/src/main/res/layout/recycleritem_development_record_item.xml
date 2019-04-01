@@ -124,7 +124,7 @@
             android:id="@+id/tv_dimension_no_score_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textColor="@color/color_444444"
             android:layout_gravity="center_horizontal"
             android:text="高效能、低焦虑"/>
@@ -133,8 +133,8 @@
             android:id="@+id/tv_dimension_no_result_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/color_444444"
+            android:textSize="18sp"
+            android:textColor="@color/color_b5b5b5"
             android:layout_gravity="center_horizontal"
             android:text="无综合结果"/>
 
