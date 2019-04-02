@@ -11,6 +11,14 @@ public class DtoKey {
      * 类型
      */
     public static final String TYPE = "TYPE";
+    /**
+     * 标题
+     */
+    public static final String TITLE = "TITLE";
+    /**
+     * URL
+     */
+    public static final String URL = "URL";
 
 
     /*----------  发展测评begin  ----------*/

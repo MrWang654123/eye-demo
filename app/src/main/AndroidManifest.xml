@@ -500,6 +500,9 @@
         <!--简单职业列表（用于Act门类直接跳转）-->
         <activity android:name=".features_v2.modules.occupation.activity.SimpleOccupationActivity"
             android:screenOrientation="portrait"/>
+        <!--通用WebView页面-->
+        <activity android:name=".features_v2.modules.base.activity.CommonWebViewActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

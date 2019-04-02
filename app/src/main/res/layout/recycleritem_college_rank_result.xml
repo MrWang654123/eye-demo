@@ -3,7 +3,8 @@
     android:id="@+id/sticky_header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="15dp"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
     android:orientation="horizontal">
 
     <TextView
@@ -13,7 +14,7 @@
         android:textSize="18sp"
         android:textColor="@color/white"
         android:gravity="center"
-        android:background="#26a59a"
+        android:background="@drawable/college_rank_result_bg_1"
         android:text="0"/>
 
     <TextView

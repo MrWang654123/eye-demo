@@ -73,11 +73,6 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
     //可伸缩文本
     @BindView(R.id.expand_text_view)
     ExpandableTextView expandableTextView;
-    //伸缩提示文本
-    @BindView(R.id.tv_expandable_tip)
-    TextView tvExpandableTip;
-    @BindView(R.id.expand_collapse)
-    ImageButton iBtnExpandCollapse;
 
     //院校排名
     @BindView(R.id.ll_rank)
@@ -90,11 +85,6 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
     LinearLayout ll_faculty_strength;
     @BindView(R.id.etv_faculty_strength)
     ExpandableTextView etv_faculty_strength;
-    //伸缩提示文本
-    @BindView(R.id.tv_expandable_tip_faculty_strength)
-    TextView tv_expandable_tip_faculty_strength;
-    //    @BindView(R.id.expand_collapse)
-//    ImageButton iBtnExpandCollapse;
     @BindView(R.id.recyclerViewFacultyStrength)
     RecyclerView recyclerViewFacultyStrength;
 
@@ -161,49 +151,11 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
 
-        //提示文本点击监听
-        tvExpandableTip.setOnClickListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                iBtnExpandCollapse.performClick();
-            }
-        });
-        //伸缩监听
-        expandableTextView.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
-            @Override
-            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
-                if (isExpanded) {
-                    tvExpandableTip.setText("收起全部");
-                } else {
-                    tvExpandableTip.setText("展开全部");
-                }
-            }
-        });
-//        expandableTextView.setText("• 专业简介\n" +
-//                "哲学是人文科学领域内的基础学科，是对基本和普遍之问题的研究。在希腊文中，哲学是爱智慧的意思。学哲学，就是学习智慧。哲学的爱智，无论是对自然的惊讶，还是认识人自己，都不仅仅是一种对知识的追求，更重要的是一种对生活意义的关切，对生活境界的陶冶。哲学，是使人崇高起来的学问。哲学的爱智，还是一种反思的、批判的思想活动，它要追究各种知识的根据，思考历史进步的尺度，询问真善美的标准，探索生活信念的前提。\n" +
-//                "• 培养目标\n" +
-//                "哲学专业是培养具有一定马克思主义哲学理论素养和系统的专业基础知识，能运用科学的世界观和方法论分析当代世界与中国的现实问题的应用型、复合型高级专门人才的学科\n" +
-//                "• 培养要求\n" +
-//                "他们具有一定的哲学理论思维能力、创新能力、口头与文字表达能力、社会活动能力和一定的科研能力，具有较高外语水平的理论研究人才以及能在国家机关、文教事业新闻出版、企业等部门从事实际工作。\n" +
-//                "• 名人学者\n" +
-//                "老子、庄子、孔子、苏格拉底、柏拉图、歌德等。");
-
         //设置recyclerView不影响嵌套滚动
         recyclerViewRank.setNestedScrollingEnabled(false);
         //使其失去焦点。
         recyclerViewRank.setFocusable(false);
 
-        //伸缩监听
-        etv_faculty_strength.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
-            @Override
-            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
-                if (isExpanded) {
-                    tv_expandable_tip_faculty_strength.setText("收起全部");
-                } else {
-                    tv_expandable_tip_faculty_strength.setText("展开全部");
-                }
-            }
-        });
         //设置recyclerView不影响嵌套滚动
         recyclerViewFacultyStrength.setNestedScrollingEnabled(false);
         //使其失去焦点。

@@ -20,7 +20,6 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -43,14 +42,15 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeScoreCondition;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorEnrollScoreItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorEnrollScoreRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorScoreCondition;
+import com.cheersmind.cheersgenie.features_v2.modules.base.activity.CommonWebViewActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -119,8 +119,10 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
             if (multiItem instanceof CollegeEnrollConstitutionItem
                     && getActivity() != null) {
                 CollegeEnrollConstitutionItem constitutionItem = (CollegeEnrollConstitutionItem) multiItem;
-                ToastUtil.showShort(getActivity().getApplication(),
-                        constitutionItem.getName());
+//                ToastUtil.showShort(getActivity().getApplication(),
+//                        constitutionItem.getName());
+                CommonWebViewActivity.startCommonWebViewActivity(getContext(), "招生章程",
+                        EnvHostManager.getInstance().getApiHost() + constitutionItem.getUrl());
             }
         }
     };
@@ -157,15 +159,6 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
     TextView tvMajorScoreKind;
     //专业录取分数适配器
     MajorEnrollScoreRecyclerAdapter majorEnrollScoreRecyclerAdapter;
-
-    //页长度
-    private static final int PAGE_SIZE = 10;
-    //页码
-    private int pageNum = 1;
-    //后台总记录数
-    private int totalCount = 0;
-
-    ArticleDto dto;
 
     //学校历年录取的筛选条件
     CollegeScoreCondition collegeScoreCondition;
@@ -224,8 +217,6 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
-
-        dto = new ArticleDto(pageNum, PAGE_SIZE);
 
         //设置recyclerView不影响嵌套滚动
         recyclerViewEnrollConstitution.setNestedScrollingEnabled(false);

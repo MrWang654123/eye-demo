@@ -32,14 +32,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_info_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/color_333333"
+                        style="@style/resource_lib_block_title"
                         android:text="专业简介"/>
 
                     <View
@@ -65,37 +58,19 @@
                             android:padding="15dp"
                             android:textColor="@color/color_555555"/>
 
-                        <LinearLayout
+                        <ImageButton
+                            android:id="@id/expand_collapse"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:paddingTop="0dp"
+                            android:paddingBottom="20dp"
+                            android:paddingRight="10dp"
+                            android:paddingEnd="10dp"
+                            android:paddingLeft="10dp"
+                            android:paddingStart="10dp"
                             android:layout_gravity="center_horizontal"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_expandable_tip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="14sp"
-                                android:textColor="#6688aa"
-                                android:paddingTop="10dp"
-                                android:paddingBottom="10dp"
-                                android:text="查看全部"/>
-
-                            <ImageButton
-                                android:id="@id/expand_collapse"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingTop="16dp"
-                                android:paddingBottom="14dp"
-                                android:paddingRight="16dp"
-                                android:paddingEnd="16dp"
-                                android:paddingLeft="5dp"
-                                android:paddingStart="5dp"
-                                android:background="@android:color/transparent"
-                                tools:ignore="ContentDescription" />
-
-                        </LinearLayout>
+                            android:background="@color/transpera"
+                            tools:ignore="ContentDescription" />
 
                     </com.ms.square.android.expandabletextview.ExpandableTextView>
 
@@ -111,14 +86,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_course_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/color_333333"
+                        style="@style/resource_lib_block_title"
                         android:text="课程概览"/>
 
                     <View
@@ -148,14 +116,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_similar_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/color_333333"
+                        style="@style/resource_lib_block_title"
                         android:text="对口职业"/>
 
                     <View

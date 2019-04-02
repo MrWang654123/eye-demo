@@ -93,6 +93,13 @@ public class CollegeDetailKeySubjectFragment extends LazyLoadFragment {
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
 
+        //获取数据
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            collegeId = bundle.getString(DtoKey.COLLEGE_ID);
+            keySubjectType = bundle.getString(DtoKey.KEY_SUBJECT_TYPE);
+        }
+
         //适配器
         recyclerAdapter = new KeySubjectRecyclerAdapter( null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
@@ -122,23 +129,27 @@ public class CollegeDetailKeySubjectFragment extends LazyLoadFragment {
 //        }
 
         //设置无数据提示文本
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_college_detail_major));
+        if (Dictionary.KEY_SUBJECT_TYPE_COUNTRY.equals(keySubjectType)) {
+            emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_college_detail_key_subject_country));
+
+        } else if (Dictionary.KEY_SUBJECT_TYPE_FIRST_RATE.equals(keySubjectType)) {
+            emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_college_detail_key_subject_first_rate));
+
+        } else {
+            emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_college_detail_major));
+        }
+
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
                 loadData();
             }
         });
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
-
-        //获取数据
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            collegeId = bundle.getString(DtoKey.COLLEGE_ID);
-            keySubjectType = bundle.getString(DtoKey.KEY_SUBJECT_TYPE);
-        }
     }
 
     @Override
@@ -170,9 +181,9 @@ public class CollegeDetailKeySubjectFragment extends LazyLoadFragment {
     private void loadData() {
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
-        if (recyclerAdapter.getData().size() == 0) {
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
+//        if (recyclerAdapter.getData().size() == 0) {
+//            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        }
 
         DataRequestService.getInstance().getCollegeKeySubject(collegeId, keySubjectType, new BaseService.ServiceCallback() {
             @Override

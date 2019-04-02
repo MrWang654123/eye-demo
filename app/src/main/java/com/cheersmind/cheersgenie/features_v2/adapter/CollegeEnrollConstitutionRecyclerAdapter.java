@@ -30,11 +30,11 @@ public class CollegeEnrollConstitutionRecyclerAdapter extends BaseMultiItemQuick
         switch (helper.getItemViewType()) {
             case Dictionary.RECYCLER_VIEW_LAYOUT_TYPE_LEVEL0: {
                 CollegeEnrollConstitution constitution = (CollegeEnrollConstitution) item;
-                if (constitution.isFirst()) {
-                    helper.getView(R.id.divider).setVisibility(View.GONE);
-                } else {
-                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
-                }
+//                if (constitution.isFirst()) {
+//                    helper.getView(R.id.divider).setVisibility(View.GONE);
+//                } else {
+//                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
+//                }
                 helper.setText(R.id.tv_title, constitution.getTitle());
                 break;
             }

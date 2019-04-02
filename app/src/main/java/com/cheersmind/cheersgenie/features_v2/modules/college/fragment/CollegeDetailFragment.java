@@ -143,13 +143,9 @@ public class CollegeDetailFragment extends LazyLoadFragment {
             builder.append(tag);
             builder.append("、");
         }
-        if (builder.lastIndexOf("、") == builder.length() - 1) {
-            String substring = builder.substring(0, builder.length() - 2);
-            tv_tag.setText(substring);
-        } else {
-            tv_tag.setText(builder.toString());
-        }
 
+        String substring = builder.substring(0, builder.length() - 1);
+        tv_tag.setText(substring);
     }
 
     @Override

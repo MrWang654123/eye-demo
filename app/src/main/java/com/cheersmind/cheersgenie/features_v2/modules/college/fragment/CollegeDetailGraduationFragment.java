@@ -241,7 +241,7 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
 
         //总体就业率
         List<CollegeEmploymentRatio> employmentRatio = graduationInfo.getEmploymentRatio();
-        if (ArrayListUtil.isNotEmpty(employmentRatio)) {
+        if (!allIsZero(employmentRatio)) {
             refreshEmploymentBarChart(employmentRatio);
 
         } else {
@@ -261,7 +261,7 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
                 }
             }
 
-            if (infoRatio != null) {
+            if (infoRatio != null && infoRatio.getRatio() > 0.000001) {
                 clJobRatio.setVisibility(View.VISIBLE);
                 tvJobRatioVal.setText(String.valueOf(infoRatio.getRatio() * 100));
 
@@ -280,7 +280,7 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
                 }
             }
 
-            if (infoRatio != null) {
+            if (infoRatio != null && infoRatio.getRatio() > 0.000001) {
                 llPostgraduate.setVisibility(View.VISIBLE);
                 tvPostgraduateVal.setText(String.valueOf(infoRatio.getRatio() * 100));
 
@@ -288,6 +288,23 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
                 llPostgraduate.setVisibility(View.GONE);
             }
         }
+    }
+
+    /**
+     * 所有就业率项都为零
+     * @param employmentRatios 就业率集合
+     * @return true：都为0
+     */
+    private boolean allIsZero(List<CollegeEmploymentRatio> employmentRatios) {
+        if (ArrayListUtil.isNotEmpty(employmentRatios)) {
+            for (CollegeEmploymentRatio ratio : employmentRatios) {
+                if (ratio.getRatio() > 0.000001) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

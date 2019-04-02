@@ -20,8 +20,16 @@ public class CollegeRankResultRecyclerAdapter extends BaseQuickAdapter<CollegeRa
 
     @Override
     protected void convert(BaseViewHolder helper, CollegeRankResultItem item) {
+        //排名名称
         helper.setText(R.id.tv_rank_key, item.getName());
+        //排名值
         helper.setText(R.id.tv_rank_value, String.valueOf(item.getValue()));
+        //排名值背景
+        if (item.getType() == 0) {
+            helper.getView(R.id.tv_rank_value).setBackgroundResource(R.drawable.college_rank_result_bg_1);
+        } else {
+            helper.getView(R.id.tv_rank_value).setBackgroundResource(R.drawable.college_rank_result_bg_2);
+        }
     }
 
 }

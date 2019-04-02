@@ -51,9 +51,9 @@ public class SetupCollegeRecyclerAdapter extends BaseQuickAdapter<CollegeEntity,
         }
 
         //专业评级
-        if (item.getMajor() != null && !TextUtils.isEmpty(item.getMajor().getMajor_name())) {
+        if (item.getMajor() != null && !TextUtils.isEmpty(item.getMajor().getAssessment_level())) {
             helper.getView(R.id.tv_major_level).setVisibility(View.VISIBLE);
-            helper.setText(R.id.tv_major_level, item.getMajor().getMajor_name());
+            helper.setText(R.id.tv_major_level, item.getMajor().getAssessment_level());
         } else {
             helper.getView(R.id.tv_major_level).setVisibility(View.GONE);
         }

@@ -217,6 +217,8 @@
     <string name="empty_tip_mine_practice_item">暂无实践明细</string>
     <string name="empty_tip_enroll_score">未找到符合条件的数据\n试试其他条件呗~</string>
     <string name="empty_tip_college_detail_major">暂无开设专业数据</string>
+    <string name="empty_tip_college_detail_key_subject_country">暂无国家重点学科</string>
+    <string name="empty_tip_college_detail_key_subject_first_rate">暂无一流学科</string>
     <string name="empty_tip_add_task">暂无可添加的任务</string>
     <string name="empty_tip_sys_rmd_course">暂无系统推荐选科</string>
     <string name="empty_tip_rmd_major">暂无推荐专业</string>

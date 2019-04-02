@@ -68,11 +68,6 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
     //可伸缩文本
     @BindView(R.id.expand_text_view)
     ExpandableTextView expandableTextView;
-    //伸缩提示文本
-    @BindView(R.id.tv_expandable_tip)
-    TextView tvExpandableTip;
-    @BindView(R.id.expand_collapse)
-    ImageButton iBtnExpandCollapse;
 
     //课程
     @BindView(R.id.tv_course)
@@ -131,25 +126,6 @@ public class MajorDetailInfoFragment extends LazyLoadFragment {
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
-
-        //提示文本点击监听
-        tvExpandableTip.setOnClickListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                iBtnExpandCollapse.performClick();
-            }
-        });
-        //伸缩监听
-        expandableTextView.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
-            @Override
-            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
-                if (isExpanded) {
-                    tvExpandableTip.setText("收起全部");
-                } else {
-                    tvExpandableTip.setText("展开全部");
-                }
-            }
-        });
 
         //设置recyclerView不影响嵌套滚动
         recyclerView.setNestedScrollingEnabled(false);

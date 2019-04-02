@@ -21,7 +21,7 @@
             android:id="@+id/iv_main"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintWidth_percent="0.16"
+            app:layout_constraintWidth_percent="0.14"
             app:layout_constraintDimensionRatio="h,1:1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="@+id/iv_main"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/iv_main"
-            android:text="1"/>
+            android:text="999"/>
 
         <TextView
             android:id="@+id/tv_title"
@@ -53,8 +53,9 @@
             android:layout_marginLeft="15dp"
             android:layout_marginStart="15dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintLeft_toRightOf="@+id/iv_main"
-            app:layout_constraintTop_toTopOf="@+id/iv_main"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/ll_tags"
             app:layout_constraintRight_toLeftOf="@+id/tv_rank"
             android:text="情绪发展" />
@@ -66,7 +67,8 @@
             app:layout_constraintLeft_toLeftOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:layout_constraintRight_toRightOf="@+id/tv_title"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_main"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -79,6 +81,8 @@
                 android:textColor="@color/color_777777"
                 android:maxLength="3"
                 android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:textSize="12sp"
                 android:text="985"/>
 
             <TextView
@@ -90,7 +94,9 @@
                 android:background="@color/color_eeeeee"
                 android:textColor="@color/color_777777"
                 android:maxLength="3"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
+                android:textSize="12sp"
                 android:text="985"/>
 
             <TextView
@@ -102,7 +108,9 @@
                 android:background="@color/color_eeeeee"
                 android:textColor="@color/color_777777"
                 android:maxLength="3"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
+                android:textSize="12sp"
                 android:text="985"/>
 
             <TextView
@@ -114,7 +122,9 @@
                 android:background="@color/color_eeeeee"
                 android:textColor="@color/color_777777"
                 android:maxLength="3"
-                android:layout_marginRight="5dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginEnd="4dp"
+                android:textSize="12sp"
                 android:text="综合类"/>
 
             <TextView
@@ -126,6 +136,7 @@
                 android:background="@color/color_eeeeee"
                 android:textColor="@color/color_777777"
                 android:maxLength="3"
+                android:textSize="12sp"
                 android:text="公立"/>
 
         </LinearLayout>

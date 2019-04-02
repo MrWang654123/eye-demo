@@ -5,9 +5,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center_vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#5588ff"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:textStyle="bold"
+        android:text="•"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -18,14 +27,6 @@
         android:textColor="@color/color_555555"
         android:maxLines="1"
         android:ellipsize="end"
-        android:paddingRight="7dp"
         android:text="2018年大学招生简章"/>
-
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_chevron_right_black_24dp"
-        tools:ignore="ContentDescription" />
 
 </LinearLayout>
