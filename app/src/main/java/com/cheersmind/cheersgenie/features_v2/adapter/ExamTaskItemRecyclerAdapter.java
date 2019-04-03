@@ -117,19 +117,16 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                 ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
                 //标题
                 helper.setText(R.id.tv_title, taskItem.getItem_name());
-                //提示图标
-                SimpleDraweeView imageView = helper.getView(R.id.iv_tip);
-                imageView.setActualImageResource(R.drawable.jz_play_normal);
                 //使用人数
                 helper.setText(R.id.tv_count, getRecyclerView().getContext().getString(R.string.do_count, String.valueOf(taskItem.getUse_count())));
                 //类型
                 switch (taskItem.getItem_type()) {
-                    case 3: {
+                    case Dictionary.TASK_ITEM_TYPE_ARTICLE: {
                         helper.setText(R.id.tv_type, "文章");
                         helper.getView(R.id.tv_duration).setVisibility(View.GONE);
                         break;
                     }
-                    case 4: {
+                    case Dictionary.TASK_ITEM_TYPE_VIDEO: {
                         helper.setText(R.id.tv_type, "视频");
                         //预计时间
                         int minute = taskItem.getTime_long() / 60;
@@ -139,7 +136,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         helper.setText(R.id.tv_duration, durationStr);
                         break;
                     }
-                    case 5: {
+                    case Dictionary.TASK_ITEM_TYPE_AUDIO: {
                         helper.setText(R.id.tv_type, "音频");
                         //预计时间
                         int minute = taskItem.getTime_long() / 60;

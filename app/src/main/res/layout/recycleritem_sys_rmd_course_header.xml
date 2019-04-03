@@ -48,6 +48,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_555555"
                 android:textSize="16sp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="推荐科目:"/>
 
             <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
@@ -63,11 +66,19 @@
         </LinearLayout>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/color_444444"
+            android:text="基于推荐结果："/>
+
+        <TextView
             android:id="@+id/tv_can_select_major_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@color/color_666666"
+            android:layout_marginTop="5dp"
             android:text="-基于所选学科您可报考的专业占所有大学专业的95%"/>
 
         <TextView
@@ -76,30 +87,43 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:textColor="@color/color_666666"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"
             android:text="-对所选学科要求较高的专业占所有大学专业的80%"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="?android:attr/buttonBarStyle"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btn_can_select_major"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:maxWidth="150dp"
+                android:layout_height="30dp"
                 android:layout_weight="1"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:textColor="@color/color_444444"
+                android:textSize="13sp"
+                android:background="@drawable/shape_corner_accent_3dp"
+                style="?android:attr/buttonBarButtonStyle"
                 android:text="查看可报考专业"/>
+
+            <!--style="?android:attr/buttonBarButtonStyle"-->
 
             <Button
                 android:id="@+id/btn_high_require_major"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:maxWidth="150dp"
                 android:layout_weight="1"
-                android:textColor="@color/white"
-                android:textSize="16sp"
+                android:layout_height="30dp"
+                android:textColor="@color/color_444444"
+                android:textSize="13sp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/shape_corner_accent_3dp"
+                style="?android:attr/buttonBarButtonStyle"
                 android:text="查看要求较高专业"/>
 
         </LinearLayout>

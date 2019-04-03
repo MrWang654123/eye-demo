@@ -15,6 +15,9 @@ public class BaseRecordItem extends AbstractExpandableItem<BaseRecordItem> imple
     //是否完成
     private boolean finish;
 
+    //索引位置
+    private int index;
+
     private int itemType;
 
     @Override
@@ -52,5 +55,13 @@ public class BaseRecordItem extends AbstractExpandableItem<BaseRecordItem> imple
 
     public void setLastInBrother(boolean lastInBrother) {
         this.lastInBrother = lastInBrother;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -25,7 +25,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
             android:orientation="horizontal">
 
             <TextView
@@ -64,7 +63,7 @@
                 android:id="@+id/wllCourse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
                 app:grivate="left"
                 app:horizontal_Space="10dp"
                 app:isFull="false"
@@ -82,7 +81,7 @@
                 android:id="@+id/wllOccupation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
                 app:grivate="left"
                 app:horizontal_Space="10dp"
                 app:isFull="false"
@@ -95,15 +94,6 @@
 
             </com.cheersmind.cheersgenie.features.view.WarpLinearLayout>
 
-            <TextView
-                android:id="@+id/tv_appraise"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/color_666666"
-                android:lineSpacingMultiplier="1.2"
-                android:text="评价：没有三家分晋时间飞逝副书记福建省的密封面试辅导是否及时分解舒服舒服惊世毒妃设计费设计费技术附件"/>
-
         </LinearLayout>
 
         <!--未完成的布局-->
@@ -111,6 +101,7 @@
             android:id="@+id/ll_no_complete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:orientation="vertical">
 
             <TextView
@@ -125,11 +116,12 @@
             <Button
                 android:id="@+id/btn_to_exam"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_555555"
+                android:layout_height="35dp"
+                android:textColor="@color/color_444444"
                 android:textSize="15sp"
+                android:background="@drawable/shape_corner_accent_3dp"
                 android:layout_gravity="center_horizontal"
-                android:text="继续去完成"/>
+                android:text="继续完成"/>
 
         </LinearLayout>
 

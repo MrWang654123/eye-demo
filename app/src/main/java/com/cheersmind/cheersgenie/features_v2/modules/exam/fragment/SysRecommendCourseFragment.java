@@ -20,12 +20,14 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.SysRmdCourseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.SimpleOccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -189,6 +191,14 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         }
     };
 
+    //职业分类点击监听
+    SysRmdCourseRecyclerAdapter.OnActCategoryClickListener actCategoryClickListener = new SysRmdCourseRecyclerAdapter.OnActCategoryClickListener() {
+        @Override
+        public void onClick(OccupationCategory category) {
+            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+        }
+    };
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -243,6 +253,8 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //设置子项的孩子视图点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //act职业分类点击监听
+        recyclerAdapter.setActCategoryClickListener(actCategoryClickListener);
 
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
@@ -390,8 +402,10 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
             //子项
             if (ArrayListUtil.isNotEmpty(record.getItems())) {
                 List<SysRmdCourseItem> items = record.getItems();
-                for (SysRmdCourseItem item : items) {
+                for (int i=0; i<items.size(); i++) {
+                    SysRmdCourseItem item = items.get(i);
                     item.setItemType(SysRmdCourseRecyclerAdapter.LAYOUT_ITEM_COMMON);
+                    item.setIndex(i);
                     resList.add(item);
 
                     //有简单量表

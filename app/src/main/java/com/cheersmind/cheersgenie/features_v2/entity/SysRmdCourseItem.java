@@ -26,16 +26,12 @@ public class SysRmdCourseItem extends BaseRecordItem {
     private List<String> subjects;
 
     //推荐职业
-    @InjectMap(name = "occupations")
-    private List<String> occupations;
+    @InjectMap(name = "act_areas")
+    private List<OccupationCategory> act_areas;
 
     //工作价值观测评结果无效时，用这个字段。
     @InjectMap(name = "result")
     private String result;
-
-    //评价
-    @InjectMap(name = "appraisal")
-    private String appraisal;
 
     //是否完成
     @InjectMap(name = "finish")
@@ -81,28 +77,12 @@ public class SysRmdCourseItem extends BaseRecordItem {
         this.subjects = subjects;
     }
 
-    public List<String> getOccupations() {
-        return occupations;
-    }
-
-    public void setOccupations(List<String> occupations) {
-        this.occupations = occupations;
-    }
-
     public String getResult() {
         return result;
     }
 
     public void setResult(String result) {
         this.result = result;
-    }
-
-    public String getAppraisal() {
-        return appraisal;
-    }
-
-    public void setAppraisal(String appraisal) {
-        this.appraisal = appraisal;
     }
 
     @Override
@@ -129,5 +109,13 @@ public class SysRmdCourseItem extends BaseRecordItem {
 
     public void setDimensions(List<SimpleDimensionResult> dimensions) {
         this.dimensions = dimensions;
+    }
+
+    public List<OccupationCategory> getAct_areas() {
+        return act_areas;
+    }
+
+    public void setAct_areas(List<OccupationCategory> act_areas) {
+        this.act_areas = act_areas;
     }
 }

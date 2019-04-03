@@ -45,9 +45,6 @@ public class SelectCourseRecordItem extends BaseRecordItem {
     @InjectMap(name = "act_areas")
     private List<OccupationCategory> act_areas;
 
-    //位置
-    private int index;
-
     public List<String> getResult() {
         return result;
     }
@@ -120,11 +117,4 @@ public class SelectCourseRecordItem extends BaseRecordItem {
         this.act_areas = act_areas;
     }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
 }

@@ -18,24 +18,12 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/iv_tip"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                fresco:placeholderImage="@drawable/play"
-                fresco:placeholderImageScaleType="fitXY"
-                fresco:actualImageScaleType="fitXY"/>
-
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_444444"
                 android:textSize="18sp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginEnd="15dp"
                 android:text="高考3+3选课怎么进行？"/>
 
         </LinearLayout>
@@ -65,8 +53,8 @@
                 android:id="@+id/tv_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/color_999999"
+                android:textSize="12sp"
+                android:textColor="@color/color_a6a6a6"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:text="00:11:55"/>
@@ -76,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textColor="@color/color_999999"
                 android:text="2342人已学过"/>
 

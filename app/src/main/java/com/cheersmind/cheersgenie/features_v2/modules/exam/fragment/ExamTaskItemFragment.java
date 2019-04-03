@@ -138,9 +138,18 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     //是否加载了量表
                     if (ArrayListUtil.isNotEmpty(entity.getSubItems())) {
                         if (entity.isExpanded()) {
+                            //收起
                             adapter.collapse(position);
+
                         } else {
-                            adapter.expand(position);
+                            //如果只有一个量表，则默认点击这个量表
+                            if (entity.getSubItems().size() == 1) {
+                                doClickDimension(entity.getSubItems().get(0), entity);
+
+                            } else {
+                                //展开
+                                adapter.expand(position);
+                            }
                         }
 
                     } else {
@@ -166,42 +175,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     int parentPosition = adapter.getParentPosition(dimensionInfoEntity);
                     ExamTaskItemEntity entity = (ExamTaskItemEntity) ((ExamTaskItemRecyclerAdapter) adapter).getItem(parentPosition);
                     if (entity != null) {
-                        TaskDetailItemChildEntity childTaskItem = entity.getChildItem();
-                        //构建模拟的话题对象
-                        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
-                        topicInfoEntity.setTopicId(entity.getItem_id());//话题ID
-                        topicInfoEntity.setExamId(dimensionInfoEntity.getExamId());//测评ID
-                        TopicInfoChildEntity childTopic = new TopicInfoChildEntity();//孩子话题对象
-                        childTopic.setChildTopicId("1");//设置一个模拟的孩子话题ID
-                        childTopic.setChildExamId(entity.getChildItem().getChild_exam_id());//孩子测评ID
-                        topicInfoEntity.setChildTopic(childTopic);
-
-                        //如果任务项已完成则查看话题报告
-                        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-
-                            ExamReportDto dto = new ExamReportDto();
-                            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
-                            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
-
-                            //只有一个量表则查看量表报告
-                            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
-                                    && entity.getSubItems().size() == 1) {
-                                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-                                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-
-                            } else {
-                                dto.setRelationId(dimensionInfoEntity.getTopicId());
-                                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
-                            }
-
-                            ExamReportActivity.startExamReportActivity(getContext(), dto);
-
-                        } else {
-                            //设置量表集合到话题对象中
-                            topicInfoEntity.setDimensions(entity.getSubItems());
-                            //点击量表项的操作
-                            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-                        }
+                        doClickDimension(dimensionInfoEntity, entity);
 
 //                        //设置量表集合到话题对象中
 //                        topicInfoEntity.setDimensions(entity.getSubItems());
@@ -232,6 +206,51 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
             }
         }
     };
+
+
+    /**
+     * 点击量表
+     * @param dimensionInfoEntity 量表
+     * @param entity 任务项
+     */
+    private void doClickDimension(DimensionInfoEntity dimensionInfoEntity, ExamTaskItemEntity entity) {
+        TaskDetailItemChildEntity childTaskItem = entity.getChildItem();
+        //构建模拟的话题对象
+        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
+        topicInfoEntity.setTopicId(entity.getItem_id());//话题ID
+        topicInfoEntity.setExamId(dimensionInfoEntity.getExamId());//测评ID
+        TopicInfoChildEntity childTopic = new TopicInfoChildEntity();//孩子话题对象
+        childTopic.setChildTopicId("1");//设置一个模拟的孩子话题ID
+        childTopic.setChildExamId(entity.getChildItem().getChild_exam_id());//孩子测评ID
+        topicInfoEntity.setChildTopic(childTopic);
+
+        //如果任务项已完成则查看话题报告
+        if (childTaskItem != null && childTaskItem.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
+
+            ExamReportDto dto = new ExamReportDto();
+            dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
+            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+
+            //只有一个量表则查看量表报告
+            if (ArrayListUtil.isNotEmpty(entity.getSubItems())
+                    && entity.getSubItems().size() == 1) {
+                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+
+            } else {
+                dto.setRelationId(dimensionInfoEntity.getTopicId());
+                dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+            }
+
+            ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+        } else {
+            //设置量表集合到话题对象中
+            topicInfoEntity.setDimensions(entity.getSubItems());
+            //点击量表项的操作
+            operateClickDimension(dimensionInfoEntity, topicInfoEntity);
+        }
+    }
 
 
     //页长度
@@ -573,9 +592,16 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                         entity.addSubItem(dimension);
                     }
 
-                    //实际刷新的布局索引得加载header的数量
-                    int realLayoutPosition = position + recyclerAdapter.getHeaderLayoutCount();
-                    recyclerAdapter.expand(realLayoutPosition);
+                    //如果只有一个量表，则默认点击这个量表
+                    if (dataList.size() == 1) {
+                        doClickDimension(dataList.get(0), entity);
+
+                    } else {
+                        //实际刷新的布局索引得加载header的数量
+                        int realLayoutPosition = position + recyclerAdapter.getHeaderLayoutCount();
+                        //展开
+                        recyclerAdapter.expand(realLayoutPosition);
+                    }
 
                 } catch (QSCustomException e) {
                     onFailure(e);

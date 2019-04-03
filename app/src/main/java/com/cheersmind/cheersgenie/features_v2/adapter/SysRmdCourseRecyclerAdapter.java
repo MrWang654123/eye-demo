@@ -2,7 +2,6 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -13,10 +12,11 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
-import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.List;
 
@@ -67,8 +67,11 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                     //可报考专业百分比
                     if (entity.getRecommend_major_per() != null) {
                         helper.getView(R.id.tv_can_select_major_ratio).setVisibility(View.VISIBLE);
+                        //可报考专业百分比
                         helper.setText(R.id.tv_can_select_major_ratio,
-                                "-基于推荐结果您可报考的专业占所有大学专业的" + entity.getRecommend_major_per() * 100 + "%");
+                                Html.fromHtml("-您可报考的专业占所有大学专业的<font color='" +
+                                        context.getResources().getColor(R.color.colorAccent) +"'>" +
+                                        entity.getRecommend_major_per() * 100 + "%</font>"));
                     } else {
                         helper.getView(R.id.tv_can_select_major_ratio).setVisibility(View.GONE);
                     }
@@ -76,8 +79,11 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                     //要求较高专业百分比
                     if (entity.getRecommend_high_major_per() != null) {
                         helper.getView(R.id.tv_high_require_major_ratio).setVisibility(View.VISIBLE);
+                        //要求较高专业百分比
                         helper.setText(R.id.tv_high_require_major_ratio,
-                                "-对于推荐结果要求较高的专业占所有大学专业的" + entity.getRecommend_high_major_per() * 100 + "%");
+                                Html.fromHtml("-要求较高的专业占所有大学专业的<font color='" +
+                                        context.getResources().getColor(R.color.colorAccent) +"'>" +
+                                        entity.getRecommend_high_major_per() * 100 + "%</font>"));
                     } else {
                         helper.getView(R.id.tv_high_require_major_ratio).setVisibility(View.GONE);
                     }
@@ -98,7 +104,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                 helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
                 helper.getView(R.id.btn_report).setVisibility(View.GONE);
                 //标题
-                helper.setText(R.id.tv_title, entity.getDimension_name());
+                helper.setText(R.id.tv_title, (entity.getIndex() + 1) + "、" + entity.getDimension_name());
                 //通用结果
                 if (ArrayListUtil.isEmpty(entity.getDimensions())) {
                     //完成
@@ -108,7 +114,6 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
 
                         helper.getView(R.id.wllCourse).setVisibility(View.GONE);
                         helper.getView(R.id.wllOccupation).setVisibility(View.GONE);
-                        helper.getView(R.id.tv_appraise).setVisibility(View.GONE);
 
                         //推荐课程
                         List<String> result = entity.getSubjects();
@@ -145,17 +150,26 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         }
 
                         //推荐职业
-                        List<String> result1 = entity.getOccupations();
-                        if (ArrayListUtil.isNotEmpty(result1)) {
+                        List<OccupationCategory> categories = entity.getAct_areas();
+                        if (ArrayListUtil.isNotEmpty(categories)) {
                             helper.getView(R.id.wllOccupation).setVisibility(View.VISIBLE);
                             WarpLinearLayout layout = helper.getView(R.id.wllOccupation);
                             //结果数量小于等于视图数量
-                            if (result1.size() <= layout.getChildCount()) {
+                            if (categories.size() <= layout.getChildCount()) {
                                 for (int i=0; i<layout.getChildCount(); i++) {
                                     TextView textView = (TextView) layout.getChildAt(i);
-                                    if (i < result1.size()) {
+                                    if (i < categories.size()) {
                                         textView.setVisibility(View.VISIBLE);
-                                        textView.setText(result1.get(i));
+                                        final OccupationCategory category = categories.get(i);
+                                        textView.setText(category.getArea_name());
+                                        textView.setOnClickListener(new OnMultiClickListener() {
+                                            @Override
+                                            public void onMultiClick(View view) {
+                                                if (actCategoryClickListener != null) {
+                                                    actCategoryClickListener.onClick(category);
+                                                }
+                                            }
+                                        });
                                     } else {
                                         textView.setVisibility(View.GONE);
                                     }
@@ -165,23 +179,35 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                                 for (int i=0; i<childCount; i++) {
                                     TextView textView = (TextView) layout.getChildAt(i);
                                     textView.setVisibility(View.VISIBLE);
-                                    textView.setText(result1.get(i));
+                                    final OccupationCategory category = categories.get(i);
+                                    textView.setText(category.getArea_name());
+                                    textView.setOnClickListener(new OnMultiClickListener() {
+                                        @Override
+                                        public void onMultiClick(View view) {
+                                            if (actCategoryClickListener != null) {
+                                                actCategoryClickListener.onClick(category);
+                                            }
+                                        }
+                                    });
                                 }
 
-                                int addCount = result1.size() - childCount;
+                                int addCount = categories.size() - childCount;
                                 for (int i=0; i<addCount; i++) {
-                                    TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
-                                    tv.setText(result1.get(childCount + i));
-                                    layout.addView(tv);
+                                    TextView textView = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item, null);
+                                    final OccupationCategory category = categories.get(childCount + i);
+                                    textView.setText(category.getArea_name());
+                                    textView.setOnClickListener(new OnMultiClickListener() {
+                                        @Override
+                                        public void onMultiClick(View view) {
+                                            if (actCategoryClickListener != null) {
+                                                actCategoryClickListener.onClick(category);
+                                            }
+                                        }
+                                    });
+                                    layout.addView(textView);
                                 }
                             }
 
-                        }
-
-                        //评价
-                        if (!TextUtils.isEmpty(entity.getAppraisal())) {
-                            helper.getView(R.id.tv_appraise).setVisibility(View.VISIBLE);
-                            helper.setText(R.id.tv_appraise, Html.fromHtml(entity.getAppraisal()));
                         }
 
                     } else {//未完成
@@ -218,6 +244,19 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                 break;
             }
         }
+    }
+
+    private OnActCategoryClickListener actCategoryClickListener;
+
+    /**
+     * ACT职业分类点击监听
+     */
+    public interface OnActCategoryClickListener {
+        void onClick(OccupationCategory category);
+    }
+
+    public void setActCategoryClickListener(OnActCategoryClickListener actCategoryClickListener) {
+        this.actCategoryClickListener = actCategoryClickListener;
     }
 
 }

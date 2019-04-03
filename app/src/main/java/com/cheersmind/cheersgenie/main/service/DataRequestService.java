@@ -1659,6 +1659,10 @@ public class DataRequestService {
             }
         }
 
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
         //拼接参数
         url = BaseService.settingGetParams(url, params);
 
