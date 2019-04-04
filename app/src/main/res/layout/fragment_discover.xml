@@ -124,7 +124,7 @@
                     app:tabMode="scrollable"
                     app:tabIndicatorColor="@color/colorAccent"
                     app:tabIndicatorHeight="1dp"
-                    app:tabTextAppearance="@style/TabLayoutTextStyle"
+                    app:tabTextAppearance="@style/SmallTabLayoutTextStyle"
                     app:tabSelectedTextColor="@color/color_333333"
                     app:tabTextColor="#9999a0" />
                 <!--app:tabGravity="fill"-->

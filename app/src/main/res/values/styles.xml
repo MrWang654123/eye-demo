@@ -153,6 +153,12 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <!--TabLayout的样式-->
+    <style name="SmallTabLayoutTextStyle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!--通用选项文字样式-->
     <style name="common_option_text">
         <item name="android:textColor">@color/color_333333</item>

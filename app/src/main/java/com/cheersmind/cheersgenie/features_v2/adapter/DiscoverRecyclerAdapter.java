@@ -67,10 +67,10 @@ public class DiscoverRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiItem
 
                 //阅读数量
                 if (item.getPageView() > 0) {
-                    helper.getView(R.id.rl_read).setVisibility(View.VISIBLE);
-                    helper.setText(R.id.tv_read_count, item.getPageView() + "");
+                    helper.getView(R.id.tv_read_count).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_read_count, item.getPageView() + "阅");
                 } else {
-                    helper.getView(R.id.rl_read).setVisibility(View.GONE);
+                    helper.getView(R.id.tv_read_count).setVisibility(View.GONE);
                 }
 
                 //收藏状态初始化
@@ -102,15 +102,15 @@ public class DiscoverRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiItem
                     helper.getView(R.id.tv_tag).setVisibility(View.VISIBLE);
                     helper.setText(R.id.tv_tag, item.getCategory().getName());
                 } else {
-                    helper.getView(R.id.tv_tag).setVisibility(View.INVISIBLE);
+                    helper.getView(R.id.tv_tag).setVisibility(View.GONE);
                 }
 
                 //阅读数量
                 if (item.getPageView() > 0) {
-                    helper.getView(R.id.rl_read).setVisibility(View.VISIBLE);
-                    helper.setText(R.id.tv_read_count, item.getPageView() + "");
+                    helper.getView(R.id.tv_read_count).setVisibility(View.VISIBLE);
+                    helper.setText(R.id.tv_read_count, item.getPageView() + "阅");
                 } else {
-                    helper.getView(R.id.rl_read).setVisibility(View.GONE);
+                    helper.getView(R.id.tv_read_count).setVisibility(View.GONE);
                 }
 
                 //收藏状态初始化

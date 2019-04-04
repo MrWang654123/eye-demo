@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features_v2.modules.base.fragment;
 
+import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -31,7 +32,6 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features.view.transformer.ScaleTransformer;
-import com.cheersmind.cheersgenie.features_v2.modules.discover.fragment.DiscoverRecommendFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.discover.fragment.DiscoverTabItemFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
@@ -397,12 +397,20 @@ public class DiscoverFragment extends LazyLoadFragment {
 
                     List<Pair<String, Fragment>> items = new ArrayList<>();
                     //第一项：推荐
-                    DiscoverRecommendFragment defaultFragment = new DiscoverRecommendFragment();
+//                    DiscoverRecommendFragment defaultFragment = new DiscoverRecommendFragment();
+                    DiscoverTabItemFragment defaultFragment = new DiscoverTabItemFragment();
+                    Bundle defaultBundle = new Bundle();
+                    defaultBundle.putString(DiscoverTabItemFragment.HTTP_TAG, DiscoverTabItemFragment.class.getName() + "0");
+                    defaultFragment.setArguments(defaultBundle);
                     items.add(new Pair<String, Fragment>("推荐",defaultFragment));
                     //有数据情况处理
                     for (int i=0; i<categories.size(); i++) {
                         final CategoryEntity categoryEntity = categories.get(i);
                         DiscoverTabItemFragment fragment = new DiscoverTabItemFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(DiscoverTabItemFragment.CATEGORY, categoryEntity);
+                        bundle.putString(DiscoverTabItemFragment.HTTP_TAG, DiscoverTabItemFragment.class.getName() + (i + 1));
+                        fragment.setArguments(bundle);
                         items.add(new Pair<String, Fragment>(categoryEntity.getName(),fragment));
                     }
 

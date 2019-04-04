@@ -4,10 +4,8 @@ package com.cheersmind.cheersgenie.features_v2.modules.discover.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,25 +15,21 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.features.entity.CategoryEntity;
-import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.DiscoverRecyclerAdapter;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
@@ -66,6 +60,9 @@ public class DiscoverTabItemFragment extends LazyLoadFragment {
     //类型
     public static final String  CATEGORY = "category";
     private CategoryEntity category;
+
+    //通信标记
+    public static final String HTTP_TAG = "HTTP_TAG";
 
     private ArticleDto articleDto;
 
@@ -239,11 +236,9 @@ public class DiscoverTabItemFragment extends LazyLoadFragment {
             Bundle bundle = getArguments();
             if (bundle != null) {
                 category = (CategoryEntity) bundle.getSerializable(CATEGORY);
-                httpTag = bundle.getString(TAG);
+                httpTag = bundle.getString(HTTP_TAG);
                 if (TextUtils.isEmpty(httpTag)) {
-                    if (getActivity() != null) {
-                        ToastUtil.showShort(getActivity().getApplication(), "tag不能为空");
-                    }
+                    httpTag = System.currentTimeMillis() + "";
                 }
             }
         } catch (Exception e) {
