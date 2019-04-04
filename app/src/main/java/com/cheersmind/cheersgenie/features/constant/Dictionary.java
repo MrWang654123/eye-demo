@@ -167,7 +167,7 @@ public class Dictionary {
     //隐藏文章列表的加载更多视图的阈值数量
     public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT = 5;
     //隐藏文章列表的加载更多视图的阈值数量
-    public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT_SMALL = 2;
+    public static final int HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT_SMALL = 6;
     //隐藏历史测评列表的加载更多视图的阈值数量
     public static final int HIDE_HISTORY_EXAM_LOAD_MORE_VIEW_COUNT = 10;
     //隐藏历史专题列表的加载更多视图的阈值数量
