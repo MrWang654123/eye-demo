@@ -320,41 +320,49 @@ public class RecommendMajorFragment extends LazyLoadFragment {
         switch (view.getId()) {
             //添加专业
             case R.id.btn_add_major: {
-                getHandler();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+                //非空
+                if (selectMajor.size() > 0) {
+                    getHandler();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
 //                        DataSupport.deleteAll(RecommendMajor.class);
-                        //拼接查询条件，获取已存在的记录
-                        StringBuilder builder = new StringBuilder();
-                        String[] params = new String[selectMajor.size()+1];
-                        for (int i=0; i<selectMajor.size(); i++) {
-                            RecommendMajor major = selectMajor.get(i);
-                            params[i+1] = major.getMajor_code();
-                            builder.append("?,");
-                        }
-                        String condition = builder.substring(0, builder.length() - 1);
-                        params[0] = "major_code in (" + condition + ")";
-                        List<RecommendMajor> recommendMajors = DataSupport.where(params).find(RecommendMajor.class);
-                        //移除已存在记录
-                        selectMajor.removeAll(recommendMajors);
-                        //保存
-                        DataSupport.saveAll(selectMajor);
-
-                        getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (getActivity() != null) {
-                                    getActivity().finish();
-                                    ToastUtil.showShort(getActivity().getApplication(), "添加成功");
-                                    //发送添加观察专业的事件
-                                    EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
-                                    selectMajor.clear();
-                                }
+                            //拼接查询条件，获取已存在的记录
+                            StringBuilder builder = new StringBuilder();
+                            String[] params = new String[selectMajor.size() + 1];
+                            for (int i = 0; i < selectMajor.size(); i++) {
+                                RecommendMajor major = selectMajor.get(i);
+                                params[i + 1] = major.getMajor_code();
+                                builder.append("?,");
                             }
-                        });
+                            String condition = builder.substring(0, builder.length() - 1);
+                            params[0] = "major_code in (" + condition + ")";
+                            List<RecommendMajor> recommendMajors = DataSupport.where(params).find(RecommendMajor.class);
+                            //移除已存在记录
+                            selectMajor.removeAll(recommendMajors);
+                            //保存
+                            DataSupport.saveAll(selectMajor);
+
+                            getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (getActivity() != null) {
+                                        getActivity().finish();
+                                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
+                                        //发送添加观察专业的事件
+                                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
+                                        selectMajor.clear();
+                                    }
+                                }
+                            });
+                        }
+                    }).start();
+
+                } else {
+                    if (getActivity() != null) {
+                        ToastUtil.showShort(getActivity().getApplication(), "请选择专业");
                     }
-                }).start();
+                }
 
                 break;
             }

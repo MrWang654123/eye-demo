@@ -787,7 +787,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                 //header模型位置
                 int headerPosition = 0;
                 //量表位置
-                int dimensionPosition = 0;
+//                int dimensionPosition = 0;
                 ExamTaskItemEntity taskItem = null;
                 DimensionInfoEntity t = null;
 
@@ -805,11 +805,16 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                             taskItem = (ExamTaskItemEntity) item;
                             //标记header模型位置
                             headerPosition = i;
+                            //只有一个量表的话题不显示量表，所以直接到SubItems中找
+                            List<DimensionInfoEntity> subItems = taskItem.getSubItems();
+                            if (ArrayListUtil.isNotEmpty(subItems) && subItems.size() == 1) {
+                                t = subItems.get(0);
+                            }
                         }
 
-                    } else if (item instanceof DimensionInfoEntity) {
+                    } else if (item instanceof DimensionInfoEntity) {//量表类型
                         t = (DimensionInfoEntity) item;
-                        dimensionPosition = i;
+//                        dimensionPosition = i;
                     }
 
                     //t不为空
@@ -829,7 +834,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                                         taskItem.getChildItem().getChild_exam_id(),
                                         UCManager.getInstance().getDefaultChild().getChildId(),
                                         taskItem,
-                                        dimensionPosition);
+                                        headerPosition);
 
                             } else {
                                 //判断话题是否完成

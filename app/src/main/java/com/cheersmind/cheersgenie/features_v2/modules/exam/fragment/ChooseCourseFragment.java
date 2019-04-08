@@ -85,7 +85,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     };
 
     //限制数量
-    int limitCount = 4;
+    int limitCount = 3;
 
     //recycler item点击监听
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
@@ -96,7 +96,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             if (chooseCourseList.size() == limitCount && !entity.isSelected()) {
                 //提示选中课程名称
                 if (getActivity() != null) {
-                    ToastUtil.showShort(getActivity().getApplication(), "最多选" + limitCount +"个科目");
+                    ToastUtil.showShort(getActivity().getApplication(), "只能选" + limitCount +"个科目");
                 }
                 return;
             }

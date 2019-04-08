@@ -289,7 +289,7 @@ public class HttpConfig {
     public static String URL_SYS_RMD_COURSE = API_HOST + "/v2/api/assistant/overview/{child_exam_id}";
 
     //获取选科
-    public static String URL_GET_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/subjects";
+    public static String URL_GET_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/optional_subjects";
 
     //确认选科
     public static String URL_CONFIRM_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/confirm_subjects";

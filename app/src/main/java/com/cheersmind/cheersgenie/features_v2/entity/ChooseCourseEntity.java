@@ -21,6 +21,10 @@ public class ChooseCourseEntity implements Serializable {
     @InjectMap(name = "subject_type")
     private String subject_type;
 
+    //图标
+    @InjectMap(name = "subject_icon")
+    private String subject_icon;
+
     //是否选中
     private boolean isSelected;
 
@@ -54,5 +58,13 @@ public class ChooseCourseEntity implements Serializable {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getSubject_icon() {
+        return subject_icon;
+    }
+
+    public void setSubject_icon(String subject_icon) {
+        this.subject_icon = subject_icon;
     }
 }
