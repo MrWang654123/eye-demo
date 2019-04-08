@@ -52,9 +52,12 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
     private Context context;
 
+    private int accentColor;
+
     public ExamReportRecyclerAdapter(Context context, List<MultiItemEntity> data) {
         super(data);
         this.context = context;
+        accentColor = context.getResources().getColor(R.color.colorAccent);
 
         addItemType(CHART_HEADER, R.layout.recycleritem_exam_report_header);
         addItemType(CHART_SUB_ITEM, R.layout.recycleritem_exam_report_sub_item);
@@ -101,8 +104,11 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 } else {
                     //话题
                     if (isTopic()) {
-                        //没有排名（视为没有分数和结论）
-                        if (entity.getRank() < 0.000001) {
+                        //有排名（T分数才有排名）
+                        if (entity.getRank() != null) {
+                            hasRankAndResult(helper, entity);
+
+                        } else {//没有排名（视为没有分数和结论）
                             List<String> sub_result = entity.getSub_result();
 
                             if (ArrayListUtil.isNotEmpty(sub_result)) {
@@ -123,21 +129,21 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                                 helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.VISIBLE);
                                 helper.setText(R.id.tv_topic_sub_items_result, result.length() > 0 ? result.toString() : "暂无综合结果");
                             }
-
-                        } else {//有排名则视为有结论
-                            hasRankAndResult(helper, entity);
                         }
 
                     } else {
-                        //量表：没有T分数和结论，则显示原始分；学业兴趣和职业兴趣没有分数和排名，则显示result
-                        //没有排名
-                        if (entity.getRank() < 0.000001) {
+                        //量表：如果没有T分数和结论，则显示原始分；学业兴趣和职业兴趣没有分数和排名，则显示result
+                        //有排名（T分数才有排名）
+                        if (entity.getRank() != null) {
+                            hasRankAndResult(helper, entity);
+
+                        } else {
                             //有分数
-                            if (entity.getScore() > 0.000001) {
+                            if (entity.getScore() != null) {
                                 //原始分
                                 helper.getView(R.id.tv_dimension_original_score).setVisibility(View.VISIBLE);
-                                String scoreStr = "本测评中你的个人原始得分为" + entity.getScore() + "分";
-                                helper.setText(R.id.tv_dimension_original_score, scoreStr);
+                                String scoreStr = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + entity.getScore().intValue() + "分</font></b>";
+                                helper.setText(R.id.tv_dimension_original_score, Html.fromHtml(scoreStr));
 
                             } else {//无分数（学业兴趣、职业兴趣）
                                 if (!TextUtils.isEmpty(entity.getResult())) {
@@ -146,9 +152,6 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                                     helper.setText(R.id.tv_dimension_no_score_result, entity.getResult());
                                 }
                             }
-
-                        } else {//有排名则视为有结论
-                            hasRankAndResult(helper, entity);
                         }
                     }
                 }
@@ -288,40 +291,40 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                     //result是否为空
                     if (!TextUtils.isEmpty(subItem.getResult())) {
                         //结果、得分
-                        result = "本测评评价为" + subItem.getResult() +
-                                "，得分为" + subItem.getScore() + "分";
+                        result = "本测评评价为<b><font color='" + accentColor + "'>" +
+                                subItem.getResult() + "</font></b>，得分为<b><font color='" + accentColor + "'>" +
+                                subItem.getScore().intValue() + "分</font></b>";
                     } else {
                         //得分
-                        result = "本测评得分为" + subItem.getScore() + "分";
+                        result = "本测评得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>";
                     }
 
                 } else {//量表
-                    if (subItem.getSort() > 0) {//sort大于0，视为学业兴趣、职业兴趣
+                    if (subItem.getSort() != null) {//sort不为null，视为学业兴趣、职业兴趣
                         //得分、排序
-                        result = "本因子得分为" + subItem.getScore() +
-                                "分,在各个方向中排名第" + subItem.getSort();
+                        result = "本因子得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() +
+                                "分</font></b>,在各个方向中排名第<b><font color='" + accentColor + "'>" + subItem.getSort() + "</font></b>";
                     } else {
-                        //没有T分数和结论，则显示原始分
-                        if (subItem.getRank() < 0.000001) {//没有排名
-                            //得分
-                            result = "本测评中你的个人原始得分为" + subItem.getScore() + "分";
-
-                        } else {//有排名
+                        //有排名（T分数才有排名）
+                        if (subItem.getRank() != null) {
                             //result是否为空
                             if (!TextUtils.isEmpty(subItem.getResult())) {
                                 //结果、得分、排名
-                                result = "本测评评价为" + subItem.getResult() +
-                                        "，得分为" + subItem.getScore() + "分" +
-                                        "，超过" + subItem.getRank() * 100 + "%的用户";
+                                result = "本测评评价为<b><font color='" + accentColor + "'>" + subItem.getResult() +
+                                        "</font></b>，得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>" +
+                                        "，超过<b><font color='" + accentColor + "'>" + String.format(Locale.CHINA,"%.1f", subItem.getRank() * 100) + "%</font></b>的用户";
                             } else {
                                 //得分、排名
-                                result = "本测评得分为" + subItem.getScore() + "分" +
-                                        "，超过" + subItem.getRank() * 100 + "%的用户";
+                                result = "本测评得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>" +
+                                        "，超过<b><font color='" + accentColor + "'>" + String.format(Locale.CHINA,"%.1f", subItem.getRank() * 100) + "%</font></b>的用户";
                             }
+                        } else {//无排名则显示原始分
+                            //得分
+                            result = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>";
                         }
                     }
                 }
-                helper.setText(R.id.tv_result, result);
+                helper.setText(R.id.tv_result, !TextUtils.isEmpty(result) ? Html.fromHtml(result) : "");
 
                 //显示箭头和子项描述
                 if (isTopic()) {//话题
@@ -386,7 +389,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
     private void hasRankAndResult(BaseViewHolder helper, ExamReportRootEntity entity) {
         helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-        double score = Math.floor(entity.getScore());
+        int score = entity.getScore().intValue();
         //分数
         String scoreStr = String.valueOf(score);
         helper.setText(R.id.tv_score, scoreStr);
@@ -395,10 +398,8 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         //结果
         helper.setText(R.id.tv_result, entity.getResult());
         //分数描述
-        String scoreDesc = "本测评中你的个人得分<b><font color='" +
-                context.getResources().getColor(R.color.colorAccent) + "'>" + scoreStr +
-                "</font></b>分,高于<b><font color='" +
-                context.getResources().getColor(R.color.colorAccent) + "'>" +
+        String scoreDesc = "本测评中你的个人得分<b><font color='" + accentColor + "'>" + scoreStr +
+                "分</font></b>,高于<b><font color='" + accentColor + "'>" +
                 String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%</font></b>的用户";
         helper.setText(R.id.tv_score_desc, Html.fromHtml(scoreDesc));
     }

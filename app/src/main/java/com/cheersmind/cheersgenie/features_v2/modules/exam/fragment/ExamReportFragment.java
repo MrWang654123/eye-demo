@@ -211,11 +211,11 @@ public class ExamReportFragment extends LazyLoadFragment {
 //        recycleView.addItemDecoration(divider);
 
         //滑动监听
-        try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //报告列表footer（推荐文章）
         footerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_footer_article_recommend, null);
@@ -282,24 +282,6 @@ public class ExamReportFragment extends LazyLoadFragment {
                                 emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                                 return;
                             }
-
-//                            //报告结果
-//                            List<ReportResultEntity> reportResultEntities = data.getReportResults();
-//                            //报告图表数据
-//                            List<ReportItemEntity> reportItems = data.getChartDatas();
-
-//                            //拼接因子结果文本
-//                            formatFactorResultText(reportResultEntities);
-//                            //把报告结果置于报告图表对象中
-//                            reportItems = settingResultToReportItem(reportItems, reportResultEntities);
-//                            //初始图表说明是否展开（没有评价则展开）
-//                            initDescIsExpand(reportItems);
-//                            //把比较名称置于报告图表对象中
-//                            settingCompareName(reportItems, data);
-                            //把reportItems分组，每个量表可能不只一个图表
-//                            recyclerItem = groupReportItem(reportItems);
-//                            //如果topic报告项没有报告结果（ReportResultEntity中的title），则提取所有量表项的结果作为结果
-//                            fetchDimensionResultToTopicResult(recyclerItem);
 
                             //标记是否是话题
                             data.setTopic(Dictionary.REPORT_TYPE_TOPIC.equals(dto.getRelationType()));

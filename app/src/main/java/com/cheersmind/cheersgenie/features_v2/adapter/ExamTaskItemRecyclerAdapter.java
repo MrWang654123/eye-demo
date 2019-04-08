@@ -47,7 +47,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             case Dictionary.TASK_ITEM_TYPE_TOPIC_321_42: {
                 ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
                 //标题
-                helper.setText(R.id.tv_title, taskItem.getItem_name());
+                helper.setText(R.id.tv_title, taskItem.getItem_name().trim());
                 //提示图标
                 SimpleDraweeView imageView = helper.getView(R.id.iv_tip);
                 imageView.setActualImageResource(R.drawable.mine_exam);
@@ -116,7 +116,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             case Dictionary.TASK_ITEM_TYPE_CHOOSE_COURSE: {
                 ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
                 //标题
-                helper.setText(R.id.tv_title, taskItem.getItem_name());
+                helper.setText(R.id.tv_title, taskItem.getItem_name().trim());
                 //使用人数
                 helper.setText(R.id.tv_count, getRecyclerView().getContext().getString(R.string.do_count, String.valueOf(taskItem.getUse_count())));
                 //类型

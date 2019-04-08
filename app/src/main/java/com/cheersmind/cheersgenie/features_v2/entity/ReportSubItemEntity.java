@@ -33,11 +33,11 @@ public class ReportSubItemEntity implements MultiItemEntity, Serializable {
 
     //测评得分（原始分或者T分数）
     @InjectMap(name = "score")
-    private double score;
+    private Double score;
 
     //超过%90的用户
     @InjectMap(name = "rank")
-    private double rank;
+    private Double rank;
 
     //项目描述
     @InjectMap(name = "description")
@@ -45,7 +45,7 @@ public class ReportSubItemEntity implements MultiItemEntity, Serializable {
 
     //排名
     @InjectMap(name = "sort")
-    private int sort;
+    private Integer sort;
 
     //是否展开
     private boolean expand;
@@ -85,19 +85,19 @@ public class ReportSubItemEntity implements MultiItemEntity, Serializable {
         this.result = result;
     }
 
-    public double getScore() {
-        return score;
+    public Double getScore() {
+        return score != null ? score : 0;
     }
 
-    public void setScore(double score) {
+    public void setScore(Double score) {
         this.score = score;
     }
 
-    public double getRank() {
+    public Double getRank() {
         return rank;
     }
 
-    public void setRank(double rank) {
+    public void setRank(Double rank) {
         this.rank = rank;
     }
 
@@ -117,11 +117,11 @@ public class ReportSubItemEntity implements MultiItemEntity, Serializable {
         this.expand = expand;
     }
 
-    public int getSort() {
+    public Integer getSort() {
         return sort;
     }
 
-    public void setSort(int sort) {
+    public void setSort(Integer sort) {
         this.sort = sort;
     }
 }

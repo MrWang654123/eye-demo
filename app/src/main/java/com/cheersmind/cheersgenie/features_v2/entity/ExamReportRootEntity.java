@@ -30,7 +30,7 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
 
     //测评得分（原始分或者T分数，场景下不一定有总体得分）
     @InjectMap(name = "score")
-    private double score;
+    private Double score;
 
     //子维度测评结果的集合（对于场景下没有设定总体结果的情况，用这个字段显示）
     @InjectMap(name = "sub_result")
@@ -38,7 +38,7 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
 
     //排名，例如超过%90的用户（测评得分是原始分就没有排名）
     @InjectMap(name = "rank")
-    private double rank;
+    private Double rank;
 
     //评价（测评得分是原始分就没有评价）
     @InjectMap(name = "appraisal")
@@ -103,13 +103,6 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
         this.result = result;
     }
 
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
 
     public List<String> getSub_result() {
         return sub_result;
@@ -119,11 +112,19 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
         this.sub_result = sub_result;
     }
 
-    public double getRank() {
+    public Double getScore() {
+        return score != null ? score : 0;
+    }
+
+    public void setScore(Double score) {
+        this.score = score;
+    }
+
+    public Double getRank() {
         return rank;
     }
 
-    public void setRank(double rank) {
+    public void setRank(Double rank) {
         this.rank = rank;
     }
 
