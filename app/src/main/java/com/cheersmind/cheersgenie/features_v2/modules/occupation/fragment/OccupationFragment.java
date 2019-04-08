@@ -624,5 +624,14 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
         return false;
     }
 
+    /**
+     * 模糊查询
+     */
+    public void Search(String context) {
+        dto.setSearchText(context);
+        refreshData();
+        //        loadMoreData();
+    }
+
 }
 
