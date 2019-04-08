@@ -389,7 +389,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
     private void hasRankAndResult(BaseViewHolder helper, ExamReportRootEntity entity) {
         helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-        int score = entity.getScore().intValue();
+        int score = entity.getScore() != null ? entity.getScore().intValue() : 0;
         //分数
         String scoreStr = String.valueOf(score);
         helper.setText(R.id.tv_score, scoreStr);

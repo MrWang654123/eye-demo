@@ -113,7 +113,7 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
     }
 
     public Double getScore() {
-        return score != null ? score : 0;
+        return score;
     }
 
     public void setScore(Double score) {
