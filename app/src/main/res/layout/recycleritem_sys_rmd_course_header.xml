@@ -11,123 +11,126 @@
         android:layout_height="15dp"
         android:background="@color/color_f5f5f5"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingStart="15dp"
-        android:paddingRight="15dp"
-        android:paddingEnd="15dp"
-        android:padding="15dp"
-        android:background="@color/white"
-        android:orientation="vertical">
+    <include layout="@layout/recycleritem_career_record_sys_recommed_header"/>
+    <include layout="@layout/recycleritem_career_record_sys_recommed_item"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_marginBottom="15dp"
-            android:background="@color/colorAccent"
-            android:padding="3dp"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
-            android:paddingRight="10dp"
-            android:paddingEnd="10dp"
-            android:text="系统推荐"/>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingLeft="15dp"-->
+        <!--android:paddingStart="15dp"-->
+        <!--android:paddingRight="15dp"-->
+        <!--android:paddingEnd="15dp"-->
+        <!--android:padding="15dp"-->
+        <!--android:background="@color/white"-->
+        <!--android:orientation="vertical">-->
 
-        <LinearLayout
-            android:id="@+id/ll_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:orientation="horizontal">
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="16sp"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:layout_marginBottom="15dp"-->
+            <!--android:background="@color/colorAccent"-->
+            <!--android:padding="3dp"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingStart="10dp"-->
+            <!--android:paddingRight="10dp"-->
+            <!--android:paddingEnd="10dp"-->
+            <!--android:text="系统推荐"/>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_555555"
-                android:textSize="16sp"
-                android:layout_marginTop="3dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
-                android:text="推荐科目:"/>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/ll_result"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="15dp"-->
+            <!--android:orientation="horizontal">-->
 
-            <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
-                android:id="@+id/warpLinearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                app:grivate="left"
-                app:horizontal_Space="10dp"
-                app:isFull="false"
-                app:vertical_Space="15dp"/>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textColor="@color/color_555555"-->
+                <!--android:textSize="16sp"-->
+                <!--android:layout_marginTop="3dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginEnd="10dp"-->
+                <!--android:text="推荐科目:"/>-->
 
-        </LinearLayout>
+            <!--<com.cheersmind.cheersgenie.features.view.WarpLinearLayout-->
+                <!--android:id="@+id/warpLinearLayout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="15dp"-->
+                <!--app:grivate="left"-->
+                <!--app:horizontal_Space="10dp"-->
+                <!--app:isFull="false"-->
+                <!--app:vertical_Space="15dp"/>-->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/color_444444"
-            android:text="基于推荐结果："/>
+        <!--</LinearLayout>-->
 
-        <TextView
-            android:id="@+id/tv_can_select_major_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/color_666666"
-            android:layout_marginTop="5dp"
-            android:text="-基于所选学科您可报考的专业占所有大学专业的95%"/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textColor="@color/color_444444"-->
+            <!--android:text="基于推荐结果："/>-->
 
-        <TextView
-            android:id="@+id/tv_high_require_major_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="@color/color_666666"
-            android:layout_marginTop="5dp"
-            android:text="-对所选学科要求较高的专业占所有大学专业的80%"/>
+        <!--<TextView-->
+            <!--android:id="@+id/tv_can_select_major_ratio"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textColor="@color/color_666666"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:text="-基于所选学科您可报考的专业占所有大学专业的95%"/>-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="?android:attr/buttonBarStyle"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+        <!--<TextView-->
+            <!--android:id="@+id/tv_high_require_major_ratio"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="14sp"-->
+            <!--android:textColor="@color/color_666666"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:text="-对所选学科要求较高的专业占所有大学专业的80%"/>-->
 
-            <Button
-                android:id="@+id/btn_can_select_major"
-                android:layout_width="0dp"
-                android:maxWidth="150dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                android:textColor="@color/color_444444"
-                android:textSize="13sp"
-                android:background="@drawable/shape_corner_accent_3dp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:text="查看可报考专业"/>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--style="?android:attr/buttonBarStyle"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:orientation="horizontal">-->
 
-            <!--style="?android:attr/buttonBarButtonStyle"-->
+            <!--<Button-->
+                <!--android:id="@+id/btn_can_select_major"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:maxWidth="150dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:textColor="@color/color_444444"-->
+                <!--android:textSize="13sp"-->
+                <!--android:background="@drawable/shape_corner_accent_3dp"-->
+                <!--style="?android:attr/buttonBarButtonStyle"-->
+                <!--android:text="查看可报考专业"/>-->
 
-            <Button
-                android:id="@+id/btn_high_require_major"
-                android:layout_width="0dp"
-                android:maxWidth="150dp"
-                android:layout_weight="1"
-                android:layout_height="30dp"
-                android:textColor="@color/color_444444"
-                android:textSize="13sp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/shape_corner_accent_3dp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:text="查看要求较高专业"/>
+            <!--&lt;!&ndash;style="?android:attr/buttonBarButtonStyle"&ndash;&gt;-->
 
-        </LinearLayout>
+            <!--<Button-->
+                <!--android:id="@+id/btn_high_require_major"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:maxWidth="150dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:textColor="@color/color_444444"-->
+                <!--android:textSize="13sp"-->
+                <!--android:layout_marginLeft="15dp"-->
+                <!--android:layout_marginStart="15dp"-->
+                <!--android:background="@drawable/shape_corner_accent_3dp"-->
+                <!--style="?android:attr/buttonBarButtonStyle"-->
+                <!--android:text="查看要求较高专业"/>-->
 
-    </LinearLayout>
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
 
 </LinearLayout>

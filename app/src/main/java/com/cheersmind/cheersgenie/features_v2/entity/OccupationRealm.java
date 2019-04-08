@@ -1,5 +1,7 @@
 package com.cheersmind.cheersgenie.features_v2.entity;
 
+import android.text.TextUtils;
+
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import org.litepal.crud.DataSupport;
@@ -76,5 +78,10 @@ public class OccupationRealm extends DataSupport implements Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    //统一的获取名称
+    public String getName() {
+        return !TextUtils.isEmpty(realm) ? realm : personality_type;
     }
 }

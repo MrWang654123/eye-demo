@@ -197,7 +197,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
         //获取数据
         Bundle bundle = getArguments();
-        if(bundle!=null) {
+        if(bundle != null) {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
         }
 

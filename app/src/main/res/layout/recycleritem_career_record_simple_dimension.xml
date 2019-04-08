@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="15dp"
     android:paddingStart="15dp"
     android:paddingRight="15dp"
     android:paddingEnd="15dp"
     android:padding="15dp"
     android:background="@color/white"
+    android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <TextView
@@ -21,11 +23,12 @@
 
     <ImageView
         android:id="@+id/iv_report"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/mine_exam"
-        android:layout_marginLeft="15dp"
+        app:srcCompat="@drawable/ic_report_accent_24dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
         tools:ignore="ContentDescription" />
 
 </LinearLayout>

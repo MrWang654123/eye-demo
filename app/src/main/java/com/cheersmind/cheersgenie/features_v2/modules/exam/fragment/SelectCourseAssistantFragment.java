@@ -78,6 +78,7 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         items.add(new Pair<String, Fragment>("专业观察表", fragment2));
         items.add(new Pair<String, Fragment>("选科确认", fragment3));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
+        viewPager.setOffscreenPageLimit(2);
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
         //改变tab下划线的宽度

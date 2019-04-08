@@ -20,7 +20,7 @@
         android:textColor="@color/color_444444"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:text="测评详细说明"/>
 
     <ImageView

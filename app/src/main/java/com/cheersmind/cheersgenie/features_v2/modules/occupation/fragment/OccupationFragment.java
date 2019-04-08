@@ -186,7 +186,7 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             OccupationRealm realm = realmRecyclerAdapter.getData().get(position);
             //点击是不同项
-            if (!dto.getRealm().getRealm().equals(realm.getRealm())) {
+            if (!dto.getRealm().getName().equals(realm.getName())) {
                 //改变门类数据
                 List<OccupationCategory> categories = realm.getCategoriesFromDB();
                 categoryRecyclerAdapter.setNewData(categories);
@@ -447,7 +447,7 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
         //类型
         cb_rank_area.setText(dto.getType().getName());
         //领域
-        cb_rank_level.setText(dto.getRealm().getRealm());
+        cb_rank_level.setText(dto.getRealm().getName());
         //门类
         cb_rank_subject.setText(dto.getCategory().getName());
     }

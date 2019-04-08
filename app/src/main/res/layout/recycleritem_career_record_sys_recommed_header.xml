@@ -22,8 +22,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textColor="@color/colorAccent"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
+            android:textStyle="normal"
             android:layout_marginBottom="15dp"
             android:text="系统推荐"/>
         <!--android:padding="3dp"-->

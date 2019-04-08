@@ -36,14 +36,14 @@ public class OccupationRealmRecyclerAdapter extends BaseQuickAdapter<OccupationR
         //选中变色
         if (dto != null
                 && dto.getRealm() != null
-                && !TextUtils.isEmpty(dto.getRealm().getRealm())) {
+                && !TextUtils.isEmpty(dto.getRealm().getName())) {
 
-            if (dto.getRealm().getRealm().equals(item.getRealm())) {
+            if (dto.getRealm().getName().equals(item.getName())) {
                 ((TextView) helper.getView(R.id.tv_title)).setTextColor(
                         ContextCompat.getColor(context, R.color.color_e46c3e));
             }
         }
-        helper.setText(R.id.tv_title, item.getRealm());
+        helper.setText(R.id.tv_title, item.getName());
     }
 
 }

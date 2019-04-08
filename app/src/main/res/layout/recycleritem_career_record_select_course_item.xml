@@ -39,7 +39,7 @@
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
             android:gravity="center_vertical"
-            android:textColor="@color/color_444444"
+            android:textColor="@color/white"
             android:background="@drawable/shape_corner_accent_3dp"
             android:layout_marginLeft="15dp"
             android:layout_marginStart="15dp"
@@ -65,10 +65,10 @@
             app:isFull="false"
             app:vertical_Space="15dp">
 
-            <include layout="@layout/record_result_item"/>
-            <include layout="@layout/record_result_item"/>
-            <include layout="@layout/record_result_item"/>
-            <include layout="@layout/record_result_item"/>
+            <include layout="@layout/record_result_item_unclickable"/>
+            <include layout="@layout/record_result_item_unclickable"/>
+            <include layout="@layout/record_result_item_unclickable"/>
+            <include layout="@layout/record_result_item_unclickable"/>
 
         </com.cheersmind.cheersgenie.features.view.WarpLinearLayout>
 
@@ -104,7 +104,7 @@
             android:id="@+id/btn_to_exam"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:textColor="@color/color_444444"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:background="@drawable/shape_corner_accent_3dp"
             android:layout_gravity="center_horizontal"

@@ -59,7 +59,7 @@ public class CourseRelateMajorActivity extends BaseActivity {
         //标题
         if (tvToolbarTitle != null) {
             if (type == 1) {
-                tvToolbarTitle.setText("可报考展业");
+                tvToolbarTitle.setText("可报考专业");
             } else if (type == 2) {
                 tvToolbarTitle.setText("要求较高专业");
             }

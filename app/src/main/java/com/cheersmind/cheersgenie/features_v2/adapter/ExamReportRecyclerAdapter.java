@@ -7,8 +7,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,7 +14,6 @@ import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -29,7 +26,6 @@ import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
 import com.cheersmind.cheersgenie.features_v2.view.CircleScaleView;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.List;
@@ -129,18 +125,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             }
 
                         } else {//有排名则视为有结论
-                            helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
-                            helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-                            //分数
-                            String scoreStr = String.valueOf(Math.round(entity.getScore()));
-                            helper.setText(R.id.tv_score, scoreStr);
-                            //分数圆环
-                            ((CircleScaleView)helper.getView(R.id.csv_score)).setCirclePercent((float)(100 - entity.getScore()), (float) entity.getScore());
-                            //结果
-                            helper.setText(R.id.tv_result, entity.getResult());
-                            //分数描述
-                            String scoreDesc = "本测评中你的个人得分" + scoreStr + "分,高于" + String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%的用户";
-                            helper.setText(R.id.tv_score_desc, scoreDesc);
+                            hasRankAndResult(helper, entity);
                         }
 
                     } else {
@@ -163,18 +148,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             }
 
                         } else {//有排名则视为有结论
-                            helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
-                            helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-                            //分数
-                            String scoreStr = String.valueOf(Math.round(entity.getScore()));
-                            helper.setText(R.id.tv_score, scoreStr);
-                            //分数圆环
-                            ((CircleScaleView)helper.getView(R.id.csv_score)).setCirclePercent((float)(100 - entity.getScore()), (float) entity.getScore());
-                            //结果
-                            helper.setText(R.id.tv_result, entity.getResult());
-                            //分数描述
-                            String scoreDesc = "本测评中你的个人得分" + scoreStr + "分,高于" + String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%的用户";
-                            helper.setText(R.id.tv_score_desc, scoreDesc);
+                            hasRankAndResult(helper, entity);
                         }
                     }
                 }
@@ -404,7 +378,32 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         }
     }
 
-    public boolean isTopic() {
+    /**
+     * 有排名和结论的情况处理
+     * @param helper BaseViewHolder
+     * @param entity ExamReportRootEntity
+     */
+    private void hasRankAndResult(BaseViewHolder helper, ExamReportRootEntity entity) {
+        helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
+        helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
+        double score = Math.floor(entity.getScore());
+        //分数
+        String scoreStr = String.valueOf(score);
+        helper.setText(R.id.tv_score, scoreStr);
+        //分数圆环
+        ((CircleScaleView)helper.getView(R.id.csv_score)).setCirclePercent((float)(100 - score), (float) score);
+        //结果
+        helper.setText(R.id.tv_result, entity.getResult());
+        //分数描述
+        String scoreDesc = "本测评中你的个人得分<b><font color='" +
+                context.getResources().getColor(R.color.colorAccent) + "'>" + scoreStr +
+                "</font></b>分,高于<b><font color='" +
+                context.getResources().getColor(R.color.colorAccent) + "'>" +
+                String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%</font></b>的用户";
+        helper.setText(R.id.tv_score_desc, Html.fromHtml(scoreDesc));
+    }
+
+    private boolean isTopic() {
         return topic;
     }
 
