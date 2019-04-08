@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
     @Override
     protected void convert(BaseViewHolder helper, ExamTaskEntity item) {
         //标题
-        helper.setText(R.id.tv_title, item.getTask_name());
+        helper.setText(R.id.tv_title, !TextUtils.isEmpty(item.getTask_name()) ? item.getTask_name().trim() : "");
 
         //简介
         helper.setText(R.id.tv_desc, item.getDescription());
