@@ -404,6 +404,7 @@ public class HttpConfig {
     public static final String URL_MAJOR_ENROLL = API_HOST + "/v2/api/sy/gaokao/score_line_majors";
     //获取院校的毕业信息
     public static final String URL_COLLEGE_GRADUATION_INFO = API_HOST + "/v2/api/sy/universities/{university_id}/graduation_info";
-
+    //生涯关注
+    public static final String URL_CAREER_ATTENTION=API_HOST+"/v2/api/sy/follows";
 
 }

@@ -10,9 +10,7 @@ import android.support.v4.app.FragmentManager;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
-import com.cheersmind.cheersgenie.features_v2.modules.major.fragment.MajorDetailFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.OccupationDetailFragment;
 
 /**
@@ -33,7 +31,7 @@ public class OccupationDetailActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_attention_titlebar;
     }
 
     @Override

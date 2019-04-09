@@ -115,7 +115,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, Map<String,Object> params, boolean isFormType, 
+    private void doPost(String url, Map<String,Object> params, boolean isFormType,
                         final BaseService.ServiceCallback callback, String httpTag, final Context context) {
         BaseService.post(url, params, isFormType, new BaseService.ServiceCallback() {
             @Override
@@ -141,7 +141,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, JSONObject params, final BaseService.ServiceCallback callback, 
+    private void doPost(String url, JSONObject params, final BaseService.ServiceCallback callback,
                         String httpTag, final Context context) {
         BaseService.post(url, params, new BaseService.ServiceCallback() {
             @Override
@@ -168,7 +168,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPost(String url, Map<String,File> params, final BaseService.ServiceCallback callback, 
+    private void doPost(String url, Map<String,File> params, final BaseService.ServiceCallback callback,
                         String httpTag, final Context context) {
         BaseService.post(url, params, new BaseService.ServiceCallback() {
             @Override
@@ -195,7 +195,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPut(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, 
+    private void doPut(String url, Map<String,Object> params, final BaseService.ServiceCallback callback,
                        String httpTag, final Context context) {
         BaseService.put(url,params, new BaseService.ServiceCallback() {
             @Override
@@ -221,7 +221,7 @@ public class DataRequestService {
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    private void doPatch(String url, Map<String,Object> params, final BaseService.ServiceCallback callback, 
+    private void doPatch(String url, Map<String,Object> params, final BaseService.ServiceCallback callback,
                          String httpTag, final Context context) {
         BaseService.patch(url,params, new BaseService.ServiceCallback() {
             @Override
@@ -242,7 +242,7 @@ public class DataRequestService {
 
 
     //获取孩子关注主题列表
-    public void loadChildTopicList(String childId,int offset, int limit, 
+    public void loadChildTopicList(String childId,int offset, int limit,
                                    final BaseService.ServiceCallback callback, String httpTag, final Context context){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST
                 .replace("{child_id}", childId)
@@ -260,7 +260,7 @@ public class DataRequestService {
      * @param size 页长度
      * @param callback 回调 回调
      */
-    public void loadChildTopicListByStatus(String childId,int status, int page, int size, 
+    public void loadChildTopicListByStatus(String childId,int status, int page, int size,
                                            final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_TOPIC_LIST_BY_STATUS
                 .replace("{child_id}", childId)
@@ -346,10 +346,10 @@ public class DataRequestService {
                 .replace("{size}",String.valueOf(limit));
         doGet(url, callback, httpTag, context);
     }
-    
+
 
     //获取孩子最后一次使用量表 V2
-    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback, 
+    public void getLatestDimensionV2(String childId,final BaseService.ServiceCallback callback,
                                      String httpTag, Context context){
         String url = HttpConfig.URL_DIMENSION_LATEST_V2
                 .replace("{child_id}",childId);
@@ -362,7 +362,7 @@ public class DataRequestService {
      * @param openDimensionDto dto
      * @param callback 回调
      */
-    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback, 
+    public void startChildDimensionV2(OpenDimensionDto openDimensionDto, final BaseService.ServiceCallback callback,
                                       String httpTag, Context context){
         String url = HttpConfig.URL_CHILD_DIMENSION_START_V2
                 .replace("{child_id}",openDimensionDto.getChildId())
@@ -653,7 +653,7 @@ public class DataRequestService {
 
         doPost(url, map, false, callback, httpTag, context);
     }
-    
+
 
     /**
      * 获取文章列表
@@ -742,7 +742,7 @@ public class DataRequestService {
 
         doGet(url, callback, httpTag, context);
     }
-    
+
 
     /**
      * 收藏
@@ -757,6 +757,24 @@ public class DataRequestService {
         doPost(url, new HashMap<String, Object>(), false, callback, httpTag, context);
     }
 
+    /**
+     * 关注
+     * @param callback 回调 回调
+     * @param httpTag 通信标记
+     */
+    public void postDoAttention(String entityId,
+                                int type,
+                                String tag,
+                                boolean isFollow,
+                                final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url=HttpConfig.URL_CAREER_ATTENTION;
+        Map<String, Object> map = new HashMap<>();
+        map.put("entity_id",entityId);
+        map.put("type",type);
+        map.put("tag",tag);
+        map.put("is_follow",isFollow);
+        doPost(url,map,false, callback, httpTag, context);
+    }
     /**
      * 点赞
      * @param articleId 文章ID
@@ -1046,7 +1064,7 @@ public class DataRequestService {
                 .replace("{size}", size + "");
         doGet(url, callback, httpTag, context);
     }
-    
+
 
     /**
      * 获取报告V2

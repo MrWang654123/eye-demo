@@ -31,7 +31,7 @@ public class MajorDetailActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_attention_titlebar;
     }
 
     @Override
