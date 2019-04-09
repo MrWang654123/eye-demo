@@ -1,56 +1,64 @@
-package com.cheersmind.cheersgenie.features.modules.mine.activity;
+package com.cheersmind.cheersgenie.features_v2.modules.mine.fragment;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.HomeRecyclerAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.dto.MineDto;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
-import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.utils.RecyclerViewUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
+import com.cheersmind.cheersgenie.features_v2.adapter.AttentionRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.AttentionDto;
+import com.cheersmind.cheersgenie.features_v2.dto.AttentionListDto;
+import com.cheersmind.cheersgenie.features_v2.entity.AttentionEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.AttentionListRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
+import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorDetailActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.features.entity.ArticleRootEntity;
-import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.module.login.UCManager;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
 
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 
 /**
- * 我的收藏
+ * 我的关注
  */
-public class MineFavoriteActivity extends BaseActivity {
+public class MineAttentionFragment extends LazyLoadFragment {
 
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
+    Unbinder unbinder;
+    //关注类型
+    private int attentionType;
+
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-
-    //空布局模块
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
+    //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
@@ -59,50 +67,75 @@ public class MineFavoriteActivity extends BaseActivity {
     FloatingActionButton fabGotoTop;
 
     //适配器的数据列表
-//    List<SimpleArticleEntity> recyclerItem;
-    //适配器
-    HomeRecyclerAdapter recyclerAdapter;
+    AttentionRecyclerAdapter recyclerAdapter;
 
     //下拉刷新的监听
     SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-            //刷新“我的收藏”数据
-            refreshFavoriteData();
+            //加载数据
+            refreshData();
         }
     };
+
     //上拉加载更多的监听
     BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
         @Override
         public void onLoadMoreRequested() {
-            //加载更多“我的收藏”数据
-            loadMoreFavoriteData();
+            //加载更多数据
+            loadMoreData();
         }
     };
 
-    //查询Dto
-    MineDto dto;
-
-    //页长度
-    private static final int PAGE_SIZE = 10;
-    //页码
-    private int pageNum = 1;
-    //后台总记录数
-    private int totalCount = 0;
-
-
-    //recycler子项的点击监听
+    //recycler item点击监听
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
-
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            //跳转到文章详情页面
-            SimpleArticleEntity simpleArticle = recyclerAdapter.getData().get(position);
-            String articleId = simpleArticle.getId();
-            String ivMainUrl = simpleArticle.getArticleImg();
-            String articleTitle = simpleArticle.getArticleTitle();
-
-            ArticleDetailActivity.startArticleDetailActivity(MineFavoriteActivity.this, articleId, ivMainUrl, articleTitle);
+            AttentionEntity entity = recyclerAdapter.getData().get(position);
+            switch (attentionType) {
+                //院校
+                case Dictionary.ATTENTION_TYPE_COLLEGE: {
+                    try {
+                        CollegeEntity collegeEntity = new CollegeEntity();
+                        collegeEntity.setId(entity.getEntity_id());
+                        collegeEntity.setCn_name(entity.getTag());
+                        CollegeDetailActivity.startCollegeDetailActivity(getContext(), collegeEntity);
+                    } catch (Exception e) {
+                        if (getActivity() != null) {
+                            ToastUtil.showShort(getActivity().getApplication(), getString(R.string.operate_fail));
+                        }
+                    }
+                    break;
+                }
+                //专业
+                case Dictionary.ATTENTION_TYPE_MAJOR: {
+                    try {
+                        MajorItem majorItem = new MajorItem();
+                        majorItem.setMajor_code(entity.getEntity_id());
+                        majorItem.setMajor_name(entity.getTag());
+                        MajorDetailActivity.startMajorDetailActivity(getContext(), majorItem);
+                    } catch (Exception e) {
+                        if (getActivity() != null) {
+                            ToastUtil.showShort(getActivity().getApplication(), getString(R.string.operate_fail));
+                        }
+                    }
+                    break;
+                }
+                //职业
+                case Dictionary.ATTENTION_TYPE_OCCUPATION: {
+                    try {
+                        OccupationItem occupationItem = new OccupationItem();
+                        occupationItem.setOccupation_id(Long.valueOf(entity.getEntity_id()));
+                        occupationItem.setOccupation_name(entity.getTag());
+                        OccupationDetailActivity.startOccupationDetailActivity(getContext(), occupationItem);
+                    } catch (Exception e) {
+                        if (getActivity() != null) {
+                            ToastUtil.showShort(getActivity().getApplication(), getString(R.string.operate_fail));
+                        }
+                    }
+                    break;
+                }
+            }
         }
     };
 
@@ -111,36 +144,51 @@ public class MineFavoriteActivity extends BaseActivity {
 
         @Override
         public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+            AttentionEntity entity = recyclerAdapter.getData().get(position);
+
             switch (view.getId()) {
-                //收藏
-                case R.id.iv_favorite:{
-                    SimpleArticleEntity simpleArticleEntity = recyclerAdapter.getData().get(position);
-                    String articleId = simpleArticleEntity.getId();
-                    doCancelFavorite(articleId, position);
+                //取消关注
+                case R.id.tv_cancel_attention: {
+                    attentionDto.setEntity_id(entity.getEntity_id());
+                    attentionDto.setTag(entity.getTag());
+                    doAttention(attentionDto, position);
                     break;
                 }
             }
         }
     };
 
+    //页长度
+    private static final int PAGE_SIZE = 20;
+    //页码
+    private int pageNum = 1;
+    //后台总记录数
+    private int totalCount = 0;
+
+    //关注列表Dto
+    AttentionListDto dto;
+    //关注dto
+    AttentionDto attentionDto;
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_mine_favorite;
+        return R.layout.fragment_common_white_refresh_recycler_gotop;
     }
 
     @Override
-    protected String settingTitle() {
-        return "我的收藏";
-    }
+    protected void onInitView(View rootView) {
+        unbinder = ButterKnife.bind(this, rootView);
 
+        //获取数据
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            attentionType = bundle.getInt(DtoKey.ATTENTION_TYPE);
+        }
 
-    @SuppressLint("RestrictedApi")
-    @Override
-    protected void onInitView() {
         //适配器
-        recyclerAdapter = new HomeRecyclerAdapter(MineFavoriteActivity.this, R.layout.recycleritem_home, null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter = new AttentionRecyclerAdapter(getContext(), R.layout.recycleritem_mine_attention, null);
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
@@ -150,107 +198,73 @@ public class MineFavoriteActivity extends BaseActivity {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(this));
-        //去除默认的动画效果
-        ((DefaultItemAnimator) recycleView.getItemAnimator()).setSupportsChangeAnimations(false);
-        recycleView.setLayoutManager(new LinearLayoutManager(MineFavoriteActivity.this));
+//        recyclerAdapter.addHeaderView(new View(getContext()));
+        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
-        //添加自定义分割线
-        DividerItemDecoration divider = new DividerItemDecoration(MineFavoriteActivity.this,DividerItemDecoration.VERTICAL);
-        divider.setDrawable(ContextCompat.getDrawable(MineFavoriteActivity.this,R.drawable.recycler_divider_custom));
-        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //添加自定义分割线
+//        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
+//        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
+//        recycleView.addItemDecoration(divider);
         //滑动监听
         try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(MineFavoriteActivity.this, fabGotoTop));
+            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //限制最大滑动速度
-        int maxFlingVelocity = recycleView.getMaxFlingVelocity();
-        maxFlingVelocity = getResources().getInteger(R.integer.recycler_view_max_velocity);
-//        ToastUtil.showLong(getContext(), "滑动速度：" + maxFlingVelocity);
-        RecyclerViewUtil.setMaxFlingVelocity(recycleView, DensityUtil.dip2px(MineFavoriteActivity.this, maxFlingVelocity));
-
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
-        //设置样式刷新显示的位置
-        swipeRefreshLayout.setProgressViewOffset(true, -20, 100);
 
         //设置无数据提示文本
-        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_favorite));
-        //无数据可点击
-        emptyLayout.setClickEnableForNoData(true);
-        //重载监听
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_attention_list));
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                //加载更多“我的收藏”数据
-                loadMoreFavoriteData();
-            }
-        });
-        //跳转相关监听
-        emptyLayout.setOnGotoRelationListener(new OnMultiClickListener() {
-            @Override
-            public void onMultiClick(View view) {
-                Intent intent = new Intent(MineFavoriteActivity.this, MasterTabActivity.class);
-                intent.putExtra(MasterTabActivity.VIEWPAGER_POSITION, 0);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);//FLAG_ACTIVITY_SINGLE_TOP
-                startActivity(intent);
+                loadMoreData();
             }
         });
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
+
+        dto = new AttentionListDto(pageNum, PAGE_SIZE);
+        dto.setType(attentionType);
+
+        attentionDto = new AttentionDto();
+        attentionDto.setType(attentionType);
+        attentionDto.setFollow(false);
     }
 
     @Override
-    protected void onInitData() {
-        //初始化查询dto
-        dto = new MineDto();
-        dto.setUserId(UCManager.getInstance().getUserId());
-        dto.setPage(pageNum);
-        dto.setSize(PAGE_SIZE);
-
-        //加载更多“我的收藏”数据
-        loadMoreFavoriteData();
+    protected void lazyLoad() {
+        loadMoreData();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        recycleView.clearOnScrollListeners();
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
-
-    //    @OnClick({R.id.fabGotoTop})
-//    public void onViewClick(View view) {
-//        switch (view.getId()) {
-//            //置顶按钮
-//            case R.id.fabGotoTop: {
-//                //滚动到顶部
-//                recycleView.smoothScrollToPosition(0);
-//                break;
-//            }
-//        }
-//    }
 
     /**
-     * 刷新收藏数据
+     * 刷新数据
      */
-    private void refreshFavoriteData() {
+    private void refreshData() {
         //下拉刷新
         pageNum = 1;
-        //设置页
-        dto.setPage(pageNum);
+        //确保显示了刷新动画
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        //请求收藏数据
-        DataRequestService.getInstance().getMyFavorite(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getMineAttentionList(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启上拉加载功能
@@ -274,10 +288,10 @@ public class MineFavoriteActivity extends BaseActivity {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+                    AttentionListRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, AttentionListRootEntity.class);
 
-                    totalCount = articleRootEntity.getTotal();
-                    List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+                    totalCount = rootEntity.getTotal();
+                    List<AttentionEntity> dataList = rootEntity.getItems();
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
@@ -290,11 +304,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        if (recyclerAdapter.getData().size() < Dictionary.HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT) {
-                            recyclerAdapter.loadMoreEnd(true);
-                        } else {
-                            recyclerAdapter.loadMoreEnd(false);
-                        }
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -310,17 +320,15 @@ public class MineFavoriteActivity extends BaseActivity {
                     //清空列表数据
                     recyclerAdapter.setNewData(null);
                 }
-
             }
-        }, httpTag, MineFavoriteActivity.this);
+        }, httpTag, getActivity());
     }
 
+
     /**
-     * 加载更多收藏数据
+     * 加载更多数据
      */
-    private void loadMoreFavoriteData() {
-        //设置页
-        dto.setPage(pageNum);
+    private void loadMoreData() {
         //关闭下拉刷新功能
         swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
@@ -329,7 +337,8 @@ public class MineFavoriteActivity extends BaseActivity {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        DataRequestService.getInstance().getMyFavorite(dto, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getMineAttentionList(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //开启下拉刷新功能
@@ -353,10 +362,10 @@ public class MineFavoriteActivity extends BaseActivity {
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+                    AttentionListRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, AttentionListRootEntity.class);
 
-                    totalCount = articleRootEntity.getTotal();
-                    List<SimpleArticleEntity> dataList = articleRootEntity.getItems();
+                    totalCount = rootEntity.getTotal();
+                    List<AttentionEntity> dataList = rootEntity.getItems();
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
@@ -375,11 +384,7 @@ public class MineFavoriteActivity extends BaseActivity {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        if (recyclerAdapter.getData().size() < Dictionary.HIDE_ARTICLE_LOAD_MORE_VIEW_COUNT) {
-                            recyclerAdapter.loadMoreEnd(true);
-                        } else {
-                            recyclerAdapter.loadMoreEnd(false);
-                        }
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -400,17 +405,16 @@ public class MineFavoriteActivity extends BaseActivity {
                 }
 
             }
-        }, httpTag, MineFavoriteActivity.this);
+        }, httpTag, getActivity());
     }
 
-
     /**
-     * 取消收藏
-     * @param articleId
-     * @param position
+     * 关注操作
      */
-    private void doCancelFavorite(String articleId, final int position) {
-        DataRequestService.getInstance().postDoFavorite(articleId, new BaseService.ServiceCallback() {
+    private void doAttention(AttentionDto attentionDto, final int position) {
+        //通信加载等待
+        LoadingView.getInstance().show(getContext(), httpTag);
+        DataRequestService.getInstance().postDoAttention(attentionDto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
@@ -419,12 +423,12 @@ public class MineFavoriteActivity extends BaseActivity {
             @Override
             public void onResponse(Object obj) {
                 try {
-                    //解析数据
-//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    //刷新收藏视图
-//                    Boolean favorite = (Boolean) dataMap.get("is_favorite");
-//                    SimpleArticleEntity simpleArticleEntity = recyclerItem.get(position);
-//                    simpleArticleEntity.setFavorite(favorite);
+                    //关闭通信加载等待
+                    LoadingView.getInstance().dismiss();
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    AttentionEntity attentionEntity = InjectionWrapperUtil.injectMap(dataMap, AttentionEntity.class);
+
                     recyclerAdapter.getData().remove(position);
                     int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();
 //                    //把header计算在内
@@ -442,13 +446,13 @@ public class MineFavoriteActivity extends BaseActivity {
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    //操作失败
-                    onFailure(new QSCustomException(getResources().getString(R.string.operate_fail)));
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
                 }
+
+
             }
-        }, httpTag, MineFavoriteActivity.this);
+        }, httpTag, getContext());
     }
 
-
 }
+

@@ -8,15 +8,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
+import com.cheersmind.cheersgenie.features_v2.modules.base.activity.CommonAttentionActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.major.fragment.MajorDetailFragment;
 
 /**
  * 专业详情
  */
-public class MajorDetailActivity extends BaseActivity {
+public class MajorDetailActivity extends CommonAttentionActivity {
 
     /**
      * 启动专业详情页面
@@ -30,26 +32,19 @@ public class MajorDetailActivity extends BaseActivity {
     }
 
     @Override
-    protected int setContentView() {
-        return R.layout.activity_common_attention_titlebar;
-    }
-
-    @Override
     protected String settingTitle() {
         return "专业详情";
     }
 
-
-    @Override
-    protected void onInitView() {
-        //修改状态栏颜色
-        setStatusBarBackgroundColor(MajorDetailActivity.this, getResources().getColor(R.color.white));
-    }
-
     @Override
     protected void onInitData() {
+        super.onInitData();
         //专业
         MajorItem major = (MajorItem) getIntent().getSerializableExtra(DtoKey.MAJOR);
+
+        dto.setEntity_id(major.getMajor_code());//ID
+        dto.setTag(major.getMajor_name());//名称
+        dto.setType(Dictionary.ATTENTION_TYPE_MAJOR);//对象类型
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = MajorDetailFragment.class.getSimpleName();

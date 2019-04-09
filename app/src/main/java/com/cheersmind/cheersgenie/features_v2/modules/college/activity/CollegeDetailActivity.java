@@ -6,38 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
-import android.widget.Button;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.AttentionEntity;
-import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
-import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
+import com.cheersmind.cheersgenie.features_v2.modules.base.activity.CommonAttentionActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.college.fragment.CollegeDetailFragment;
-import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.service.BaseService;
-import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
-import com.cheersmind.cheersgenie.main.util.JsonUtil;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
-
-import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * 院校详情
  */
-public class CollegeDetailActivity extends BaseActivity implements AttentionBtnCtrlListener {
-
-    @BindView(R.id.btn_attention)
-    Button mBtnAttention;
-
-    private AttentionEntity dto;
-    private boolean IsAttention = false;
+public class CollegeDetailActivity extends CommonAttentionActivity {
 
     /**
      * 启动院校详情页面
@@ -52,35 +32,19 @@ public class CollegeDetailActivity extends BaseActivity implements AttentionBtnC
     }
 
     @Override
-    protected int setContentView() {
-        return R.layout.activity_common_attention_titlebar;
-    }
-
-    @Override
     protected String settingTitle() {
-        return null;
-    }
-
-
-    @Override
-    protected void onInitView() {
-        //修改状态栏颜色
-        setStatusBarBackgroundColor(CollegeDetailActivity.this, getResources().getColor(R.color.white));
-        dto = new AttentionEntity();
-        boolean is_follow = dto.isIs_follow();
-        if (is_follow) {
-            mBtnAttention.setEnabled(false);
-            mBtnAttention.setText("已关注");
-        } else {
-            mBtnAttention.setEnabled(true);
-            mBtnAttention.setText("关注");
-        }
+        return "院校详情";
     }
 
     @Override
     protected void onInitData() {
+        super.onInitData();
         //院校
         CollegeEntity college = (CollegeEntity) getIntent().getSerializableExtra(DtoKey.COLLEGE);
+
+        dto.setEntity_id(college.getId());//ID
+        dto.setTag(college.getCn_name());//名称
+        dto.setType(Dictionary.ATTENTION_TYPE_COLLEGE);//对象类型
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = CollegeDetailFragment.class.getSimpleName();
@@ -98,62 +62,4 @@ public class CollegeDetailActivity extends BaseActivity implements AttentionBtnC
         }
     }
 
-    @OnClick(R.id.btn_attention)
-    public void onClick() {
-        if (IsAttention) {
-            mBtnAttention.setEnabled(true);
-            mBtnAttention.setText("关注");
-            IsAttention = false;
-        } else {
-            mBtnAttention.setEnabled(false);
-            mBtnAttention.setText("已关注");
-            IsAttention = true;
-        }
-        doAttention();
-    }
-
-    /**
-     * 关注操作
-     */
-    private void doAttention() {
-
-        DataRequestService.getInstance().postDoAttention("i7eIjUJKKUMG",
-                0, "0", IsAttention, new BaseService.ServiceCallback() {
-                    @Override
-                    public void onFailure(QSCustomException e) {
-                        onFailureDefault(e);
-                    }
-
-                    @Override
-                    public void onResponse(Object obj) {
-                        try {
-                            Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                            AttentionEntity attentionEntity = InjectionWrapperUtil.injectMap(dataMap, AttentionEntity.class);
-                            ToastUtil.showShort(getApplication(), "关注成功");
-
-                        } catch (Exception e) {
-                            ToastUtil.showShort(getApplication(), "关注失败");
-                        }
-
-
-                    }
-                }, httpTag, CollegeDetailActivity.this);
-    }
-
-
-    @Override
-    public void ctrlStatus(boolean hasAttention) {
-        mBtnAttention.setVisibility(View.VISIBLE);
-
-        if (hasAttention) {
-            mBtnAttention.setEnabled(false);
-            mBtnAttention.setText("已关注");
-            IsAttention = true;
-
-        } else {
-            mBtnAttention.setEnabled(true);
-            mBtnAttention.setText("关注");
-            IsAttention = false;
-        }
-    }
 }

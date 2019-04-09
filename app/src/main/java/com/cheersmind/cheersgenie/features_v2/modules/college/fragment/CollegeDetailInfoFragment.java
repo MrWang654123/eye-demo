@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +26,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankResultItem;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeStudentData;
 import com.cheersmind.cheersgenie.features_v2.entity.FacultyStrengthItem;
 import com.cheersmind.cheersgenie.features_v2.entity.FacultyStrengthItemChild;
+import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
 import com.cheersmind.cheersgenie.features_v2.view.CircleScaleView;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -57,6 +57,8 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
 
     //院校ID
     private String collegeId;
+    //院校概况
+    private CollegeDetailInfo collegeDetailInfo;
 
     @BindView(R.id.nsv_main)
     NestedScrollView nsvMain;
@@ -133,6 +135,7 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             collegeId = bundle.getString(DtoKey.COLLEGE_ID);
+            collegeDetailInfo = (CollegeDetailInfo) bundle.getSerializable(DtoKey.COLLEGE_DETAIL_INFO);
         }
 
         //设置无数据提示文本
@@ -145,8 +148,10 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
                 loadData();
             }
         });
-        //初始化为加载状态
-        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        if (collegeDetailInfo == null) {
+            //初始化为加载状态
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        }
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
@@ -164,8 +169,13 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        //加载数据
-        loadData();
+        if (collegeDetailInfo == null) {
+            //加载数据
+            loadData();
+        } else {
+            //刷新子模块视图
+            refreshBlockViews(collegeDetailInfo);
+        }
     }
 
     @Override
@@ -226,6 +236,10 @@ public class CollegeDetailInfoFragment extends LazyLoadFragment {
 
                     //刷新子模块视图
                     refreshBlockViews(collegeDetailInfo);
+                    //调用关注回调
+                    if (getActivity() != null && getActivity() instanceof AttentionBtnCtrlListener) {
+                        ((AttentionBtnCtrlListener) getActivity()).ctrlStatus(collegeDetailInfo.isFollow());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

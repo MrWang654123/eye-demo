@@ -18,6 +18,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorDetail;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
+import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -165,6 +166,10 @@ public class MajorDetailFragment extends LazyLoadFragment {
                     settingBaseInfo(majorDetail);
                     //生成tabs
                     generateTabs(majorDetail);
+                    //调用关注回调
+                    if (getActivity() != null && getActivity() instanceof AttentionBtnCtrlListener) {
+                        ((AttentionBtnCtrlListener) getActivity()).ctrlStatus(majorDetail.isFollow());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

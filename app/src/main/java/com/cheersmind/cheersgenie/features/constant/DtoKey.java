@@ -98,6 +98,10 @@ public class DtoKey {
      */
     public static final String COLLEGE_NAME = "COLLEGE_NAME";
     /**
+     * 院校概况
+     */
+    public static final String COLLEGE_DETAIL_INFO = "COLLEGE_DETAIL_INFO";
+    /**
      * 重点学科类型（国家重点、一流学科）
      */
     public static final String KEY_SUBJECT_TYPE = "KEY_SUBJECT_TYPE";
@@ -109,6 +113,10 @@ public class DtoKey {
      * 职业门类
      */
     public static final String OCCUPATION_CATEGORY = "OCCUPATION_CATEGORY";
+    /**
+     * 关注类型
+     */
+    public static final String ATTENTION_TYPE = "ATTENTION_TYPE";
 
 
     /*----------  我的实践begin  ----------*/

@@ -52,6 +52,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleRootEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.CareerPlanFragment;
+import com.cheersmind.cheersgenie.features_v2.modules.mine.activity.MineAttentionActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.mine.activity.MineAwardActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -387,7 +388,7 @@ public class MineFragment extends TakePhotoFragment {
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
             R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.btn_sign_in, R.id.iv_profile,
-            R.id.ll_user_info, R.id.ll_track_record})
+            R.id.ll_user_info, R.id.ll_track_record, R.id.ll_mine_attention})
     public void onViewClicked(View view) {
         switch (view.getId()) {
                 //用户信息布局
@@ -479,6 +480,11 @@ public class MineFragment extends TakePhotoFragment {
                     //加载生涯模块：为了获取childExamId
                     loadCareerPlanModule();
                 }
+                break;
+            }
+            //我的关注
+            case R.id.ll_mine_attention: {
+                MineAttentionActivity.startMineAttentionActivity(getContext());
                 break;
             }
         }

@@ -20,6 +20,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationDetail;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationIntroduce;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
+import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
 import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -130,6 +131,9 @@ public class OccupationDetailFragment extends LazyLoadFragment {
         //加载行业详情
         if (occupation != null && occupation.getOccupation_id() > 0) {
             loadOccupationDetail(occupation.getOccupation_id());
+        } else {
+            //空布局：无数据
+            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
         }
     }
 
@@ -164,6 +168,10 @@ public class OccupationDetailFragment extends LazyLoadFragment {
                     settingBaseInfo(occupationDetail);
                     //初始化块视图
                     initBlockViews(occupationDetail);
+                    //调用关注回调
+                    if (getActivity() != null && getActivity() instanceof AttentionBtnCtrlListener) {
+                        ((AttentionBtnCtrlListener) getActivity()).ctrlStatus(occupationDetail.isFollow());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

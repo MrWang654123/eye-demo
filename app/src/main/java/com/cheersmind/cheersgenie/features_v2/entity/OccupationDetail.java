@@ -34,6 +34,11 @@ public class OccupationDetail implements Serializable {
     @InjectMap(name = "majors")
     private List<MajorItem> suitMajors;
 
+    //是否关注
+    @InjectMap(name = "is_follow")
+    private boolean follow;
+
+
     public long getOccupation_id() {
         return occupation_id;
     }
@@ -80,5 +85,13 @@ public class OccupationDetail implements Serializable {
 
     public void setSuitMajors(List<MajorItem> suitMajors) {
         this.suitMajors = suitMajors;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 }

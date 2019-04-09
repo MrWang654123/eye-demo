@@ -1,4 +1,4 @@
-package com.cheersmind.cheersgenie.features.dto;
+package com.cheersmind.cheersgenie.features_v2.entity;
 
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
@@ -7,10 +7,9 @@ import org.litepal.crud.DataSupport;
 import java.io.Serializable;
 
 /**
- * 关注Dto
+ * 关注
  */
 public class AttentionEntity extends DataSupport implements Serializable {
-
 
     @InjectMap(name="user_id")
     private String user_id;
@@ -28,10 +27,10 @@ public class AttentionEntity extends DataSupport implements Serializable {
     private boolean is_follow;
 
     @InjectMap(name ="create_time")
-    private Object create_time;
+    private String create_time;
 
     @InjectMap(name ="update_time")
-    private Object update_time;
+    private String update_time;
 
     public String getUser_id() {
         return user_id;
@@ -73,19 +72,19 @@ public class AttentionEntity extends DataSupport implements Serializable {
         this.is_follow = is_follow;
     }
 
-    public Object getCreate_time() {
+    public String getCreate_time() {
         return create_time;
     }
 
-    public void setCreate_time(Object create_time) {
+    public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
 
-    public Object getUpdate_time() {
+    public String getUpdate_time() {
         return update_time;
     }
 
-    public void setUpdate_time(Object update_time) {
+    public void setUpdate_time(String update_time) {
         this.update_time = update_time;
     }
 }

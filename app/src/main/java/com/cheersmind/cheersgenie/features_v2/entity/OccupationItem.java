@@ -10,11 +10,11 @@ import java.io.Serializable;
  */
 public class OccupationItem implements MultiItemEntity, Serializable {
 
-    //行业名称
+    //职业名称
     @InjectMap(name = "occupation_name")
     private String occupation_name;
 
-    //行业ID
+    //职业ID
     @InjectMap(name = "occupation_id")
     private long occupation_id;
 

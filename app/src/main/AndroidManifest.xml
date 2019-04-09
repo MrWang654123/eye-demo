@@ -504,6 +504,9 @@
         <!--通用WebView页面-->
         <activity android:name=".features_v2.modules.base.activity.CommonWebViewActivity"
             android:screenOrientation="portrait"/>
+        <!--我的关注-->
+        <activity android:name=".features_v2.modules.mine.activity.MineAttentionActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

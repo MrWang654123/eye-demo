@@ -453,7 +453,7 @@
                 android:background="@color/color_f2f2f2"/>
 
             <LinearLayout
-                android:id="@+id/ll_mine_focus"
+                android:id="@+id/ll_mine_attention"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:orientation="horizontal"

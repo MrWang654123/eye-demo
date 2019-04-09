@@ -50,6 +50,10 @@ public class MajorDetail implements Serializable {
     @InjectMap(name = "employment")
     private String employment;
 
+    //是否关注
+    @InjectMap(name = "is_follow")
+    private boolean follow;
+
     public String getMajor_name() {
         return major_name;
     }
@@ -128,5 +132,13 @@ public class MajorDetail implements Serializable {
 
     public void setEmployment(String employment) {
         this.employment = employment;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 }

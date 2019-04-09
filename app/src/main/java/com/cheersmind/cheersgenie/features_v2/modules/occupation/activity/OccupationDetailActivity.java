@@ -8,15 +8,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationItem;
+import com.cheersmind.cheersgenie.features_v2.modules.base.activity.CommonAttentionActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.OccupationDetailFragment;
 
 /**
  * 职业详情
  */
-public class OccupationDetailActivity extends BaseActivity {
+public class OccupationDetailActivity extends CommonAttentionActivity {
 
     /**
      * 启动行业详情页面
@@ -30,26 +32,19 @@ public class OccupationDetailActivity extends BaseActivity {
     }
 
     @Override
-    protected int setContentView() {
-        return R.layout.activity_common_attention_titlebar;
-    }
-
-    @Override
     protected String settingTitle() {
         return "职业详情";
     }
 
-
-    @Override
-    protected void onInitView() {
-        //修改状态栏颜色
-        setStatusBarBackgroundColor(OccupationDetailActivity.this, getResources().getColor(R.color.white));
-    }
-
     @Override
     protected void onInitData() {
+        super.onInitData();
         //行业
         OccupationItem occupationItem = (OccupationItem) getIntent().getSerializableExtra(DtoKey.OCCUPATION);
+
+        dto.setEntity_id(String.valueOf(occupationItem.getOccupation_id()));//ID
+        dto.setTag(occupationItem.getOccupation_name());//名称
+        dto.setType(Dictionary.ATTENTION_TYPE_OCCUPATION);//对象类型
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = OccupationDetailFragment.class.getSimpleName();

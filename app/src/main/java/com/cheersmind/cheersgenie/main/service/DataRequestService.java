@@ -24,6 +24,8 @@ import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
+import com.cheersmind.cheersgenie.features_v2.dto.AttentionDto;
+import com.cheersmind.cheersgenie.features_v2.dto.AttentionListDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
@@ -759,22 +761,21 @@ public class DataRequestService {
 
     /**
      * 关注
+     * @param dto 数据
      * @param callback 回调 回调
      * @param httpTag 通信标记
      */
-    public void postDoAttention(String entityId,
-                                int type,
-                                String tag,
-                                boolean isFollow,
-                                final BaseService.ServiceCallback callback, String httpTag, Context context){
-        String url=HttpConfig.URL_CAREER_ATTENTION;
+    public void postDoAttention(AttentionDto dto,
+                                final BaseService.ServiceCallback callback, String httpTag, Context context) {
+        String url = HttpConfig.URL_CAREER_ATTENTION;
         Map<String, Object> map = new HashMap<>();
-        map.put("entity_id",entityId);
-        map.put("type",type);
-        map.put("tag",tag);
-        map.put("is_follow",isFollow);
+        map.put("entity_id", dto.getEntity_id());
+        map.put("type", dto.getType());
+        map.put("tag", dto.getTag());
+        map.put("is_follow", dto.isFollow());
         doPost(url,map,false, callback, httpTag, context);
     }
+
     /**
      * 点赞
      * @param articleId 文章ID
@@ -2178,6 +2179,28 @@ public class DataRequestService {
     public void getDevelopmentRecord(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_DEVELOPMENT_RECORD
                 .replace("{child_id}", childId);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取我的关注
+     * @param dto dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getMineAttentionList(AttentionListDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_ATTENTION_LIST
+                .replace("{type}", String.valueOf(dto.getType()));
+
+        Map<String, Object> params = new HashMap<>();
+
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
 
         doGet(url, callback, httpTag, context);
     }

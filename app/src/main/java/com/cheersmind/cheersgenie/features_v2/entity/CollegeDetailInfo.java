@@ -66,6 +66,10 @@ public class CollegeDetailInfo implements Serializable {
     @InjectMap(name = "student_data")
     private CollegeStudentData studentData;
 
+    //是否关注
+    @InjectMap(name = "is_follow")
+    private boolean follow;
+
     public String getBrief_introduction() {
         return brief_introduction;
     }
@@ -176,5 +180,13 @@ public class CollegeDetailInfo implements Serializable {
 
     public void setStudentData(CollegeStudentData studentData) {
         this.studentData = studentData;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 }

@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
@@ -17,15 +15,24 @@ import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
-import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeBasicInfo;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeDetailInfo;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
+import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,6 +74,10 @@ public class CollegeDetailFragment extends LazyLoadFragment {
     @BindView(R.id.tv_tag)
     TextView tv_tag;
 
+    //空布局
+    @BindView(R.id.emptyLayout)
+    XEmptyLayout emptyLayout;
+
     //最大的质量标签数量
     private static final int MAX_QUALITY_TAG_COUNT = 3;
 
@@ -86,6 +97,110 @@ public class CollegeDetailFragment extends LazyLoadFragment {
             college = (CollegeEntity) bundle.getSerializable(DtoKey.COLLEGE);
         }
 
+        //监听 AppBarLayout Offset 变化，动态设置 SwipeRefreshLayout 是否可用
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (verticalOffset >= 0) {
+                    //发送停止Fling的事件
+                    EventBus.getDefault().post(new StopFlingEvent());
+                }
+
+            }
+        });
+
+        //设置无数据提示文本
+        emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_college_detail_info));
+        //重载监听
+        emptyLayout.setOnReloadListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                //初始化为加载状态
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+                //加载院校概况信息
+                loadData(college.getId());
+            }
+        });
+
+    }
+
+    @Override
+    protected void lazyLoad() {
+        //空判断
+        if (college == null || TextUtils.isEmpty(college.getId())) {
+            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+
+        } else {
+            //基本信息不为空
+            if (college.getBasicInfo() != null) {
+                generateTabs(college, null);
+
+            } else {
+                //加载院校概况
+                loadData(college.getId());
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    /**
+     * 加载数据
+     */
+    private void loadData(String collegeId) {
+        //通信等待提示
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+
+        DataRequestService.getInstance().getCollegeDetailInfo(collegeId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //空布局：网络连接有误，或者请求失败
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                //空布局：隐藏
+                emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CollegeDetailInfo collegeDetailInfo = InjectionWrapperUtil.injectMap(dataMap, CollegeDetailInfo.class);
+                    college = InjectionWrapperUtil.injectMap(dataMap, CollegeEntity.class);
+
+                    //空数据处理
+                    if (collegeDetailInfo == null) {
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
+
+                    //生成tabs
+                    generateTabs(college, collegeDetailInfo);
+                    //调用关注回调
+                    if (getActivity() != null && getActivity() instanceof AttentionBtnCtrlListener) {
+                        ((AttentionBtnCtrlListener) getActivity()).ctrlStatus(collegeDetailInfo.isFollow());
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //空布局：加载失败
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                }
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 生成tabs
+     * @param college 院校
+     * @param collegeDetailInfo 院校概况
+     */
+    private void generateTabs(CollegeEntity college, CollegeDetailInfo collegeDetailInfo) {
         List<Pair<String, Fragment>> items = new ArrayList<>();
 
         Bundle bundle1 = new Bundle();
@@ -93,7 +208,11 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         bundle1.putString(DtoKey.COLLEGE_NAME, college.getCn_name());
 
         CollegeDetailInfoFragment fragment1 = new CollegeDetailInfoFragment();
-        fragment1.setArguments(bundle1);
+        Bundle bundle2 = new Bundle();
+        bundle2.putString(DtoKey.COLLEGE_ID, college.getId());
+        bundle2.putString(DtoKey.COLLEGE_NAME, college.getCn_name());
+        bundle2.putSerializable(DtoKey.COLLEGE_DETAIL_INFO, collegeDetailInfo);
+        fragment1.setArguments(bundle2);
 
         CollegeDetailEnrollFragment fragment2 = new CollegeDetailEnrollFragment();
         fragment2.setArguments(bundle1);
@@ -114,25 +233,13 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         //标签绑定viewpager
         tabs.setupWithViewPager(viewPager);
 
-        //监听 AppBarLayout Offset 变化，动态设置 SwipeRefreshLayout 是否可用
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
-                if (verticalOffset >= 0) {
-                    //发送停止Fling的事件
-                    EventBus.getDefault().post(new StopFlingEvent());
-                }
-
-            }
-        });
-
         //基本信息
         ivMain.setImageURI(college.getLogo_url());
         tvCollegeName.setText(college.getCn_name());
 
         //标签
-        if (college.getBasicInfo().getInstitute_quality() == null
+        if (college.getBasicInfo() == null
+                || college.getBasicInfo().getInstitute_quality() == null
                 || college.getBasicInfo().getInstitute_quality().size() == 0) {
             tvTag0.setVisibility(View.GONE);
             tvTag1.setVisibility(View.GONE);
@@ -218,16 +325,6 @@ public class CollegeDetailFragment extends LazyLoadFragment {
 
         String substring = builder.substring(0, builder.length() - 3);
         tv_tag.setText(substring);
-    }
-
-    @Override
-    protected void lazyLoad() {
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
 }

@@ -259,4 +259,11 @@ public class Dictionary {
     //重点学科类型：一流学科
     public static final String KEY_SUBJECT_TYPE_FIRST_RATE = "double_first_class";
 
+    //关注对象类型：院校
+    public static final int ATTENTION_TYPE_COLLEGE = 0;
+    //关注对象类型：专业
+    public static final int ATTENTION_TYPE_MAJOR = 1;
+    //关注对象类型：职业
+    public static final int ATTENTION_TYPE_OCCUPATION = 2;
+
 }
