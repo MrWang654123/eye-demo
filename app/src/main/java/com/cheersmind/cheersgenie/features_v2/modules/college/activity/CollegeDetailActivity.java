@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
 import android.widget.Button;
 
 import com.cheersmind.cheersgenie.R;
@@ -13,6 +14,7 @@ import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.dto.AttentionEntity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
+import com.cheersmind.cheersgenie.features_v2.interfaces.AttentionBtnCtrlListener;
 import com.cheersmind.cheersgenie.features_v2.modules.college.fragment.CollegeDetailFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -29,7 +31,7 @@ import butterknife.OnClick;
 /**
  * 院校详情
  */
-public class CollegeDetailActivity extends BaseActivity {
+public class CollegeDetailActivity extends BaseActivity implements AttentionBtnCtrlListener {
 
     @BindView(R.id.btn_attention)
     Button mBtnAttention;
@@ -139,4 +141,19 @@ public class CollegeDetailActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void ctrlStatus(boolean hasAttention) {
+        mBtnAttention.setVisibility(View.VISIBLE);
+
+        if (hasAttention) {
+            mBtnAttention.setEnabled(false);
+            mBtnAttention.setText("已关注");
+            IsAttention = true;
+
+        } else {
+            mBtnAttention.setEnabled(true);
+            mBtnAttention.setText("关注");
+            IsAttention = false;
+        }
+    }
 }

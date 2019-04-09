@@ -128,6 +128,10 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
                                 helper.getView(R.id.tv_topic_sub_items_result).setVisibility(View.VISIBLE);
                                 helper.setText(R.id.tv_topic_sub_items_result, result.length() > 0 ? result.toString() : "暂无综合结果");
+
+                            } else {//无综合结果
+                                //隐藏综合结果块
+                                helper.getView(R.id.ll_result).setVisibility(View.GONE);
                             }
                         }
 
@@ -290,10 +294,17 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 if (isTopic()) {//话题
                     //result是否为空
                     if (!TextUtils.isEmpty(subItem.getResult())) {
-                        //结果、得分
-                        result = "本测评评价为<b><font color='" + accentColor + "'>" +
-                                subItem.getResult() + "</font></b>，得分为<b><font color='" + accentColor + "'>" +
-                                subItem.getScore().intValue() + "分</font></b>";
+                        //得分是否为空
+                        if (subItem.getScore() != null && subItem.getScore().intValue() > 0) {
+                            //结果、得分
+                            result = "本测评评价为<b><font color='" + accentColor + "'>" +
+                                    subItem.getResult() + "</font></b>，得分为<b><font color='" + accentColor + "'>" +
+                                    subItem.getScore().intValue() + "分</font></b>";
+                        } else {
+                            //结果
+                            result = "本测评评价为<b><font color='" + accentColor + "'>" + subItem.getResult() + "</font></b>";
+                        }
+
                     } else {
                         //得分
                         result = "本测评得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>";
