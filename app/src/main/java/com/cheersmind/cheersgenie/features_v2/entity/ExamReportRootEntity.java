@@ -66,7 +66,7 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
 
     //推荐的ACT职业分类
     @InjectMap(name = "recommend")
-    private List<ActType> recommendActType;
+    private List<OccupationCategory> categories;
 
     //是否是话题
     private boolean topic;
@@ -184,12 +184,12 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
         this.mbtiData = mbtiData;
     }
 
-    public List<ActType> getRecommendActType() {
-        return recommendActType;
+    public List<OccupationCategory> getCategories() {
+        return categories;
     }
 
-    public void setRecommendActType(List<ActType> recommendActType) {
-        this.recommendActType = recommendActType;
+    public void setCategories(List<OccupationCategory> categories) {
+        this.categories = categories;
     }
 
     private int itemType;

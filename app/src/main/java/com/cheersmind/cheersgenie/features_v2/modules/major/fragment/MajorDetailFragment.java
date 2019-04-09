@@ -128,6 +128,9 @@ public class MajorDetailFragment extends LazyLoadFragment {
         //加载专业详情
         if (major != null && !TextUtils.isEmpty(major.getMajor_code())) {
             loadMajorDetail(major.getMajor_code());
+        } else {
+            //空布局：无数据
+            emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
         }
     }
 

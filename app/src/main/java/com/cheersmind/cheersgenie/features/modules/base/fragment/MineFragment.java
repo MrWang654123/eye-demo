@@ -42,12 +42,20 @@ import com.cheersmind.cheersgenie.features.modules.mine.activity.MineFavoriteAct
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineMessageActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.UserInfoActivity;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.XSettingActivity;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.FileUtil;
 import com.cheersmind.cheersgenie.features.utils.ImageUtil;
 import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.IntegralTipDialog;
+import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleRootEntity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.CareerPlanFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.mine.activity.MineAwardActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.ChildInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -64,6 +72,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -378,7 +387,7 @@ public class MineFragment extends TakePhotoFragment {
 
     @OnClick({R.id.ll_mine_integral, R.id.ll_mine_message, R.id.ll_mine_collect,
             R.id.ll_mine_report, R.id.ll_feedback, R.id.ll_setting, R.id.btn_sign_in, R.id.iv_profile,
-            R.id.ll_user_info})
+            R.id.ll_user_info, R.id.ll_track_record})
     public void onViewClicked(View view) {
         switch (view.getId()) {
                 //用户信息布局
@@ -460,6 +469,16 @@ public class MineFragment extends TakePhotoFragment {
             //我的设置
             case R.id.ll_setting: {
                 startActivity(new Intent(getActivity(), XSettingActivity.class));
+                break;
+            }
+            //成长档案
+            case R.id.ll_track_record: {
+                if (!TextUtils.isEmpty(childExamId)) {
+                    TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+                } else {
+                    //加载生涯模块：为了获取childExamId
+                    loadCareerPlanModule();
+                }
                 break;
             }
         }
@@ -886,6 +905,67 @@ public class MineFragment extends TakePhotoFragment {
         }, httpTag, getActivity());
     }
 
+    //生涯模块的childExamId
+    private String childExamId;
+
+    /**
+     * 加载生涯规划模块
+     */
+    private void loadCareerPlanModule() {
+        //显示通信等待提示
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        ModuleDto dto = new ModuleDto(1, 1);
+        dto.setType(2);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
+        DataRequestService.getInstance().getModules(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待
+                    LoadingView.getInstance().dismiss();
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ExamModuleRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ExamModuleRootEntity.class);
+
+                    List<ExamModuleEntity> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        throw new QSCustomException(getString(R.string.operate_fail));
+                    }
+
+                    ExamModuleEntity examModule = dataList.get(0);
+                    if (examModule.getChildModule() == null || TextUtils.isEmpty(examModule.getChildModule().getChild_module_id())) {
+                        throw new QSCustomException("暂无数据");
+                    }
+
+                    //保存孩子测评ID
+                    if (examModule.getChildModule() != null) {
+                        childExamId = examModule.getChildModule().getChild_exam_id();
+                        //跳转到成长档案
+                        TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+
+                    } else {
+                        throw new QSCustomException(getString(R.string.operate_fail));
+                    }
+
+                } catch (QSCustomException qse) {
+                    onFailure(qse);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
 
 }
 

@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class ReportRecommendActType implements MultiItemEntity, Serializable {
 
-    public ReportRecommendActType(List<ActType> items) {
+    public ReportRecommendActType(List<OccupationCategory> items) {
         this.items = items;
     }
 
-    private List<ActType> items;
+    private List<OccupationCategory> items;
 
     private int itemType;
 
@@ -28,11 +28,11 @@ public class ReportRecommendActType implements MultiItemEntity, Serializable {
         return this;
     }
 
-    public List<ActType> getItems() {
+    public List<OccupationCategory> getItems() {
         return items;
     }
 
-    public void setItems(List<ActType> items) {
+    public void setItems(List<OccupationCategory> items) {
         this.items = items;
     }
 }

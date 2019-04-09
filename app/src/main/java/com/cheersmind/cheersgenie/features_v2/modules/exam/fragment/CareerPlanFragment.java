@@ -163,7 +163,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(getContext()));
+//        recyclerAdapter.addHeaderView(new View(getContext()));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
@@ -241,8 +241,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
     }
 
     @OnClick({R.id.fabAddTaskItem, R.id.cl_college,
-            R.id.cl_major, R.id.cl_occupation,
-            R.id.cl_career_report, R.id.cl_report_tip})
+            R.id.cl_major, R.id.cl_occupation, R.id.cl_report_tip})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //添加任务
@@ -267,12 +266,7 @@ public class CareerPlanFragment extends LazyLoadFragment {
             }
             //职业
             case R.id.cl_occupation: {
-                OccupationActivity.startOccupationActivity(getContext());
-                break;
-            }
-            //成长档案
-            case R.id.cl_career_report: {
-                TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+                OccupationActivity.startOccupationActivity(getContext(), null);
                 break;
             }
             //选科助手

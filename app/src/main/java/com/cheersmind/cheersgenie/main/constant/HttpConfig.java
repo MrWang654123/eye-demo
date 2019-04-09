@@ -280,13 +280,13 @@ public class HttpConfig {
     public static String URL_REPORT_V2_NEW = API_HOST + "/v2/api/exams/personal/reports";
 
     //获取生涯规划档案
-    public static String URL_CAREER_PLAN_RECORD = API_HOST + "/v2/api/archives/growth/{child_exam_id}";
+    public static String URL_CAREER_PLAN_RECORD = API_HOST + "/v2/api/archives/growth/{child_id}";
 
     //获取发展档案
     public static String URL_DEVELOPMENT_RECORD = API_HOST + "/v2/api/archives/growth/capability/{child_id}";
 
     //获取系统推荐选科
-    public static String URL_SYS_RMD_COURSE = API_HOST + "/v2/api/assistant/overview/{child_exam_id}";
+    public static String URL_SYS_RMD_COURSE = API_HOST + "/v2/api/assistant/overview/{child_id}";
 
     //获取选科
     public static String URL_GET_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/optional_subjects";

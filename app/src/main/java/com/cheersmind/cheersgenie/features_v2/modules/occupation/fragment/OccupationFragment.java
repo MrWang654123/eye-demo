@@ -1,5 +1,6 @@
 package com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment;
 
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -56,6 +58,8 @@ import butterknife.Unbinder;
 public class OccupationFragment extends LazyLoadFragment implements BackPressedHandler {
 
     Unbinder unbinder;
+    //初始的职业门类
+    private OccupationCategory initCategory;
 
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -232,6 +236,12 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
     protected void onInitView(View rootView) {
         unbinder = ButterKnife.bind(this, rootView);
 
+        //获取数据
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            initCategory = (OccupationCategory) bundle.getSerializable(DtoKey.OCCUPATION_CATEGORY);
+        }
+
         //适配器
         recyclerAdapter = new OccupationRecyclerAdapter(getContext(), R.layout.recycleritem_occupation, null);
 //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
@@ -298,17 +308,41 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
     private void initConditionData() {
         //初始隐藏排名布局
         flRank.setVisibility(View.GONE);
+
         //初始化筛选条件选中数据
         List<OccupationType> types = new ArrayList<>();
-        types.add(new OccupationType(Dictionary.OCCUPATION_TYPE_ACT, "ACT"));
-        types.add(new OccupationType(Dictionary.OCCUPATION_TYPE_INDUSTRY, "国标"));
+        types.add(new OccupationType(Dictionary.OCCUPATION_TYPE_ACT, "职业分类"));
+        types.add(new OccupationType(Dictionary.OCCUPATION_TYPE_INDUSTRY, "行业分类"));
 //        List<OccupationRealm> realms = DataSupport.findAll(OccupationRealm.class);
-        List<OccupationRealm> realms = DataSupport.where("type = ?", String.valueOf(types.get(0).getType())).find(OccupationRealm.class);
+        List<OccupationRealm> realms = null;
+        List<OccupationCategory> categories = null;
         //设置dto的默认值
-        dto.setType(types.get(0));
-        dto.setRealm(realms.get(0));
-        List<OccupationCategory> categories = dto.getRealm().getCategoriesFromDB();
-        dto.setCategory(categories.get(0));
+        if (initCategory == null) {
+            realms = DataSupport.where("type = ?", String.valueOf(types.get(0).getType())).find(OccupationRealm.class);
+            dto.setType(types.get(0));
+            dto.setRealm(realms.get(0));
+            categories = dto.getRealm().getCategoriesFromDB();
+            dto.setCategory(categories.get(0));
+
+        } else {//有初始条件的情况
+            //ACT
+            realms = DataSupport.where("type = ?", String.valueOf(Dictionary.OCCUPATION_TYPE_ACT)).find(OccupationRealm.class, true);
+            for (OccupationRealm realm : realms) {
+                categories = realm.getCategories();
+                for (OccupationCategory category : categories) {
+                    if (category.getArea_id() == initCategory.getArea_id()) {
+                        dto.setType(new OccupationType(Dictionary.OCCUPATION_TYPE_ACT, "职业分类"));
+                        dto.setRealm(realm);
+                        dto.setCategory(category);
+                        break;
+                    }
+                }
+
+                if (dto.getCategory() != null) {
+                    break;
+                }
+            }
+        }
 
         //类型
         typeRecyclerAdapter = new OccupationTypeRecyclerAdapter(

@@ -22,21 +22,21 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
-import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamReportRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
-import com.cheersmind.cheersgenie.features_v2.entity.ActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -157,7 +157,14 @@ public class ExamReportFragment extends LazyLoadFragment {
         }
     };
 
-
+    //职业分类点击监听
+    ExamReportRecyclerAdapter.OnActCategoryClickListener actCategoryClickListener = new ExamReportRecyclerAdapter.OnActCategoryClickListener() {
+        @Override
+        public void onClick(OccupationCategory category) {
+//            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+            OccupationActivity.startOccupationActivity(getContext(), category);
+        }
+    };
 
     @Override
     protected int setContentView() {
@@ -205,6 +212,8 @@ public class ExamReportFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+        //act职业分类点击监听
+        recyclerAdapter.setActCategoryClickListener(actCategoryClickListener);
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
 //        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
@@ -368,11 +377,11 @@ public class ExamReportFragment extends LazyLoadFragment {
             }
 
             //推荐职业类型
-            List<ActType> recommendActType = examReport.getRecommendActType();
-            if (ArrayListUtil.isNotEmpty(recommendActType)) {
+            List<OccupationCategory> categories = examReport.getCategories();
+            if (ArrayListUtil.isNotEmpty(categories)) {
                 //添加子标题
                 resList.add(new ReportSubTitleEntity("推荐职业类型").setItemType(Dictionary.CHART_SUB_TITLE));
-                resList.add(new ReportRecommendActType(recommendActType).setItemType(Dictionary.CHART_RECOMMEND_ACT_TYPE));
+                resList.add(new ReportRecommendActType(categories).setItemType(Dictionary.CHART_RECOMMEND_ACT_TYPE));
             }
 
         }

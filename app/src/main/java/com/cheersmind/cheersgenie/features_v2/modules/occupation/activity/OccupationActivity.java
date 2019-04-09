@@ -3,6 +3,7 @@ package com.cheersmind.cheersgenie.features_v2.modules.occupation.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
@@ -18,18 +19,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.DataCheckUtil;
 import com.cheersmind.cheersgenie.features.utils.SoftInputUtil;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.interfaces.BackPressedHandler;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.fragment.OccupationFragment;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * 职业
+ * 职业列表页面
  */
 public class OccupationActivity extends BaseActivity implements BackPressedHandler {
 
@@ -44,8 +49,9 @@ public class OccupationActivity extends BaseActivity implements BackPressedHandl
      * * 启动职业页面
      * @param context 上下文
      */
-    public static void startOccupationActivity(Context context) {
+    public static void startOccupationActivity(Context context, OccupationCategory category) {
         Intent intent = new Intent(context, OccupationActivity.class);
+        intent.putExtra(DtoKey.OCCUPATION_CATEGORY, category);
         context.startActivity(intent);
     }
 
@@ -119,6 +125,10 @@ public class OccupationActivity extends BaseActivity implements BackPressedHandl
         if (fragmentByTag == null) {
             //职业
             fragment = new OccupationFragment();
+            Serializable category = getIntent().getSerializableExtra(DtoKey.OCCUPATION_CATEGORY);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(DtoKey.OCCUPATION_CATEGORY, category);
+            fragment.setArguments(bundle);
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();
         }

@@ -32,7 +32,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.SimpleOccupationActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -225,7 +225,8 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     CareerPlanRecordRecyclerAdapter.OnActCategoryClickListener actCategoryClickListener = new CareerPlanRecordRecyclerAdapter.OnActCategoryClickListener() {
         @Override
         public void onClick(OccupationCategory category) {
-            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+//            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+            OccupationActivity.startOccupationActivity(getContext(), category);
         }
     };
 
@@ -259,7 +260,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             @Override
             public void onMultiClick(View view) {
                 //加载报告
-                loadReport(childExamId);
+                loadReport();
             }
         });
         //初始化为加载状态
@@ -307,7 +308,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     @Override
     protected void lazyLoad() {
         //加载报告
-        loadReport(childExamId);
+        loadReport();
     }
 
     @Override
@@ -340,14 +341,14 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
     /**
      * 加载报告
-     * @param childExamId 孩子测评ID
      */
-    private void loadReport(String childExamId) {
+    private void loadReport() {
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         try {
-            DataRequestService.getInstance().getCareerPlanRecord(childExamId, new BaseService.ServiceCallback() {
+            String childId = UCManager.getInstance().getDefaultChild().getChildId();
+            DataRequestService.getInstance().getCareerPlanRecord(childId, new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
                     //空布局：网络连接有误，或者请求失败
@@ -556,7 +557,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadReport(childExamId);
+        loadReport();
     }
 
 
@@ -603,7 +604,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                     //查看报告
                     if (postOptType == POST_OPT_TYPE_REPORT) {
                         ExamReportDto dto = new ExamReportDto();
-                        dto.setChildExamId(childExamId);//孩子测评ID
+                        dto.setChildExamId(dimension.getChildDimension().getChildExamId());//孩子测评ID
                         dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
                         dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
                         dto.setRelationId(dimension.getTopicDimensionId());//话题量表ID

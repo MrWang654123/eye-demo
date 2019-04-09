@@ -27,7 +27,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.SimpleOccupationActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -195,7 +195,8 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
     SysRmdCourseRecyclerAdapter.OnActCategoryClickListener actCategoryClickListener = new SysRmdCourseRecyclerAdapter.OnActCategoryClickListener() {
         @Override
         public void onClick(OccupationCategory category) {
-            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+//            SimpleOccupationActivity.startOccupationActivity(getContext(), category);
+            OccupationActivity.startOccupationActivity(getContext(), category);
         }
     };
 
@@ -227,7 +228,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadData(childExamId);
+                loadData();
             }
         });
         //初始化为加载状态
@@ -274,7 +275,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        loadData(childExamId);
+        loadData();
     }
 
     @Override
@@ -309,7 +310,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadData(childExamId);
+        loadData();
     }
 
     @OnClick({R.id.btn_add_major})
@@ -326,12 +327,13 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
     /**
      * 加载数据
      */
-    private void loadData(String childExamId) {
+    private void loadData() {
 
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
-        DataRequestService.getInstance().getSysRmdCourse(childExamId, new BaseService.ServiceCallback() {
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getSysRmdCourse(childId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //设置空布局：网络错误

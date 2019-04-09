@@ -18,9 +18,9 @@ import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
-import com.cheersmind.cheersgenie.features_v2.entity.ActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
@@ -356,20 +356,22 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
             }
             //推荐的ACT分类
             case CHART_RECOMMEND_ACT_TYPE: {
-                WarpLinearLayout warpLinearLayout = (WarpLinearLayout) helper.getView(R.id.warpLinearLayout);
+                WarpLinearLayout warpLinearLayout = helper.getView(R.id.warpLinearLayout);
                 if (warpLinearLayout.getChildCount() == 0) {
                     ReportRecommendActType type = (ReportRecommendActType) item;
-                    List<ActType> items = type.getItems();
+                    List<OccupationCategory> items = type.getItems();
                     //ACT分类
                     for (int i=0; i<items.size(); i++) {
-                        final ActType actType = items.get(i);
-                        TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.dialog_category_item, null);
-                        tv.setText(actType.getArea_name());
+                        final OccupationCategory category = items.get(i);
+                        TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item_clickable, null);
+                        tv.setText(category.getArea_name());
                         tv.setTag(i);
                         tv.setOnClickListener(new OnMultiClickListener() {
                             @Override
                             public void onMultiClick(View view) {
-                                System.out.println(actType.getArea_name());
+                                if (actCategoryClickListener != null) {
+                                    actCategoryClickListener.onClick(category);
+                                }
                             }
                         });
                         warpLinearLayout.addView(tv);
@@ -410,6 +412,19 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
     public void setTopic(boolean topic) {
         this.topic = topic;
+    }
+
+    private OnActCategoryClickListener actCategoryClickListener;
+
+    /**
+     * ACT职业分类点击监听
+     */
+    public interface OnActCategoryClickListener {
+        void onClick(OccupationCategory category);
+    }
+
+    public void setActCategoryClickListener(OnActCategoryClickListener actCategoryClickListener) {
+        this.actCategoryClickListener = actCategoryClickListener;
     }
 }
 
