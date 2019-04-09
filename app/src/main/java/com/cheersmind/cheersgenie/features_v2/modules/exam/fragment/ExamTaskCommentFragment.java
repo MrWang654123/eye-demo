@@ -3,17 +3,15 @@ package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.entity.CommentEntity;
 import com.cheersmind.cheersgenie.features.entity.CommentRootEntity;
@@ -24,9 +22,6 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskCommentRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskItemEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskItemRootEntity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -135,7 +130,7 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(getContext()));
+//        recyclerAdapter.addHeaderView(new View(getContext()));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
@@ -143,13 +138,13 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
 //        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
 //        recycleView.addItemDecoration(divider);
         //设置子项点击监听
-        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
+//        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //滑动监听
-        try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //设置下拉刷新的监听
         swipeRefreshLayout.setOnRefreshListener(refreshListener);
@@ -176,7 +171,7 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
         dto.setId(taskId);
         dto.setPage(pageNum);
         dto.setSize(PAGE_SIZE);
-        dto.setType(0);//类型：文章
+        dto.setType(Dictionary.COMMENT_TYPE_TASK);//评论类型：任务
     }
 
     @Override
@@ -200,11 +195,16 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
     /**
      * 刷新数据
      */
-    private void refreshData() {
+    public void refreshData() {
         //下拉刷新
         pageNum = 1;
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
+        //确保显示下拉刷新
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
 
         dto.setPage(pageNum);
         DataRequestService.getInstance().getCommentList(dto, new BaseService.ServiceCallback() {
@@ -358,16 +358,13 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
 
     /**
      * 停止Fling的消息
-     * @param event
+     * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-//    @Subscribe
     public void onStopFlingNotice(StopFlingEvent event) {
         if (recycleView != null) {
             recycleView.stopScroll();
-//            recycleView.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_CANCEL, 0, 0, 0));
         }
-
     }
 
 }

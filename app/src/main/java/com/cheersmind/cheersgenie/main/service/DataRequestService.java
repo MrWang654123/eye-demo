@@ -791,19 +791,23 @@ public class DataRequestService {
 
     /**
      * 提交评论
-     * @param articleId 文章ID
+     * @param id 评论对象ID
      * @param content 评论内容
+     * @param type 评论对象类型
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void postDoComment(String articleId, String content, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void postDoComment(String id, String content, Integer type, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_DO_COMMENT
-                .replace("{articleId}", articleId);
+                .replace("{id}", id);
 //        {
 //            "comment_info":""
 //        }
         Map<String, Object> map = new HashMap<>();
         map.put("comment_info", content);
+        if (type != null) {
+            map.put("type", String.valueOf(type.intValue()));
+        }
 
         doPost(url, map, false, callback, httpTag, context);
     }

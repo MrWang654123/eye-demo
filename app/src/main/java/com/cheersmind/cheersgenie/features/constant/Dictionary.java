@@ -266,4 +266,9 @@ public class Dictionary {
     //关注对象类型：职业
     public static final int ATTENTION_TYPE_OCCUPATION = 2;
 
+    //评论类型：文章
+    public static final int COMMENT_TYPE_ARTICLE = 0;
+    //评论类型：任务
+    public static final int COMMENT_TYPE_TASK = 1;
+
 }

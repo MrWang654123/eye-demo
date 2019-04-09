@@ -335,7 +335,7 @@ public class HttpConfig {
     public static final String URL_LIKE = API_HOST + "/v2/api/articles/{articleId}/actions/like";
 
     //评论
-    public static final String URL_DO_COMMENT = API_HOST + "/v2/api/ref_comments/{articleId}/actions/comment";
+    public static final String URL_DO_COMMENT = API_HOST + "/v2/api/ref_comments/{id}/actions/comment";
 
     //获取分类
     public static final String URL_CATEGORIES = API_HOST + "/v2/api/categories";

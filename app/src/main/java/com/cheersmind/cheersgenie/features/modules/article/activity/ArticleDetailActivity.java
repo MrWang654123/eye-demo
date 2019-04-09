@@ -1548,7 +1548,7 @@ public class ArticleDetailActivity extends BaseActivity {
      * @param content
      */
     private void doComment(String articleId, String content) {
-        DataRequestService.getInstance().postDoComment(articleId, content, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().postDoComment(articleId, content, null, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 onFailureDefault(e);
