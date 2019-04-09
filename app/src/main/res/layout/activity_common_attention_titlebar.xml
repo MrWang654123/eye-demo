@@ -44,6 +44,7 @@
                 android:background="@drawable/text_blue_attention"
                 android:gravity="center"
                 android:text="关注"
+                android:visibility="invisible"
                 android:textColor="@color/sel_enable_white_black"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>

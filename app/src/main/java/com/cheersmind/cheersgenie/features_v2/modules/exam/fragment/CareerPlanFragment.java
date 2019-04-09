@@ -415,8 +415,6 @@ public class CareerPlanFragment extends LazyLoadFragment {
                     //当前列表无数据
                     if (recyclerAdapter.getData().size() == 0) {
                         recyclerAdapter.setNewData(dataList);
-                        //第一次加载任务成功才显示添加自定义任务按钮
-                        fabAddTaskItem.setVisibility(View.VISIBLE);
 
                     } else {
                         recyclerAdapter.addData(dataList);
@@ -509,6 +507,8 @@ public class CareerPlanFragment extends LazyLoadFragment {
                     }
 
                     CareerPlanFragment.this.dto.setChildModuleId(examModule.getChildModule().getChild_module_id());
+                    //加载可添加任务
+                    loadAddTaskList();
                     //加载模块下的任务列表
                     loadMoreData();
 
@@ -639,6 +639,38 @@ public class CareerPlanFragment extends LazyLoadFragment {
 
         }
 
+    }
+
+
+    /**
+     * 获取可添加任务列表
+     */
+    private void loadAddTaskList() {
+        DataRequestService.getInstance().getExamCanAddTasks(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ExamTaskRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ExamTaskRootEntity.class);
+
+                    List<ExamTaskEntity> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isNotEmpty(dataList)) {
+                        //存在自定义任务则显示添加自定义任务按钮
+                        fabAddTaskItem.setVisibility(View.VISIBLE);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, httpTag, getActivity());
     }
 
 

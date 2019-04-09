@@ -504,7 +504,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -588,7 +588,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();

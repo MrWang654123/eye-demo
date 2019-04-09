@@ -117,6 +117,14 @@
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
+                <!--空布局-->
+                <com.cheersmind.cheersgenie.features.view.XEmptyLayout
+                    android:id="@+id/emptyLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone"/>
+
+                <!--筛选条件列表布局-->
                 <FrameLayout
                     android:id="@+id/fl_rank"
                     android:layout_width="match_parent"
@@ -194,10 +202,10 @@
     </FrameLayout>
 
     <!--空布局-->
-    <com.cheersmind.cheersgenie.features.view.XEmptyLayout
-        android:id="@+id/emptyLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+    <!--<com.cheersmind.cheersgenie.features.view.XEmptyLayout-->
+        <!--android:id="@+id/emptyLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="gone"/>-->
 
 </RelativeLayout>
