@@ -175,7 +175,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_user_info"/>
+                    android:src="@drawable/mine_track_record"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -464,9 +464,9 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:padding="8dp"
+                    android:padding="6dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_favorite"/>
+                    android:src="@drawable/mine_attention"/>
 
                 <TextView
                     android:id="@+id/tv_focus"
@@ -577,7 +577,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
-                    android:text="意见反馈" />
+                    android:text="我要吐槽" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"

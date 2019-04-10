@@ -50,7 +50,7 @@ public class TrackRecordFragment extends LazyLoadFragment {
         fragment1.setArguments(bundle);
 
         List<Pair<String, Fragment>> items = new ArrayList<>();
-        items.add(new Pair<String, Fragment>("生涯发展档案", fragment1));
+        items.add(new Pair<String, Fragment>("生涯发展测评档案", fragment1));
         items.add(new Pair<String, Fragment>("能力发展档案", new DevelopmentRecordFragment()));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
         //标签绑定viewpager

@@ -74,7 +74,7 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         ChooseCourseFragment fragment3 = new ChooseCourseFragment();
         fragment3.setArguments(bundle);
 
-        items.add(new Pair<String, Fragment>("系统推荐", fragment1));
+        items.add(new Pair<String, Fragment>("学科推荐", fragment1));
         items.add(new Pair<String, Fragment>("专业观察表", fragment2));
         items.add(new Pair<String, Fragment>("选科确认", fragment3));
         viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));

@@ -45,8 +45,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -282,7 +285,12 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
 
             if (infoRatio != null && infoRatio.getRatio() > 0.000001) {
                 llPostgraduate.setVisibility(View.VISIBLE);
-                tvPostgraduateVal.setText(String.valueOf(infoRatio.getRatio() * 100));
+                tvPostgraduateVal.setText(String.format(Locale.CHINA, "%.2f", infoRatio.getRatio() * 100));
+//                DecimalFormat df = new DecimalFormat("#.0");
+//                tvPostgraduateVal.setText(String.valueOf(df.format(2.221)));
+//                BigDecimal bg = new BigDecimal(1.5834);
+//                double f1 = bg.setScale(1, BigDecimal.ROUND_FLOOR).doubleValue();
+//                tvPostgraduateVal.setText(String.valueOf(f1));
 
             } else {
                 llPostgraduate.setVisibility(View.GONE);

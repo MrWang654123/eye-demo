@@ -34,7 +34,7 @@
             android:layout_marginBottom="15dp"
             android:layout_gravity="center_horizontal"
             android:textStyle="normal"
-            android:text="职业探索档案"/>
+            android:text="职业倾向测评"/>
 
         <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
             android:id="@+id/warpLinearLayout"
