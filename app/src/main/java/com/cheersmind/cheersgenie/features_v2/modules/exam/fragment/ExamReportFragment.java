@@ -280,8 +280,6 @@ public class ExamReportFragment extends LazyLoadFragment {
                         emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
                         try {
-                            //测试数据
-//                            Map dataMap = JsonUtil.fromJson(testDataStr, Map.class);
                             Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                             ExamReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ExamReportRootEntity.class);
 
@@ -292,8 +290,6 @@ public class ExamReportFragment extends LazyLoadFragment {
                                 return;
                             }
 
-                            //标记是否是话题
-                            data.setTopic(Dictionary.REPORT_TYPE_TOPIC.equals(dto.getRelationType()));
                             //数据转换
                             List<MultiItemEntity> multiItemEntities = examReportRootToRecyclerMulti(data);
                             //标记是否是话题

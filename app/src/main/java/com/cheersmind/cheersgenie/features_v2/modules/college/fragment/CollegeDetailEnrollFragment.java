@@ -119,10 +119,7 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
             if (multiItem instanceof CollegeEnrollConstitutionItem
                     && getActivity() != null) {
                 CollegeEnrollConstitutionItem constitutionItem = (CollegeEnrollConstitutionItem) multiItem;
-//                ToastUtil.showShort(getActivity().getApplication(),
-//                        constitutionItem.getName());
-                CommonWebViewActivity.startCommonWebViewActivity(getContext(), "招生章程",
-                        EnvHostManager.getInstance().getApiHost() + constitutionItem.getUrl());
+                CommonWebViewActivity.startCommonWebViewActivity(getContext(), "招生章程", constitutionItem.getUrl());
             }
         }
     };

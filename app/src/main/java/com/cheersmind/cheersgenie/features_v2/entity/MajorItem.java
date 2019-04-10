@@ -23,6 +23,10 @@ public class MajorItem implements MultiItemEntity, Serializable {
     @InjectMap(name = "assessment_level")
     private String assessment_level;
 
+    //特指名称
+    @InjectMap(name = "special_name")
+    private String special_name;
+
     //布局类型
     private int itemType = MajorTreeRecyclerAdapter.LAYOUT_TYPE_LEVEL2;
 
@@ -68,5 +72,13 @@ public class MajorItem implements MultiItemEntity, Serializable {
 
     public void setAssessment_level(String assessment_level) {
         this.assessment_level = assessment_level;
+    }
+
+    public String getSpecial_name() {
+        return special_name;
+    }
+
+    public void setSpecial_name(String special_name) {
+        this.special_name = special_name;
     }
 }

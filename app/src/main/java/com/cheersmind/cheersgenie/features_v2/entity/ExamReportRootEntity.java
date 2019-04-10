@@ -68,16 +68,6 @@ public class ExamReportRootEntity implements Serializable, MultiItemEntity {
     @InjectMap(name = "recommend")
     private List<OccupationCategory> categories;
 
-    //是否是话题
-    private boolean topic;
-
-    public boolean isTopic() {
-        return topic;
-    }
-
-    public void setTopic(boolean topic) {
-        this.topic = topic;
-    }
 
     public String getCompareName() {
         return compareName;
