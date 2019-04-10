@@ -139,8 +139,16 @@ public class InjectionWrapperUtil extends InjectionUtils {
                             ParameterizedType pType = (ParameterizedType)type;
                             Class tmp = (Class) pType.getActualTypeArguments()[0];
                             field.set(tobj, injectMaps((List)value,tmp));
-                        }else if(value!=null && value instanceof Map){
-                            field.set(tobj, injectMap((Map)value,field.getType()));
+
+                        } else if (value != null && value instanceof Map) {
+                            //属性是Map类型，直接赋值
+                            if (field.getType() == Map.class) {
+                                field.set(tobj,value);
+
+                            } else {
+                                field.set(tobj, injectMap((Map) value, field.getType()));
+                            }
+
                         }else {
                             field.set(tobj,value);
                         }

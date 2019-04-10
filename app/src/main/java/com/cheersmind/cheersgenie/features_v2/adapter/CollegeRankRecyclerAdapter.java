@@ -2,11 +2,13 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -19,6 +21,9 @@ public class CollegeRankRecyclerAdapter extends BaseQuickAdapter<CollegeEntity, 
 
     //最大的质量标签数量
     private static final int MAX_QUALITY_TAG_COUNT = 3;
+
+    //院校排名dto
+    CollegeRankDto dto;
 
     public CollegeRankRecyclerAdapter(Context context, int layoutResId, @Nullable List<CollegeEntity> data) {
         super(layoutResId, data);
@@ -82,9 +87,26 @@ public class CollegeRankRecyclerAdapter extends BaseQuickAdapter<CollegeEntity, 
             helper.setText(R.id.tv_public, "私立");
         }
 
-        int rank = helper.getLayoutPosition() - getHeaderLayoutCount() + 1;
         //排名
-        helper.setText(R.id.tv_rank, String.valueOf(rank));
+        if (dto != null && dto.getRankItem() != null
+                && !TextUtils.isEmpty(dto.getRankItem().getCode()) && item.getMapRank() != null) {
+            Double rankVal = (Double) item.getMapRank().get(dto.getRankItem().getCode());
+
+            if (rankVal != null && rankVal.intValue() > 0) {
+                helper.getView(R.id.tv_rank).setVisibility(View.VISIBLE);
+                helper.setText(R.id.tv_rank, String.valueOf(rankVal.intValue()));
+            } else {
+                helper.getView(R.id.tv_rank).setVisibility(View.GONE);
+            }
+
+        } else {
+            helper.getView(R.id.tv_rank).setVisibility(View.GONE);
+        }
+
+    }
+
+    public void setDto(CollegeRankDto dto) {
+        this.dto = dto;
     }
 
 }

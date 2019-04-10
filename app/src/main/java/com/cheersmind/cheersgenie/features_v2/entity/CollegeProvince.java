@@ -20,6 +20,14 @@ public class CollegeProvince extends DataSupport implements Serializable, IPicke
     @InjectMap(name = "name")
     private String name;
 
+    public CollegeProvince() {
+    }
+
+    public CollegeProvince(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
     public String getCode() {
         return code;
     }

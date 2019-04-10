@@ -105,7 +105,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
     };
 
     //页长度
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 20;
     //页码
     private int pageNum = 1;
     //后台总记录数
@@ -272,6 +272,8 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         fabGotoTop.setVisibility(View.INVISIBLE);
 
         dto = new CollegeRankDto(pageNum, PAGE_SIZE);
+        //设置到适配器中，用于显示排名值
+        recyclerAdapter.setDto(dto);
         //初始化排名数据
         initRankData();
     }
@@ -295,6 +297,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         flRank.setVisibility(View.GONE);
         //初始化筛选条件选中数据
         List<CollegeProvince> provinces = DataSupport.findAll(CollegeProvince.class);
+        provinces.add(0, new CollegeProvince("", "全国"));
         List<CollegeEduLevel> levels = DataSupport.findAll(CollegeEduLevel.class, true);
         dto.setProvince(provinces.get(0));
         dto.setEduLevel(levels.get(0));
@@ -437,11 +440,7 @@ public class CollegeRankFragment extends LazyLoadFragment implements BackPressed
         if (collegeRankDto == null) return;
 
         //区域、省份
-        if (collegeRankDto.getProvince().getName().equals("全部")) {
-            cb_rank_area.setText("全国");
-        } else {
-            cb_rank_area.setText(collegeRankDto.getProvince().getName());
-        }
+        cb_rank_area.setText(collegeRankDto.getProvince().getName());
 
         //学历层次
         cb_rank_level.setText(collegeRankDto.getEduLevel().getName());

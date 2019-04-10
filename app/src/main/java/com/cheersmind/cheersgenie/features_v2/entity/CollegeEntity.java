@@ -3,6 +3,8 @@ package com.cheersmind.cheersgenie.features_v2.entity;
 import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 院校
@@ -46,6 +48,10 @@ public class CollegeEntity implements Serializable {
     //专业信息
     @InjectMap(name = "major_info")
     private MajorItem major;
+
+    //专业信息
+    @InjectMap(name = "ranking")
+    private Map mapRank;
 
     //是否选中
     private boolean isSelected;
@@ -139,4 +145,11 @@ public class CollegeEntity implements Serializable {
         this.major = major;
     }
 
+    public Map getMapRank() {
+        return mapRank;
+    }
+
+    public void setMapRank(Map mapRank) {
+        this.mapRank = mapRank;
+    }
 }
