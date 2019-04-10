@@ -5,6 +5,7 @@
     android:id="@+id/sticky_header_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <LinearLayout
