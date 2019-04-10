@@ -104,7 +104,7 @@ public class OccupationFragment extends LazyLoadFragment implements BackPressedH
     };
 
     //页长度
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 20;
     //页码
     private int pageNum = 1;
     //后台总记录数

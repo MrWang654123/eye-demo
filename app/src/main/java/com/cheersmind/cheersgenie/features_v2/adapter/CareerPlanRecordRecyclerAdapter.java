@@ -115,7 +115,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                         }
 
                         //要求较高专业百分比
-                        if (entity.getCustom_high_major_per() != null || entity.getCustom_high_major_per() > 0.000001) {
+                        if (entity.getCustom_high_major_per() != null && entity.getCustom_high_major_per() > 0.000001) {
                             helper.getView(R.id.tv_high_require_major_ratio).setVisibility(View.VISIBLE);
                             helper.setText(R.id.tv_high_require_major_ratio,
                                     Html.fromHtml("-要求较高的专业占所有大学专业的<b><font color='" +
