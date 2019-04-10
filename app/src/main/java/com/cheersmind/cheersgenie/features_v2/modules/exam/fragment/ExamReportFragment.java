@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommend;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommendItem;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommendRootEntity;
+import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
@@ -112,18 +113,42 @@ public class ExamReportFragment extends LazyLoadFragment {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             MultiItemEntity multiItem = recyclerAdapter.getData().get(position);
-            //当前是话题报告
-            if (Dictionary.REPORT_TYPE_TOPIC.equals(reportDto.getRelationType())
-                    && multiItem.getItemType() == Dictionary.CHART_SUB_ITEM) {
-                ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
-                ExamReportDto dto = new ExamReportDto();
-                dto.setChildExamId(reportDto.getChildExamId());
-                dto.setCompareId(reportDto.getCompareId());
-                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-                dto.setRelationId(item.getItem_id());
-                //跳转到报告页面量表
-                ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+            switch (multiItem.getItemType()) {
+                //报告子项
+                case Dictionary.CHART_SUB_ITEM: {
+                    //当前是话题报告
+                    if (Dictionary.REPORT_TYPE_TOPIC.equals(reportDto.getRelationType())) {
+                        ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
+                        ExamReportDto dto = new ExamReportDto();
+                        dto.setChildExamId(reportDto.getChildExamId());
+                        dto.setCompareId(reportDto.getCompareId());
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                        dto.setRelationId(item.getItem_id());
+                        //跳转到报告页面量表
+                        ExamReportActivity.startExamReportActivity(getContext(), dto);
+                    }
+                    break;
+                }
+                //推荐内容子项
+                case Dictionary.CHART_RECOMMEND_CONTENT_ITEM: {
+                    ReportRecommendItem entity = (ReportRecommendItem) multiItem;
+                    if ("audio".equals(entity.getElement_type())) {
+
+                    } else if ("video".equals(entity.getElement_type())) {
+                        ArticleDetailActivity.startArticleDetailActivity(getContext(), entity.getElement_id(), null, entity.getElement_name());
+
+                    } else if ("article".equals(entity.getElement_type())) {
+                        ArticleDetailActivity.startArticleDetailActivity(getContext(), entity.getElement_id(), null, entity.getElement_name());
+
+                    } else if ("task".equals(entity.getElement_type())) {
+
+                    } else if ("test".equals(entity.getElement_type())) {
+                    }
+                    break;
+                }
             }
+
         }
     };
 
@@ -392,11 +417,13 @@ public class ExamReportFragment extends LazyLoadFragment {
      * 加载报告推荐内容
      */
     private void loadReportRecommendContent(ExamReportDto reportDto) {
+        if (TextUtils.isEmpty(reportDto.getDimensionId())) {
+            return;
+        }
 
         DataRequestService.getInstance().getReportRecommendContent(reportDto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-//                footerReportView.setVisibility(View.GONE);
                 e.printStackTrace();
             }
 
