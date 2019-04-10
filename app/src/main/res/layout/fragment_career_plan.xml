@@ -177,6 +177,14 @@
                                 fresco:roundWithOverlayColor="@color/color_f5f5f5"
                                 fresco:backgroundImage="@color/white"/>
 
+                            <ImageView
+                                android:layout_width="22dp"
+                                android:layout_height="11dp"
+                                android:src="@drawable/hot_small"
+                                app:layout_constraintRight_toRightOf="@+id/sdv_career_report"
+                                app:layout_constraintTop_toTopOf="@+id/sdv_career_report"
+                                tools:ignore="ContentDescription" />
+
                             <TextView
                                 android:id="@+id/tv_career_report"
                                 app:layout_constraintTop_toBottomOf="@+id/sdv_career_report"
