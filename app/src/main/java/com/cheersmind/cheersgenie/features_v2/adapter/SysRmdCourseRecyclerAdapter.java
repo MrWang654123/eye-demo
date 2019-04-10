@@ -19,6 +19,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 系统推荐选科recyclerView适配器
@@ -73,7 +74,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         helper.setText(R.id.tv_can_select_major_ratio,
                                 Html.fromHtml("-您可报考的专业占所有大学专业的<b><font color='" +
                                         context.getResources().getColor(R.color.colorAccent) + "'>" +
-                                        Math.floor(entity.getRecommend_major_per() * 100) + "%</font></b>"));
+                                        String.format(Locale.CHINA, "%.1f",entity.getRecommend_major_per() * 100) + "%</font></b>"));
                     } else {
                         helper.getView(R.id.tv_can_select_major_ratio).setVisibility(View.GONE);
                     }
@@ -84,7 +85,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         helper.setText(R.id.tv_high_require_major_ratio,
                                 Html.fromHtml("-要求较高的专业占所有大学专业的<b><font color='" +
                                         context.getResources().getColor(R.color.colorAccent) + "'>" +
-                                        Math.floor(entity.getRecommend_high_major_per() * 100) + "%</font></b>"));
+                                        String.format(Locale.CHINA, "%.1f",entity.getRecommend_high_major_per() * 100) + "%</font></b>"));
                     } else {
                         helper.getView(R.id.tv_high_require_major_ratio).setVisibility(View.GONE);
                     }

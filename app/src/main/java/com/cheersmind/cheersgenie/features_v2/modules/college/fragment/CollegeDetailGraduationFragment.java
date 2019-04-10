@@ -46,7 +46,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -286,11 +288,22 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
             if (infoRatio != null && infoRatio.getRatio() > 0.000001) {
                 llPostgraduate.setVisibility(View.VISIBLE);
                 tvPostgraduateVal.setText(String.format(Locale.CHINA, "%.2f", infoRatio.getRatio() * 100));
+//                //有四舍五入
+//                tvPostgraduateVal.setText(String.format(Locale.CHINA, "%.2f", infoRatio.getRatio() * 100));
+//                //有四舍五入
 //                DecimalFormat df = new DecimalFormat("#.0");
 //                tvPostgraduateVal.setText(String.valueOf(df.format(2.221)));
+//                //可控制是否四舍五入
 //                BigDecimal bg = new BigDecimal(1.5834);
 //                double f1 = bg.setScale(1, BigDecimal.ROUND_FLOOR).doubleValue();
 //                tvPostgraduateVal.setText(String.valueOf(f1));
+//                //可控制是否四舍五入
+//                NumberFormat nf = NumberFormat.getNumberInstance();
+//                // 保留两位小数
+//                nf.setMaximumFractionDigits(2);
+//                // 如果不需要四舍五入，可以使用RoundingMode.DOWN
+//                nf.setRoundingMode(RoundingMode.HALF_UP);
+//                tvPostgraduateVal.setText(nf.format(0.238));
 
             } else {
                 llPostgraduate.setVisibility(View.GONE);

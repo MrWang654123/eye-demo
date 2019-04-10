@@ -30,6 +30,9 @@ import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
 import com.cheersmind.cheersgenie.features_v2.view.CircleScaleView;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,10 +56,12 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
     //是否是话题
     private boolean topic;
-
+    //上下文
     private Context context;
-
+    //默认强调色
     private int accentColor;
+    //可控制是否四舍五入
+    private NumberFormat nf;
 
     public ExamReportRecyclerAdapter(Context context, List<MultiItemEntity> data) {
         super(data);
@@ -75,6 +80,12 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         addItemType(CHART_BAR_V, R.layout.chart_item_bar_v);
         addItemType(CHART_BAR_H, R.layout.chart_item_bar_h);
         addItemType(CHART_LEFT_RIGHT_RATIO, R.layout.chart_item_ratio);
+
+        nf = NumberFormat.getNumberInstance();
+        // 保留一位小数
+        nf.setMaximumFractionDigits(1);
+        // 如果不需要四舍五入，可以使用RoundingMode.DOWN
+        nf.setRoundingMode(RoundingMode.DOWN);
     }
 
     @Override
@@ -152,7 +163,8 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             if (entity.getScore() != null) {
                                 //原始分
                                 helper.getView(R.id.tv_dimension_original_score).setVisibility(View.VISIBLE);
-                                String scoreStr = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + entity.getScore().intValue() + "分</font></b>";
+                                String scoreStr = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" +
+                                        nf.format(entity.getScore()) + "分</font></b>";
                                 helper.setText(R.id.tv_dimension_original_score, Html.fromHtml(scoreStr));
 
                             } else {//无分数（学业兴趣、职业兴趣）
@@ -247,8 +259,8 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                         TextView tvResultLeft = view.findViewById(R.id.tv_result_left);
                         TextView tvResultRight = view.findViewById(R.id.tv_result_right);
                         //比例值
-                        tvRatioLeft.setText(String.format("%d%%", (int)(subItem.getLeft() * 100)));
-                        tvRatioRight.setText(String.format("%d%%", (int)(subItem.getRight() * 100)));
+                        tvRatioLeft.setText(String.format(Locale.CHINA,"%d%%", (int)(subItem.getLeft() * 100)));
+                        tvRatioRight.setText(String.format(Locale.CHINA,"%d%%", (int)(subItem.getRight() * 100)));
 
                         //背景视图宽度比例
                         ConstraintLayout.LayoutParams bgLeftParams = (ConstraintLayout.LayoutParams) bgLeft.getLayoutParams();
@@ -301,11 +313,11 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                     //result是否为空
                     if (!TextUtils.isEmpty(subItem.getResult())) {
                         //得分是否为空
-                        if (subItem.getScore() != null && subItem.getScore().intValue() > 0) {
+                        if (subItem.getScore() != null && subItem.getScore() > 0.000001) {
                             //结果、得分
                             result = "本测评评价为<b><font color='" + accentColor + "'>" +
                                     subItem.getResult() + "</font></b>，得分为<b><font color='" + accentColor + "'>" +
-                                    subItem.getScore().intValue() + "分</font></b>";
+                                    nf.format(subItem.getScore()) + "分</font></b>";
                         } else {
                             //结果
                             result = "本测评评价为<b><font color='" + accentColor + "'>" + subItem.getResult() + "</font></b>";
@@ -313,13 +325,13 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
                     } else {
                         //得分
-                        result = "本测评得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>";
+                        result = "本测评得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>";
                     }
 
                 } else {//量表
                     if (subItem.getSort() != null) {//sort不为null，视为学业兴趣、职业兴趣
                         //得分、排序
-                        result = "本因子得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() +
+                        result = "本因子得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) +
                                 "分</font></b>,在各个方向中排名第<b><font color='" + accentColor + "'>" + subItem.getSort() + "</font></b>";
                     } else {
                         //有排名（T分数才有排名）
@@ -328,16 +340,16 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             if (!TextUtils.isEmpty(subItem.getResult())) {
                                 //结果、得分、排名
                                 result = "本测评评价为<b><font color='" + accentColor + "'>" + subItem.getResult() +
-                                        "</font></b>，得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>" +
+                                        "</font></b>，得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>" +
                                         "，超过<b><font color='" + accentColor + "'>" + String.format(Locale.CHINA,"%.1f", subItem.getRank() * 100) + "%</font></b>的用户";
                             } else {
                                 //得分、排名
-                                result = "本测评得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>" +
+                                result = "本测评得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>" +
                                         "，超过<b><font color='" + accentColor + "'>" + String.format(Locale.CHINA,"%.1f", subItem.getRank() * 100) + "%</font></b>的用户";
                             }
                         } else {//无排名则显示原始分
                             //得分
-                            result = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + subItem.getScore().intValue() + "分</font></b>";
+                            result = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>";
                         }
                     }
                 }
@@ -440,7 +452,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
     private void hasRankAndResult(BaseViewHolder helper, ExamReportRootEntity entity) {
         helper.getView(R.id.ll_score).setVisibility(View.VISIBLE);
         helper.getView(R.id.tv_score_desc).setVisibility(View.VISIBLE);
-        int score = entity.getScore() != null ? entity.getScore().intValue() : 0;
+        double score = entity.getScore() != null ? new BigDecimal(entity.getScore()).setScale(1, BigDecimal.ROUND_DOWN).doubleValue() : 0;
         //分数
         String scoreStr = String.valueOf(score);
         helper.setText(R.id.tv_score, scoreStr);
