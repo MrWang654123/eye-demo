@@ -1262,6 +1262,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                                             || ArrayListUtil.isEmpty(topicInfoEntity.getDimensions())) {
                                         dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
                                         dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+//                                        dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
 
                                     } else {
                                         dto.setRelationId(dimensionInfoEntity.getTopicId());
@@ -1271,6 +1272,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                                 } else {
                                     dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
                                     dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+//                                    dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
                                 }
                                 //显示弹窗
                                 showExamReportDialog(dto);

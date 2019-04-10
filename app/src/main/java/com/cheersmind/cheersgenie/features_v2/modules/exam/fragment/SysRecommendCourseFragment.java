@@ -474,7 +474,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                         dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
                         dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
                         dto.setRelationId(dimension.getTopicDimensionId());//话题量表ID
-                        dto.setDimensionId(dimension.getDimensionId());//量表ID（目前用于推荐内容）
+                        dto.setDimensionId(dimension.getDimensionId());//量表ID（目前用于报告推荐内容）
 
                         ExamReportActivity.startExamReportActivity(getContext(), dto);
 

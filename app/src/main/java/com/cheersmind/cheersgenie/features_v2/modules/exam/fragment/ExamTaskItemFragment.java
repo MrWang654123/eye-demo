@@ -236,6 +236,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     && entity.getSubItems().size() == 1) {
                 dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
                 dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
 
             } else {
                 dto.setRelationId(dimensionInfoEntity.getTopicId());
@@ -656,7 +657,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
 
             } else {//已经开启过的状态
                 //未完成状态
-                if(entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE){
+                if (entity.getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
                     //跳转到量表详细页面，传递量表对象和话题对象
                     DimensionDetailActivity.startDimensionDetailActivity(getContext(),
                             dimensionInfoEntity, topicInfoEntity,
@@ -672,6 +673,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
                     dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
                     dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                    dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
 
                     ExamReportActivity.startExamReportActivity(getContext(), dto);
                 }
