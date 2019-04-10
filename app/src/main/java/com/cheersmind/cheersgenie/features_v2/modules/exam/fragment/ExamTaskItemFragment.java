@@ -3,13 +3,17 @@ package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.animation.ScaleInAnimation;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -24,6 +28,8 @@ import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetail
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.animation.ScaleAnimation;
+import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskItemRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
@@ -61,6 +67,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -281,7 +288,8 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
 
         //适配器
         recyclerAdapter = new ExamTaskItemRecyclerAdapter(null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter.openLoadAnimation(new ScaleInAnimation(0.9f));
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
@@ -291,7 +299,8 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
         //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
-//        recyclerAdapter.addHeaderView(new View(getContext()));
+        recyclerAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.recycler_divider_f5f5f5_12dp, (ViewGroup) null));
+        recyclerAdapter.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.recycler_divider_f5f5f5_12dp, (ViewGroup) null));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线

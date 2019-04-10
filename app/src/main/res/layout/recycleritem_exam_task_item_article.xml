@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -41,12 +41,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
                 android:textColor="@color/white"
-                android:background="@color/colorAccent"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="2dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginEnd="15dp"
+                android:background="@drawable/task_item_type"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingBottom="1dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="视频"/>
 
             <TextView

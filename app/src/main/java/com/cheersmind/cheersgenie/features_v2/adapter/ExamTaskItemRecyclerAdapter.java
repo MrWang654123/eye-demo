@@ -167,7 +167,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
             //状态不同，颜色不同：完成状态
             if (taskItem.getChildItem() != null && taskItem.getChildItem().getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff999999);
+                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
             } else {
                 ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
             }
@@ -177,7 +177,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             //状态不同，颜色不同：完成状态
             if (dimensionInfo.getChildDimension() != null
                     && dimensionInfo.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff999999);
+                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
             } else {
                 ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
             }

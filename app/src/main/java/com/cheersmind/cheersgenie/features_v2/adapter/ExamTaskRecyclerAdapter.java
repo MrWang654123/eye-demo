@@ -60,10 +60,10 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
 
         //共计任务项数量
         int taskItemCount = item.getExam_num() + item.getArticle_num() + item.getVideo_num() + item.getAudio_num();
-        helper.setText(R.id.tv_task_item_count, "共计" + taskItemCount + "项任务");
+        helper.setText(R.id.tv_task_item_count, "共" + taskItemCount + "个任务");
 
         //参与人数
-        helper.setText(R.id.tv_user_count, item.getUse_count() + "人参与");
+        helper.setText(R.id.tv_user_count, item.getUse_count() + "人完成");
 
         //内容示意小图标
         //文章
@@ -112,7 +112,7 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
         if (childTask != null) {
             //完成状态
             if (childTask.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff999999);
+                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
             } else {
                 ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
             }

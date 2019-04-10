@@ -6,9 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.animation.ScaleInAnimation;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
@@ -120,7 +123,8 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
 
         //适配器
         recyclerAdapter = new ExamTaskCommentRecyclerAdapter(R.layout.recycleritem_exam_task_comment,null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter.openLoadAnimation(new ScaleInAnimation(0.9f));
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
         //禁用未满页自动触发上拉加载
@@ -131,6 +135,8 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
         recyclerAdapter.setPreLoadNumber(4);
         //添加一个空HeaderView，用于显示顶部分割线
 //        recyclerAdapter.addHeaderView(new View(getContext()));
+        recyclerAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.recycler_divider_f5f5f5_12dp, (ViewGroup) null));
+        recyclerAdapter.addFooterView(LayoutInflater.from(getContext()).inflate(R.layout.recycler_divider_f5f5f5_12dp, (ViewGroup) null));
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
         //添加自定义分割线
@@ -154,9 +160,11 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
                 loadMoreData();
             }
         });
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
@@ -247,7 +255,7 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();
@@ -276,9 +284,9 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
         swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
-        if (recyclerAdapter.getData().size() == 0) {
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
+//        if (recyclerAdapter.getData().size() == 0) {
+//            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        }
 
         dto.setPage(pageNum);
         DataRequestService.getInstance().getCommentList(dto, new BaseService.ServiceCallback() {
@@ -331,7 +339,7 @@ public class ExamTaskCommentFragment extends LazyLoadFragment {
                     //判断是否全部加载结束
                     if (recyclerAdapter.getData().size() >= totalCount) {
                         //全部加载结束
-                        recyclerAdapter.loadMoreEnd();
+                        recyclerAdapter.loadMoreEnd(true);
                     } else {
                         //本次加载完成
                         recyclerAdapter.loadMoreComplete();

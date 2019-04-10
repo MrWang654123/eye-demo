@@ -73,7 +73,11 @@
     <dimen name="ratio_char_val_margin">4dp</dimen><!--图表项比例值间距-->
     <dimen name="ratio_char_result_margin">20dp</dimen><!--结果文本间距-->
 
+    <!--通用-->
     <dimen name="margin_common">10dp</dimen><!--通用外间距-->
     <dimen name="padding_common">15dp</dimen><!--通用内间距-->
+
+    <!--任务-->
+    <dimen name="task_item_type_icon_width">25dp</dimen><!--任务项类型图标宽度-->
 
 </resources>
