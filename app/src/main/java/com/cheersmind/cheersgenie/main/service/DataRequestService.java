@@ -2046,25 +2046,25 @@ public class DataRequestService {
 
     /**
      * 获取生涯规划档案
-     * @param childId 孩子ID
+     * @param childExamId 孩子测评ID
      * @param httpTag 通信标记
      * @param callback 回调 回调
      */
-    public void getCareerPlanRecord(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getCareerPlanRecord(String childExamId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_CAREER_PLAN_RECORD
-                .replace("{child_id}", childId);
+                .replace("{child_exam_id}", childExamId);
         doGet(url, callback, httpTag, context);
     }
 
     /**
      * 获取系统推荐选科
-     * @param childId 孩子ID
+     * @param childExamId 孩子测评ID
      * @param httpTag 通信标记
      * @param callback 回调 回调
      */
-    public void getSysRmdCourse(String childId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getSysRmdCourse(String childExamId, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_SYS_RMD_COURSE
-                .replace("{child_id}", childId);
+                .replace("{child_exam_id}", childExamId);
         doGet(url, callback, httpTag, context);
     }
 

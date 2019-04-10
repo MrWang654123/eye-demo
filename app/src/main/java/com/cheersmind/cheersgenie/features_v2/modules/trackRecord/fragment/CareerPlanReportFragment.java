@@ -29,6 +29,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.RecordItemHeader;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
+import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
@@ -260,7 +261,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             @Override
             public void onMultiClick(View view) {
                 //加载报告
-                loadReport();
+                loadReport(childExamId);
             }
         });
         //初始化为加载状态
@@ -308,7 +309,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     @Override
     protected void lazyLoad() {
         //加载报告
-        loadReport();
+        loadReport(childExamId);
     }
 
     @Override
@@ -342,13 +343,12 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     /**
      * 加载报告
      */
-    private void loadReport() {
+    private void loadReport(String childExamId) {
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         try {
-            String childId = UCManager.getInstance().getDefaultChild().getChildId();
-            DataRequestService.getInstance().getCareerPlanRecord(childId, new BaseService.ServiceCallback() {
+            DataRequestService.getInstance().getCareerPlanRecord(childExamId, new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
                     //空布局：网络连接有误，或者请求失败
@@ -557,7 +557,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadReport();
+        loadReport(childExamId);
     }
 
 
@@ -637,6 +637,18 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         }, httpTag, getContext());
     }
 
+
+    /**
+     * 选科成功的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSelectCourseSuccessNotice(SelectCourseSuccessEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            loadReport(childExamId);
+        }
+    }
 
 }
 

@@ -21,6 +21,7 @@ import com.cheersmind.cheersgenie.features_v2.adapter.ChooseCourseRecyclerAdapte
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseRootEntity;
+import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -30,6 +31,8 @@ import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -432,6 +435,9 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                     if (getActivity() != null) {
                         ToastUtil.showShort(getActivity().getApplication(), "选科成功");
                     }
+
+                    //发送选科成功事件
+                    EventBus.getDefault().post(new SelectCourseSuccessEvent());
 
                 } catch (Exception e) {
                     e.printStackTrace();

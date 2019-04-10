@@ -228,7 +228,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadData();
+                loadData(childExamId);
             }
         });
         //初始化为加载状态
@@ -275,7 +275,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        loadData();
+        loadData(childExamId);
     }
 
     @Override
@@ -310,7 +310,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadData();
+        loadData(childExamId);
     }
 
     @OnClick({R.id.btn_add_major})
@@ -327,13 +327,12 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
     /**
      * 加载数据
      */
-    private void loadData() {
+    private void loadData(String childExamId) {
 
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
-        String childId = UCManager.getInstance().getDefaultChild().getChildId();
-        DataRequestService.getInstance().getSysRmdCourse(childId, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getSysRmdCourse(childExamId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
                 //设置空布局：网络错误
