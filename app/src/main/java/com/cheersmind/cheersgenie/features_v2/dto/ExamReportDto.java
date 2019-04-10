@@ -12,7 +12,7 @@ public class ExamReportDto implements Serializable {
     //孩子测评ID
     private String childExamId;
 
-    //维度ID（话题或者量表）
+    //维度ID（话题：话题ID；量表：话题量表ID）
     private String relationId;
 
     //维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
@@ -23,6 +23,9 @@ public class ExamReportDto implements Serializable {
 
     //维度名称（话题或者量表名称）
     private String relationName;
+
+    //量表ID
+    private String dimensionId;
 
     public String getChildExamId() {
         return childExamId;
@@ -62,5 +65,13 @@ public class ExamReportDto implements Serializable {
 
     public void setRelationName(String relationName) {
         this.relationName = relationName;
+    }
+
+    public String getDimensionId() {
+        return dimensionId;
+    }
+
+    public void setDimensionId(String dimensionId) {
+        this.dimensionId = dimensionId;
     }
 }

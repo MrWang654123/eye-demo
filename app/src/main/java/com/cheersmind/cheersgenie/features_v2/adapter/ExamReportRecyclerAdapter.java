@@ -16,6 +16,8 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
+import com.cheersmind.cheersgenie.features.entity.ReportRecommend;
+import com.cheersmind.cheersgenie.features.entity.ReportRecommendItem;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
@@ -39,6 +41,8 @@ import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LEFT
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LINE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RADAR;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_ACT_TYPE;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_ITEM;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_TITLE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_ITEM;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_TITLE;
 
@@ -63,6 +67,8 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         addItemType(CHART_SUB_ITEM, R.layout.recycleritem_exam_report_sub_item);
         addItemType(CHART_SUB_TITLE, R.layout.recycleritem_exam_report_sub_title);
         addItemType(CHART_RECOMMEND_ACT_TYPE, R.layout.recycleritem_exam_report_recommend_act_type);
+        addItemType(CHART_RECOMMEND_CONTENT_TITLE, R.layout.recycleritem_exam_report_recommend_content_title);
+        addItemType(CHART_RECOMMEND_CONTENT_ITEM, R.layout.recycleritem_exam_report_recommend_content_item);
         addItemType(CHART_DESC, R.layout.chart_item_desc);
         addItemType(CHART_RADAR, R.layout.chart_item_radar);
         addItemType(CHART_LINE, R.layout.chart_item_line);
@@ -388,6 +394,38 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                         warpLinearLayout.addView(tv);
                     }
                 }
+
+                break;
+            }
+            //推荐内容标题
+            case CHART_RECOMMEND_CONTENT_TITLE: {
+                ReportRecommend entity = (ReportRecommend) item;
+                helper.setText(R.id.tv_title, entity.getNode_name());
+                break;
+            }
+            //推荐内容项
+            case CHART_RECOMMEND_CONTENT_ITEM: {
+                ReportRecommendItem entity = (ReportRecommendItem) item;
+                helper.setText(R.id.tv_title, entity.getElement_name());
+
+                String tag = "";
+                if ("audio".equals(entity.getElement_type())) {
+                    tag = "音频";
+
+                } else if ("video".equals(entity.getElement_type())) {
+                    tag = "视频";
+
+                } else if ("article".equals(entity.getElement_type())) {
+                    tag = "文章";
+
+                } else if ("task".equals(entity.getElement_type())) {
+                    tag = "任务";
+
+                } else if ("test".equals(entity.getElement_type())) {
+                    tag = "测评";
+                }
+
+                helper.setText(R.id.tv_tag, tag);
 
                 break;
             }

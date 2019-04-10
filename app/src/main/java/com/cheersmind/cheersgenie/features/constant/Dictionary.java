@@ -143,6 +143,10 @@ public class Dictionary {
     public final static int CHART_SUB_TITLE = 500;
     //推荐的act分类
     public final static int CHART_RECOMMEND_ACT_TYPE = 600;
+    //推荐内容标题
+    public final static int CHART_RECOMMEND_CONTENT_TITLE = 700;
+    //推荐内容项
+    public final static int CHART_RECOMMEND_CONTENT_ITEM = 800;
     //子项
     public final static int CHART_SUB_ITEM = 300;
     //图表描述

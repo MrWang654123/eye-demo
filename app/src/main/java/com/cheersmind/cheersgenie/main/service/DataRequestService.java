@@ -1138,17 +1138,18 @@ public class DataRequestService {
      * @param dto
      * 1、孩子测评ID
      * 2、维度ID（必填）topicid,或者topic_dimension_id
-     * 3、维度类型（topic_dimension - 话题下的主题，topic - 话题 ，必填 ）
-     * 4、对比样本ID( 0-全国，1- 八大区，2-省，3-市，4-区，5-学校，6-年级，7-班级)
      * @param httpTag 通信标记
      * @param callback 回调 回调
      */
     public void getReportRecommendContent(ExamReportDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
-        String url = HttpConfig.URL_REPORT_RECOMMEND_ARTICLE
-                .replace("{child_exam_id}", dto.getChildExamId())
-                .replace("{relation_id}", dto.getRelationId())
-                .replace("{relation_type}", dto.getRelationType())
-                .replace("{compare_id}", String.valueOf(dto.getCompareId()));
+        String url = HttpConfig.URL_REPORT_RECOMMEND_CONTENT
+                .replace("{relation_id}", dto.getDimensionId());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_exam_id", dto.getChildExamId());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
         doGet(url, callback, httpTag, context);
     }
 

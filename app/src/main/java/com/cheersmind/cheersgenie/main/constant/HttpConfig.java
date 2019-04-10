@@ -297,6 +297,9 @@ public class HttpConfig {
     //获取报告推荐文章
     public static String URL_REPORT_RECOMMEND_ARTICLE = API_HOST + "/v2/api/exams/reports/actions/get_recommend_articles?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
 
+    //获取报告推荐内容V2
+    public static String URL_REPORT_RECOMMEND_CONTENT = API_HOST + "/v2/api/exams/personal/reports/recommend/{relation_id}";
+
     //获取话题的历史报告
     public static String URL_HISTORY_REPORT = API_HOST + "/v2/exams/{topic_id}/history?child_id={child_id}";
 

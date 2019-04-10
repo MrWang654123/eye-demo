@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -22,6 +21,9 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
+import com.cheersmind.cheersgenie.features.entity.ReportRecommend;
+import com.cheersmind.cheersgenie.features.entity.ReportRecommendItem;
+import com.cheersmind.cheersgenie.features.entity.ReportRecommendRootEntity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
@@ -75,7 +77,7 @@ public class ExamReportFragment extends LazyLoadFragment {
     FloatingActionButton fabGotoTop;
 
     //报告列表footer
-    View footerReportView;
+//    View footerReportView;
     //文章列表布局
     LinearLayout llArticle;
 
@@ -196,8 +198,8 @@ public class ExamReportFragment extends LazyLoadFragment {
             public void onMultiClick(View view) {
                 //加载报告
                 loadReport(reportDto);
-                //加载报告推荐文章
-//                loadReportRecommendArticle(reportDto);
+                //加载报告推荐内容
+                loadReportRecommendContent(reportDto);
             }
         });
         //初始化为加载状态
@@ -227,10 +229,10 @@ public class ExamReportFragment extends LazyLoadFragment {
 //        }
 
         //报告列表footer（推荐文章）
-        footerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_footer_article_recommend, null);
-        llArticle = footerReportView.findViewById(R.id.ll_article);
-        recyclerAdapter.addFooterView(footerReportView);
-        footerReportView.setVisibility(View.GONE);//初始隐藏footer
+//        footerReportView = LayoutInflater.from(getContext()).inflate(R.layout.recycler_footer_article_recommend, null);
+//        llArticle = footerReportView.findViewById(R.id.ll_article);
+//        recyclerAdapter.addFooterView(footerReportView);
+//        footerReportView.setVisibility(View.GONE);//初始隐藏footer
 
         //初始隐藏置顶按钮
         fabGotoTop.setVisibility(View.INVISIBLE);
@@ -244,7 +246,7 @@ public class ExamReportFragment extends LazyLoadFragment {
         //加载报告
         loadReport(reportDto);
         //加载报告推荐文章
-//        loadReportRecommendArticle(reportDto);
+        loadReportRecommendContent(reportDto);
     }
 
     @Override
@@ -380,6 +382,80 @@ public class ExamReportFragment extends LazyLoadFragment {
                 resList.add(new ReportRecommendActType(categories).setItemType(Dictionary.CHART_RECOMMEND_ACT_TYPE));
             }
 
+        }
+
+        return resList;
+    }
+
+
+    /**
+     * 加载报告推荐内容
+     */
+    private void loadReportRecommendContent(ExamReportDto reportDto) {
+
+        DataRequestService.getInstance().getReportRecommendContent(reportDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+//                footerReportView.setVisibility(View.GONE);
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ReportRecommendRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ReportRecommendRootEntity.class);
+
+                    List<ReportRecommend> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        return;
+                    }
+
+                    //数据转换
+                    List<MultiItemEntity> multiItemEntities = reportRecommendToRecyclerMulti(dataList);
+                    if (ArrayListUtil.isNotEmpty(multiItemEntities)) {
+                        recyclerAdapter.addData(multiItemEntities);
+                    }
+
+                } catch (Exception e) {
+//                    e.printStackTrace();
+                }
+            }
+        }, httpTag, getActivity());
+    }
+
+
+    /**
+     * List<ReportRecommend>转成用于适配recycler的分组数据模型List<MultiItemEntity>
+     *
+     * @param dataList List<ReportRecommend>
+     * @return 适配recycler的分组数据模型
+     */
+    protected List<MultiItemEntity> reportRecommendToRecyclerMulti(List<ReportRecommend> dataList) {
+        List<MultiItemEntity> resList = null;
+
+        if (ArrayListUtil.isNotEmpty(dataList)) {
+            resList = new ArrayList<>();
+            for (ReportRecommend reportRecommend : dataList) {
+                List<ReportRecommendItem> items = reportRecommend.getItems();
+                if (ArrayListUtil.isNotEmpty(items)) {
+                    //子项非空则添加
+                    reportRecommend.setItemType(Dictionary.CHART_RECOMMEND_CONTENT_TITLE);
+                    resList.add(reportRecommend);
+
+                    for (ReportRecommendItem item : items) {
+                        item.setItemType(Dictionary.CHART_RECOMMEND_CONTENT_ITEM);
+                        resList.add(item);
+                    }
+                }
+            }
+        }
+
+        if (ArrayListUtil.isNotEmpty(resList)) {
+            resList.add(0, new ReportSubTitleEntity("推荐学习").setItemType(Dictionary.CHART_SUB_TITLE));
         }
 
         return resList;
