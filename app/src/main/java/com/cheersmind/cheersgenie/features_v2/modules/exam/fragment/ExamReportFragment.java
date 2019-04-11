@@ -21,11 +21,13 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.entity.ChartItem;
 import com.cheersmind.cheersgenie.features.entity.ChartItemDesc;
+import com.cheersmind.cheersgenie.features.entity.RecyclerViewDivider;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommend;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommendItem;
 import com.cheersmind.cheersgenie.features.entity.ReportRecommendRootEntity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -41,13 +43,20 @@ import com.cheersmind.cheersgenie.features_v2.entity.ReportSubTitleEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ReportItemEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfo;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.main.util.RepetitionClickUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +143,7 @@ public class ExamReportFragment extends LazyLoadFragment {
                 case Dictionary.CHART_RECOMMEND_CONTENT_ITEM: {
                     ReportRecommendItem entity = (ReportRecommendItem) multiItem;
                     if ("audio".equals(entity.getElement_type())) {
+                        System.out.println("点击音频");
 
                     } else if ("video".equals(entity.getElement_type())) {
                         ArticleDetailActivity.startArticleDetailActivity(getContext(), entity.getElement_id(), null, entity.getElement_name());
@@ -142,8 +152,20 @@ public class ExamReportFragment extends LazyLoadFragment {
                         ArticleDetailActivity.startArticleDetailActivity(getContext(), entity.getElement_id(), null, entity.getElement_name());
 
                     } else if ("task".equals(entity.getElement_type())) {
+                        System.out.println("点击任务");
 
-                    } else if ("test".equals(entity.getElement_type())) {
+                    } else if ("dimension".equals(entity.getElement_type())) {
+                        if (!TextUtils.isEmpty(entity.getTopic_id()) && !TextUtils.isEmpty(entity.getElement_id())) {
+                            TopicInfo topicInfo = new TopicInfo();
+                            topicInfo.setTopicId(entity.getTopic_id());
+                            topicInfo.setDimensionId(entity.getElement_id());
+                            //继续答题
+                            getReferenceExam(topicInfo);
+                        } else {
+                            if (!RepetitionClickUtil.isFastClickLong()) {
+                                showToast(getString(R.string.operate_fail));
+                            }
+                        }
                     }
                     break;
                 }
@@ -477,6 +499,10 @@ public class ExamReportFragment extends LazyLoadFragment {
                         item.setItemType(Dictionary.CHART_RECOMMEND_CONTENT_ITEM);
                         resList.add(item);
                     }
+
+                    //分割线
+                    RecyclerViewDivider divider = new RecyclerViewDivider(Dictionary.CHART_RECOMMEND_CONTENT_DIVIDER);
+                    resList.add(divider);
                 }
             }
         }
@@ -486,6 +512,78 @@ public class ExamReportFragment extends LazyLoadFragment {
         }
 
         return resList;
+    }
+
+
+    /**
+     * 请求测评
+     * @param topicInfo 简单话题
+     */
+    private void getReferenceExam(final TopicInfo topicInfo) {
+        //通信等待加载提示
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getChildDimension(childId, topicInfo.getTopicId(), topicInfo.getDimensionId(), new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //关闭通信等待加载提示
+                LoadingView.getInstance().dismiss();
+
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), R.string.operate_fail);
+                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待加载提示
+                    LoadingView.getInstance().dismiss();
+
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
+
+                    if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
+                        throw new QSCustomException(getString(R.string.operate_fail));
+                    }
+
+                    //已完成，查看报告
+                    if (dimension.getChildDimension() != null
+                            && dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+                        ExamReportDto dto = new ExamReportDto();
+                        dto.setChildExamId(dimension.getChildDimension().getChildExamId());//孩子测评ID
+                        dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
+                        dto.setRelationId(dimension.getTopicDimensionId());//话题量表ID
+                        dto.setDimensionId(dimension.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                        ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+                    } else {//未完成，继续答题
+                        //进入量表详情页面
+                        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
+                        //话题ID
+                        topicInfoEntity.setTopicId(topicInfo.getTopicId());
+                        //测评ID
+                        topicInfoEntity.setExamId(dimension.getExamId());
+                        DimensionDetailActivity.startDimensionDetailActivity(
+                                getContext(), dimension,
+                                topicInfoEntity,
+                                Dictionary.EXAM_STATUS_DOING,
+                                Dictionary.FROM_ACTIVITY_TO_SYS_RMD_COURSE);
+                    }
+
+                } catch (QSCustomException e) {
+                    onFailure(e);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getContext());
     }
 
 }

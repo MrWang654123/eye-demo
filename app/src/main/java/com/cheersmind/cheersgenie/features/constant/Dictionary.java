@@ -147,6 +147,8 @@ public class Dictionary {
     public final static int CHART_RECOMMEND_CONTENT_TITLE = 700;
     //推荐内容项
     public final static int CHART_RECOMMEND_CONTENT_ITEM = 800;
+    //推荐内容分割线
+    public final static int CHART_RECOMMEND_CONTENT_DIVIDER = 900;
     //子项
     public final static int CHART_SUB_ITEM = 300;
     //图表描述

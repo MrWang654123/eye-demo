@@ -44,6 +44,7 @@ import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LEFT
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_LINE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RADAR;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_ACT_TYPE;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_DIVIDER;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_ITEM;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_TITLE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_ITEM;
@@ -74,6 +75,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         addItemType(CHART_RECOMMEND_ACT_TYPE, R.layout.recycleritem_exam_report_recommend_act_type);
         addItemType(CHART_RECOMMEND_CONTENT_TITLE, R.layout.recycleritem_exam_report_recommend_content_title);
         addItemType(CHART_RECOMMEND_CONTENT_ITEM, R.layout.recycleritem_exam_report_recommend_content_item);
+        addItemType(CHART_RECOMMEND_CONTENT_DIVIDER, R.layout.recycleritem_exam_report_recommend_content_divider);
         addItemType(CHART_DESC, R.layout.chart_item_desc);
         addItemType(CHART_RADAR, R.layout.chart_item_radar);
         addItemType(CHART_LINE, R.layout.chart_item_line);
@@ -433,7 +435,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                 } else if ("task".equals(entity.getElement_type())) {
                     tag = "任务";
 
-                } else if ("test".equals(entity.getElement_type())) {
+                } else if ("dimension".equals(entity.getElement_type())) {
                     tag = "测评";
                 }
 

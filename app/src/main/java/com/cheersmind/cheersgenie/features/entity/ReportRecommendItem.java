@@ -17,6 +17,9 @@ public class ReportRecommendItem implements MultiItemEntity {
     @InjectMap(name = "element_type")
     private String element_type;
 
+    //话题ID，只有当元素是量表时才有值
+    @InjectMap(name = "topic_id")
+    private String topic_id;
 
     private int itemType;
 
@@ -51,5 +54,13 @@ public class ReportRecommendItem implements MultiItemEntity {
 
     public void setElement_type(String element_type) {
         this.element_type = element_type;
+    }
+
+    public String getTopic_id() {
+        return topic_id;
+    }
+
+    public void setTopic_id(String topic_id) {
+        this.topic_id = topic_id;
     }
 }

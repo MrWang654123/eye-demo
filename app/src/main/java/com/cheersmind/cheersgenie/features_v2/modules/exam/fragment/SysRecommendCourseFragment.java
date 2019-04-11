@@ -463,7 +463,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
 
                     if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
-                        throw new QSCustomException("量表数据为空");
+                        throw new QSCustomException(getString(R.string.operate_fail));
                     }
 
                     //查看报告

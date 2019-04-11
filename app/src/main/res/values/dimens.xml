@@ -80,4 +80,9 @@
     <!--任务-->
     <dimen name="task_item_type_icon_width">25dp</dimen><!--任务项类型图标宽度-->
 
+    <!--报告推荐-->
+    <dimen name="recommend_divider_margin_left">40dp</dimen><!--分割线左外间距-->
+    <dimen name="recommend_divider_height">30dp</dimen><!--分割线高度-->
+    <dimen name="recommend_title_margin_left">10dp</dimen><!--标题左外间距-->
+
 </resources>

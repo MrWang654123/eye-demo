@@ -20,7 +20,7 @@ import java.util.List;
 public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder> {
 
     //任务状态
-    protected int taskStatus;
+    private int taskStatus;
 
     public ExamTaskItemRecyclerAdapter(List<MultiItemEntity> data) {
         super(data);
