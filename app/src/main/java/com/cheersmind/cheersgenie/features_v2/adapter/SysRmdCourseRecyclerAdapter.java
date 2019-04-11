@@ -61,7 +61,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                     WarpLinearLayout layout = helper.getView(R.id.warpLinearLayout);
                     if (layout.getChildCount() == 0) {
                         for (String str : entity.getRecommend_subjects()) {
-                            TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item_clickable, null);
+                            TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item_unclickable, null);
                             tv.setText(str);
                             layout.addView(tv);
                         }
