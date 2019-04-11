@@ -3,7 +3,6 @@ package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,8 +27,6 @@ import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetail
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.animation.ScaleAnimation;
-import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskItemRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
@@ -67,7 +64,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.Inflater;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -169,7 +165,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                                     position);
                         } else {
                             if (getActivity() != null) {
-                                ToastUtil.showShort(getActivity().getApplication(), "获取测评失败，请稍后再试");
+                                ToastUtil.showShort(getActivity().getApplication(), getString(R.string.operate_fail));
                             }
                         }
                     }
