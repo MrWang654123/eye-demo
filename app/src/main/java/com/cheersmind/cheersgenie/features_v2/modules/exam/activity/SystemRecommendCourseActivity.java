@@ -10,20 +10,20 @@ import android.support.v4.app.FragmentManager;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.SelectCourseAssistantFragment;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.fragment.SysRecommendCourseFragment;
 
 /**
- * 选科助手
+ * 系统推荐选科
  */
-public class SelectCourseAssistantActivity extends BaseActivity {
+public class SystemRecommendCourseActivity extends BaseActivity {
 
     /**
-     * 启动选科助手页面
+     * 启动系统推荐选科页面
      * @param childExamId 孩子测评Id
      * @param context 上下文
      */
-    public static void startSelectCourseAssistantActivity(Context context, String childExamId) {
-        Intent intent = new Intent(context, SelectCourseAssistantActivity.class);
+    public static void startSystemRecommendCourseActivity(Context context, String childExamId) {
+        Intent intent = new Intent(context, SystemRecommendCourseActivity.class);
         intent.putExtra(DtoKey.CHILD_EXAM_ID, childExamId);
         context.startActivity(intent);
     }
@@ -35,7 +35,7 @@ public class SelectCourseAssistantActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "选科助手";
+        return "学科推荐";
     }
 
 
@@ -51,12 +51,11 @@ public class SelectCourseAssistantActivity extends BaseActivity {
         String childExamId = getIntent().getStringExtra(DtoKey.CHILD_EXAM_ID);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        String tag = SelectCourseAssistantFragment.class.getSimpleName();
+        String tag = SysRecommendCourseFragment.class.getSimpleName();
         Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
         //空则添加
         if (fragmentByTag == null) {
-            //选科助手
-            SelectCourseAssistantFragment fragment = new SelectCourseAssistantFragment();
+            SysRecommendCourseFragment fragment = new SysRecommendCourseFragment();
             Bundle bundle = new Bundle();
             bundle.putString(DtoKey.CHILD_EXAM_ID, childExamId);
             fragment.setArguments(bundle);

@@ -6,63 +6,142 @@
     android:background="@color/white">
 
     <!--内容模块-->
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/sv_main_block"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/swipeRefreshLayout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--系统推荐-->
+                <LinearLayout
+                    android:id="@+id/ll_sys_recommend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingEnd="15dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="测评推荐学科:"/>
+
+                    <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+                        android:id="@+id/wll_sys_recommend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:grivate="left"
+                        app:horizontal_Space="10dp"
+                        app:isFull="false"
+                        app:vertical_Space="15dp"/>
+
+                </LinearLayout>
+
+                <!--专业比较-->
+                <LinearLayout
+                    android:id="@+id/ll_observe_major"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingEnd="15dp"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="专业比较推荐:"/>
+
+                    <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+                        android:id="@+id/wll_observe_major"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:grivate="left"
+                        app:horizontal_Space="10dp"
+                        app:isFull="false"
+                        app:vertical_Space="15dp"/>
+
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycleView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"/>
 
-            </android.support.v4.widget.SwipeRefreshLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_confirm"
+                <!--相关专业比率-->
+                <LinearLayout
+                    android:id="@+id/ll_relative_major_ratio"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:background="@drawable/shape_corner_accent_3dp"
-                    android:text="确认选科结果"/>
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="15dp"
+                    android:orientation="vertical">
 
-                <!--style="?android:attr/buttonBarButtonStyle"-->
+                    <TextView
+                        android:id="@+id/tv_can_select_major_ratio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/color_555555"
+                        android:text="-基于所选学科您可报考的专业占所有大学专业的95%"/>
+
+                    <TextView
+                        android:id="@+id/tv_high_require_major_ratio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@color/color_555555"
+                        android:layout_marginTop="5dp"
+                        android:text="-对所选学科要求较高的专业占所有大学专业的80%"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabGotoTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="right|bottom"
-            android:visibility="visible"
-            app:fabSize="mini"
-            android:src="@drawable/goto_top"/>
-        <!--android:src="@drawable/ic_start"-->
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:background="@drawable/shape_corner_accent_3dp"
+            android:text="确认选科结果"/>
 
-    </FrameLayout>
+    </LinearLayout>
 
     <!--空布局-->
     <com.cheersmind.cheersgenie.features.view.XEmptyLayout

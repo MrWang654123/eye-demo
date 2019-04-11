@@ -2,12 +2,9 @@ package com.cheersmind.cheersgenie.features_v2.modules.mine.fragment;
 
 import android.content.DialogInterface;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -20,13 +17,9 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
-import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.MineMedalRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MedalEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MedalRootEntity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;

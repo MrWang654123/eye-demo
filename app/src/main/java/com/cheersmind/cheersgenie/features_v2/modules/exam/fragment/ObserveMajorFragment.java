@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -13,18 +14,26 @@ import android.widget.LinearLayout;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
-import com.cheersmind.cheersgenie.features.dto.BasePositionDto;
+import com.cheersmind.cheersgenie.features.dto.ChildDto;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ObserveMajorRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.chart.formatter.IntAxisFormatter;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
+import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -39,7 +48,6 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +70,8 @@ public class ObserveMajorFragment extends LazyLoadFragment {
     //孩子测评id
     private String childExamId;
 
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
     //空布局
@@ -90,12 +100,11 @@ public class ObserveMajorFragment extends LazyLoadFragment {
     //适配器
     ObserveMajorRecyclerAdapter recyclerAdapter;
 
-    //上拉加载更多的监听
-    BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
+    //下拉刷新的监听
+    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
-        public void onLoadMoreRequested() {
-            //加载更多数据
-            loadMoreData();
+        public void onRefresh() {
+            refreshData();
         }
     };
 
@@ -128,17 +137,10 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                 switch (view.getId()) {
                     //删除
                     case R.id.iv_del: {
-                        //删除视图
-                        recyclerAdapter.remove(position);
-                        //删除数据库
-                        int count = DataSupport.deleteAll(RecommendMajor.class, "major_code=?", entity.getMajor_code());
-                        //刷新图表
-                        initBarChart();
-                        //索引后退
-                        beginPos -= count;
-                        if (beginPos < 0) {
-                            beginPos = 0;
-                        }
+                        //删除数据
+                        RecommendMajor remove = recyclerAdapter.getData().remove(position);
+                        //请求删除
+                        doSaveObserveMajor(recyclerAdapter.getData(), position, remove);
                         break;
                     }
                 }
@@ -153,13 +155,13 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
 
     //页长度
-    private static final int PAGE_SIZE = 20;
-    //起始位置
-    private int beginPos = 0;
+    private static final int PAGE_SIZE = 100;
+    //页码
+    private int pageNum = 1;
     //后台总记录数
     private int totalCount = 0;
 
-    BasePositionDto dto;
+    ChildDto dto;
 
 
     @Override
@@ -186,28 +188,17 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
         //适配器
         recyclerAdapter = new ObserveMajorRecyclerAdapter(getContext(), R.layout.recycleritem_observe_major, null);
-        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
-//        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
-        //设置上拉加载更多的监听
-        recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
-        //禁用未满页自动触发上拉加载
-        recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置加载更多视图
-        recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
-        //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
-        recyclerAdapter.setPreLoadNumber(4);
-        //添加一个空HeaderView，用于显示顶部分割线
-//        recyclerAdapter.addHeaderView(new View(getContext()));
+//        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
+        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
-        //添加自定义分割线
-//        DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-//        divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_custom));
-//        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //设置子项的孩子视图点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
+
+        //设置下拉刷新的监听
+        swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_observe_major));
@@ -217,37 +208,51 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                 loadMoreData();
             }
         });
+        //无数据可点击
+        emptyLayout.setClickEnableForNoData(true);
+        emptyLayout.setOnGotoRelationBtnText("添加");
+        //跳转相关监听
+        emptyLayout.setOnGotoRelationListener(new OnMultiClickListener() {
+            @Override
+            public void onMultiClick(View view) {
+                RecommendMajorActivity.startRmdMajorActivity(getContext(), childExamId);
+            }
+        });
 
-        dto = new BasePositionDto(beginPos, PAGE_SIZE);
+        dto = new ChildDto(pageNum, PAGE_SIZE);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
 
         //设置图表无数据提示
         barChart.setNoDataText("暂无数据");
+
+        courseNameMap.put("0000", "无限制");
+        courseNameMap.put("1001", "语文");
+        courseNameMap.put("1002", "数学");
+        courseNameMap.put("1003", "英语");
+        courseNameMap.put("1004", "物理");
+        courseNameMap.put("1005", "化学");
+        courseNameMap.put("1006", "生物");
+        courseNameMap.put("1007", "历史");
+        courseNameMap.put("1008", "地理");
+        courseNameMap.put("1009", "政治");
+        courseNameMap.put("1010", "信息");
     }
 
+    //课程编码-累计值
     private HashMap<String, Integer> courseMap = new HashMap<>();
+    //课程编码-名称
     private HashMap<String, String> courseNameMap = new HashMap<>();
 
     /**
      * 初始化图表
      */
-    private void initBarChart() {
+    private void initBarChart(List<RecommendMajor> all, boolean clear) {
 
-        if (courseNameMap.size() == 0) {
-            courseNameMap.put("1001", "语文");
-            courseNameMap.put("1002", "数学");
-            courseNameMap.put("1003", "英语");
-            courseNameMap.put("1004", "物理");
-            courseNameMap.put("1005", "化学");
-            courseNameMap.put("1006", "生物");
-            courseNameMap.put("1007", "历史");
-            courseNameMap.put("1008", "地理");
-            courseNameMap.put("1009", "政治");
-            courseNameMap.put("1010", "信息");
+        if (clear) {
+            courseMap.clear();
         }
 
-        courseMap.clear();
-
-        List<RecommendMajor> all = DataSupport.findAll(RecommendMajor.class);
+//        List<RecommendMajor> all = DataSupport.findAll(RecommendMajor.class);
         if (ArrayListUtil.isNotEmpty(all)) {
             for (RecommendMajor major : all) {
                 String require_subjects = major.getRequire_subjects();
@@ -271,6 +276,14 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                             }
                         }
                     }
+                } else {//空表示无限制
+                    //累加
+                    if (courseMap.containsKey("0000")) {
+                        courseMap.put("0000", courseMap.get("0000") + 1);
+
+                    } else {
+                        courseMap.put("0000", 1);
+                    }
                 }
             }
         }
@@ -287,7 +300,6 @@ public class ObserveMajorFragment extends LazyLoadFragment {
     @Override
     protected void lazyLoad() {
         loadMoreData();
-        initBarChart();
     }
 
     @Override
@@ -303,11 +315,11 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.tv_add})
+    @OnClick({R.id.iv_add})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //添加观察专业
-            case R.id.tv_add: {
+            case R.id.iv_add: {
                 RecommendMajorActivity.startRmdMajorActivity(getContext(), childExamId);
                 break;
             }
@@ -323,82 +335,277 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         //成功添加的数量大于0
         if (event.getCount() > 0) {
             //刷新数据
-            freshData();
-            //刷新图表
-            initBarChart();
+            refreshData();
         }
     }
+
+//    /**
+//     * 刷新数据
+//     */
+//    private void freshData() {
+//
+//        beginPos = 0;
+//        dto.setBeginPos(beginPos);
+//
+//        totalCount = DataSupport.count(RecommendMajor.class);
+//
+//        List<RecommendMajor> dataList = DataSupport.limit(dto.getSize())
+//                .offset(dto.getBeginPos())
+//                .find(RecommendMajor.class);
+//
+//        recyclerAdapter.setNewData(dataList);
+//
+//        //判断是否全部加载结束
+//        if (recyclerAdapter.getData().size() >= totalCount) {
+//            //全部加载结束
+//            recyclerAdapter.loadMoreEnd(true);
+//        } else {
+//            //本次加载完成
+//            recyclerAdapter.loadMoreComplete();
+//        }
+//
+//        //移动索引
+//        beginPos += dto.getSize();
+//    }
+
+//    /**
+//     * 加载更多数据
+//     */
+//    private void loadMoreData() {
+//
+//        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
+//        if (recyclerAdapter.getData().size() == 0) {
+//            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+//        }
+//
+//        dto.setBeginPos(beginPos);
+//
+//        totalCount = DataSupport.count(RecommendMajor.class);
+//
+//        List<RecommendMajor> dataList = DataSupport.limit(dto.getSize())
+//                .offset(dto.getBeginPos())
+//                .find(RecommendMajor.class);
+//
+//        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+//
+//        //当前列表无数据
+//        if (recyclerAdapter.getData().size() == 0) {
+//            recyclerAdapter.setNewData(dataList);
+//
+//        } else {
+//            recyclerAdapter.addData(dataList);
+//        }
+//
+//        //判断是否全部加载结束
+//        if (recyclerAdapter.getData().size() >= totalCount) {
+//            //全部加载结束
+//            recyclerAdapter.loadMoreEnd(true);
+//        } else {
+//            //本次加载完成
+//            recyclerAdapter.loadMoreComplete();
+//        }
+//
+//        //移动索引
+//        beginPos += dto.getSize();
+//    }
 
     /**
      * 刷新数据
      */
-    private void freshData() {
-
-        beginPos = 0;
-        dto.setBeginPos(beginPos);
-
-        totalCount = DataSupport.count(RecommendMajor.class);
-
-        List<RecommendMajor> dataList = DataSupport.limit(dto.getSize())
-                .offset(dto.getBeginPos())
-                .find(RecommendMajor.class);
-
-        recyclerAdapter.setNewData(dataList);
-
-        //判断是否全部加载结束
-        if (recyclerAdapter.getData().size() >= totalCount) {
-            //全部加载结束
-            recyclerAdapter.loadMoreEnd(true);
-        } else {
-            //本次加载完成
-            recyclerAdapter.loadMoreComplete();
+    private void refreshData() {
+        //下拉刷新
+        pageNum = 1;
+        //确保显示了刷新动画
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
         }
+        //关闭上拉加载功能
+        recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
-        //移动索引
-        beginPos += dto.getSize();
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getSaveObserveMajor(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //开启上拉加载功能
+                recyclerAdapter.setEnableLoadMore(true);
+                //结束下拉刷新动画
+                swipeRefreshLayout.setRefreshing(false);
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                //清空列表数据
+                recyclerAdapter.setNewData(null);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启上拉加载功能
+                    recyclerAdapter.setEnableLoadMore(true);
+                    //结束下拉刷新动画
+                    swipeRefreshLayout.setRefreshing(false);
+                    //设置空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    RecommendMajorRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, RecommendMajorRootEntity.class);
+
+                    totalCount = rootEntity.getTotal();
+                    List<RecommendMajor> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
+
+                    //下拉刷新
+                    recyclerAdapter.setNewData(dataList);
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
+
+                    //重新初始化图表
+                    initBarChart(dataList, true);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                    //清空列表数据
+                    recyclerAdapter.setNewData(null);
+                }
+            }
+        }, httpTag, getActivity());
     }
 
     /**
-     * 加载更多数据
+     * 加载数据
      */
     private void loadMoreData() {
+        //关闭下拉刷新功能
+        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
         //设置空布局，当前列表还没有数据的情况，显示通信等待提示
         if (recyclerAdapter.getData().size() == 0) {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        dto.setBeginPos(beginPos);
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getSaveObserveMajor(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //开启下拉刷新功能
+                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
 
-        totalCount = DataSupport.count(RecommendMajor.class);
+                if (recyclerAdapter.getData().size() == 0) {
+                    //设置空布局：网络错误
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                } else {
+                    //加载失败处理
+                    recyclerAdapter.loadMoreFail();
+                }
+            }
 
-        List<RecommendMajor> dataList = DataSupport.limit(dto.getSize())
-                .offset(dto.getBeginPos())
-                .find(RecommendMajor.class);
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启下拉刷新功能
+                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+                    //设置空布局：隐藏
+                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
-        emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    RecommendMajorRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, RecommendMajorRootEntity.class);
 
-        //当前列表无数据
-        if (recyclerAdapter.getData().size() == 0) {
-            recyclerAdapter.setNewData(dataList);
+                    totalCount = rootEntity.getTotal();
+                    List<RecommendMajor> dataList = rootEntity.getItems();
 
-        } else {
-            recyclerAdapter.addData(dataList);
-        }
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
 
-        //判断是否全部加载结束
-        if (recyclerAdapter.getData().size() >= totalCount) {
-            //全部加载结束
-            recyclerAdapter.loadMoreEnd(true);
-        } else {
-            //本次加载完成
-            recyclerAdapter.loadMoreComplete();
-        }
+                    //当前列表无数据
+                    if (recyclerAdapter.getData().size() == 0) {
+                        recyclerAdapter.setNewData(dataList);
 
-        //移动索引
-        beginPos += dto.getSize();
+                    } else {
+                        recyclerAdapter.addData(dataList);
+                    }
+
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        recyclerAdapter.loadMoreEnd();
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
+
+                    //重新初始化图表
+                    initBarChart(dataList, false);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    if (recyclerAdapter.getData().size() == 0) {
+                        //设置空布局：没有数据，可重载
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                    } else {
+                        //加载失败处理
+                        recyclerAdapter.loadMoreFail();
+                    }
+                }
+
+            }
+        }, httpTag, getActivity());
     }
 
+    /**
+     * 保存观察专业
+     * @param selectMajor 观察专业
+     */
+    private void doSaveObserveMajor(final List<RecommendMajor> selectMajor, final int delPosition, final RecommendMajor delItem) {
+        //显示通信等待
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().postSaveObserveMajor(childId, selectMajor, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+                //还原被删除项
+                recyclerAdapter.getData().add(delPosition, delItem);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待
+                    LoadingView.getInstance().dismiss();
+                    //删除视图
+                    recyclerAdapter.notifyItemRemoved(delPosition);
+                    //刷新图表
+                    initBarChart(recyclerAdapter.getData(),true);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
+                }
+            }
+        }, httpTag, getActivity());
+    }
 
     /**
      * 刷新统计图表

@@ -1,26 +1,34 @@
 package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
+import com.cheersmind.cheersgenie.features.dto.ChildDto;
 import com.cheersmind.cheersgenie.features.dto.SelectCourseDto;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
+import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ChooseCourseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
+import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
+import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
+import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -35,7 +43,9 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -49,43 +59,35 @@ import butterknife.Unbinder;
  */
 public class ChooseCourseFragment extends LazyLoadFragment {
 
+    Unbinder unbinder;
+
     //孩子测评ID
     private String childExamId;
 
+    @BindView(R.id.wll_sys_recommend)
+    WarpLinearLayout wllSysRecommend;
+    @BindView(R.id.ll_sys_recommend)
+    LinearLayout llSysRecommend;
+    @BindView(R.id.wll_observe_major)
+    WarpLinearLayout wllObserveMajor;
+    @BindView(R.id.ll_observe_major)
+    LinearLayout llObserveMajor;
+
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
-    @BindView(R.id.swipeRefreshLayout)
-    SwipeRefreshLayout swipeRefreshLayout;
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
-    //置顶按钮
-    @BindView(R.id.fabGotoTop)
-    FloatingActionButton fabGotoTop;
-
-    Unbinder unbinder;
+    @BindView(R.id.tv_can_select_major_ratio)
+    TextView tvCanSelectMajorRatio;
+    @BindView(R.id.tv_high_require_major_ratio)
+    TextView tvHighRequireMajorRatio;
+    @BindView(R.id.ll_relative_major_ratio)
+    LinearLayout llRelativeMajorRatio;
 
     //适配器
     ChooseCourseRecyclerAdapter recyclerAdapter;
-
-    //下拉刷新的监听
-    SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-        @Override
-        public void onRefresh() {
-            //加载数据
-            refreshData();
-        }
-    };
-
-    //上拉加载更多的监听
-    BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
-        @Override
-        public void onLoadMoreRequested() {
-            //加载更多数据
-            loadMoreData();
-        }
-    };
 
     //限制数量
     int limitCount = 3;
@@ -99,7 +101,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             if (chooseCourseList.size() == limitCount && !entity.isSelected()) {
                 //提示选中课程名称
                 if (getActivity() != null) {
-                    ToastUtil.showShort(getActivity().getApplication(), "只能选" + limitCount +"个科目");
+                    ToastUtil.showShort(getActivity().getApplication(), "只能选" + limitCount + "个学科");
                 }
                 return;
             }
@@ -138,10 +140,6 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     //选中的课程
     List<ChooseCourseEntity> chooseCourseList = new ArrayList<>();
 
-    //系统推荐选课
-    View sysRmdCourseView;
-    //推荐课程名称
-    TextView tvSysRmdCourse;
 
     @Override
     protected int setContentView() {
@@ -155,36 +153,13 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         //适配器
         recyclerAdapter = new ChooseCourseRecyclerAdapter(getContext(), R.layout.recycleritem_choose_course, null);
 //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
-        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
-        //设置上拉加载更多的监听
-        recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
-        //禁用未满页自动触发上拉加载
-        recyclerAdapter.disableLoadMoreIfNotFullPage();
-        //设置加载更多视图
-        recyclerAdapter.setLoadMoreView(new RecyclerLoadMoreView());
-        //预加载，当列表滑动到倒数第N个Item的时候(默认是1)回调onLoadMoreRequested方法
-        recyclerAdapter.setPreLoadNumber(4);
-        //添加一个空HeaderView，用于显示顶部分割线
-        recyclerAdapter.addHeaderView(new View(getContext()));
+//        recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
         //网格布局管理器
-        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recycleView.setLayoutManager(gridLayoutManager);
         recycleView.setAdapter(recyclerAdapter);
-        //添加自定义分割线
-//        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-//        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-//        recycleView.addItemDecoration(divider);
         //设置子项点击监听
         recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
-        //滑动监听
-//        try {
-//            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        //设置下拉刷新的监听
-        swipeRefreshLayout.setOnRefreshListener(refreshListener);
 
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_choose_course));
@@ -195,12 +170,9 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             }
         });
 
-        //初始隐藏置顶按钮
-        fabGotoTop.setVisibility(View.INVISIBLE);
-
         //获取数据
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
         }
 
@@ -218,11 +190,33 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         confirmDto.setChildExamId(childExamId);
         confirmDto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
         confirmDto.setItems(chooseCourseList);
+
+        courseNameMap.put("0000", "无限制");
+        courseNameMap.put("1001", "语文");
+        courseNameMap.put("1002", "数学");
+        courseNameMap.put("1003", "英语");
+        courseNameMap.put("1004", "物理");
+        courseNameMap.put("1005", "化学");
+        courseNameMap.put("1006", "生物");
+        courseNameMap.put("1007", "历史");
+        courseNameMap.put("1008", "地理");
+        courseNameMap.put("1009", "政治");
+        courseNameMap.put("1010", "信息");
+
+        //初始隐藏相关专业比率模块
+        llRelativeMajorRatio.setVisibility(View.GONE);
+        tvCanSelectMajorRatio.setVisibility(View.GONE);
+        tvHighRequireMajorRatio.setVisibility(View.GONE);
     }
 
     @Override
     protected void lazyLoad() {
+        //加载可选学科
         loadMoreData();
+        //加载系统推荐
+        loadSysRecommend(childExamId);
+        //加载专业观察表
+        loadObserveMajor();
     }
 
     @Override
@@ -233,107 +227,22 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
 
     /**
-     * 刷新数据
-     */
-    private void refreshData() {
-        //下拉刷新
-        pageNum = 1;
-        //关闭上拉加载功能
-        recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
-
-        DataRequestService.getInstance().getSelectCourse(dto, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                //开启上拉加载功能
-                recyclerAdapter.setEnableLoadMore(true);
-                //结束下拉刷新动画
-                swipeRefreshLayout.setRefreshing(false);
-                //设置空布局：网络错误
-                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                //清空列表数据
-                recyclerAdapter.setNewData(null);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-                    //开启上拉加载功能
-                    recyclerAdapter.setEnableLoadMore(true);
-                    //结束下拉刷新动画
-                    swipeRefreshLayout.setRefreshing(false);
-                    //设置空布局：隐藏
-                    emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
-
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ChooseCourseRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ChooseCourseRootEntity.class);
-
-                    totalCount = rootEntity.getTotal();
-                    List<ChooseCourseEntity> dataList = rootEntity.getItems();
-
-                    //空数据处理
-                    if (ArrayListUtil.isEmpty(dataList)) {
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
-                        return;
-                    }
-
-                    //下拉刷新
-                    recyclerAdapter.setNewData(dataList);
-                    //判断是否全部加载结束
-                    if (recyclerAdapter.getData().size() >= totalCount) {
-                        //全部加载结束
-                        recyclerAdapter.loadMoreEnd(true);
-                    } else {
-                        //本次加载完成
-                        recyclerAdapter.loadMoreComplete();
-                    }
-
-                    //页码+1
-                    pageNum++;
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    //设置空布局：没有数据，可重载
-                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-                    //清空列表数据
-                    recyclerAdapter.setNewData(null);
-                }
-            }
-        }, httpTag, getActivity());
-    }
-
-
-    /**
      * 加载更多数据
      */
     private void loadMoreData() {
-        //关闭下拉刷新功能
-        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
 
-        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
-        if (recyclerAdapter.getData().size() == 0) {
-            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
-        }
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
 
         DataRequestService.getInstance().getSelectCourse(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //开启下拉刷新功能
-                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
-
-                if (recyclerAdapter.getData().size() == 0) {
-                    //设置空布局：网络错误
-                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
-                } else {
-                    //加载失败处理
-                    recyclerAdapter.loadMoreFail();
-                }
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
             }
 
             @Override
             public void onResponse(Object obj) {
                 try {
-                    //开启下拉刷新功能
-                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
                     //设置空布局：隐藏
                     emptyLayout.setErrorType(XEmptyLayout.HIDE_LAYOUT);
 
@@ -366,18 +275,10 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                         recyclerAdapter.loadMoreComplete();
                     }
 
-                    //页码+1
-                    pageNum++;
-
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (recyclerAdapter.getData().size() == 0) {
-                        //设置空布局：没有数据，可重载
-                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
-                    } else {
-                        //加载失败处理
-                        recyclerAdapter.loadMoreFail();
-                    }
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
                 }
 
             }
@@ -402,7 +303,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     private void doConfirm() {
         if (chooseCourseList.size() == 0) {
             if (getActivity() != null) {
-                ToastUtil.showShort(getActivity().getApplication(), "请选择科目");
+                ToastUtil.showShort(getActivity().getApplication(), "请选择学科");
             }
         } else {
             //请求确认选科
@@ -436,6 +337,9 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                         ToastUtil.showShort(getActivity().getApplication(), "选科成功");
                     }
 
+                    //加载相关专业比率
+                    loadCareerPlanReport(childExamId);
+
                     //发送选科成功事件
                     EventBus.getDefault().post(new SelectCourseSuccessEvent());
 
@@ -446,6 +350,209 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
             }
         }, httpTag, getActivity());
+    }
+
+
+    /**
+     * 加载系统推荐
+     */
+    private void loadSysRecommend(String childExamId) {
+
+        DataRequestService.getInstance().getSysRmdCourse(childExamId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    SysRmdCourse entity = InjectionWrapperUtil.injectMap(dataMap, SysRmdCourse.class);
+
+                    if (entity == null || ArrayListUtil.isEmpty(entity.getItems())) {
+                        return;
+                    }
+
+                    for (String str : entity.getRecommend_subjects()) {
+                        TextView tv = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.record_result_item_unclickable, null);
+                        tv.setText(str);
+                        wllSysRecommend.addView(tv);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, httpTag, getActivity());
+    }
+
+    //课程编码-累计值
+    private HashMap<String, Integer> courseMap = new HashMap<>();
+    //课程编码-名称
+    private HashMap<String, String> courseNameMap = new HashMap<>();
+
+    /**
+     * 加载观察专业
+     */
+    private void loadObserveMajor() {
+        ChildDto dto = new ChildDto(1, 100);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
+
+        DataRequestService.getInstance().getSaveObserveMajor(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    RecommendMajorRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, RecommendMajorRootEntity.class);
+
+                    List<RecommendMajor> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+                        return;
+                    }
+
+                    List<String> courseList = generateMaxCountCourse(dataList);
+                    for (String str : courseList) {
+                        TextView tv = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.record_result_item_unclickable, null);
+                        tv.setText(str);
+                        wllObserveMajor.addView(tv);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
+
+    /**
+     * 次数最多的三个学科
+     */
+    private List<String> generateMaxCountCourse(List<RecommendMajor> all) {
+        List<String> resList = new ArrayList<>();
+
+        if (ArrayListUtil.isNotEmpty(all)) {
+            for (RecommendMajor major : all) {
+                String require_subjects = major.getRequire_subjects();
+                //非空
+                if (!TextUtils.isEmpty(require_subjects)) {
+                    String[] group = require_subjects.split("\\|\\|");
+                    if (group.length > 0) {
+                        for (String groupItem : group) {
+                            String[] items = groupItem.split(",");
+                            for (String item : items) {
+                                String[] codes = item.split("\\|");
+                                for (String code : codes) {
+                                    //累加
+                                    if (courseMap.containsKey(code)) {
+                                        courseMap.put(code, courseMap.get(code) + 1);
+
+                                    } else {
+                                        courseMap.put(code, 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } /*else {//空表示无限制
+                    //累加
+                    if (courseMap.containsKey("0000")) {
+                        courseMap.put("0000", courseMap.get("0000") + 1);
+
+                    } else {
+                        courseMap.put("0000", 1);
+                    }
+                }*/
+            }
+
+            //选出最多的三个（目前先随便选三个）
+            int count = 1;
+            for (Map.Entry<String, Integer> entry : courseMap.entrySet()) {
+                resList.add(courseNameMap.get(entry.getKey()));
+                if (count == 3) {
+                    break;
+                }
+                count++;
+            }
+        }
+
+        return resList;
+    }
+
+
+    /**
+     * 加载生涯档案
+     */
+    private void loadCareerPlanReport(String childExamId) {
+
+        try {
+            DataRequestService.getInstance().getCareerPlanRecord(childExamId, new BaseService.ServiceCallback() {
+                @Override
+                public void onFailure(QSCustomException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Object obj) {
+                    try {
+                        Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                        CareerPlanRecordRootEntity data = InjectionWrapperUtil.injectMap(dataMap, CareerPlanRecordRootEntity.class);
+
+                        if (data == null || (data.getSubject_archive() == null && data.getOccupation_archive() == null)) {
+                            return;
+                        }
+
+                        //相关专业比率
+                        SelectCourseRecord entity = data.getSubject_archive();
+                        if ((entity.getCustom_major_per() == null || entity.getCustom_major_per() < 0.000001)
+                                && (entity.getCustom_high_major_per() == null || entity.getCustom_high_major_per() < 0.000001)) {
+                            llRelativeMajorRatio.setVisibility(View.GONE);
+
+                        } else {
+                            llRelativeMajorRatio.setVisibility(View.VISIBLE);
+
+                            //可报考专业百分比
+                            if (entity.getCustom_major_per() != null && entity.getCustom_major_per() > 0.000001) {
+                                tvCanSelectMajorRatio.setVisibility(View.VISIBLE);
+                                tvCanSelectMajorRatio.setText(
+                                        Html.fromHtml("-您可报考的专业占所有大学专业的<b><font color='" +
+                                                getResources().getColor(R.color.colorAccent) + "'>" +
+                                                String.format(Locale.CHINA, "%.1f",entity.getCustom_major_per() * 100) + "%</font></b>"));
+                            } else {
+                                tvCanSelectMajorRatio.setVisibility(View.GONE);
+                            }
+
+                            //要求较高专业百分比
+                            if (entity.getCustom_high_major_per() != null && entity.getCustom_high_major_per() > 0.000001) {
+                                tvHighRequireMajorRatio.setVisibility(View.VISIBLE);
+                                tvHighRequireMajorRatio.setText(
+                                        Html.fromHtml("-要求较高的专业占所有大学专业的<b><font color='" +
+                                                getResources().getColor(R.color.colorAccent) +"'>" +
+                                                String.format(Locale.CHINA, "%.1f",entity.getCustom_high_major_per() * 100) + "%</font></b>"));
+                            } else {
+                                tvHighRequireMajorRatio.setVisibility(View.GONE);
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, httpTag, getActivity());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

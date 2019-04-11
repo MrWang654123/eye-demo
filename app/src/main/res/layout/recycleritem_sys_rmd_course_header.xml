@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:background="@color/color_f5f5f5"/>
+    <!--<View-->
+        <!--android:id="@+id/divider"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="12dp"-->
+        <!--android:background="@color/color_f5f5f5"/>-->
 
     <include layout="@layout/recycleritem_career_record_sys_recommed_header"/>
     <include layout="@layout/recycleritem_career_record_sys_recommed_item"/>

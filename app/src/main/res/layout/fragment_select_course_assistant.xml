@@ -1,28 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@color/color_f5f5f5"
     android:orientation="vertical">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/heightSmalltWidget"
-        android:background="@color/white"
-        app:tabBackground="@color/white"
-        app:tabMode="fixed"
-        app:tabIndicatorColor="@color/colorAccent"
-        app:tabIndicatorHeight="1dp"
-        app:tabTextAppearance="@style/TabLayoutTextStyle"
-        app:tabSelectedTextColor="@color/colorAccent"
-        app:tabTextColor="@color/color_555555" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_system_recommend"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_system_recommend"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_system_recommend"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            fresco:roundAsCircle="true"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/system_recommend"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:pressedStateOverlayImage="@color/light_transparent"
+            fresco:roundWithOverlayColor="@color/color_f5f5f5"
+            fresco:backgroundImage="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_system_recommend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/sdv_system_recommend"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/sdv_system_recommend"
+            app:layout_constraintRight_toRightOf="@+id/sdv_system_recommend"
+            android:textSize="18sp"
+            android:textColor="#3f2088"
+            android:text="请完成所有系统推荐的测评"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_observe_major"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_observe_major"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_observe_major"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            fresco:roundAsCircle="true"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/observe_major"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:pressedStateOverlayImage="@color/light_transparent"
+            fresco:roundWithOverlayColor="@color/color_f5f5f5"
+            fresco:backgroundImage="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_observe_major"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/sdv_observe_major"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/sdv_observe_major"
+            app:layout_constraintRight_toRightOf="@+id/sdv_observe_major"
+            android:textSize="18sp"
+            android:textColor="#3f2088"
+            android:text="请完感兴趣的专业选择"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_select_course"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/sdv_select_course"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_select_course"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            fresco:roundAsCircle="true"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/select_course"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:pressedStateOverlayImage="@color/light_transparent"
+            fresco:roundWithOverlayColor="@color/color_f5f5f5"
+            fresco:backgroundImage="@color/white"/>
+
+        <TextView
+            android:id="@+id/tv_select_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/sdv_select_course"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@+id/sdv_select_course"
+            app:layout_constraintRight_toRightOf="@+id/sdv_select_course"
+            android:textSize="18sp"
+            android:textColor="#3f2088"
+            android:text="请完成你的选科确认"/>
+
+    </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

@@ -315,6 +315,9 @@ public class HttpConfig {
     //获取课程相关专业列表
     public static final String URL_COURSE_RELATE_MAJOR = API_HOST + "/v2/api/children/{child_id}/subject_group_majors";
 
+    //保存观察专业
+    public static final String URL_SAVE_OBSERVE_MAJOR = API_HOST + "/v2/api/children/{child_id}/follow_majors";
+
 
     /*----------------文章相关------------------*/
 

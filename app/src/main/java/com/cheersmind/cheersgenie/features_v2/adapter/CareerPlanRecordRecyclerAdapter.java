@@ -417,7 +417,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
                     helper.setText(R.id.tv_title, entity.getDimension_name());
 
                 } else {
-                    helper.getView(R.id.iv_report).setVisibility(View.GONE);
+                    helper.getView(R.id.iv_report).setVisibility(View.INVISIBLE);
                     helper.setText(R.id.tv_title, entity.getDimension_name());
                 }
 

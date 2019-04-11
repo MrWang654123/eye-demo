@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.main.service;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -9,6 +10,7 @@ import com.cheersmind.cheersgenie.features.dto.AnswerDto;
 import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
 import com.cheersmind.cheersgenie.features.dto.BindPhoneNumDto;
+import com.cheersmind.cheersgenie.features.dto.ChildDto;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
 import com.cheersmind.cheersgenie.features.dto.CreateSessionDto;
 import com.cheersmind.cheersgenie.features.dto.MessageCaptchaDto;
@@ -44,6 +46,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationType;
+import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
@@ -61,6 +64,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -2208,6 +2212,61 @@ public class DataRequestService {
         url = BaseService.settingGetParams(url, params);
 
         doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取观察专业列表
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getSaveObserveMajor(ChildDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_SAVE_OBSERVE_MAJOR
+                .replace("{child_id}", dto.getChildId());
+
+        Map<String, Object> params = new HashMap<>();
+
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 保存观察专业
+     * @param childId 孩子ID
+     * @param selectMajor 选择的专业集合
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void postSaveObserveMajor(String childId, List<RecommendMajor> selectMajor, final BaseService.ServiceCallback callback,
+                                     String httpTag, Context context) {
+        String url = HttpConfig.URL_SAVE_OBSERVE_MAJOR
+                .replace("{child_id}",childId);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            List<JSONObject> list = new ArrayList<>();
+            for (RecommendMajor major : selectMajor) {
+                JSONObject json = new JSONObject();
+                json.put("major_name", !TextUtils.isEmpty(major.getMajor_name()) ? major.getMajor_name() : "");
+                json.put("major_code", !TextUtils.isEmpty(major.getMajor_code()) ? major.getMajor_code() : "");
+                json.put("from_types", !TextUtils.isEmpty(major.getFrom_types()) ? major.getFrom_types() : "");
+                json.put("require_subjects", !TextUtils.isEmpty(major.getRequire_subjects()) ? major.getRequire_subjects() : "");
+                json.put("require_university_num", !TextUtils.isEmpty(major.getRequire_university_num()) ? major.getRequire_university_num() : "");
+                list.add(json);
+            }
+            JSONArray jsonArray = new JSONArray(list);
+            jsonObject.put("follow_majors", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        doPost(url, jsonObject, callback, httpTag, context);
     }
 
 }

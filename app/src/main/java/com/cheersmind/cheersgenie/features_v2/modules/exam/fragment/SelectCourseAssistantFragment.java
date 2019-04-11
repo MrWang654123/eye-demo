@@ -2,27 +2,22 @@ package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.util.Pair;
 import android.view.View;
 
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ChooseCourseActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ObserveMajorActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SystemRecommendCourseActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
@@ -35,11 +30,6 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
 
     //孩子测评ID
     private String childExamId;
-
-    @BindView(R.id.tabs)
-    TabLayout tabs;
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,26 +53,6 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
         }
 
-        List<Pair<String, Fragment>> items = new ArrayList<>();
-        //系统推荐
-        SysRecommendCourseFragment fragment1 = new SysRecommendCourseFragment();
-        fragment1.setArguments(bundle);
-        //专业观察表
-        ObserveMajorFragment fragment2 = new ObserveMajorFragment();
-        fragment2.setArguments(bundle);
-        //选科确认
-        ChooseCourseFragment fragment3 = new ChooseCourseFragment();
-        fragment3.setArguments(bundle);
-
-        items.add(new Pair<String, Fragment>("学科推荐", fragment1));
-        items.add(new Pair<String, Fragment>("专业观察表", fragment2));
-        items.add(new Pair<String, Fragment>("选科确认", fragment3));
-        viewPager.setAdapter(new TabFragmentPagerAdapter(getChildFragmentManager(), items));
-        viewPager.setOffscreenPageLimit(2);
-        //标签绑定viewpager
-        tabs.setupWithViewPager(viewPager);
-        //改变tab下划线的宽度
-//        TabLayoutUtil.setTabWidth(tabs, DensityUtil.dip2px(getContext(), 50));
     }
 
     @Override
@@ -102,16 +72,34 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
+    @OnClick({R.id.cl_system_recommend, R.id.cl_observe_major, R.id.cl_select_course})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            //系统推荐
+            case R.id.cl_system_recommend: {
+                SystemRecommendCourseActivity.startSystemRecommendCourseActivity(getContext(), childExamId);
+                break;
+            }
+            //观察专业
+            case R.id.cl_observe_major: {
+                ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId);
+                break;
+            }
+            //确认选科
+            case R.id.cl_select_course: {
+                ChooseCourseActivity.startChooseCourseActivity(getContext(), childExamId);
+                break;
+            }
+        }
+    }
+
     /**
      * 添加观察专业的通知事件
      * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAddObserveMajorNotice(AddObserveMajorEvent event) {
-        int currentItem = viewPager.getCurrentItem();
-        if (currentItem != 1) {
-            viewPager.setCurrentItem(1);
-        }
+
     }
 
 }

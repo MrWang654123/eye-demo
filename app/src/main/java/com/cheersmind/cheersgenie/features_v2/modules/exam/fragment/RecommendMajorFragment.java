@@ -1,6 +1,5 @@
 package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,11 +32,11 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import org.greenrobot.eventbus.EventBus;
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -322,41 +321,43 @@ public class RecommendMajorFragment extends LazyLoadFragment {
             case R.id.btn_add_major: {
                 //非空
                 if (selectMajor.size() > 0) {
-                    getHandler();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-//                        DataSupport.deleteAll(RecommendMajor.class);
-                            //拼接查询条件，获取已存在的记录
-                            StringBuilder builder = new StringBuilder();
-                            String[] params = new String[selectMajor.size() + 1];
-                            for (int i = 0; i < selectMajor.size(); i++) {
-                                RecommendMajor major = selectMajor.get(i);
-                                params[i + 1] = major.getMajor_code();
-                                builder.append("?,");
-                            }
-                            String condition = builder.substring(0, builder.length() - 1);
-                            params[0] = "major_code in (" + condition + ")";
-                            List<RecommendMajor> recommendMajors = DataSupport.where(params).find(RecommendMajor.class);
-                            //移除已存在记录
-                            selectMajor.removeAll(recommendMajors);
-                            //保存
-                            DataSupport.saveAll(selectMajor);
+//                    getHandler();
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+////                        DataSupport.deleteAll(RecommendMajor.class);
+//                            //拼接查询条件，获取已存在的记录
+//                            StringBuilder builder = new StringBuilder();
+//                            String[] params = new String[selectMajor.size() + 1];
+//                            for (int i = 0; i < selectMajor.size(); i++) {
+//                                RecommendMajor major = selectMajor.get(i);
+//                                params[i + 1] = major.getMajor_code();
+//                                builder.append("?,");
+//                            }
+//                            String condition = builder.substring(0, builder.length() - 1);
+//                            params[0] = "major_code in (" + condition + ")";
+//                            List<RecommendMajor> recommendMajors = DataSupport.where(params).find(RecommendMajor.class);
+//                            //移除已存在记录
+//                            selectMajor.removeAll(recommendMajors);
+//                            //保存
+//                            DataSupport.saveAll(selectMajor);
+//
+//                            getHandler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if (getActivity() != null) {
+//                                        getActivity().finish();
+//                                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
+//                                        //发送添加观察专业的事件
+//                                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
+//                                        selectMajor.clear();
+//                                    }
+//                                }
+//                            });
+//                        }
+//                    }).start();
 
-                            getHandler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (getActivity() != null) {
-                                        getActivity().finish();
-                                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
-                                        //发送添加观察专业的事件
-                                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
-                                        selectMajor.clear();
-                                    }
-                                }
-                            });
-                        }
-                    }).start();
+                    doSaveObserveMajor(selectMajor);
 
                 } else {
                     if (getActivity() != null) {
@@ -524,6 +525,43 @@ public class RecommendMajorFragment extends LazyLoadFragment {
                     }
                 }
 
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 保存观察专业
+     * @param selectMajor 观察专业
+     */
+    private void doSaveObserveMajor(final List<RecommendMajor> selectMajor) {
+        //显示通信等待
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().postSaveObserveMajor(childId, selectMajor, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待
+                    LoadingView.getInstance().dismiss();
+
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
+                        //发送添加观察专业的事件
+                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
+                        selectMajor.clear();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
+                }
             }
         }, httpTag, getActivity());
     }

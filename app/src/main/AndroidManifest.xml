@@ -507,6 +507,8 @@
         <!--我的关注-->
         <activity android:name=".features_v2.modules.mine.activity.MineAttentionActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".features_v2.modules.exam.activity.SystemRecommendCourseActivity" />
+        <activity android:name=".features_v2.modules.exam.activity.ObserveMajorActivity" />
 
     </application>
 

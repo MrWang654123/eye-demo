@@ -54,6 +54,8 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             case LAYOUT_SYS_RECOMMEND_HEADER: {
                 //隐藏伸缩图标
                 helper.getView(R.id.iv_expand).setVisibility(View.GONE);
+                //隐藏header
+                helper.getView(R.id.rl_header).setVisibility(View.GONE);
 
                 SysRmdCourse entity = (SysRmdCourse) item;
                 if (entity.isFinish()) {
