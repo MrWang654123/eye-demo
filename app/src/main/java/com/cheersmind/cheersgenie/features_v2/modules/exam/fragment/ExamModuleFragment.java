@@ -5,7 +5,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -16,7 +15,6 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.animation.ScaleAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamModuleRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
@@ -280,10 +278,6 @@ public class ExamModuleFragment extends LazyLoadFragment {
 
                     totalCount = rootEntity.getTotal();
                     List<ExamModuleEntity> dataList = rootEntity.getItems();
-                    ExamModuleEntity entity = dataList.get(0);
-//                    for (int i=0; i<10; i++) {
-//                        dataList.add(entity);
-//                    }
 
                     //空数据处理
                     if (ArrayListUtil.isEmpty(dataList)) {
