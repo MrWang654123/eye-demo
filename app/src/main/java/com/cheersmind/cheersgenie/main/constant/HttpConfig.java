@@ -321,6 +321,9 @@ public class HttpConfig {
     //根据选科组合获取专业覆盖率
     public static final String URL_MAJOR_RATIO_BY_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/subject_group_major_rate";
 
+    //获取用户选科组合列表
+    public static final String URL_USER_SELECT_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/confirm_subjects?child_exam_id={child_exam_id}";
+
 
     /*----------------文章相关------------------*/
 

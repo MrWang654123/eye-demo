@@ -2291,4 +2291,21 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取用户选科组合
+     * @param childId 孩子ID
+     * @param childExamId 孩子测评ID
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param context 上下文
+     */
+    public void getUserSelectCourseGroup(String childId, String childExamId,
+                                           final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_USER_SELECT_COURSE_GROUP
+                .replace("{child_id}", childId)
+                .replace("{child_exam_id}", childExamId);
+
+        doGet(url, callback, httpTag, context);
+    }
+
 }

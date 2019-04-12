@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,13 +22,11 @@ import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ChooseCourseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
-import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorRatio;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -87,6 +86,10 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     @BindView(R.id.ll_relative_major_ratio)
     LinearLayout llRelativeMajorRatio;
 
+//    //确认按钮
+//    @BindView(R.id.btn_confirm)
+//    Button btnConfirm;
+
     //适配器
     ChooseCourseRecyclerAdapter recyclerAdapter;
 
@@ -123,6 +126,11 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                 if (chooseCourseList.contains(entity)) {
                     chooseCourseList.remove(entity);
                 }
+            }
+
+            //满足数量则加载相关专业比率
+            if (chooseCourseList.size() == limitCount) {
+                loadMajorRatioByCourseGroupWrap(confirmDto.getItems());
             }
         }
     };
@@ -208,6 +216,11 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         llRelativeMajorRatio.setVisibility(View.GONE);
         tvCanSelectMajorRatio.setVisibility(View.GONE);
         tvHighRequireMajorRatio.setVisibility(View.GONE);
+
+        //设置recyclerView不影响嵌套滚动
+        recycleView.setNestedScrollingEnabled(false);
+        //使其失去焦点。
+        recycleView.setFocusable(false);
     }
 
     @Override
@@ -218,6 +231,8 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         loadSysRecommend(childExamId);
         //加载专业观察表
         loadObserveMajor();
+        //加载用户选科组合
+//        loadUserSelectCourseGroup();
     }
 
     @Override
@@ -338,27 +353,8 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                         ToastUtil.showShort(getActivity().getApplication(), "选科成功");
                     }
 
-                    //加载相关专业比率
-                    List<ChooseCourseEntity> items = confirmDto.getItems();
-                    int[] courses = null;
-                    if (ArrayListUtil.isNotEmpty(items)) {
-                        courses = new int[items.size()];
-                        for (int i=0; i<items.size(); i++) {
-                            ChooseCourseEntity course = items.get(i);
-                            courses[i] = course.getSubject_code();
-                        }
-
-                        Arrays.sort(courses);//使用java.util.Arrays对象的sort方法
-                    }
-
-                    if (courses != null) {
-                        StringBuilder builder = new StringBuilder();
-                        for (int course : courses) {
-                            builder.append(course);
-                        }
-
-                        loadMajorRatioByCourseGroup(builder.toString());
-                    }
+//                    //选科成功后，隐藏确认按钮
+//                    btnConfirm.setVisibility(View.GONE);
 
                     //发送选科成功事件
                     EventBus.getDefault().post(new SelectCourseSuccessEvent());
@@ -508,6 +504,30 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         return resList;
     }
 
+    /**
+     * 根据选科组合获取专业覆盖率包裹
+     */
+    private void loadMajorRatioByCourseGroupWrap(List<ChooseCourseEntity> items) {
+        int[] courses = null;
+        if (ArrayListUtil.isNotEmpty(items)) {
+            courses = new int[items.size()];
+            for (int i=0; i<items.size(); i++) {
+                ChooseCourseEntity course = items.get(i);
+                courses[i] = course.getSubject_code();
+            }
+
+            Arrays.sort(courses);//使用java.util.Arrays对象的sort方法
+        }
+
+        if (courses != null) {
+            StringBuilder builder = new StringBuilder();
+            for (int course : courses) {
+                builder.append(course);
+            }
+
+            loadMajorRatioByCourseGroup(builder.toString());
+        }
+    }
 
     /**
      * 根据选科组合获取专业覆盖率
@@ -572,6 +592,47 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             e.printStackTrace();
         }
     }
+
+    //是否已经选科
+    private boolean selectCourse;
+
+    /**
+     * 加载用户选科组合
+     */
+    private void loadUserSelectCourseGroup() {
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getUserSelectCourseGroup(childId, childExamId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    Double total = (Double) dataMap.get("total");
+                    List items = (List) dataMap.get("items");
+
+                    //空表示未选科，显示确认选科按钮
+                    if (ArrayListUtil.isEmpty(items) || ArrayListUtil.isEmpty((List)items.get(0))) {
+                        selectCourse = false;
+//                        btnConfirm.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    selectCourse = true;
+//                    btnConfirm.setVisibility(View.GONE);
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
 
 }
 

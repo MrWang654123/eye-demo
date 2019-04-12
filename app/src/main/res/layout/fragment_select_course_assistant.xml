@@ -50,8 +50,7 @@
         android:id="@+id/cl_observe_major"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/sdv_observe_major"
@@ -81,7 +80,30 @@
             app:layout_constraintRight_toRightOf="@+id/sdv_observe_major"
             android:textSize="18sp"
             android:textColor="#3f2088"
-            android:text="请完感兴趣的专业选择"/>
+            android:text="请完成感兴趣的专业选择"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_observe_major_mask"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_observe_major"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/select_course_assistant_mask">
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_observe_major"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:indicatorColor="@color/colorAccent"
+                app:indicatorName="BallPulseIndicator" />
+
+        </RelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 
@@ -89,8 +111,7 @@
         android:id="@+id/cl_select_course"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/sdv_select_course"
@@ -121,6 +142,29 @@
             android:textSize="18sp"
             android:textColor="#3f2088"
             android:text="请完成你的选科确认"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_select_course_mask"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintWidth_percent="0.35"
+            app:layout_constraintDimensionRatio="h,1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/tv_select_course"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@drawable/select_course_assistant_mask">
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avl_select_course"
+                style="@style/AVLoadingIndicatorView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:indicatorColor="@color/colorAccent"
+                app:indicatorName="BallPulseIndicator" />
+
+        </RelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 

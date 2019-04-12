@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
+import com.cheersmind.cheersgenie.features_v2.event.SysRecommendCompleteEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
@@ -359,6 +360,11 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     recyclerAdapter.setNewData(multiItemEntities);
                     //初始展开
                     recyclerAdapter.expandAll();
+
+                    //发送系统推荐完成的事件
+                    if (!ArrayListUtil.isEmpty(entity.getRecommend_subjects())) {
+                        EventBus.getDefault().post(new SysRecommendCompleteEvent());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -56,6 +56,7 @@ import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SystemRecommendCourseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -1373,7 +1374,7 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                     }
                     case Dictionary.FROM_ACTIVITY_TO_SYS_RMD_COURSE: {
                         //系统推荐选科
-                        toActivity = SelectCourseAssistantActivity.class;
+                        toActivity = SystemRecommendCourseActivity.class;
                         break;
                     }
                     default: {
