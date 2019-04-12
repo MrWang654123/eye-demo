@@ -19,12 +19,12 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ChooseCourseRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.MajorRatio;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.SelectCourseRecord;
@@ -43,6 +43,7 @@ import com.cheersmind.cheersgenie.module.login.UCManager;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -101,7 +102,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             if (chooseCourseList.size() == limitCount && !entity.isSelected()) {
                 //提示选中课程名称
                 if (getActivity() != null) {
-                    ToastUtil.showShort(getActivity().getApplication(), "只能选" + limitCount + "个学科");
+                    ToastUtil.showShort(getActivity().getApplication(), "请选" + limitCount + "个学科");
                 }
                 return;
             }
@@ -338,7 +339,26 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                     }
 
                     //加载相关专业比率
-                    loadCareerPlanReport(childExamId);
+                    List<ChooseCourseEntity> items = confirmDto.getItems();
+                    int[] courses = null;
+                    if (ArrayListUtil.isNotEmpty(items)) {
+                        courses = new int[items.size()];
+                        for (int i=0; i<items.size(); i++) {
+                            ChooseCourseEntity course = items.get(i);
+                            courses[i] = course.getSubject_code();
+                        }
+
+                        Arrays.sort(courses);//使用java.util.Arrays对象的sort方法
+                    }
+
+                    if (courses != null) {
+                        StringBuilder builder = new StringBuilder();
+                        for (int course : courses) {
+                            builder.append(course);
+                        }
+
+                        loadMajorRatioByCourseGroup(builder.toString());
+                    }
 
                     //发送选科成功事件
                     EventBus.getDefault().post(new SelectCourseSuccessEvent());
@@ -357,7 +377,6 @@ public class ChooseCourseFragment extends LazyLoadFragment {
      * 加载系统推荐
      */
     private void loadSysRecommend(String childExamId) {
-
         DataRequestService.getInstance().getSysRmdCourse(childExamId, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
@@ -491,12 +510,12 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
 
     /**
-     * 加载生涯档案
+     * 根据选科组合获取专业覆盖率
      */
-    private void loadCareerPlanReport(String childExamId) {
-
+    private void loadMajorRatioByCourseGroup(String courseGroup) {
         try {
-            DataRequestService.getInstance().getCareerPlanRecord(childExamId, new BaseService.ServiceCallback() {
+            String childId = UCManager.getInstance().getDefaultChild().getChildId();
+            DataRequestService.getInstance().getMajorRatioByCourseGroup(childId, courseGroup , new BaseService.ServiceCallback() {
                 @Override
                 public void onFailure(QSCustomException e) {
                     e.printStackTrace();
@@ -506,39 +525,38 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                 public void onResponse(Object obj) {
                     try {
                         Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                        CareerPlanRecordRootEntity data = InjectionWrapperUtil.injectMap(dataMap, CareerPlanRecordRootEntity.class);
+                        MajorRatio data = InjectionWrapperUtil.injectMap(dataMap, MajorRatio.class);
 
-                        if (data == null || (data.getSubject_archive() == null && data.getOccupation_archive() == null)) {
+                        if (data == null) {
                             return;
                         }
 
                         //相关专业比率
-                        SelectCourseRecord entity = data.getSubject_archive();
-                        if ((entity.getCustom_major_per() == null || entity.getCustom_major_per() < 0.000001)
-                                && (entity.getCustom_high_major_per() == null || entity.getCustom_high_major_per() < 0.000001)) {
+                        if ((data.getRate() == null || data.getRate() < 0.000001)
+                                && (data.getRequire_rate() == null || data.getRequire_rate() < 0.000001)) {
                             llRelativeMajorRatio.setVisibility(View.GONE);
 
                         } else {
                             llRelativeMajorRatio.setVisibility(View.VISIBLE);
 
                             //可报考专业百分比
-                            if (entity.getCustom_major_per() != null && entity.getCustom_major_per() > 0.000001) {
+                            if (data.getRate()  != null && data.getRate()  > 0.000001) {
                                 tvCanSelectMajorRatio.setVisibility(View.VISIBLE);
                                 tvCanSelectMajorRatio.setText(
                                         Html.fromHtml("-您可报考的专业占所有大学专业的<b><font color='" +
                                                 getResources().getColor(R.color.colorAccent) + "'>" +
-                                                String.format(Locale.CHINA, "%.1f",entity.getCustom_major_per() * 100) + "%</font></b>"));
+                                                String.format(Locale.CHINA, "%.1f",data.getRate()  * 100) + "%</font></b>"));
                             } else {
                                 tvCanSelectMajorRatio.setVisibility(View.GONE);
                             }
 
                             //要求较高专业百分比
-                            if (entity.getCustom_high_major_per() != null && entity.getCustom_high_major_per() > 0.000001) {
+                            if (data.getRequire_rate() != null && data.getRequire_rate() > 0.000001) {
                                 tvHighRequireMajorRatio.setVisibility(View.VISIBLE);
                                 tvHighRequireMajorRatio.setText(
                                         Html.fromHtml("-要求较高的专业占所有大学专业的<b><font color='" +
                                                 getResources().getColor(R.color.colorAccent) +"'>" +
-                                                String.format(Locale.CHINA, "%.1f",entity.getCustom_high_major_per() * 100) + "%</font></b>"));
+                                                String.format(Locale.CHINA, "%.1f",data.getRequire_rate() * 100) + "%</font></b>"));
                             } else {
                                 tvHighRequireMajorRatio.setVisibility(View.GONE);
                             }

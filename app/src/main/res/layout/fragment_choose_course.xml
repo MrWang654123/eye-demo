@@ -75,7 +75,7 @@
                         android:layout_marginTop="3dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginEnd="10dp"
-                        android:text="专业比较推荐:"/>
+                        android:text="专业观察推荐:"/>
 
                     <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
                         android:id="@+id/wll_observe_major"

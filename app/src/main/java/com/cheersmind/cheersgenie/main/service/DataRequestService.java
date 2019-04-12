@@ -1,7 +1,6 @@
 package com.cheersmind.cheersgenie.main.service;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -2267,6 +2266,29 @@ public class DataRequestService {
         }
 
         doPost(url, jsonObject, callback, httpTag, context);
+    }
+
+    /**
+     * 根据选科组合获取专业覆盖率
+     * @param childId 孩子ID
+     * @param courseGroup 学科组合id，如：100410051006，必须按顺序的组合，从小到大
+     * @param callback 回调
+     * @param httpTag 通信标记
+     * @param context 上下文
+     */
+    public void getMajorRatioByCourseGroup(String childId, String courseGroup,
+                                           final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_MAJOR_RATIO_BY_COURSE_GROUP
+                .replace("{child_id}", childId);
+
+        Map<String, Object> params = new HashMap<>();
+        //类型
+        params.put("subject_group", courseGroup);
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
     }
 
 }

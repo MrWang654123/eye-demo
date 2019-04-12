@@ -318,6 +318,9 @@ public class HttpConfig {
     //保存观察专业
     public static final String URL_SAVE_OBSERVE_MAJOR = API_HOST + "/v2/api/children/{child_id}/follow_majors";
 
+    //根据选科组合获取专业覆盖率
+    public static final String URL_MAJOR_RATIO_BY_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/subject_group_major_rate";
+
 
     /*----------------文章相关------------------*/
 
