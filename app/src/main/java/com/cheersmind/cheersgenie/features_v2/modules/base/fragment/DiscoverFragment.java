@@ -17,13 +17,12 @@ import android.widget.LinearLayout;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.adapter.BannerPageAdapter;
 import com.cheersmind.cheersgenie.features.adapter.TabViewPagerAdapter;
 import com.cheersmind.cheersgenie.features.dto.BaseDto;
-import com.cheersmind.cheersgenie.features.entity.ArticleRootEntity;
 import com.cheersmind.cheersgenie.features.entity.CategoryEntity;
 import com.cheersmind.cheersgenie.features.entity.CategoryRootEntity;
-import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
+import com.cheersmind.cheersgenie.features.entity.HomeBanner;
+import com.cheersmind.cheersgenie.features.entity.HomeBannerRootEntity;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.article.activity.ArticleDetailActivity;
 import com.cheersmind.cheersgenie.features.modules.article.activity.SearchArticleActivity;
@@ -32,6 +31,8 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features.view.transformer.ScaleTransformer;
+import com.cheersmind.cheersgenie.features_v2.adapter.HomeBannerPageAdapter;
+import com.cheersmind.cheersgenie.features_v2.interfaces.MainTabListener;
 import com.cheersmind.cheersgenie.features_v2.modules.discover.fragment.DiscoverTabItemFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.QSApplication;
@@ -66,8 +67,8 @@ public class DiscoverFragment extends LazyLoadFragment {
     ConvenientBanner convenientBanner;
     @BindView(R.id.viewPagerBanner)
     ViewPager viewPagerBanner;
-    //广告栏viewPager适配器
-    BannerPageAdapter pageAdapter;
+    //首页banner viewPager适配器
+    HomeBannerPageAdapter pageAdapter;
 
     @BindView(R.id.appbar_layout)
     AppBarLayout appBarLayout;
@@ -121,7 +122,7 @@ public class DiscoverFragment extends LazyLoadFragment {
 
 
     //banner文章集合
-    List<SimpleArticleEntity> bannerArticleList;
+    List<HomeBanner> bannerArticleList;
 
     //分类集合数据
     private List<CategoryEntity> categories;
@@ -278,8 +279,8 @@ public class DiscoverFragment extends LazyLoadFragment {
      * 加载banner数据（目前指的是热门文章）
      */
     public void loadBannerData() {
-        BaseDto dto = new BaseDto(1, 10);
-        DataRequestService.getInstance().getHotArticles(dto, new BaseService.ServiceCallback() {
+        BaseDto dto = new BaseDto(1, 20);
+        DataRequestService.getInstance().getHomeBanner(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
 //                banner.setVisibility(View.GONE);
@@ -294,9 +295,9 @@ public class DiscoverFragment extends LazyLoadFragment {
                 //banner
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    ArticleRootEntity articleRootEntity = InjectionWrapperUtil.injectMap(dataMap, ArticleRootEntity.class);
+                    HomeBannerRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, HomeBannerRootEntity.class);
                     //文章集合
-                    bannerArticleList = articleRootEntity.getItems();
+                    bannerArticleList = rootEntity.getItems();
                     //非空
                     if (ArrayListUtil.isNotEmpty(bannerArticleList)) {
 //                        bannerlist = Arrays.asList(images);
@@ -329,9 +330,9 @@ public class DiscoverFragment extends LazyLoadFragment {
 //                        convenientBanner.startAnimation(mShowAction);
 
                         if (pageAdapter == null) {
-                            pageAdapter = new BannerPageAdapter(DiscoverFragment.this, bannerArticleList);
+                            pageAdapter = new HomeBannerPageAdapter(DiscoverFragment.this, bannerArticleList);
                             //页面点击监听
-                            pageAdapter.setListener(new BannerPageAdapter.OnPageClickListener() {
+                            pageAdapter.setListener(new HomeBannerPageAdapter.OnPageClickListener() {
                                 @Override
                                 public void onPageClick(int position) {
                                     handlerBannerItemClick(position);
@@ -476,17 +477,29 @@ public class DiscoverFragment extends LazyLoadFragment {
     /**
      * 处理banner点击事件
      *
-     * @param position
+     * @param position 索引
      */
     private void handlerBannerItemClick(int position) {
-        //跳转到文章详情页面
-        SimpleArticleEntity simpleArticle = bannerArticleList.get(position);
-        String articleId = simpleArticle.getId();
-        String ivMainUrl = simpleArticle.getArticleImg();
-        String articleTitle = simpleArticle.getArticleTitle();
+        HomeBanner homeBanner = bannerArticleList.get(position);
+        //文章
+        if (homeBanner.getType() == 1) {
+            //跳转文章详情
+            String articleId = homeBanner.getValue();
+            String ivMainUrl = homeBanner.getImg_url();
+            String articleTitle = homeBanner.getDescribe();
+            ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
 
-        ArticleDetailActivity.startArticleDetailActivity(getContext(), articleId, ivMainUrl, articleTitle);
-//        ToastUtil.showShort(getContext(), "点击了第" + (position + 1) + "页");
+        } else if (homeBanner.getType() == 2) {//tab
+            //跳转到指定位置的tab
+            int tabPosition = Integer.valueOf(homeBanner.getValue());
+            try {
+                if (getActivity() instanceof MainTabListener) {
+                    ((MainTabListener) getActivity()).goTab(tabPosition);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

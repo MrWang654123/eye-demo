@@ -2308,4 +2308,23 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 获取首页Banner
+     * @param dto 通用dto
+     * @param callback 回调
+     */
+    public void getHomeBanner(BaseDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_HOME_BANNER;
+
+        Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
 }

@@ -324,6 +324,8 @@ public class HttpConfig {
     //获取用户选科组合列表
     public static final String URL_USER_SELECT_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/confirm_subjects?child_exam_id={child_exam_id}";
 
+    //首页banner
+    public static final String URL_HOME_BANNER = API_HOST + "/v2/api/home_disseminates";
 
     /*----------------文章相关------------------*/
 

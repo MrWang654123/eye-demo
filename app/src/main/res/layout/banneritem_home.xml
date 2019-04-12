@@ -39,8 +39,8 @@
             fresco:roundedCornerRadius="3dp"
             fresco:roundTopLeft="true"
             fresco:roundTopRight="true"
-            fresco:roundBottomLeft="false"
-            fresco:roundBottomRight="false"
+            fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
             fresco:placeholderImage="@drawable/default_image_round_article_list"
             fresco:placeholderImageScaleType="centerCrop"
             fresco:actualImageScaleType="centerCrop"
@@ -54,7 +54,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/play"/>
+            android:src="@drawable/play"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -65,7 +66,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:paddingLeft="3dp"
+            android:paddingStart="3dp"
             android:paddingRight="8dp"
+            android:paddingEnd="8dp"
             android:visibility="gone"
             android:gravity="center_vertical">
 
@@ -73,7 +76,8 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:padding="3dp"
-                android:src="@drawable/hot"/>
+                android:src="@drawable/hot"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_type"

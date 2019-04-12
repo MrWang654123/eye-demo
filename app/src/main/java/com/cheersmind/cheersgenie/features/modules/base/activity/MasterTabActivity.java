@@ -35,21 +35,21 @@ import com.cheersmind.cheersgenie.features.entity.SeminarRootEntity;
 import com.cheersmind.cheersgenie.features.event.LocationExamInListEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshIntegralEvent;
 import com.cheersmind.cheersgenie.features.event.RefreshTaskListEvent;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.ExploreFragment;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.MineFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationRealm;
-import com.cheersmind.cheersgenie.features_v2.entity.OccupationTypeRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevelRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvinceRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationRealm;
+import com.cheersmind.cheersgenie.features_v2.entity.OccupationTypeRootEntity;
+import com.cheersmind.cheersgenie.features_v2.interfaces.MainTabListener;
 import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.CareerPlanWrapFragment;
 import com.cheersmind.cheersgenie.features_v2.modules.base.fragment.DiscoverFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -79,7 +79,7 @@ import butterknife.OnClick;
 /**
  * 主页面（底部Tab页面）
  */
-public class MasterTabActivity extends BaseActivity {
+public class MasterTabActivity extends BaseActivity implements MainTabListener {
 
     //viewpager的索引位置
     public static final String VIEWPAGER_POSITION = "viewpager_position";
@@ -390,6 +390,15 @@ public class MasterTabActivity extends BaseActivity {
         }
     };
 
+    @Override
+    public void goTab(int position) {
+        if (viewPager.getAdapter() != null) {
+            int count = viewPager.getAdapter().getCount();
+            if (position >= 0 && position < count) {
+                viewPager.setCurrentItem(position);
+            }
+        }
+    }
 
     /**
      * viewpager fragment适配器
