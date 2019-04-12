@@ -10,12 +10,10 @@ import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.dto.ChildDto;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
-import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
-import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
+import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.event.SysRecommendCompleteEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ChooseCourseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ObserveMajorActivity;
@@ -148,12 +146,12 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
     }
 
     /**
-     * 添加观察专业的通知事件
+     * 添加观察专业成功的通知事件
      *
      * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAddObserveMajorNotice(AddObserveMajorEvent event) {
+    public void onAddObserveMajorSuccessNotice(AddObserveMajorSuccessEvent event) {
         if (event.getCount() > 0) {
             //解锁确认选科
             rlSelectCourseMask.setVisibility(View.GONE);

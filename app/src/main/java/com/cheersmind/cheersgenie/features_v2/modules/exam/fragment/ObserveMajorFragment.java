@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features_v2.chart.formatter.IntAxisFormatter;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
+import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -327,17 +328,102 @@ public class ObserveMajorFragment extends LazyLoadFragment {
     }
 
     /**
-     * 添加观察专业的通知事件
+     * 添加观察专业成功的通知事件
      * @param event 事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAddObserveMajorNotice(AddObserveMajorEvent event) {
+    public void onAddObserveMajorSuccessNotice(AddObserveMajorSuccessEvent event) {
         //成功添加的数量大于0
         if (event.getCount() > 0) {
             //刷新数据
             refreshData();
         }
     }
+
+    /**
+     * 将要保存观察专业的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAddObserveMajorNotice(AddObserveMajorEvent event) {
+        //非空
+        if (ArrayListUtil.isNotEmpty(event.getSelectMajor())) {
+
+            List<RecommendMajor> saveList = new ArrayList<>(recyclerAdapter.getData());
+
+            for (RecommendMajor major : event.getSelectMajor()) {
+                if (!saveList.contains(major)) {
+                    saveList.add(major);
+                }
+            }
+
+            //请求保存观察专业
+            doSaveObserveMajor(saveList);
+        }
+    }
+
+
+    /**
+     * 保存观察专业
+     * @param selectMajor 观察专业
+     */
+    private void doSaveObserveMajor(final List<RecommendMajor> selectMajor) {
+        //显示通信等待
+//        LoadingView.getInstance().show(getContext(), httpTag);
+
+        //确保显示了刷新动画
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        //关闭上拉加载功能
+        recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().postSaveObserveMajor(childId, selectMajor, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //开启上拉加载功能
+                recyclerAdapter.setEnableLoadMore(true);
+                //结束下拉刷新动画
+                swipeRefreshLayout.setRefreshing(false);
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                //清空列表数据
+//                recyclerAdapter.setNewData(null);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待
+//                    LoadingView.getInstance().dismiss();
+
+                    //开启上拉加载功能
+                    recyclerAdapter.setEnableLoadMore(true);
+                    //结束下拉刷新动画
+                    swipeRefreshLayout.setRefreshing(false);
+
+//                    if (getActivity() != null) {
+//                        getActivity().finish();
+//                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
+//                        //发送添加观察专业的事件
+//                        EventBus.getDefault().post(new AddObserveMajorSuccessEvent(selectMajor.size()));
+//                    }
+
+                    //刷新列表
+                    refreshData();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                    //清空列表数据
+//                    recyclerAdapter.setNewData(null);
+                }
+            }
+        }, httpTag, getActivity());
+    }
+
 
 //    /**
 //     * 刷新数据

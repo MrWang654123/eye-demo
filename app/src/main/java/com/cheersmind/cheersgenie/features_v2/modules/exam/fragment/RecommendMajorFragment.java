@@ -24,6 +24,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
+import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorDetailActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
@@ -349,7 +350,7 @@ public class RecommendMajorFragment extends LazyLoadFragment {
 //                                        getActivity().finish();
 //                                        ToastUtil.showShort(getActivity().getApplication(), "添加成功");
 //                                        //发送添加观察专业的事件
-//                                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
+//                                        EventBus.getDefault().post(new AddObserveMajorSuccessEvent(selectMajor.size()));
 //                                        selectMajor.clear();
 //                                    }
 //                                }
@@ -357,7 +358,15 @@ public class RecommendMajorFragment extends LazyLoadFragment {
 //                        }
 //                    }).start();
 
-                    doSaveObserveMajor(selectMajor);
+//                    //请求保存观察专业
+//                    doSaveObserveMajor(selectMajor);
+
+                    //发送将要保存观察专业的通知事件
+                    EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor));
+                    //关闭页面
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
 
                 } else {
                     if (getActivity() != null) {
@@ -553,9 +562,8 @@ public class RecommendMajorFragment extends LazyLoadFragment {
                     if (getActivity() != null) {
                         getActivity().finish();
                         ToastUtil.showShort(getActivity().getApplication(), "添加成功");
-                        //发送添加观察专业的事件
-                        EventBus.getDefault().post(new AddObserveMajorEvent(selectMajor.size()));
-                        selectMajor.clear();
+                        //发送添加观察专业成功的通知事件
+                        EventBus.getDefault().post(new AddObserveMajorSuccessEvent(selectMajor.size()));
                     }
 
                 } catch (Exception e) {
