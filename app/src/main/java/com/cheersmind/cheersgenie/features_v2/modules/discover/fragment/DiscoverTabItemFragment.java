@@ -36,7 +36,6 @@ import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -380,7 +379,13 @@ public class DiscoverTabItemFragment extends LazyLoadFragment {
                 if (article.getContentType() == Dictionary.ARTICLE_TYPE_VIDEO) {
                     article.setItemType(DiscoverRecyclerAdapter.LAYOUT_TYPE_VIDEO);
                 } else {
-                    article.setItemType(DiscoverRecyclerAdapter.LAYOUT_TYPE_ARTICLE_COMMON);
+                    //多图
+                    if (!TextUtils.isEmpty(article.getArticleImgs()) && article.getArticleImgs().split(",").length > 1) {
+                        article.setItemType(DiscoverRecyclerAdapter.LAYOUT_TYPE_ARTICLE_THREE_COVER);
+
+                    } else {//单图
+                        article.setItemType(DiscoverRecyclerAdapter.LAYOUT_TYPE_ARTICLE_COMMON);
+                    }
                 }
 
                 resList.add(article);

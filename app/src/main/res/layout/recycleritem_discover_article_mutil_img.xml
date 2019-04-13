@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:foreground="?attr/selectableItemBackground"
+    android:paddingLeft="@dimen/padding_common"
+    android:paddingStart="@dimen/padding_common"
+    android:paddingRight="@dimen/padding_common"
+    android:paddingEnd="@dimen/padding_common"
+    android:paddingTop="@dimen/padding_common">
+    <!--使用百分比布局后，圆角不生效，以下命名空间是自动导入的，必须使用上面那个命名空间-->
+    <!--xmlns:fresco="http://schemas.android.com/tools"-->
+
+    <TextView
+        android:id="@+id/tv_article_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/color_444444"
+        android:lineSpacingMultiplier="1.1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textStyle="normal"
+        app:layout_constraintHorizontal_bias="0"
+        android:text="成功人士郑成功的7中成功的方法，你学到吗？第四条超管用"/>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_main1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintDimensionRatio="h,40:27"
+        app:layout_constraintTop_toBottomOf="@+id/tv_article_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/iv_main2"
+        android:layout_marginTop="@dimen/margin_common"
+        fresco:roundedCornerRadius="5dp"
+        fresco:roundTopLeft="true"
+        fresco:roundTopRight="false"
+        fresco:roundBottomLeft="true"
+        fresco:roundBottomRight="false"
+        fresco:placeholderImage="@drawable/default_image_round_article_list"
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerCrop"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_main2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintDimensionRatio="h,40:27"
+        app:layout_constraintTop_toBottomOf="@+id/tv_article_title"
+        app:layout_constraintLeft_toRightOf="@+id/iv_main1"
+        app:layout_constraintRight_toLeftOf="@+id/iv_main3"
+        android:layout_marginTop="@dimen/margin_common"
+        fresco:roundedCornerRadius="5dp"
+        fresco:roundTopLeft="false"
+        fresco:roundTopRight="false"
+        fresco:roundBottomLeft="false"
+        fresco:roundBottomRight="false"
+        fresco:placeholderImage="@drawable/default_image_round_article_list"
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerCrop"
+        />
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/iv_main3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.33"
+        app:layout_constraintDimensionRatio="h,40:27"
+        app:layout_constraintTop_toBottomOf="@+id/tv_article_title"
+        app:layout_constraintLeft_toRightOf="@+id/iv_main2"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="@dimen/margin_common"
+        fresco:roundedCornerRadius="5dp"
+        fresco:roundTopLeft="false"
+        fresco:roundTopRight="true"
+        fresco:roundBottomLeft="false"
+        fresco:roundBottomRight="true"
+        fresco:placeholderImage="@drawable/default_image_round_article_list"
+        fresco:placeholderImageScaleType="centerCrop"
+        fresco:actualImageScaleType="centerCrop"
+        />
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_main1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="学习策略"
+        android:layout_marginTop="@dimen/margin_common"
+        android:layout_marginBottom="15dp"
+        android:textColor="@color/color_999999"
+        android:textSize="12sp"/>
+
+    <TextView
+        android:id="@+id/tv_read_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_999999"
+        app:layout_constraintLeft_toRightOf="@+id/tv_tag"
+        app:layout_constraintTop_toBottomOf="@+id/iv_main1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_goneMarginLeft="0dp"
+        android:layout_marginTop="@dimen/margin_common"
+        android:layout_marginBottom="15dp"
+        android:textSize="12sp"
+        android:text="221阅"/>
+
+    <ImageView
+        android:id="@+id/iv_favorite"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="7dp"
+        app:layout_constraintTop_toTopOf="@+id/tv_tag"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/favorite_not"
+        android:visibility="gone"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/color_eeeeee"/>
+
+</android.support.constraint.ConstraintLayout>
+

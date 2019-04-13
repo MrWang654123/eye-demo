@@ -24,6 +24,10 @@ public class SimpleArticleEntity extends DataSupport implements Serializable, Mu
     @InjectMap(name = "article_img")
     private String articleImg;
 
+    //多图
+    @InjectMap(name = "article_imgs")
+    private String articleImgs;
+
     //浏览次数
     @InjectMap(name = "page_view")
     private int pageView;
@@ -215,6 +219,14 @@ public class SimpleArticleEntity extends DataSupport implements Serializable, Mu
 
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
+    }
+
+    public String getArticleImgs() {
+        return articleImgs;
+    }
+
+    public void setArticleImgs(String articleImgs) {
+        this.articleImgs = articleImgs;
     }
 
     private int itemType;
