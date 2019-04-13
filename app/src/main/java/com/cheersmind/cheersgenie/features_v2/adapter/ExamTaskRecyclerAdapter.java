@@ -46,16 +46,28 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
 
         //状态
         ExamTaskChildEntity childTask = item.getChildTask();
-        //进行中图标
         if (childTask != null) {
+            //进行中
             if (childTask.getStatus() == Dictionary.TASK_STATUS_INCOMPLETE) {
-                helper.getView(R.id.tv_status).setVisibility(View.VISIBLE);
+                helper.getView(R.id.tv_status_doing).setVisibility(View.VISIBLE);
+                helper.getView(R.id.tv_status_complete).setVisibility(View.GONE);
+
+            } else if (childTask.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {//已完成
+                helper.getView(R.id.tv_status_doing).setVisibility(View.GONE);
+                helper.getView(R.id.tv_status_complete).setVisibility(View.VISIBLE);
+
+            } else if (childTask.getStatus() == Dictionary.TASK_STATUS_OVER_INCOMPLETE) {//已结束未完成
+                helper.getView(R.id.tv_status_doing).setVisibility(View.GONE);
+                helper.getView(R.id.tv_status_complete).setVisibility(View.GONE);
+
             } else {
-                helper.getView(R.id.tv_status).setVisibility(View.GONE);
+                helper.getView(R.id.tv_status_doing).setVisibility(View.GONE);
+                helper.getView(R.id.tv_status_complete).setVisibility(View.GONE);
             }
 
         } else {
-            helper.getView(R.id.tv_status).setVisibility(View.GONE);
+            helper.getView(R.id.tv_status_doing).setVisibility(View.GONE);
+            helper.getView(R.id.tv_status_complete).setVisibility(View.GONE);
         }
 
         //共计任务项数量
@@ -108,15 +120,15 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
             helper.getView(R.id.iv_school_course).setVisibility(View.GONE);
         }
 
-        //状态不同，颜色不同
-        if (childTask != null) {
-            //完成状态
-            if (childTask.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
-            } else {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
-            }
-        }
+//        //状态不同，颜色不同
+//        if (childTask != null) {
+//            //完成状态
+//            if (childTask.getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
+//                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
+//            } else {
+//                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
+//            }
+//        }
     }
 
 }

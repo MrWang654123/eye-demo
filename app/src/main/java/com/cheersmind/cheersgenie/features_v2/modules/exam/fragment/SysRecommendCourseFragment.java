@@ -362,7 +362,16 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     recyclerAdapter.expandAll();
 
                     //发送系统推荐完成的事件
-                    if (!ArrayListUtil.isEmpty(entity.getRecommend_subjects())) {
+                    boolean complete = true;//是否完成所有
+                    List<SysRmdCourseItem> items = entity.getItems();
+                    for (SysRmdCourseItem item : items) {
+                        if (!item.isFinish()) {
+                            complete = false;
+                            break;
+                        }
+                    }
+
+                    if (complete) {
                         EventBus.getDefault().post(new SysRecommendCompleteEvent());
                     }
 
