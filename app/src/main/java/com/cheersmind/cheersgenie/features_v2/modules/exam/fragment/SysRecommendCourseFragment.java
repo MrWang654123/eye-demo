@@ -365,9 +365,25 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     boolean complete = true;//是否完成所有
                     List<SysRmdCourseItem> items = entity.getItems();
                     for (SysRmdCourseItem item : items) {
-                        if (!item.isFinish()) {
-                            complete = false;
-                            break;
+                        //如果有量表列表则判断所有量表的状态
+                        List<SimpleDimensionResult> dimensions = item.getDimensions();
+                        if (ArrayListUtil.isNotEmpty(dimensions)) {
+                            for (SimpleDimensionResult dimension : dimensions) {
+                                if (!dimension.isFinish()) {
+                                    complete = false;
+                                    break;
+                                }
+                            }
+
+                            if (!complete) {
+                                break;
+                            }
+
+                        } else {
+                            if (!item.isFinish()) {
+                                complete = false;
+                                break;
+                            }
                         }
                     }
 

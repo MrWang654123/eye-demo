@@ -14,7 +14,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/observe_major_chart_bg"
+        android:background="@drawable/report_sub_item_bg"
         android:orientation="vertical">
 
         <View
@@ -68,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="@color/color_898989"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:lineSpacingMultiplier="1.2"
             android:paddingTop="10dp"
             android:paddingBottom="15dp"
@@ -77,7 +77,7 @@
             app:layout_constraintLeft_toLeftOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_result"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="本测评评价为看是否可靠双方开始开发是开发康师傅"/>
+            android:text="本测评评价为看是否可靠双方开始开发是开发康师傅本测评评价为看是否可靠双方开始开发是开发康师傅"/>
 
         <ImageView
             android:id="@+id/iv_expand"

@@ -80,7 +80,9 @@ public class RecommendMajorFragment extends LazyLoadFragment {
     @BindView(R.id.cb4)
     CheckBox cb4;
 
+    //条件集合
     private List<String> conditionList = new ArrayList<>();
+    //已选专业
     private List<RecommendMajor> selectMajor = new ArrayList<>();
 
     CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -112,8 +114,11 @@ public class RecommendMajorFragment extends LazyLoadFragment {
                 conditionList.remove(type);
             }
 
+            //刷新数据
             dto.setFromTypes(selectListToFromTypesStr(conditionList));
             refreshData();
+            //清空已选
+            selectMajor.clear();
         }
     };
 

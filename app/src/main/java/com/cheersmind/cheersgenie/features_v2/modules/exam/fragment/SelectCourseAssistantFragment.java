@@ -12,6 +12,7 @@ import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragmen
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorSuccessEvent;
@@ -192,9 +193,25 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
                     boolean complete = true;
                     List<SysRmdCourseItem> items = entity.getItems();
                     for (SysRmdCourseItem item : items) {
-                        if (!item.isFinish()) {
-                            complete = false;
-                            break;
+                        //如果有量表列表则判断所有量表的状态
+                        List<SimpleDimensionResult> dimensions = item.getDimensions();
+                        if (ArrayListUtil.isNotEmpty(dimensions)) {
+                            for (SimpleDimensionResult dimension : dimensions) {
+                                if (!dimension.isFinish()) {
+                                    complete = false;
+                                    break;
+                                }
+                            }
+
+                            if (!complete) {
+                                break;
+                            }
+
+                        } else {
+                            if (!item.isFinish()) {
+                                complete = false;
+                                break;
+                            }
                         }
                     }
 

@@ -416,6 +416,8 @@ public class ExamReportFragment extends LazyLoadFragment {
                 resList.add(new ReportSubTitleEntity("详细说明").setItemType(Dictionary.CHART_SUB_TITLE));
                 //设置布局类型
                 for (ReportSubItemEntity subItem : subItems) {
+                    //默认展开
+                    subItem.setExpand(true);
                     subItem.setItemType(Dictionary.CHART_SUB_ITEM);
                     resList.add(subItem);
                 }

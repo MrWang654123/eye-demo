@@ -371,9 +371,14 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         //显示通信等待
 //        LoadingView.getInstance().show(getContext(), httpTag);
 
-        //确保显示了刷新动画
-        if (!swipeRefreshLayout.isRefreshing()) {
-            swipeRefreshLayout.setRefreshing(true);
+        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
+        if (recyclerAdapter.getData().size() == 0) {
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        } else {
+            //确保显示了刷新动画
+            if (!swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(true);
+            }
         }
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
@@ -412,6 +417,8 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
                     //刷新列表
                     refreshData();
+                    //发送添加观察专业成功的通知事件
+                    EventBus.getDefault().post(new AddObserveMajorSuccessEvent(selectMajor.size()));
 
                 } catch (Exception e) {
                     e.printStackTrace();
