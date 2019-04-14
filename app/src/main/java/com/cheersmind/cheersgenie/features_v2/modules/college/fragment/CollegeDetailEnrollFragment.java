@@ -37,6 +37,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreItemEntit
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreKind;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreKindRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollScoreRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollYear;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeScoreCondition;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorEnrollScoreItemEntity;
@@ -50,7 +51,6 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.view.LoadingView;
-import com.cheersmind.cheersgenie.module.login.EnvHostManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -323,12 +323,20 @@ public class CollegeDetailEnrollFragment extends LazyLoadFragment {
      * 初始化筛选条件数据
      */
     private void initConditionData() {
+        //省份
         provinces = DataSupport.findAll(CollegeProvince.class);
+        //年份
+        List<CollegeEnrollYear> enrollYears = DataSupport.findAll(CollegeEnrollYear.class);
         years = new ArrayList<>();
-//        years.add("2018");
-        years.add("2017");
-        years.add("2016");
-        years.add("2015");
+        if (ArrayListUtil.isNotEmpty(enrollYears)) {
+            for (CollegeEnrollYear year : enrollYears) {
+                years.add(String.valueOf(year.getYear()));
+            }
+        } else {
+            years.add("2017");
+            years.add("2016");
+            years.add("2015");
+        }
 
         collegeScoreCondition = new CollegeScoreCondition();
         collegeScoreCondition.setProvince(provinces.get(0));

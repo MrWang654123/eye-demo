@@ -43,6 +43,8 @@ import com.cheersmind.cheersgenie.features.view.ViewPagerSlide;
 import com.cheersmind.cheersgenie.features.view.dialog.TaskListDialog;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevel;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEduLevelRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollYear;
+import com.cheersmind.cheersgenie.features_v2.entity.CollegeEnrollYearRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvince;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeProvinceRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankItem;
@@ -300,6 +302,7 @@ public class MasterTabActivity extends BaseActivity implements MainTabListener {
         //初始请求院校库的查询条件信息
         doGetCollegeProvince();//大学省份
         doGetEducationLevel();//大学学历层次
+        doGetEnrollYear();//大学招生录取年份
         //获取职业分类
         doGetOccupationCategory(Dictionary.OCCUPATION_TYPE_INDUSTRY);
         doGetOccupationCategory(Dictionary.OCCUPATION_TYPE_ACT);
@@ -805,6 +808,37 @@ public class MasterTabActivity extends BaseActivity implements MainTabListener {
                     DataSupport.saveAll(list);
 //                    List<CollegeEduLevel> all = DataSupport.findAll(CollegeEduLevel.class, true);
 //                    System.out.println(all);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, httpTag, MasterTabActivity.this);
+    }
+
+    /**
+     * 请求大学的在招生年份
+     */
+    private void doGetEnrollYear() {
+        DataRequestService.getInstance().getCollegeEnrollYear(new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.getLocalizedMessage();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CollegeEnrollYearRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CollegeEnrollYearRootEntity.class);
+
+                    List<CollegeEnrollYear> list = rootEntity.getItems();
+                    //存到数据库
+                    DataSupport.deleteAll(CollegeEnrollYear.class);
+                    DataSupport.saveAll(list);
+                    List<CollegeEnrollYear> list2 = DataSupport.findAll(CollegeEnrollYear.class);
+                    System.out.println(list2);
 
                 } catch (Exception e) {
                     e.printStackTrace();

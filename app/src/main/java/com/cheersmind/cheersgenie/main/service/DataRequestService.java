@@ -1742,6 +1742,16 @@ public class DataRequestService {
     }
 
     /**
+     * 获取大学的招生年份
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getCollegeEnrollYear(final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_COLLEGE_ENROLL_YEAR;
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
      * 获取大学的院校类型
      * @param callback 回调
      * @param httpTag 通信标记

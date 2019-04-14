@@ -382,6 +382,8 @@ public class HttpConfig {
     public static final String URL_COLLEGE_PROVINCE = API_HOST + "/v2/api/sy/regions";
     //获取院校的学历层级
     public static final String URL_COLLEGE_EDUCATION_LEVEL = API_HOST + "/v2/api/sy/degrees";
+    //获取院校的招生年份
+    public static final String URL_COLLEGE_ENROLL_YEAR = API_HOST + "/v2/api/sy/gaokao/years";
     //获取院校的院校类型
     public static final String URL_COLLEGE_CATEGORY = API_HOST + "/v2/api/sy/basic_categories";
     //获取院校排名列表
