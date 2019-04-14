@@ -281,4 +281,11 @@ public class Dictionary {
     //评论类型：任务
     public static final int COMMENT_TYPE_TASK = 1;
 
+    //奖励类型：无奖励
+    public static final int AWARD_TYPE_NO = 0;
+    //奖励类型：积分
+    public static final int AWARD_TYPE_POINT = 1;
+    //奖励类型：勋章
+    public static final int AWARD_TYPE_MEDAL = 2;
+
 }

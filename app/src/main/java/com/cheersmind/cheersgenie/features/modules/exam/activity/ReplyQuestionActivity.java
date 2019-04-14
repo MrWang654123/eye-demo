@@ -45,6 +45,7 @@ import com.cheersmind.cheersgenie.features.modules.exam.fragment.BaseQuestionFra
 import com.cheersmind.cheersgenie.features.modules.exam.fragment.DefaultQuestionFragment;
 import com.cheersmind.cheersgenie.features.modules.mine.activity.MineExamDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.IntegralUtil;
 import com.cheersmind.cheersgenie.features.utils.PermissionUtil;
 import com.cheersmind.cheersgenie.features.view.ReplyQuestionViewPager;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -55,7 +56,6 @@ import com.cheersmind.cheersgenie.features.view.dialog.QuestionQuitDialog;
 import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDetailActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SystemRecommendCourseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
@@ -1250,41 +1250,21 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                             //发送最新操作测评通知：完成操作
                             EventBus.getDefault().post(new LastHandleExamEvent(LastHandleExamEvent.HANDLE_TYPE_COMPLETE));
 
-                            try {
-                                //显示报告弹窗
-                                ExamReportDto dto = new ExamReportDto();
-                                dto.setChildExamId(dimensionChild.getChildExamId());//孩子测评ID
-                                dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
-                                //判断显示话题报告还是量表报告
-                                if (dimensionChild.isTopicComplete()) {
-                                    //只有一个量表则显示量表报告（或者话题对象中的量表集合为空）
-                                    if ((ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
-                                            && topicInfoEntity.getDimensions().size() == 1)
-                                            || ArrayListUtil.isEmpty(topicInfoEntity.getDimensions())) {
-                                        dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-                                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-//                                        dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
-
-                                    } else {
-                                        dto.setRelationId(dimensionInfoEntity.getTopicId());
-                                        dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
-                                    }
-
-                                } else {
-                                    dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
-                                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
-//                                    dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+                            //积分提示V2
+                            integralTipDialog = IntegralUtil.buildIntegralTipDialogV2(ReplyQuestionActivity.this, obj, new IntegralTipDialog.OnOperationListener() {
+                                @Override
+                                public void onAnimationEnd() {
+                                    //处理显示报告弹窗
+                                    handlerShowReportDialog(dimensionChild);
                                 }
-                                //显示弹窗
-                                showExamReportDialog(dto);
 
-                                //标记已经显示了报告弹窗
-                                hasShowReportDialog = true;
+                            });
 
-                            } catch (Exception e) {
-//                                onFailure(new QSCustomException("获取报告失败"));
-                                //跳转到下一个页面
-                                gotoNextActivity();
+                            if (integralTipDialog != null) {
+                                integralTipDialog.show();
+                            } else {//无积分
+                                //处理显示报告弹窗
+                                handlerShowReportDialog(dimensionChild);
                             }
 
                         } catch (Exception e) {
@@ -1294,6 +1274,49 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                         }
                     }
                 }, httpTag, ReplyQuestionActivity.this);
+    }
+
+    /**
+     * 处理显示报告弹窗
+     * @param dimensionChild 孩子量表对象
+     */
+    private void handlerShowReportDialog(DimensionInfoChildEntity dimensionChild) {
+        try {
+            //显示报告弹窗
+            ExamReportDto dto = new ExamReportDto();
+            dto.setChildExamId(dimensionChild.getChildExamId());//孩子测评ID
+            dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+            //判断显示话题报告还是量表报告
+            if (dimensionChild.isTopicComplete()) {
+                //只有一个量表则显示量表报告（或者话题对象中的量表集合为空）
+                if ((ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
+                        && topicInfoEntity.getDimensions().size() == 1)
+                        || ArrayListUtil.isEmpty(topicInfoEntity.getDimensions())) {
+                    dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                    dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                } else {
+                    dto.setRelationId(dimensionInfoEntity.getTopicId());
+                    dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+                }
+
+            } else {
+                dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+            }
+            //显示弹窗
+            showExamReportDialog(dto);
+
+            //标记已经显示了报告弹窗
+            hasShowReportDialog = true;
+
+        } catch (Exception e) {
+//            onFailure(new QSCustomException("获取报告失败"));
+            //跳转到下一个页面
+            gotoNextActivity();
+        }
     }
 
 
