@@ -24,13 +24,13 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             fresco:actualImageScaleType="fitXY"
-            fresco:placeholderImage="@drawable/tab_mine_normal"
+            fresco:placeholderImage="@drawable/check_box_outline_bl"
             fresco:placeholderImageScaleType="centerCrop"
             fresco:roundBottomLeft="true"
             fresco:roundBottomRight="true"
             fresco:roundTopLeft="true"
             fresco:roundTopRight="true"
-            fresco:roundedCornerRadius="3dp" />
+            fresco:roundedCornerRadius="3dp"/>
 
         <TextView
             android:id="@+id/tv_title"

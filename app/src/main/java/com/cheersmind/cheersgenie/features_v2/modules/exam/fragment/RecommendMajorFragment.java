@@ -176,13 +176,13 @@ public class RecommendMajorFragment extends LazyLoadFragment {
                         //设置选中标志
                         entity.setSelected(!entity.isSelected());
                         if (entity.isSelected()) {
-                            ivSelect.setImageResource(R.drawable.tab_mine_checked);
+                            ivSelect.setImageResource(R.drawable.check_box_outline);
                             //处理选中集合
                             if (!selectMajor.contains(entity)) {
                                 selectMajor.add(entity);
                             }
                         } else {
-                            ivSelect.setImageResource(R.drawable.tab_mine_normal);
+                            ivSelect.setImageResource(R.drawable.check_box_outline_bl);
                             //处理选中集合
                             if (selectMajor.contains(entity)) {
                                 selectMajor.remove(entity);

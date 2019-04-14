@@ -26,12 +26,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@null"
-                    android:background="@drawable/task"
+                    android:background="@drawable/recommend_major_condition_bg"
                     android:textColor="@drawable/textcolor_checkbox_common"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:checked="true"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="选科推荐"/>
 
                 <CheckBox
@@ -39,12 +39,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@null"
-                    android:background="@drawable/task"
+                    android:background="@drawable/recommend_major_condition_bg"
                     android:textColor="@drawable/textcolor_checkbox_common"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:checked="true"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="性格测试"/>
 
                 <CheckBox
@@ -52,12 +52,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@null"
-                    android:background="@drawable/task"
+                    android:background="@drawable/recommend_major_condition_bg"
                     android:textColor="@drawable/textcolor_checkbox_common"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:checked="true"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="职业兴趣"/>
 
                 <CheckBox
@@ -65,12 +65,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@null"
-                    android:background="@drawable/task"
+                    android:background="@drawable/recommend_major_condition_bg"
                     android:textColor="@drawable/textcolor_checkbox_common"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:checked="true"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:text="工作价值观"/>
 
             </LinearLayout>

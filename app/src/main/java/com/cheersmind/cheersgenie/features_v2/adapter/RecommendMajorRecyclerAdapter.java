@@ -28,10 +28,10 @@ public class RecommendMajorRecyclerAdapter extends BaseQuickAdapter<RecommendMaj
         //选中图标
         SimpleDraweeView ivSelect = helper.getView(R.id.iv_select);
         if (item.isSelected()) {
-            ivSelect.setImageResource(R.drawable.tab_mine_checked);
+            ivSelect.setImageResource(R.drawable.check_box_outline);
 
         } else {
-            ivSelect.setImageResource(R.drawable.tab_mine_normal);
+            ivSelect.setImageResource(R.drawable.check_box_outline_bl);
         }
 
         helper.addOnClickListener(R.id.iv_select);
