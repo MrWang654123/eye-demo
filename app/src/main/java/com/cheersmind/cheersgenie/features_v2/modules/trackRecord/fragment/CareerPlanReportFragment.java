@@ -438,7 +438,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
                 selectCourseRecord.setCustom_subjects(subject_archive.getCustom_subjects());
                 selectCourseRecord.setCustom_subject_codes(subject_archive.getCustom_subject_codes());
                 selectCourseRecord.setCustom_major_per(subject_archive.getCustom_major_per());
-                selectCourseRecord.setCustom_subject_codes(subject_archive.getCustom_subject_codes());
+                selectCourseRecord.setCustom_high_major_per(subject_archive.getCustom_high_major_per());
                 //标记是否完成
                 if (ArrayListUtil.isNotEmpty(subject_archive.getCustom_subjects())) {
                     selectCourseRecord.setFinish(true);

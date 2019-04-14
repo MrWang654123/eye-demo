@@ -224,7 +224,7 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
 
                         recyclerAdapter.setNewData(multiItemEntities);
                         //初始展开
-                        recyclerAdapter.expandAll();
+//                        recyclerAdapter.expandAll();
 
                     } catch (Exception e) {
                         e.printStackTrace();
