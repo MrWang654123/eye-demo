@@ -1728,6 +1728,14 @@ public class DataRequestService {
      */
     public void getCollegeProvince(final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_COLLEGE_PROVINCE;
+
+        Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", 1);
+        params.put("size", 100);
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
         doGet(url, callback, httpTag, context);
     }
 
