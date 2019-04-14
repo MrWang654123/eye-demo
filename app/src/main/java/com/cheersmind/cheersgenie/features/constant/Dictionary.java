@@ -180,6 +180,8 @@ public class Dictionary {
     public static final int HIDE_HISTORY_SEMINAR_LOAD_MORE_VIEW_COUNT = 5;
     //隐藏评论列表的加载更多视图的阈值数量
     public static final int HIDE_COMMENT_LOAD_MORE_VIEW_COUNT = 15;
+    //隐藏开设专业列表的加载更多视图的阈值数量
+    public static final int HIDE_SETUP_MAJOR_LOAD_MORE_VIEW_COUNT = 15;
 
     //测评状态：未激活
     public static final int EXAM_STATUS_INACTIVE = 0;

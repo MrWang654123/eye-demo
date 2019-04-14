@@ -40,6 +40,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.OccupationDto;
 import com.cheersmind.cheersgenie.features_v2.dto.OccupationTreeDto;
 import com.cheersmind.cheersgenie.features_v2.dto.RecommendMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.SetupCollegeDto;
+import com.cheersmind.cheersgenie.features_v2.dto.SetupMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
@@ -2009,13 +2010,21 @@ public class DataRequestService {
 
     /**
      * 获取院校的开设专业
-     * @param collegeId 院校ID
+     * @param dto 数据
      * @param callback 回调
      * @param httpTag 通信标记
      */
-    public void getCollegeSetUpMajor(String collegeId, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getCollegeSetUpMajor(SetupMajorDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_COLLEGE_SET_UP_MAJOR
-                .replace("{id}", collegeId);
+                .replace("{id}", dto.getCollegeId());
+
+        Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
 
         doGet(url, callback, httpTag, context);
     }

@@ -9,13 +9,16 @@ import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
+import com.cheersmind.cheersgenie.features.dto.ArticleDto;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.SetupMajorRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.SetupMajorDto;
 import com.cheersmind.cheersgenie.features_v2.entity.MajorItem;
 import com.cheersmind.cheersgenie.features_v2.entity.SetUpMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorDetailActivity;
@@ -80,6 +83,14 @@ public class CollegeDetailMajorFragment extends LazyLoadFragment {
         }
     };
 
+    //页长度
+    private static final int PAGE_SIZE = 10;
+    //页码
+    private int pageNum = 1;
+    //后台总记录数
+    private int totalCount = 0;
+
+    private SetupMajorDto dto;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,6 +153,9 @@ public class CollegeDetailMajorFragment extends LazyLoadFragment {
         if (bundle != null) {
             collegeId = bundle.getString(DtoKey.COLLEGE_ID);
         }
+
+        dto = new SetupMajorDto(pageNum, PAGE_SIZE);
+        dto.setCollegeId(collegeId);
     }
 
     @Override
@@ -177,11 +191,17 @@ public class CollegeDetailMajorFragment extends LazyLoadFragment {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        DataRequestService.getInstance().getCollegeSetUpMajor(collegeId, new BaseService.ServiceCallback() {
+        dto.setPage(pageNum);
+        DataRequestService.getInstance().getCollegeSetUpMajor(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                //设置空布局：网络错误
-                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                if (ArrayListUtil.isEmpty(recyclerAdapter.getData())) {
+                    //设置空布局：网络错误
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+                } else {
+                    //加载失败处理
+                    recyclerAdapter.loadMoreFail();
+                }
             }
 
             @Override
@@ -193,6 +213,7 @@ public class CollegeDetailMajorFragment extends LazyLoadFragment {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     SetUpMajorRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, SetUpMajorRootEntity.class);
 
+                    totalCount = rootEntity.getTotal();
                     List<MajorItem> dataList = rootEntity.getItems();
 
                     //空数据处理
@@ -201,9 +222,29 @@ public class CollegeDetailMajorFragment extends LazyLoadFragment {
                         return;
                     }
 
-                    recyclerAdapter.setNewData(dataList);
-                    //全部加载结束
-                    recyclerAdapter.loadMoreEnd();
+                    //当前列表无数据
+                    if (recyclerAdapter.getData().size() == 0) {
+                        recyclerAdapter.setNewData(dataList);
+
+                    } else {
+                        recyclerAdapter.addData(dataList);
+                    }
+
+                    //判断是否全部加载结束
+                    if (recyclerAdapter.getData().size() >= totalCount) {
+                        //全部加载结束
+                        if (recyclerAdapter.getData().size() < Dictionary.HIDE_SETUP_MAJOR_LOAD_MORE_VIEW_COUNT) {
+                            recyclerAdapter.loadMoreEnd(true);
+                        } else {
+                            recyclerAdapter.loadMoreEnd(false);
+                        }
+                    } else {
+                        //本次加载完成
+                        recyclerAdapter.loadMoreComplete();
+                    }
+
+                    //页码+1
+                    pageNum++;
 
                 } catch (Exception e) {
                     e.printStackTrace();
