@@ -133,11 +133,11 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
         }
 
         //滑动监听
-        try {
-            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            recycleView.addOnScrollListener(new RecyclerViewScrollListener(getContext(), fabGotoTop));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_track_record));
