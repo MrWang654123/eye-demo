@@ -5,7 +5,7 @@ import com.cheersmind.cheersgenie.main.ioc.InjectMap;
 import java.io.Serializable;
 
 /**
- * 确认选课
+ * 确认选科
  */
 public class ChooseCourseEntity implements Serializable {
 
@@ -19,7 +19,7 @@ public class ChooseCourseEntity implements Serializable {
 
     //学科类型 1理科，2文科
     @InjectMap(name = "subject_type")
-    private String subject_type;
+    private Integer subject_type;
 
     //图标
     @InjectMap(name = "subject_icon")
@@ -44,11 +44,11 @@ public class ChooseCourseEntity implements Serializable {
         this.subject_name = subject_name;
     }
 
-    public String getSubject_type() {
+    public Integer getSubject_type() {
         return subject_type;
     }
 
-    public void setSubject_type(String subject_type) {
+    public void setSubject_type(Integer subject_type) {
         this.subject_type = subject_type;
     }
 
@@ -66,5 +66,31 @@ public class ChooseCourseEntity implements Serializable {
 
     public void setSubject_icon(String subject_icon) {
         this.subject_icon = subject_icon;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(null == obj) {
+            return false;
+        }
+        if(this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        ChooseCourseEntity course = (ChooseCourseEntity) obj;
+        return this.subject_name.equals(course.subject_name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = subject_code;
+        result = 31 * result + (subject_name != null ? subject_name.hashCode() : 0);
+        result = 31 * result + (subject_type != null ? subject_type.hashCode() : 0);
+        result = 31 * result + (subject_icon != null ? subject_icon.hashCode() : 0);
+//        result = 31 * result + (isSelected ? 1 : 0);//忽略选中状态
+        return result;
     }
 }
