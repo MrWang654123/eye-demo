@@ -165,7 +165,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             if (entity.getScore() != null) {
                                 //原始分
                                 helper.getView(R.id.tv_dimension_original_score).setVisibility(View.VISIBLE);
-                                String scoreStr = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" +
+                                String scoreStr = "本测评中你的得分为<b><font color='" + accentColor + "'>" +
                                         nf.format(entity.getScore()) + "分</font></b>";
                                 helper.setText(R.id.tv_dimension_original_score, Html.fromHtml(scoreStr));
 
@@ -351,7 +351,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                             }
                         } else {//无排名则显示原始分
                             //得分
-                            result = "本测评中你的个人原始得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>";
+                            result = "本次测评中你的得分为<b><font color='" + accentColor + "'>" + nf.format(subItem.getScore()) + "分</font></b>";
                         }
                     }
                 }
@@ -380,7 +380,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
                         helper.setText(R.id.tv_desc, "暂无描述信息");
                     }
 
-                    helper.addOnClickListener(R.id.iv_expand);
+//                    helper.addOnClickListener(R.id.iv_expand);
                 }
 
                 break;
@@ -463,7 +463,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         //结果
         helper.setText(R.id.tv_result, entity.getResult());
         //分数描述
-        String scoreDesc = "本测评中你的个人得分<b><font color='" + accentColor + "'>" + scoreStr +
+        String scoreDesc = "本测评中你的得分<b><font color='" + accentColor + "'>" + scoreStr +
                 "分</font></b>,高于<b><font color='" + accentColor + "'>" +
                 String.format(Locale.CHINA,"%.1f", entity.getRank() * 100) + "%</font></b>的用户";
         helper.setText(R.id.tv_score_desc, Html.fromHtml(scoreDesc));

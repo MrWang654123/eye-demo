@@ -126,7 +126,7 @@ public class ExamReportFragment extends LazyLoadFragment {
             switch (multiItem.getItemType()) {
                 //报告子项
                 case Dictionary.CHART_SUB_ITEM: {
-                    //当前是话题报告
+                    //话题报告
                     if (Dictionary.REPORT_TYPE_TOPIC.equals(reportDto.getRelationType())) {
                         ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
                         ExamReportDto dto = new ExamReportDto();
@@ -136,7 +136,15 @@ public class ExamReportFragment extends LazyLoadFragment {
                         dto.setRelationId(item.getItem_id());
                         //跳转到报告页面量表
                         ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+                    } else if (Dictionary.REPORT_TYPE_DIMENSION.equals(reportDto.getRelationType())) {//量表报告
+                        //伸缩
+                        ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
+                        item.setExpand(!item.isExpand());
+                        int layoutPos = recyclerAdapter.getHeaderLayoutCount() + position;
+                        recyclerAdapter.notifyItemChanged(layoutPos);
                     }
+
                     break;
                 }
                 //推荐内容子项
@@ -182,16 +190,16 @@ public class ExamReportFragment extends LazyLoadFragment {
             MultiItemEntity multiItem = recyclerAdapter.getData().get(position);
 
             switch (view.getId()) {
-                //子项伸缩
-                case R.id.iv_expand: {
-                    if (multiItem.getItemType() == Dictionary.CHART_SUB_ITEM) {
-                        ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
-                        item.setExpand(!item.isExpand());
-                        int layoutPos = recyclerAdapter.getHeaderLayoutCount() + position;
-                        recyclerAdapter.notifyItemChanged(layoutPos);
-                    }
-                    break;
-                }
+//                //子项伸缩
+//                case R.id.iv_expand: {
+//                    if (multiItem.getItemType() == Dictionary.CHART_SUB_ITEM) {
+//                        ReportSubItemEntity item = (ReportSubItemEntity) multiItem;
+//                        item.setExpand(!item.isExpand());
+//                        int layoutPos = recyclerAdapter.getHeaderLayoutCount() + position;
+//                        recyclerAdapter.notifyItemChanged(layoutPos);
+//                    }
+//                    break;
+//                }
                 //图表说明伸缩
                 case R.id.tv_ctrl_chart_desc: {
                     if (multiItem.getItemType() == Dictionary.CHART_DESC) {
@@ -333,7 +341,7 @@ public class ExamReportFragment extends LazyLoadFragment {
                             ExamReportRootEntity data = InjectionWrapperUtil.injectMap(dataMap, ExamReportRootEntity.class);
 
                             //无数据处理
-                            if (data == null) {
+                            if (data == null || TextUtils.isEmpty(data.getTitle())) {
                                 //空布局：无数据
                                 emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
                                 return;

@@ -54,7 +54,7 @@ public class ExamWrapFragment extends LazyLoadFragment {
 
         //标题
         if (tvToolbarTitle != null) {
-            tvToolbarTitle.setText(R.string.title_development_exam);
+            tvToolbarTitle.setText(R.string.title_exam);
         }
         //隐藏回退按钮
         if (ivLeft != null) {

@@ -3,50 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
+    android:paddingRight="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
     android:background="@color/white">
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_main"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        fresco:roundedCornerRadius="0dp"
-        fresco:roundTopLeft="true"
-        fresco:roundTopRight="true"
-        fresco:roundBottomLeft="true"
-        fresco:roundBottomRight="true"
-        fresco:placeholderImage="@drawable/development_record_header"
-        fresco:placeholderImageScaleType="centerCrop"
-        />
-
-    <!--android:scaleType="centerCrop"-->
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@color/color_444444"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tv_ratio"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:text="心理健康发展"/>
+        app:layout_constraintRight_toLeftOf="@+id/tv_ratio"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:text="心理健康发展心"/>
 
     <TextView
         android:id="@+id/tv_ratio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="@color/color_444444"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_title"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintLeft_toRightOf="@+id/tv_title"
+        app:layout_constraintRight_toLeftOf="@+id/iv_expand"
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        app:layout_goneMarginRight="10dp"
         android:text="已完成86%"/>
+
+    <ImageView
+        android:id="@+id/iv_expand"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="fitCenter"
+        android:padding="7dp"
+        app:srcCompat="@drawable/ic_arrow_drop_down"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="ContentDescription" />
 
 </android.support.constraint.ConstraintLayout>

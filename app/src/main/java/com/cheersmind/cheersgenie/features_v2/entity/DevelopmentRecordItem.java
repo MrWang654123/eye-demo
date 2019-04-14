@@ -31,6 +31,12 @@ public class DevelopmentRecordItem implements Serializable, MultiItemEntity {
     @InjectMap(name = "child_exam_id")
     private String child_exam_id;
 
+    @InjectMap(name = "finish")
+    private boolean finish;
+
+    //索引位置
+    private int index;
+
     public String getDimension_id() {
         return dimension_id;
     }
@@ -85,6 +91,22 @@ public class DevelopmentRecordItem implements Serializable, MultiItemEntity {
 
     public void setChild_exam_id(String child_exam_id) {
         this.child_exam_id = child_exam_id;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     private int itemType;

@@ -81,17 +81,15 @@
 
         <ImageView
             android:id="@+id/iv_expand"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_arrow_drop_down"
             app:layout_constraintTop_toTopOf="@+id/vPre"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:paddingBottom="15dp"
-            android:paddingLeft="20dp"
-            android:paddingStart="20dp"
+            android:padding="4dp"
             tools:ignore="ContentDescription" />
 
         <ImageView

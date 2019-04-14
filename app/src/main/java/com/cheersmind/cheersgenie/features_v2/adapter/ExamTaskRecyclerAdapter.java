@@ -31,7 +31,7 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
         helper.setText(R.id.tv_title, !TextUtils.isEmpty(item.getTask_name()) ? item.getTask_name().trim() : "");
 
         //简介
-        helper.setText(R.id.tv_desc, item.getDescription());
+        helper.setText(R.id.tv_desc, !TextUtils.isEmpty(item.getDescription()) ? item.getDescription() : "暂无描述信息");
 
         //主图
         SimpleDraweeView imageView = helper.getView(R.id.iv_main);

@@ -14,23 +14,18 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
-import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features_v2.adapter.CareerPlanRecordRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.adapter.DevelopmentRecordRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.adapter.DiscoverRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.entity.TopicInfo;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -75,12 +70,14 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            MultiItemEntity item = ((DevelopmentRecordRecyclerAdapter) adapter).getItem(position);
+            MultiItemEntity item = ((DevelopmentRecordRecyclerAdapter) adapter).getData().get(position);
             //子项
-            if (item != null && item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM) {
+            if (item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM) {
                 DevelopmentRecordItem entity = (DevelopmentRecordItem) item;
                 //孩子测评ID、话题量表ID不为空
-                if (!TextUtils.isEmpty(entity.getChild_exam_id()) && !TextUtils.isEmpty(entity.getTopic_dimension_id())) {
+                if (entity.isFinish()
+                        && !TextUtils.isEmpty(entity.getChild_exam_id())
+                        && !TextUtils.isEmpty(entity.getTopic_dimension_id())) {
                     ExamReportDto dto = new ExamReportDto();
                     dto.setChildExamId(entity.getChild_exam_id());//孩子测评ID
                     dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
@@ -88,6 +85,16 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
                     dto.setRelationId(entity.getTopic_dimension_id());//话题量表ID
                     //查看报告
                     ExamReportActivity.startExamReportActivity(getContext(), dto);
+                }
+
+            } else if (item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_SUMMARY) {//header项
+                DevelopmentRecord entity = (DevelopmentRecord) item;
+                //布局位置
+                int layoutPosition = position + recyclerAdapter.getHeaderLayoutCount();
+                if (entity.isExpanded()) {
+                    recyclerAdapter.collapse(layoutPosition);
+                } else {
+                    recyclerAdapter.expand(layoutPosition);
                 }
             }
         }
@@ -110,7 +117,7 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new DevelopmentRecordRecyclerAdapter(null);
+        recyclerAdapter = new DevelopmentRecordRecyclerAdapter(getContext(),null);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //添加一个空HeaderView，用于显示顶部分割线
         recyclerAdapter.addHeaderView(new View(getContext()));
@@ -253,8 +260,10 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
 
                 List<DevelopmentRecordItem> items = record.getItems();
                 if (ArrayListUtil.isNotEmpty(items)) {
-                    for (DevelopmentRecordItem item : items) {
-                        item.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM);
+                    for (int i=0; i<items.size(); i++) {
+                        DevelopmentRecordItem item = items.get(i);
+                        item.setIndex(i);//索引位置
+                        item.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM);//布局类型
                         header.addSubItem(item);
                     }
                 }

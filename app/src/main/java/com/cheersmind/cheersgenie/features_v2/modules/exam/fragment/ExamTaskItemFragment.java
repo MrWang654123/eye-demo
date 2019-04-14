@@ -140,9 +140,10 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     ExamTaskItemEntity entity = (ExamTaskItemEntity) recyclerAdapter.getData().get(position);
                     //是否加载了量表
                     if (ArrayListUtil.isNotEmpty(entity.getSubItems())) {
+                        int layoutPosition = position + recyclerAdapter.getHeaderLayoutCount();
                         if (entity.isExpanded()) {
                             //收起
-                            adapter.collapse(position);
+                            adapter.collapse(layoutPosition);
 
                         } else {
                             //如果只有一个量表，则默认点击这个量表
@@ -151,7 +152,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
 
                             } else {
                                 //展开
-                                adapter.expand(position);
+                                adapter.expand(layoutPosition);
                             }
                         }
 
