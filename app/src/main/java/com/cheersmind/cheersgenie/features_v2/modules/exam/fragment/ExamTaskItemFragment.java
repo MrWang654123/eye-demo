@@ -537,6 +537,10 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
         if (ArrayListUtil.isNotEmpty(taskItemList)) {
             resList = new ArrayList<>();
             for (ExamTaskItemEntity taskItem : taskItemList) {
+                //名称为空视为错误项
+                if (TextUtils.isEmpty(taskItem.getItem_name())) {
+                    taskItem.setItemType(Dictionary.TASK_ITEM_TYPE_DATA_ERROR);
+                }
                 //添加适配器的测评模型
                 resList.add(taskItem);
             }

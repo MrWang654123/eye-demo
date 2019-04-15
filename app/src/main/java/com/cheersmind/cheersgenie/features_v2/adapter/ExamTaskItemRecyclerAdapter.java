@@ -24,6 +24,7 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
 
     public ExamTaskItemRecyclerAdapter(List<MultiItemEntity> data) {
         super(data);
+        addItemType(Dictionary.TASK_ITEM_TYPE_DATA_ERROR, R.layout.recycleritem_exam_task_item_data_error);
         addItemType(Dictionary.TASK_ITEM_TYPE_TOPIC_COMMON, R.layout.recycleritem_exam_task_item_topic);
         addItemType(Dictionary.TASK_ITEM_TYPE_DIMENSION, R.layout.recycleritem_exam_task_item_dimension);
         addItemType(Dictionary.TASK_ITEM_TYPE_ARTICLE, R.layout.recycleritem_exam_task_item_article);
@@ -162,24 +163,27 @@ public class ExamTaskItemRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             }
         }
 
-        //任务项
-        if (item instanceof ExamTaskItemEntity) {
-            ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
-            //状态不同，颜色不同：完成状态
-            if (taskItem.getChildItem() != null && taskItem.getChildItem().getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
-            } else {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
-            }
+        //非错误项
+        if (helper.getItemViewType() != Dictionary.TASK_ITEM_TYPE_DATA_ERROR) {
+            //任务项
+            if (item instanceof ExamTaskItemEntity) {
+                ExamTaskItemEntity taskItem = (ExamTaskItemEntity) item;
+                //状态不同，颜色不同：完成状态
+                if (taskItem.getChildItem() != null && taskItem.getChildItem().getStatus() == Dictionary.TASK_STATUS_COMPLETED) {
+                    ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
+                } else {
+                    ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
+                }
 
-        } else if (item instanceof DimensionInfoEntity) {//量表
-            DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item;
-            //状态不同，颜色不同：完成状态
-            if (dimensionInfo.getChildDimension() != null
-                    && dimensionInfo.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
-            } else {
-                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
+            } else if (item instanceof DimensionInfoEntity) {//量表
+                DimensionInfoEntity dimensionInfo = (DimensionInfoEntity) item;
+                //状态不同，颜色不同：完成状态
+                if (dimensionInfo.getChildDimension() != null
+                        && dimensionInfo.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_COMPLETE) {
+                    ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xffaaaaaa);
+                } else {
+                    ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
+                }
             }
         }
 

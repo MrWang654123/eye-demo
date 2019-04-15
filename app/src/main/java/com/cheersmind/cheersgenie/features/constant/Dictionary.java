@@ -221,6 +221,8 @@ public class Dictionary {
     //任务状态：已结束未完成
     public static final int TASK_STATUS_OVER_INCOMPLETE = 2;
 
+    //任务项类型：数据异常项
+    public static final int TASK_ITEM_TYPE_DATA_ERROR = 0;
     //任务项类型：通用场景
     public static final int TASK_ITEM_TYPE_TOPIC_COMMON = 1;
     //任务项类型：量表
