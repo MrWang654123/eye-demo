@@ -143,6 +143,17 @@
             android:textColor="#3f2088"
             android:text="请完成你的选科确认"/>
 
+        <TextView
+            android:id="@+id/tv_last_select_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintLeft_toRightOf="@+id/tv_select_course"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_select_course"
+            android:layout_marginBottom="1.2dp"
+            android:text="物、化、生"/>
+
         <RelativeLayout
             android:id="@+id/rl_select_course_mask"
             android:layout_width="0dp"

@@ -4,18 +4,21 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.dto.ChildDto;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorSuccessEvent;
+import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.event.SysRecommendCompleteEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ChooseCourseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ObserveMajorActivity;
@@ -32,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,18 +52,27 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
 
+    //孩子测评ID
+    private String childExamId;
+
+    //观察专业
     @BindView(R.id.avl_observe_major)
     AVLoadingIndicatorView avlObserveMajor;
     @BindView(R.id.rl_observe_major_mask)
     RelativeLayout rlObserveMajorMask;
 
+    //确认选科
     @BindView(R.id.avl_select_course)
     AVLoadingIndicatorView avlSelectCourse;
     @BindView(R.id.rl_select_course_mask)
     RelativeLayout rlSelectCourseMask;
+    @BindView(R.id.tv_select_course)
+    TextView tvSelectCourse;
+    @BindView(R.id.tv_last_select_course)
+    TextView tvLastSelectCourse;
 
-    //孩子测评ID
-    private String childExamId;
+    //课程编码-名称
+    private HashMap<String, String> courseNameMap = new HashMap<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,8 +96,23 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
         }
 
+        //初始显示观察专业和确认选科遮罩
         rlObserveMajorMask.setVisibility(View.VISIBLE);
         rlSelectCourseMask.setVisibility(View.VISIBLE);
+        //初始隐藏上次选科
+        tvLastSelectCourse.setVisibility(View.GONE);
+
+        courseNameMap.put("0000", "无限制");
+        courseNameMap.put("1001", "语");
+        courseNameMap.put("1002", "数");
+        courseNameMap.put("1003", "英");
+        courseNameMap.put("1004", "物");
+        courseNameMap.put("1005", "化");
+        courseNameMap.put("1006", "生");
+        courseNameMap.put("1007", "历");
+        courseNameMap.put("1008", "地");
+        courseNameMap.put("1009", "政");
+        courseNameMap.put("1010", "技");
     }
 
     @Override
@@ -93,6 +121,8 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         loadSysRecommendCourse(childExamId);
         //加载观察专业
         loadObserveMajor();
+        //加载用户选科组合
+        loadUserSelectCourseGroup();
     }
 
     @Override
@@ -162,6 +192,19 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
             //关闭确认选科
             rlSelectCourseMask.setVisibility(View.VISIBLE);
             avlSelectCourse.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 选科成功的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSelectCourseSuccessNotice(SelectCourseSuccessEvent event) {
+        //已经加载了数据
+        if (hasLoaded) {
+            //加载用户选科组合
+            loadUserSelectCourseGroup();
         }
     }
 
@@ -257,6 +300,56 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
                     }
 
                     rlSelectCourseMask.setVisibility(View.GONE);
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 加载用户选科组合
+     */
+    private void loadUserSelectCourseGroup() {
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getUserSelectCourseGroup(childId, childExamId, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    Double total = (Double) dataMap.get("total");
+                    List<List<Map<String, Object>>> items = (List<List<Map<String, Object>>>) dataMap.get("items");
+
+                    //空表示未选科，显示确认选科按钮
+                    if (ArrayListUtil.isEmpty(items) || ArrayListUtil.isEmpty(items.get(0))) {
+                        return;
+                    }
+
+                    //上次的选科
+                    List<ChooseCourseEntity> lastSelectCourses = InjectionWrapperUtil.injectMaps(items.get(0), ChooseCourseEntity.class);
+                    //非空
+                    if (ArrayListUtil.isEmpty(lastSelectCourses)) {
+                        return;
+                    }
+
+                    //修改提示文字
+                    tvSelectCourse.setText("可修改你的选科");
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (ChooseCourseEntity course : lastSelectCourses) {
+                        stringBuilder.append(courseNameMap.get(String.valueOf(course.getSubject_code())));
+                        stringBuilder.append("、");
+                    }
+                    //上次选科
+                    tvLastSelectCourse.setVisibility(View.VISIBLE);
+                    tvLastSelectCourse.setText(stringBuilder.subSequence(0, stringBuilder.length() - 1));
 
                 } catch (Exception e) {
                     onFailure(new QSCustomException(e.getMessage()));
