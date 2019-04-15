@@ -11,7 +11,11 @@
         android:layout_height="60dp"
         android:textColor="@color/color_999999"
         android:textSize="16sp"
-        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
+        android:paddingRight="15dp"
+        android:paddingEnd="15dp"
+        android:gravity="center_vertical"
         android:text="该项数据正在处理中，请反馈或联系管理员"/>
 
     <TextView

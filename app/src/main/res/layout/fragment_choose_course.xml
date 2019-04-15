@@ -142,14 +142,16 @@
                     android:paddingBottom="15dp"
                     android:orientation="vertical">
 
+                    <!--基于所选学科-->
                     <TextView
                         android:id="@+id/tv_can_select_major_ratio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="15sp"
                         android:textColor="@color/color_555555"
-                        android:text="-基于所选学科您可报考的专业占所有大学专业的95%"/>
+                        android:text="-您可报考的专业占所有大学专业的95%"/>
 
+                    <!--对所选学科-->
                     <TextView
                         android:id="@+id/tv_high_require_major_ratio"
                         android:layout_width="wrap_content"
@@ -157,7 +159,7 @@
                         android:textSize="15sp"
                         android:textColor="@color/color_555555"
                         android:layout_marginTop="5dp"
-                        android:text="-对所选学科要求较高的专业占所有大学专业的80%"/>
+                        android:text="-要求较高的专业占所有大学专业的80%"/>
 
                 </LinearLayout>
 
