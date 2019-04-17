@@ -38,8 +38,16 @@ public class SysRmdCourseItem extends BaseRecordItem {
     private boolean finish;
 
     //前置量表，多个用逗号隔开
-    @InjectMap(name = "pre_dimenison")
-    private String pre_dimenison;
+    @InjectMap(name = "pre_dimension")
+    private String pre_dimension;
+
+    //图标
+    @InjectMap(name = "icon")
+    private String icon;
+
+    //描述
+    @InjectMap(name = "description")
+    private String description;
 
     //学习效能比较特殊，需要展示量表列表
     @InjectMap(name = "dimensions")
@@ -95,12 +103,12 @@ public class SysRmdCourseItem extends BaseRecordItem {
         this.finish = finish;
     }
 
-    public String getPre_dimenison() {
-        return pre_dimenison;
+    public String getPre_dimension() {
+        return pre_dimension;
     }
 
-    public void setPre_dimenison(String pre_dimenison) {
-        this.pre_dimenison = pre_dimenison;
+    public void setPre_dimension(String pre_dimension) {
+        this.pre_dimension = pre_dimension;
     }
 
     public List<SimpleDimensionResult> getDimensions() {
@@ -117,5 +125,21 @@ public class SysRmdCourseItem extends BaseRecordItem {
 
     public void setAct_areas(List<OccupationCategory> act_areas) {
         this.act_areas = act_areas;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

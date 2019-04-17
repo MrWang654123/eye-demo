@@ -2,6 +2,7 @@ package com.cheersmind.cheersgenie.features_v2.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SimpleDimensionResult;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
 import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,8 +32,10 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
     public static final int LAYOUT_SYS_RECOMMEND_HEADER = 1;
     //通用项
     public static final int LAYOUT_ITEM_COMMON = 2;
+    //简单量表的header
+    public static final int LAYOUT_SIMPLE_DIMENSION_HEADER = 3;
     //简单量表
-    public static final int LAYOUT_SIMPLE_DIMENSION = 3;
+    public static final int LAYOUT_SIMPLE_DIMENSION = 4;
 
     private Context context;
 
@@ -43,6 +47,8 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
         addItemType(LAYOUT_SYS_RECOMMEND_HEADER, R.layout.recycleritem_sys_rmd_course_header);
         //系统推荐选科通用item
         addItemType(LAYOUT_ITEM_COMMON, R.layout.recycleritem_sys_rmd_common_item);
+        //系统推荐选科通用item
+        addItemType(LAYOUT_SIMPLE_DIMENSION_HEADER, R.layout.recycleritem_sys_rmd_simple_dimension_header);
         //简单量表
         addItemType(LAYOUT_SIMPLE_DIMENSION, R.layout.recycleritem_career_record_simple_dimension);
     }
@@ -105,10 +111,26 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
             case LAYOUT_ITEM_COMMON: {
                 SysRmdCourseItem entity = (SysRmdCourseItem) item;
                 helper.getView(R.id.ll_result_common).setVisibility(View.GONE);
-                helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
-                helper.getView(R.id.btn_report).setVisibility(View.GONE);
+//                helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
+                helper.getView(R.id.btn_report).setVisibility(View.INVISIBLE);
+                helper.getView(R.id.btn_to_exam).setVisibility(View.GONE);
+                helper.getView(R.id.ll_lock).setVisibility(View.GONE);
+
+                //分割线
+                if (entity.isLastInBrother()) {
+                    helper.getView(R.id.divider_bottom).setVisibility(View.VISIBLE);
+                } else {
+                    helper.getView(R.id.divider_bottom).setVisibility(View.GONE);
+                }
+
                 //标题
-                helper.setText(R.id.tv_title, (entity.getIndex() + 1) + "、" + entity.getDimension_name());
+                helper.setText(R.id.tv_title, entity.getDimension_name());
+                //描述
+                helper.setText(R.id.tv_desc, entity.getDescription());
+                //图标
+                SimpleDraweeView imageView = helper.getView(R.id.sdv_icon);
+                imageView.setImageURI(entity.getIcon());
+
                 //通用结果
                 if (ArrayListUtil.isEmpty(entity.getDimensions())) {
                     //完成
@@ -116,13 +138,13 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         helper.getView(R.id.btn_report).setVisibility(View.VISIBLE);
                         helper.getView(R.id.ll_result_common).setVisibility(View.VISIBLE);
 
-                        helper.getView(R.id.wllCourse).setVisibility(View.GONE);
-                        helper.getView(R.id.wllOccupation).setVisibility(View.GONE);
+                        helper.getView(R.id.ll_course).setVisibility(View.GONE);
+                        helper.getView(R.id.ll_occupation).setVisibility(View.GONE);
 
                         //推荐课程
                         List<String> result = entity.getSubjects();
                         if (ArrayListUtil.isNotEmpty(result)) {
-                            helper.getView(R.id.wllCourse).setVisibility(View.VISIBLE);
+                            helper.getView(R.id.ll_course).setVisibility(View.VISIBLE);
                             WarpLinearLayout layout = helper.getView(R.id.wllCourse);
                             //结果数量小于等于视图数量
                             if (result.size() <= layout.getChildCount()) {
@@ -156,7 +178,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         //推荐职业
                         List<OccupationCategory> categories = entity.getAct_areas();
                         if (ArrayListUtil.isNotEmpty(categories)) {
-                            helper.getView(R.id.wllOccupation).setVisibility(View.VISIBLE);
+                            helper.getView(R.id.ll_occupation).setVisibility(View.VISIBLE);
                             WarpLinearLayout layout = helper.getView(R.id.wllOccupation);
                             //结果数量小于等于视图数量
                             if (categories.size() <= layout.getChildCount()) {
@@ -215,7 +237,17 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                         }
 
                     } else {//未完成
-                        helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
+                        //被锁
+                        if (!TextUtils.isEmpty(entity.getPre_dimension())) {
+                            //被锁提示
+                            helper.getView(R.id.ll_lock).setVisibility(View.VISIBLE);
+                            helper.setText(R.id.tv_lock_tip, "请先完成" + entity.getPre_dimension());
+
+                        } else {
+                            //未完成提示
+//                            helper.getView(R.id.ll_no_complete).setVisibility(View.VISIBLE);
+                            helper.getView(R.id.btn_to_exam).setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
@@ -231,7 +263,18 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
 
                 break;
             }
-
+            //简单量表的header
+            case LAYOUT_SIMPLE_DIMENSION_HEADER: {
+                SysRmdCourseItem entity = (SysRmdCourseItem) item;
+                //标题
+                helper.setText(R.id.tv_title, entity.getDimension_name());
+                //描述
+                helper.setText(R.id.tv_desc, entity.getDescription());
+                //图标
+                SimpleDraweeView imageView = helper.getView(R.id.sdv_icon);
+                imageView.setImageURI(entity.getIcon());
+                break;
+            }
             //简单量表
             case LAYOUT_SIMPLE_DIMENSION: {
                 SimpleDimensionResult entity = (SimpleDimensionResult) item;

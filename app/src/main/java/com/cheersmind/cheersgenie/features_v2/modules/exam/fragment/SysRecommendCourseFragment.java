@@ -83,9 +83,9 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            MultiItemEntity item = ((SysRmdCourseRecyclerAdapter) adapter).getItem(position);
+            MultiItemEntity item = ((SysRmdCourseRecyclerAdapter) adapter).getData().get(position);
             //简单量表
-            if (item != null && item.getItemType() == SysRmdCourseRecyclerAdapter.LAYOUT_SIMPLE_DIMENSION) {
+            if (item.getItemType() == SysRmdCourseRecyclerAdapter.LAYOUT_SIMPLE_DIMENSION) {
                 SimpleDimensionResult entity = (SimpleDimensionResult) item;
 
                 TopicInfo topicInfo = new TopicInfo();
@@ -100,6 +100,30 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                 } else {
                     //跳转量表详情
                     getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
+                }
+
+            } else if (item.getItemType() == SysRmdCourseRecyclerAdapter.LAYOUT_ITEM_COMMON) {//通用项
+                SysRmdCourseItem entity = (SysRmdCourseItem) item;
+                //完成
+                if (entity.isFinish()) {//查看报告
+                    TopicInfo topicInfo = new TopicInfo();
+                    topicInfo.setTopicId(entity.getTopic_id());
+                    topicInfo.setDimensionId(entity.getDimension_id());
+                    getReferenceExam(topicInfo, POST_OPT_TYPE_REPORT);
+
+                } else {//未完成
+                    //被锁
+                    if (!TextUtils.isEmpty(entity.getPre_dimension())) {
+                        if (getActivity() != null) {
+                            ToastUtil.showShort(getActivity().getApplication(), "请先完成" + entity.getPre_dimension());
+                        }
+
+                    } else {
+                        TopicInfo topicInfo = new TopicInfo();
+                        topicInfo.setTopicId(entity.getTopic_id());
+                        topicInfo.setDimensionId(entity.getDimension_id());
+                        getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
+                    }
                 }
             }
         }
@@ -229,7 +253,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadData(childExamId);
+                loadData(childExamId, false);
             }
         });
         //初始化为加载状态
@@ -276,7 +300,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        loadData(childExamId);
+        loadData(childExamId, false);
     }
 
     @Override
@@ -311,7 +335,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadData(childExamId);
+        loadData(childExamId, true);
     }
 
     @OnClick({R.id.btn_add_major})
@@ -327,8 +351,10 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
 
     /**
      * 加载数据
+     * @param childExamId 孩子测评ID
+     * @param fromCompleteDimension 是否是从量表完成后进行的加载
      */
-    private void loadData(String childExamId) {
+    private void loadData(String childExamId, final boolean fromCompleteDimension) {
 
         //通信等待提示
         emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
@@ -361,34 +387,37 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     //初始展开
                     recyclerAdapter.expandAll();
 
-                    //发送系统推荐完成的事件
-                    boolean complete = true;//是否完成所有
-                    List<SysRmdCourseItem> items = entity.getItems();
-                    for (SysRmdCourseItem item : items) {
-                        //如果有量表列表则判断所有量表的状态
-                        List<SimpleDimensionResult> dimensions = item.getDimensions();
-                        if (ArrayListUtil.isNotEmpty(dimensions)) {
-                            for (SimpleDimensionResult dimension : dimensions) {
-                                if (!dimension.isFinish()) {
+                    //从量表完成后
+                    if (fromCompleteDimension) {
+                        //发送系统推荐完成的事件
+                        boolean complete = true;//是否完成所有
+                        List<SysRmdCourseItem> items = entity.getItems();
+                        for (SysRmdCourseItem item : items) {
+                            //如果有量表列表则判断所有量表的状态
+                            List<SimpleDimensionResult> dimensions = item.getDimensions();
+                            if (ArrayListUtil.isNotEmpty(dimensions)) {
+                                for (SimpleDimensionResult dimension : dimensions) {
+                                    if (!dimension.isFinish()) {
+                                        complete = false;
+                                        break;
+                                    }
+                                }
+
+                                if (!complete) {
+                                    break;
+                                }
+
+                            } else {
+                                if (!item.isFinish()) {
                                     complete = false;
                                     break;
                                 }
                             }
-
-                            if (!complete) {
-                                break;
-                            }
-
-                        } else {
-                            if (!item.isFinish()) {
-                                complete = false;
-                                break;
-                            }
                         }
-                    }
 
-                    if (complete) {
-                        EventBus.getDefault().post(new SysRecommendCompleteEvent());
+                        if (complete) {
+                            EventBus.getDefault().post(new SysRecommendCompleteEvent());
+                        }
                     }
 
                 } catch (Exception e) {
@@ -413,23 +442,23 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         if (record != null && ArrayListUtil.isNotEmpty(record.getItems())) {
             resList = new ArrayList<>();
 
-            //系统推荐选科Header
-            SysRmdCourse sysRmdCourseHeader = new SysRmdCourse();
-            sysRmdCourseHeader.setRecommend_subjects(record.getRecommend_subjects());
-            sysRmdCourseHeader.setRecommend_subject_codes(record.getRecommend_subject_codes());
-            sysRmdCourseHeader.setRecommend_major_per(record.getRecommend_major_per());
-            sysRmdCourseHeader.setRecommend_high_major_per(record.getRecommend_high_major_per());
-            sysRmdCourseHeader.setItemType(SysRmdCourseRecyclerAdapter.LAYOUT_SYS_RECOMMEND_HEADER);
-            //标记是否完成
-            if (ArrayListUtil.isNotEmpty(sysRmdCourseHeader.getRecommend_subjects())) {
-                sysRmdCourseHeader.setFinish(true);
-            } else {
-                sysRmdCourseHeader.setFinish(false);
-            }
-
-            if (sysRmdCourseHeader.isFinish()) {
-                resList.add(sysRmdCourseHeader);
-            }
+//            //系统推荐选科Header
+//            SysRmdCourse sysRmdCourseHeader = new SysRmdCourse();
+//            sysRmdCourseHeader.setRecommend_subjects(record.getRecommend_subjects());
+//            sysRmdCourseHeader.setRecommend_subject_codes(record.getRecommend_subject_codes());
+//            sysRmdCourseHeader.setRecommend_major_per(record.getRecommend_major_per());
+//            sysRmdCourseHeader.setRecommend_high_major_per(record.getRecommend_high_major_per());
+//            sysRmdCourseHeader.setItemType(SysRmdCourseRecyclerAdapter.LAYOUT_SYS_RECOMMEND_HEADER);
+//            //标记是否完成
+//            if (ArrayListUtil.isNotEmpty(sysRmdCourseHeader.getRecommend_subjects())) {
+//                sysRmdCourseHeader.setFinish(true);
+//            } else {
+//                sysRmdCourseHeader.setFinish(false);
+//            }
+//
+//            if (sysRmdCourseHeader.isFinish()) {
+//                resList.add(sysRmdCourseHeader);
+//            }
 
             //子项
             if (ArrayListUtil.isNotEmpty(record.getItems())) {
@@ -438,10 +467,16 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     SysRmdCourseItem item = items.get(i);
                     item.setItemType(SysRmdCourseRecyclerAdapter.LAYOUT_ITEM_COMMON);
                     item.setIndex(i);
+                    //标记最后一个
+                    if (i == items.size() - 1) {
+                        item.setLastInBrother(true);
+                    }
                     resList.add(item);
 
                     //有简单量表
                     if (ArrayListUtil.isNotEmpty(item.getDimensions())) {
+                        //重置header的布局类型
+                        item.setItemType(SysRmdCourseRecyclerAdapter.LAYOUT_SIMPLE_DIMENSION_HEADER);
                         List<SimpleDimensionResult> dimensions = item.getDimensions();
 
                         for (SimpleDimensionResult dimensionResult : dimensions) {

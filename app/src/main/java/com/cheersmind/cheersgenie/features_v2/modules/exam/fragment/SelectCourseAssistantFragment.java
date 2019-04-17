@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
@@ -28,6 +29,7 @@ import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
 import com.cheersmind.cheersgenie.module.login.UCManager;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -51,6 +53,13 @@ import butterknife.Unbinder;
 public class SelectCourseAssistantFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
+
+    @BindView(R.id.iv_step_one_status)
+    ImageView ivStepOneStatus;
+    @BindView(R.id.iv_step_two_status)
+    ImageView ivStepTwoStatus;
+    @BindView(R.id.iv_step_three_status)
+    ImageView ivStepThreeStatus;
 
     //孩子测评ID
     private String childExamId;
@@ -113,6 +122,11 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         courseNameMap.put("1008", "地");
         courseNameMap.put("1009", "政");
         courseNameMap.put("1010", "技");
+
+        //初始隐藏状态图标
+        ivStepOneStatus.setVisibility(View.GONE);
+        ivStepTwoStatus.setVisibility(View.GONE);
+        ivStepThreeStatus.setVisibility(View.GONE);
     }
 
     @Override
@@ -138,23 +152,37 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.sdv_system_recommend, R.id.sdv_observe_major,
-            R.id.sdv_select_course, R.id.rl_observe_major_mask, R.id.rl_select_course_mask})
+    @OnClick({R.id.cl_system_recommend, R.id.cl_observe_major,
+            R.id.cl_select_course, R.id.rl_observe_major_mask, R.id.rl_select_course_mask})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //系统推荐
-            case R.id.sdv_system_recommend: {
+            case R.id.cl_system_recommend: {
                 SystemRecommendCourseActivity.startSystemRecommendCourseActivity(getContext(), childExamId);
                 break;
             }
             //观察专业
-            case R.id.sdv_observe_major: {
+            case R.id.cl_observe_major: {
                 ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId);
                 break;
             }
             //确认选科
-            case R.id.sdv_select_course: {
+            case R.id.cl_select_course: {
                 ChooseCourseActivity.startChooseCourseActivity(getContext(), childExamId);
+                break;
+            }
+            //观察专业遮罩层
+            case R.id.rl_observe_major_mask: {
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), "请先完成第1步");
+                }
+                break;
+            }
+            //确认选科遮罩层
+            case R.id.rl_select_course_mask: {
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), "请先完成第2步");
+                }
                 break;
             }
         }
@@ -258,7 +286,9 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
                         }
                     }
 
+                    //完成状态
                     if (complete) {
+                        ivStepOneStatus.setVisibility(View.VISIBLE);
                         rlObserveMajorMask.setVisibility(View.GONE);
                     }
 
@@ -299,6 +329,7 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
                         return;
                     }
 
+                    ivStepTwoStatus.setVisibility(View.VISIBLE);
                     rlSelectCourseMask.setVisibility(View.GONE);
 
                 } catch (Exception e) {
@@ -340,16 +371,18 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
                         return;
                     }
 
-                    //修改提示文字
-                    tvSelectCourse.setText("可修改你的选科");
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (ChooseCourseEntity course : lastSelectCourses) {
-                        stringBuilder.append(courseNameMap.get(String.valueOf(course.getSubject_code())));
-                        stringBuilder.append("、");
-                    }
-                    //上次选科
-                    tvLastSelectCourse.setVisibility(View.VISIBLE);
-                    tvLastSelectCourse.setText(stringBuilder.subSequence(0, stringBuilder.length() - 1));
+//                    //修改提示文字
+//                    tvSelectCourse.setText("可修改你的选科");
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    for (ChooseCourseEntity course : lastSelectCourses) {
+//                        stringBuilder.append(courseNameMap.get(String.valueOf(course.getSubject_code())));
+//                        stringBuilder.append("、");
+//                    }
+//                    //上次选科
+//                    tvLastSelectCourse.setVisibility(View.VISIBLE);
+//                    tvLastSelectCourse.setText(stringBuilder.subSequence(0, stringBuilder.length() - 1));
+
+                    ivStepTwoStatus.setVisibility(View.VISIBLE);
 
                 } catch (Exception e) {
                     onFailure(new QSCustomException(e.getMessage()));
@@ -358,7 +391,6 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
             }
         }, httpTag, getActivity());
     }
-
 
 }
 
