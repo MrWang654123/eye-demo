@@ -15,7 +15,6 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
-import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
@@ -23,6 +22,7 @@ import com.cheersmind.cheersgenie.features_v2.adapter.DevelopmentRecordRecyclerA
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordItem;
+import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordRecycler;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordRootEntity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -72,7 +72,8 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
             MultiItemEntity item = ((DevelopmentRecordRecyclerAdapter) adapter).getData().get(position);
             //子项
-            if (item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM) {
+            if (item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM
+                    || item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM) {
                 DevelopmentRecordItem entity = (DevelopmentRecordItem) item;
                 //孩子测评ID、话题量表ID不为空
                 if (entity.isFinish()
@@ -85,6 +86,9 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
                     dto.setRelationId(entity.getTopic_dimension_id());//话题量表ID
                     //查看报告
                     ExamReportActivity.startExamReportActivity(getContext(), dto);
+
+                } else {
+                    showToast("继续完成该测评");
                 }
 
             } else if (item.getItemType() == DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_SUMMARY) {//header项
@@ -128,7 +132,7 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
         //添加自定义分割线
         if (getContext() != null) {
             DividerItemDecoration divider = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_f5f5f5_10dp));
+            divider.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.recycler_divider_f5f5f5_15dp));
             recycleView.addItemDecoration(divider);
         }
 
@@ -258,17 +262,26 @@ public class DevelopmentRecordFragment extends LazyLoadFragment {
                 header.setFinish_radio(record.getFinish_radio());
                 header.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_SUMMARY);
 
+//                List<DevelopmentRecordItem> items = record.getItems();
+//                if (ArrayListUtil.isNotEmpty(items)) {
+//                    for (int i=0; i<items.size(); i++) {
+//                        DevelopmentRecordItem item = items.get(i);
+//                        item.setIndex(i);//索引位置
+//                        item.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM);//布局类型
+//                        header.addSubItem(item);
+//                    }
+//                }
+
                 List<DevelopmentRecordItem> items = record.getItems();
                 if (ArrayListUtil.isNotEmpty(items)) {
                     for (int i=0; i<items.size(); i++) {
                         DevelopmentRecordItem item = items.get(i);
                         item.setIndex(i);//索引位置
-                        item.setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_COMMON_ITEM);//布局类型
-                        header.addSubItem(item);
                     }
-                }
 
-                resList.add(header);
+                    resList.add(header);
+                    resList.add(new DevelopmentRecordRecycler(items).setItemType(DevelopmentRecordRecyclerAdapter.LAYOUT_TYPE_H_RECYCLER));
+                }
             }
         }
 

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginLeft="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginEnd="8dp"
+    android:background="@drawable/shape_corner_ffffff_3dp"
+    android:foreground="?attr/selectableItemBackground"
+    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
+    android:paddingRight="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="20dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/view_pre"
+            android:layout_width="5dp"
+            android:layout_height="26dp"
+            android:background="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_444444"
+            android:textSize="22sp"
+            android:background="@color/white"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="情绪健康"/>
+
+    </LinearLayout>
+
+    <!--综合结果（综合得分）-->
+    <LinearLayout
+        android:id="@+id/ll_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="15dp"
+            android:visibility="visible"
+            android:orientation="horizontal">
+
+            <!--分数-->
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <com.cheersmind.cheersgenie.features_v2.view.CircleScaleView
+                    android:id="@+id/csv_score"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    app:ringWidth="6dp"
+                    app:radius="33dp"
+                    app:oneColor="#d3d3d3"
+                    app:twoColor="@color/colorAccent"
+                    app:threeColor="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/tv_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/color_444444"
+                    android:textSize="24sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    android:text="76"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <!--结果-->
+            <TextView
+                android:id="@+id/tv_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/color_444444"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="情绪状态良好"/>
+
+        </LinearLayout>
+
+        <!--得分描述-->
+        <TextView
+            android:id="@+id/tv_score_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/color_777777"
+            android:layout_gravity="center_horizontal"
+            android:visibility="visible"
+            android:text="本测评中你的个人得分为76分，高于90%的用户"/>
+
+        <!--量表无T分数和结论，则显示原始分-->
+        <TextView
+            android:id="@+id/tv_dimension_original_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/color_444444"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            android:text="本测评中你的个人原始得分为76分"/>
+
+        <TextView
+            android:id="@+id/tv_dimension_no_score_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/color_444444"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:layout_marginTop="50dp"
+            android:text="高效能、低焦虑"/>
+
+        <LinearLayout
+            android:id="@+id/ll_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:src="@drawable/development_record_no_data"
+                android:scaleType="fitCenter"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/go_to_exam"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                tools:ignore="ContentDescription" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -152,4 +152,11 @@ public class CircleScaleView extends View {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
+    //设置圆环第二颜色
+    public void setSecondColor(int secondColor) {
+        this.secondColor = secondColor;
+//        invalidate();//重绘
+    }
+
 }
