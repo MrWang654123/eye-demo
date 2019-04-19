@@ -56,14 +56,15 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
     protected void onInitView() {
 
         //修改状态栏颜色
-        setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+//        setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+        setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.white));
 
         views = new ArrayList<View>();
 
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
-        for(int i=0; i<4; i++) {
+        for(int i=0; i<3; i++) {
             RelativeLayout rlChildView = new RelativeLayout(this);
             rlChildView.setLayoutParams(mParams);
             views.add(rlChildView);
@@ -82,9 +83,6 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
                     break;
                 case 2:
                     iv.setImageResource(R.drawable.new_feature_2);
-                    break;
-                case 3:
-                    iv.setImageResource(R.drawable.new_feature_3);
 
                     View view = LayoutInflater.from(GuideActivity.this).inflate(R.layout.button_guide_last_item, null);
                     btnGo = view.findViewById(R.id.btn_guide_late_item);
@@ -136,24 +134,24 @@ public class GuideActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onPageSelected(int position) {
-        switch (position){
-            case 0:
-                //修改状态栏颜色
-                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
-                break;
-            case 1:
-                //修改状态栏颜色
-                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_2));
-                break;
-            case 2:
-                //修改状态栏颜色
-                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_3));
-                break;
-            case 3:
-                //修改状态栏颜色
-                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_4));
-                break;
-        }
+//        switch (position){
+//            case 0:
+//                //修改状态栏颜色
+//                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_1));
+//                break;
+//            case 1:
+//                //修改状态栏颜色
+//                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_2));
+//                break;
+//            case 2:
+//                //修改状态栏颜色
+//                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_3));
+//                break;
+//            case 3:
+//                //修改状态栏颜色
+//                setStatusBarBackgroundColor(GuideActivity.this, getResources().getColor(R.color.guide_activity_status_bar_color_4));
+//                break;
+//        }
     }
 
     @Override
