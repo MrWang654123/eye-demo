@@ -24,12 +24,14 @@ import com.cheersmind.cheersgenie.features.dto.ThirdLoginDto;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
 import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
+import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionListDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
+import com.cheersmind.cheersgenie.features_v2.dto.CourseGroupDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CourseRelateMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
@@ -44,6 +46,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.SetupMajorDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CourseGroup;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationType;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
@@ -2135,20 +2138,48 @@ public class DataRequestService {
         Map<String,Object> map = new HashMap<>();
         map.put("child_exam_id", dto.getChildExamId());
 
-        List<ChooseCourseEntity> items = dto.getItems();
-        if (ArrayListUtil.isNotEmpty(items)) {
-            int[] courses = new int[items.size()];
-            for (int i=0; i<items.size(); i++) {
-                ChooseCourseEntity course = items.get(i);
-                courses[i] = course.getSubject_code();
-            }
+//        List<ChooseCourseEntity> items = dto.getItems();
+//        if (ArrayListUtil.isNotEmpty(items)) {
+//            int[] courses = new int[items.size()];
+//            for (int i=0; i<items.size(); i++) {
+//                ChooseCourseEntity course = items.get(i);
+//                courses[i] = course.getSubject_code();
+//            }
+//
+//            map.put("subjects", courses);
+////            String s = new Gson().toJson(map);
+////            System.out.println(s);
+//        }
 
-            map.put("subjects", courses);
-//            String s = new Gson().toJson(map);
-//            System.out.println(s);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("child_exam_id", dto.getChildExamId());
+
+            List<JSONObject> list = new ArrayList<>();
+            List<CourseGroup> items = dto.getItems();
+            for (int i=0; i<items.size(); i++) {
+                CourseGroup group = items.get(i);
+                JSONObject json = new JSONObject();
+                if (!TextUtils.isEmpty(group.getSubjectGroup()) && group.getSubjectGroup().length() % 4 == 0) {
+                    String[] codes = StringUtil.stringSpilt(group.getSubjectGroup(), 4);
+                    JSONArray codesVal = new JSONArray();
+                    for (String code : codes) {
+                        codesVal.put(Integer.parseInt(code));
+                    }
+                    json.put("subjects", codesVal);
+                }
+                json.put("orderby", i+1);
+                list.add(json);
+            }
+            JSONArray jsonArray = new JSONArray(list);
+            jsonObject.put("subject_groups", jsonArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
         }
 
-        doPost(url, map, false, callback, httpTag, context);
+        doPost(url, jsonObject, callback, httpTag, context);
     }
 
 
@@ -2318,22 +2349,22 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
-    /**
-     * 获取用户选科组合
-     * @param childId 孩子ID
-     * @param childExamId 孩子测评ID
-     * @param callback 回调
-     * @param httpTag 通信标记
-     * @param context 上下文
-     */
-    public void getUserSelectCourseGroup(String childId, String childExamId,
-                                           final BaseService.ServiceCallback callback, String httpTag, Context context){
-        String url = HttpConfig.URL_USER_SELECT_COURSE_GROUP
-                .replace("{child_id}", childId)
-                .replace("{child_exam_id}", childExamId);
-
-        doGet(url, callback, httpTag, context);
-    }
+//    /**
+//     * 获取用户选科组合
+//     * @param childId 孩子ID
+//     * @param childExamId 孩子测评ID
+//     * @param callback 回调
+//     * @param httpTag 通信标记
+//     * @param context 上下文
+//     */
+//    public void getUserSelectCourseGroup(String childId, String childExamId,
+//                                           final BaseService.ServiceCallback callback, String httpTag, Context context){
+//        String url = HttpConfig.URL_USER_SELECT_COURSE_GROUP
+//                .replace("{child_id}", childId)
+//                .replace("{child_exam_id}", childExamId);
+//
+//        doGet(url, callback, httpTag, context);
+//    }
 
     /**
      * 获取首页Banner
@@ -2344,6 +2375,50 @@ public class DataRequestService {
         String url = HttpConfig.URL_HOME_BANNER;
 
         Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取可选学科组合
+     * @param dto 数据
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getCanSelectCourseGroup(CourseGroupDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_CAN_SELECT_COURSE_GROUP
+                .replace("{child_id}", dto.getChild_id())
+                .replace("{child_exam_id}", dto.getChild_exam_id());
+
+        Map<String, Object> params = new HashMap<>();
+        //分页
+        params.put("page", dto.getPage());
+        params.put("size", dto.getSize());
+
+        //拼接参数
+        url = BaseService.settingGetParams(url, params);
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取可选学科组合
+     * @param dto 数据
+     * @param httpTag 通信标记
+     * @param callback 回调 回调
+     */
+    public void getUserSelectCourseGroup(CourseGroupDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_USER_SELECT_COURSE_GROUP
+                .replace("{child_id}", dto.getChild_id());
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("child_exam_id", dto.getChild_exam_id());
         //分页
         params.put("page", dto.getPage());
         params.put("size", dto.getSize());

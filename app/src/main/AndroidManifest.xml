@@ -507,8 +507,15 @@
         <!--我的关注-->
         <activity android:name=".features_v2.modules.mine.activity.MineAttentionActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".features_v2.modules.exam.activity.SystemRecommendCourseActivity" />
-        <activity android:name=".features_v2.modules.exam.activity.ObserveMajorActivity" />
+        <!--系统推荐选科-->
+        <activity android:name=".features_v2.modules.exam.activity.SystemRecommendCourseActivity"
+            android:screenOrientation="portrait"/>
+        <!--观察专业表-->
+        <activity android:name=".features_v2.modules.exam.activity.ObserveMajorActivity"
+            android:screenOrientation="portrait"/>
+        <!--选科结果页-->
+        <activity android:name=".features_v2.modules.exam.activity.ChooseCourseResultActivity"
+            android:screenOrientation="portrait"/>
 
     </application>
 

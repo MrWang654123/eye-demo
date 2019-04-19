@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@color/white">
+        android:background="@drawable/shape_corner_ffffff_3dp">
 
         <TextView
             android:id="@+id/tv_step_one"
@@ -66,9 +66,10 @@
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/system_recommend"
             fresco:placeholderImageScaleType="fitXY"
-            fresco:pressedStateOverlayImage="@color/light_transparent"
-            fresco:roundWithOverlayColor="@color/white"
             fresco:backgroundImage="@color/white"/>
+
+        <!--fresco:pressedStateOverlayImage="@color/light_transparent"
+            fresco:roundWithOverlayColor="@color/white"-->
         <!--app:layout_constraintWidth_percent="0.35"-->
 
         <TextView
@@ -105,7 +106,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="15dp"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@color/white">
+        android:background="@drawable/shape_corner_ffffff_3dp">
 
         <TextView
             android:id="@+id/tv_step_two"
@@ -157,8 +158,6 @@
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/observe_major"
             fresco:placeholderImageScaleType="fitXY"
-            fresco:pressedStateOverlayImage="@color/light_transparent"
-            fresco:roundWithOverlayColor="@color/white"
             fresco:backgroundImage="@color/white"/>
 
         <TextView
@@ -216,7 +215,7 @@
         android:layout_height="120dp"
         android:layout_marginTop="15dp"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@color/white">
+        android:background="@drawable/shape_corner_ffffff_3dp">
 
         <TextView
             android:id="@+id/tv_step_three"
@@ -268,8 +267,6 @@
             fresco:actualImageScaleType="centerCrop"
             fresco:placeholderImage="@drawable/select_course"
             fresco:placeholderImageScaleType="fitXY"
-            fresco:pressedStateOverlayImage="@color/light_transparent"
-            fresco:roundWithOverlayColor="@color/white"
             fresco:backgroundImage="@color/white"/>
 
         <TextView

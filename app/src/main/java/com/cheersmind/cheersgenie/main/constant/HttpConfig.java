@@ -294,6 +294,9 @@ public class HttpConfig {
     //确认选科
     public static String URL_CONFIRM_SELECT_COURSE = API_HOST + "/v2/api/children/{child_id}/confirm_subjects";
 
+    //获取可选择选科组合列表
+    public static String URL_CAN_SELECT_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/group_subjects?child_exam_id={child_exam_id}";
+
     //获取报告推荐文章
     public static String URL_REPORT_RECOMMEND_ARTICLE = API_HOST + "/v2/api/exams/reports/actions/get_recommend_articles?child_exam_id={child_exam_id}&relation_id={relation_id}&relation_type={relation_type}&compare_id={compare_id}";
 
@@ -322,7 +325,7 @@ public class HttpConfig {
     public static final String URL_MAJOR_RATIO_BY_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/subject_group_major_rate";
 
     //获取用户选科组合列表
-    public static final String URL_USER_SELECT_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/confirm_subjects?child_exam_id={child_exam_id}";
+    public static final String URL_USER_SELECT_COURSE_GROUP = API_HOST + "/v2/api/children/{child_id}/confirm_subjects";
 
     //首页banner
     public static final String URL_HOME_BANNER = API_HOST + "/v2/api/home_disseminates";

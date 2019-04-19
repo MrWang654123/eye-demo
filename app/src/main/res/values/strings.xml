@@ -200,7 +200,7 @@
     <string name="empty_tip_exam_module">暂无测评模块</string>
     <string name="empty_tip_exam_task">暂无测评任务</string>
     <string name="empty_tip_exam_task_item">暂无任务内容项</string>
-    <string name="empty_tip_choose_course">暂无选课信息</string>
+    <string name="empty_tip_choose_course">暂无选科信息</string>
     <string name="empty_tip_exam_comment">暂无留言</string>
     <string name="empty_tip_college_rank">暂无该类院校排名</string>
     <string name="empty_tip_career_plan_record">暂无生涯规划档案</string>

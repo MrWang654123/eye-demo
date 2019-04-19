@@ -1,8 +1,10 @@
 package com.cheersmind.cheersgenie.features_v2.modules.exam.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourseItem;
 import com.cheersmind.cheersgenie.features_v2.event.SysRecommendCompleteEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelateMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ObserveMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.RecommendMajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -416,7 +419,10 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                         }
 
                         if (complete) {
+                            //发送系统推荐完成的通知消息
                             EventBus.getDefault().post(new SysRecommendCompleteEvent());
+                            //弹出是否直接进入下一步的对话框
+                            popupGotoNextStepWindows();
                         }
                     }
 
@@ -429,6 +435,31 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
         }, httpTag, getActivity());
     }
 
+    /**
+     * 弹出是否直接进入下一步的对话框
+     */
+    private void popupGotoNextStepWindows() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("温馨提示")
+                .setMessage("第一步已完成，是否直接进入第二步？")
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId);
+                        getActivity().finish();
+                    }
+                })
+                .create();
+        dialog.getWindow().setWindowAnimations(R.style.WUI_Animation_Dialog);
+        dialog.show();
+    }
 
     /**
      * SysRmdCourse转成用于适配recycler的分组数据模型List<MultiItemEntity>

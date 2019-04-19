@@ -1,6 +1,6 @@
 package com.cheersmind.cheersgenie.features_v2.dto;
 
-import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.CourseGroup;
 
 import java.util.List;
 
@@ -15,8 +15,8 @@ public class ConfirmSelectCourseDto {
     //孩子测评id
     private String childExamId;
 
-    //选择的课程
-    private List<ChooseCourseEntity> items;
+    //选择学科组合的集合
+    private List<CourseGroup> items;
 
     public String getChildExamId() {
         return childExamId;
@@ -26,11 +26,11 @@ public class ConfirmSelectCourseDto {
         this.childExamId = childExamId;
     }
 
-    public List<ChooseCourseEntity> getItems() {
+    public List<CourseGroup> getItems() {
         return items;
     }
 
-    public void setItems(List<ChooseCourseEntity> items) {
+    public void setItems(List<CourseGroup> items) {
         this.items = items;
     }
 

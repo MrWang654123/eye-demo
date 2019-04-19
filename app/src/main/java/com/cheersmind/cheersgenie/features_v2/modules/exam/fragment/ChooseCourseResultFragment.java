@@ -4,12 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -18,28 +13,20 @@ import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
-import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.CourseGroupRecyclerAdapter;
-import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CourseGroupDto;
+import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CourseGroup;
 import com.cheersmind.cheersgenie.features_v2.entity.CourseGroupRootEntity;
-import com.cheersmind.cheersgenie.features_v2.entity.SysRmdCourse;
-import com.cheersmind.cheersgenie.features_v2.event.SelectCourseSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ChooseCourseActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ChooseCourseResultActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
-import com.cheersmind.cheersgenie.main.util.ToastUtil;
-import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,20 +39,14 @@ import butterknife.Unbinder;
 
 
 /**
- * 确认选课
+ * 选科结果页
  */
-public class ChooseCourseFragment extends LazyLoadFragment {
+public class ChooseCourseResultFragment extends LazyLoadFragment {
 
     Unbinder unbinder;
 
     //孩子测评ID
     private String childExamId;
-
-    //系统推荐
-    @BindView(R.id.wll_sys_recommend)
-    WarpLinearLayout wllSysRecommend;
-    @BindView(R.id.ll_sys_recommend)
-    LinearLayout llSysRecommend;
 
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -73,59 +54,16 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
 
-    //确认按钮
-    @BindView(R.id.btn_confirm)
-    Button btnConfirm;
-
     //适配器
     CourseGroupRecyclerAdapter recyclerAdapter;
-
-    //限制数量
-    int limitCount = 3;
 
     //上拉加载更多的监听
     BaseQuickAdapter.RequestLoadMoreListener loadMoreListener = new BaseQuickAdapter.RequestLoadMoreListener() {
         @Override
         public void onLoadMoreRequested() {
-            loadCanSelectCourseGroup();
+            loadUserSelectCourseGroup();
         }
     };
-
-    //recycler item点击监听
-    BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
-        @Override
-        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            CourseGroup entity = (CourseGroup) recyclerAdapter.getData().get(position);
-            //选科数量限制
-            if (chooseCourseList.size() == limitCount && !entity.isSelected()) {
-                //提示选中课程名称
-                if (getActivity() != null) {
-                    ToastUtil.showShort(getActivity().getApplication(), "最多选" + limitCount + "种组合");
-                }
-                return;
-            }
-
-            //设置选中标志
-            entity.setSelected(!entity.isSelected());
-            //刷新视图
-            ImageView ivSelect = view.findViewById(R.id.iv_select);
-            if (entity.isSelected()) {
-                ivSelect.setImageResource(R.drawable.check_box_outline);
-                //处理选中集合
-                if (!chooseCourseList.contains(entity)) {
-                    chooseCourseList.add(entity);
-                }
-            } else {
-                ivSelect.setImageResource(R.drawable.check_box_outline_bl);
-                //处理选中集合
-                if (chooseCourseList.contains(entity)) {
-                    chooseCourseList.remove(entity);
-                }
-            }
-
-        }
-    };
-
 
     //页长度
     private static final int PAGE_SIZE = 50;
@@ -134,16 +72,12 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     //后台总记录数
     private int totalCount = 0;
 
-    ConfirmSelectCourseDto confirmDto;
     CourseGroupDto courseGroupDto;
-
-    //选中的学科组合
-    List<CourseGroup> chooseCourseList = new ArrayList<>();
 
 
     @Override
     protected int setContentView() {
-        return R.layout.fragment_choose_course;
+        return R.layout.fragment_choose_course_result;
     }
 
     @Override
@@ -163,15 +97,13 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         recyclerAdapter.setPreLoadNumber(4);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
-        //设置子项点击监听
-        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
 
         //设置无数据提示文本
         emptyLayout.setNoDataTip(getResources().getString(R.string.empty_tip_choose_course));
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadCanSelectCourseGroup();
+                loadUserSelectCourseGroup();
             }
         });
 
@@ -181,36 +113,15 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
         }
 
-        confirmDto = new ConfirmSelectCourseDto();
-        confirmDto.setChildExamId(childExamId);
-        confirmDto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
-        confirmDto.setItems(chooseCourseList);
-
         courseGroupDto = new CourseGroupDto(pageNum, PAGE_SIZE);
         courseGroupDto.setChild_id(UCManager.getInstance().getDefaultChild().getChildId());
         courseGroupDto.setChild_exam_id(childExamId);
-
-        //设置recyclerView不影响嵌套滚动
-        recycleView.setNestedScrollingEnabled(false);
-        //使其失去焦点。
-        recycleView.setFocusable(false);
-
-        String childId = UCManager.getInstance().getDefaultChild().getChildId();
-        System.out.println(childId);
     }
 
     @Override
     protected void lazyLoad() {
-//        //加载可选学科
-//        loadMoreData();
-        //加载系统推荐
-        loadSysRecommend(childExamId);
-//        //加载专业观察表
-//        loadObserveMajor();
-//        //加载用户选科组合
-//        loadUserSelectCourseGroup();
-        //加载可选学科组合
-        loadCanSelectCourseGroup();
+        //加载用户已选学科组合
+        loadUserSelectCourseGroup();
     }
 
     @Override
@@ -220,119 +131,24 @@ public class ChooseCourseFragment extends LazyLoadFragment {
     }
 
 
-    @OnClick({R.id.btn_confirm})
+    @OnClick({R.id.btn_modify})
     public void onViewClick(View view) {
         switch (view.getId()) {
-            //确定
-            case R.id.btn_confirm: {
-                doConfirm();
+            //修改选科
+            case R.id.btn_modify: {
+                Intent intent = new Intent(getContext(), ChooseCourseActivity.class);
+                intent.putExtra(DtoKey.CHILD_EXAM_ID, childExamId);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//FLAG_ACTIVITY_SINGLE_TOP
+                startActivity(intent);
                 break;
             }
         }
     }
 
     /**
-     * 确定操作
+     * 加载用户已选的学科组合
      */
-    private void doConfirm() {
-        if (chooseCourseList.size() == 0) {
-            if (getActivity() != null) {
-                ToastUtil.showShort(getActivity().getApplication(), "请选择学科");
-            }
-        } else {
-            //请求确认选科
-            doConfirmSelectCourse();
-        }
-
-    }
-
-
-    /**
-     * 请求确认选科
-     */
-    private void doConfirmSelectCourse() {
-        //通信加载等待
-        LoadingView.getInstance().show(getContext(), httpTag);
-
-        DataRequestService.getInstance().postConfirmSelectCourse(confirmDto, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-                    //关闭加载等待
-                    LoadingView.getInstance().dismiss();
-
-                    //提示选中课程名称
-                    if (getActivity() != null) {
-                        ToastUtil.showShort(getActivity().getApplication(), "选科成功");
-                    }
-
-//                    //选科成功后，隐藏确认按钮
-//                    btnConfirm.setVisibility(View.GONE);
-
-                    //发送选科成功事件
-                    EventBus.getDefault().post(new SelectCourseSuccessEvent());
-
-                    //跳转到选科结果页
-                    Intent intent = new Intent(getContext(), ChooseCourseResultActivity.class);
-                    intent.putExtra(DtoKey.CHILD_EXAM_ID, childExamId);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//FLAG_ACTIVITY_SINGLE_TOP
-                    startActivity(intent);
-
-                    getActivity().finish();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onFailureDefault(new QSCustomException(getResources().getString(R.string.operate_fail)));
-                }
-
-            }
-        }, httpTag, getActivity());
-    }
-
-
-    /**
-     * 加载系统推荐
-     */
-    private void loadSysRecommend(String childExamId) {
-        DataRequestService.getInstance().getSysRmdCourse(childExamId, new BaseService.ServiceCallback() {
-            @Override
-            public void onFailure(QSCustomException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Object obj) {
-                try {
-
-                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    SysRmdCourse entity = InjectionWrapperUtil.injectMap(dataMap, SysRmdCourse.class);
-
-                    if (entity == null || ArrayListUtil.isEmpty(entity.getItems())) {
-                        return;
-                    }
-
-                    for (String str : entity.getRecommend_subjects()) {
-                        TextView tv = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.record_result_item_unclickable, null);
-                        tv.setText(str);
-                        wllSysRecommend.addView(tv);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, httpTag, getActivity());
-    }
-
-    /**
-     * 加载可选学科组合
-     */
-    private void loadCanSelectCourseGroup() {
+    private void loadUserSelectCourseGroup() {
 
         //设置页
         courseGroupDto.setPage(pageNum);
@@ -342,7 +158,7 @@ public class ChooseCourseFragment extends LazyLoadFragment {
             emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
         }
 
-        DataRequestService.getInstance().getCanSelectCourseGroup(courseGroupDto, new BaseService.ServiceCallback() {
+        DataRequestService.getInstance().getUserSelectCourseGroup(courseGroupDto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
 
@@ -420,8 +236,14 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
         if (ArrayListUtil.isNotEmpty(dataList)) {
             resList = new ArrayList<>();
-            for (CourseGroup item : dataList) {
-                item.setItemType(CourseGroupRecyclerAdapter.LAYOUT_SELECT_CAN_SELECT);
+            for (int i=0; i<dataList.size(); i++) {
+                CourseGroup item = dataList.get(i);
+                item.setItemType(CourseGroupRecyclerAdapter.LAYOUT_SELECT_USER_HAS_SELECT);
+                item.setIndex(i);
+                //标记最后一个
+                if (i == dataList.size() - 1) {
+                    item.setLast(true);
+                }
                 resList.add(item);
             }
         }
