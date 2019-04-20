@@ -369,6 +369,8 @@ public class HttpConfig {
     public static final String URL_EXAM_TASKS = API_HOST + "/v2/api/children/{child_id}/child_tasks";
     //获取可添加任务列表（child_module_id）
     public static final String URL_EXAM_CAN_ADD_TASKS = API_HOST + "/v2/api/children/{child_id}/available_tasks?child_module_id={child_module_id}";
+    //添加自定义任务
+    public static final String URL_ADD_EXAM_TASKS = API_HOST + "/v2/api/children/{child_id}/custom_tasks";
     //获取测评任务详情子项列表（child_task_id）
     public static final String URL_EXAM_TASK_DETAIL_ITEMS = API_HOST + "/v2/api/children/{child_id}/child_task_items";
     //获取话题下的量表列表（child_exam_id、topic_id）

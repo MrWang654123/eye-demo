@@ -4,32 +4,40 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.interfaces.RecyclerViewScrollListener;
+import com.cheersmind.cheersgenie.features.modules.base.activity.MasterTabActivity;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamTaskRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.AddExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
+import com.cheersmind.cheersgenie.features_v2.event.AddExamTaskSuccessEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
 import com.cheersmind.cheersgenie.module.login.UCManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.Map;
@@ -59,8 +67,6 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     //置顶按钮
     @BindView(R.id.fabGotoTop)
     FloatingActionButton fabGotoTop;
-    @BindView(R.id.btn_select_all)
-    Button btnSelectAll;
 
     Unbinder unbinder;
 
@@ -90,21 +96,27 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-            //显示消息对话框
             ExamTaskEntity entity = recyclerAdapter.getData().get(position);
-////            CollegeRankActivity.startExamTaskDetailActivity(getContext(), entity);
-//            entity.setSelected(!entity.isSelected());
-////            int tempPosition = position + recyclerAdapter.getHeaderLayoutCount();
-////            //局部刷新列表项，把header计算在内
-////            recyclerAdapter.notifyItemChanged(tempPosition);
-//            View viewById = view.findViewById(R.id.iv_select);
-//            if (entity.isSelected()) {
-//                viewById.setVisibility(View.VISIBLE);
-//            } else {
-//                viewById.setVisibility(View.GONE);
-//            }
+//            addExamTaskDto.getItems().add(entity);
+//            doConfirm();
 
-            doConfirm(entity);
+            //设置选中标志
+            entity.setSelected(!entity.isSelected());
+            //刷新视图
+            ImageView ivSelect = view.findViewById(R.id.iv_select);
+            if (entity.isSelected()) {
+                ivSelect.setImageResource(R.drawable.check_box_outline);
+                //处理选中集合
+                if (!addExamTaskDto.getItems().containsKey(entity.getTask_id())) {
+                    addExamTaskDto.getItems().put(entity.getTask_id(), entity);
+                }
+            } else {
+                ivSelect.setImageResource(R.drawable.check_box_outline_bl);
+                //处理选中集合
+                if (addExamTaskDto.getItems().containsKey(entity.getTask_id())) {
+                    addExamTaskDto.getItems().remove(entity.getTask_id());
+                }
+            }
         }
     };
 
@@ -120,6 +132,8 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     private boolean isDoSelectAll = true;
 
     ExamTaskDto dto;
+    AddExamTaskDto addExamTaskDto;
+
 
     @Override
     protected int setContentView() {
@@ -131,7 +145,7 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         unbinder = ButterKnife.bind(this, rootView);
 
         //适配器
-        recyclerAdapter = new ExamTaskRecyclerAdapter(getContext(), R.layout.recycleritem_exam_task, null);
+        recyclerAdapter = new ExamTaskRecyclerAdapter(getContext(), R.layout.recycleritem_exam_task, null, true);
         recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         //设置上拉加载更多的监听
         recyclerAdapter.setOnLoadMoreListener(loadMoreListener, recycleView);
@@ -183,6 +197,11 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
         String childId = UCManager.getInstance().getDefaultChild().getChildId();
         dto.setChildId(childId);
         dto.setChildModuleId(childModuleId);
+
+        addExamTaskDto = new AddExamTaskDto();
+        addExamTaskDto.setChildId(childId);
+        addExamTaskDto.setChildModuleId(childModuleId);
+        addExamTaskDto.setItems(new ArrayMap<String, ExamTaskEntity>());
     }
 
     @Override
@@ -356,23 +375,19 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
     }
 
 
-    @OnClick({R.id.btn_select_all, R.id.btn_confirm})
+    @OnClick({R.id.btn_confirm})
     public void onViewClick(View view) {
         switch (view.getId()) {
-            //全选
-            case R.id.btn_select_all: {
-                doSelectAll(isDoSelectAll);
-                isDoSelectAll = !isDoSelectAll;
-                if (isDoSelectAll) {
-                    btnSelectAll.setText("全选");
-                } else {
-                    btnSelectAll.setText("全不选");
-                }
-                break;
-            }
             //确定
             case R.id.btn_confirm: {
-//                doConfirm();
+                //非空
+                if (addExamTaskDto.getItems().size() > 0) {
+                    doConfirm();
+                } else {
+                    if (getActivity() != null) {
+                        ToastUtil.showShort(getActivity().getApplication(), "请选择任务");
+                    }
+                }
                 break;
             }
         }
@@ -380,9 +395,9 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
 
     public static final int RESULT_CODE_ADD_TASK = 81;
 
-    /**
-     * 确定操作
-     */
+//    /**
+//     * 确定操作
+//     */
 //    private void doConfirm() {
 //        List<ExamTaskEntity> selectList = new ArrayList<>();
 //        List<ExamTaskEntity> data = recyclerAdapter.getData();
@@ -418,6 +433,40 @@ public class ExamTaskAddFragment extends LazyLoadFragment {
             getActivity().setResult(RESULT_CODE_ADD_TASK, intent);
             getActivity().finish();
         }
+    }
+
+    /**
+     * 确定操作
+     */
+    private void doConfirm() {
+        LoadingView.getInstance().show(getContext(), httpTag);
+
+        DataRequestService.getInstance().postAddExamTasks(addExamTaskDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    LoadingView.getInstance().dismiss();
+
+                    showToast("添加成功");
+
+                    //发送测评任务添加成功的通知事件
+                    EventBus.getDefault().post(new AddExamTaskSuccessEvent(addExamTaskDto.getItems()));
+
+                    //跳转到主页面
+                    Intent intent = new Intent(getContext(), MasterTabActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);//FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent);
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getActivity());
     }
 
     /**

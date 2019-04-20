@@ -1,19 +1,10 @@
 package com.cheersmind.cheersgenie.features.modules.test.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.NinePatchDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,13 +15,7 @@ import android.text.style.ImageSpan;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.R;
-import com.cheersmind.cheersgenie.features.GlideApp;
 import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
 

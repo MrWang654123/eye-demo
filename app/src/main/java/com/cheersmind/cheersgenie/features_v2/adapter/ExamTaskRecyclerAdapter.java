@@ -21,8 +21,16 @@ import java.util.List;
  */
 public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, BaseViewHolder> {
 
+    private boolean addTask;
+
     public ExamTaskRecyclerAdapter(Context context, int layoutResId, @Nullable List<ExamTaskEntity> data) {
         super(layoutResId, data);
+        this.addTask = false;
+    }
+
+    public ExamTaskRecyclerAdapter(Context context, int layoutResId, @Nullable List<ExamTaskEntity> data, boolean addTask) {
+        super(layoutResId, data);
+        this.addTask = addTask;
     }
 
     @Override
@@ -129,6 +137,19 @@ public class ExamTaskRecyclerAdapter extends BaseQuickAdapter<ExamTaskEntity, Ba
 //                ((TextView) helper.getView(R.id.tv_title)).setTextColor(0xff444444);
 //            }
 //        }
+
+        if (addTask) {
+            //选中图标
+            SimpleDraweeView ivSelect = helper.getView(R.id.iv_select);
+            ivSelect.setVisibility(View.VISIBLE);
+            if (item.isSelected()) {
+                ivSelect.setImageResource(R.drawable.check_box_outline);
+
+            } else {
+                ivSelect.setImageResource(R.drawable.check_box_outline_bl);
+            }
+        }
+
     }
 
 }

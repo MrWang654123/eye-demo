@@ -289,6 +289,26 @@
             android:layout_marginBottom="10dp"
             tools:ignore="ContentDescription" />
 
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_select"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="7dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            fresco:actualImageScaleType="fitXY"
+            android:visibility="gone"
+            fresco:placeholderImage="@drawable/check_box_outline_bl"
+            fresco:placeholderImageScaleType="centerCrop" />
+        <!--fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundedCornerRadius="3dp"-->
+
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

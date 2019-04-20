@@ -1,6 +1,7 @@
 package com.cheersmind.cheersgenie.main.service;
 
 import android.content.Context;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
@@ -26,6 +27,7 @@ import com.cheersmind.cheersgenie.features.interfaces.ResponseByteCallback;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.StringUtil;
 import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
+import com.cheersmind.cheersgenie.features_v2.dto.AddExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionListDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
@@ -47,6 +49,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.TaskItemDto;
 import com.cheersmind.cheersgenie.features_v2.dto.TopicDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ChooseCourseEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.CourseGroup;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationType;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
@@ -72,6 +75,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import okhttp3.Call;
 
@@ -1473,6 +1477,34 @@ public class DataRequestService {
         doGet(url, callback, httpTag, context);
     }
 
+    /**
+     * 添加自定义任务
+     * @param dto 模块dto
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void postAddExamTasks(AddExamTaskDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+        String url = HttpConfig.URL_ADD_EXAM_TASKS
+                .replace("{child_id}",dto.getChildId());
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONArray list = new JSONArray(dto.getItems().keySet());
+//            for (Map.Entry<String, ExamTaskEntity> item : dto.getItems().entrySet()) {
+//                list.put(item.getKey());
+//            }
+//            for (ExamTaskEntity task : dto.getItems()) {
+//                list.put(task.getTask_id());
+//            }
+            jsonObject.put("child_module_id", dto.getChildModuleId());
+            jsonObject.put("task_ids", list);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        doPost(url, jsonObject, callback, httpTag, context);
+    }
 
     /**
      * 获取测评任务的详情子项列表

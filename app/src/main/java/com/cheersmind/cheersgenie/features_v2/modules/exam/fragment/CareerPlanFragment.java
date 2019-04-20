@@ -29,6 +29,7 @@ import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamTaskStatus;
+import com.cheersmind.cheersgenie.features_v2.event.AddExamTaskSuccessEvent;
 import com.cheersmind.cheersgenie.features_v2.event.TaskStatusEvent;
 import com.cheersmind.cheersgenie.features_v2.modules.college.activity.CollegeRankActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskAddActivity;
@@ -36,7 +37,6 @@ import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamTaskDeta
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.major.activity.MajorActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
-import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
@@ -297,6 +297,11 @@ public class CareerPlanFragment extends LazyLoadFragment {
         pageNum = 1;
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
+
+        //确保显示下拉刷新
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
 
         dto.setPage(pageNum);
         DataRequestService.getInstance().getExamTasks(dto, new BaseService.ServiceCallback() {
@@ -673,5 +678,14 @@ public class CareerPlanFragment extends LazyLoadFragment {
         }, httpTag, getActivity());
     }
 
+
+    /**
+     * 添加测评任务成功的通知事件
+     * @param event 事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAddExamTaskSuccessNotice(AddExamTaskSuccessEvent event) {
+        refreshData();
+    }
 
 }

@@ -2,10 +2,8 @@ package com.cheersmind.cheersgenie.features.view.htmlImageGetter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -13,17 +11,9 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.cheersmind.cheersgenie.features.GlideApp;
 

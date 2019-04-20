@@ -31,24 +31,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_select_all"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:visibility="gone"
-                    android:text="全选"/>
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/btn_confirm"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:visibility="gone"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="15sp"
+                    android:background="@drawable/shape_corner_accent_3dp"
                     android:text="确定"/>
 
             </LinearLayout>
@@ -60,7 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="70dp"
             android:layout_gravity="right|bottom"
             android:visibility="visible"
             app:fabSize="mini"
