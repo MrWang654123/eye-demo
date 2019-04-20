@@ -24,7 +24,7 @@
         fresco:roundBottomRight="true"
         fresco:roundTopLeft="true"
         fresco:roundTopRight="true"
-        fresco:roundedCornerRadius="3dp"
+        fresco:roundedCornerRadius="0dp"
         android:scaleType="centerCrop"/>
 
     <TextView
