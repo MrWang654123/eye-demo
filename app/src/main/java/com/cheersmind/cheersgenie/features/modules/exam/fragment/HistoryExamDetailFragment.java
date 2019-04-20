@@ -46,6 +46,8 @@ import com.cheersmind.cheersgenie.features.view.RecyclerLoadMoreView;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features.view.dialog.DimensionReportDialog;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoChildEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
@@ -122,15 +124,6 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
     protected BaseQuickAdapter.OnItemClickListener recyclerItemClickListener =  new BaseQuickAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//            //网格
-//            RecyclerCommonSection<DimensionInfoEntity> data = (RecyclerCommonSection<DimensionInfoEntity>) adapter.getData().get(position);
-//            //非Header模型
-//            if (!data.isHeader) {
-//                DimensionInfoEntity dimensionInfoEntity = (DimensionInfoEntity) data.t;
-//                TopicInfoEntity topicInfoEntity = (TopicInfoEntity) data.getInfo();
-//                //点击量表项的操作
-//                operateClickDimension(dimensionInfoEntity, topicInfoEntity);
-//            }
 
             Object item = ((ExamDimensionBaseRecyclerAdapter) adapter).getItem(position);
             //点击量表
@@ -141,8 +134,27 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                 TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
                 //如果话题已完成则查看话题报告
                 if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    //查看话题报告
-                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+//                    //查看话题报告
+//                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
+
+                    ExamReportDto dto = new ExamReportDto();
+                    dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
+                    dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+
+                    //只有一个量表则查看量表报告
+                    if (ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
+                            && topicInfoEntity.getDimensions().size() == 1) {
+                        dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                        dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                    } else {
+                        dto.setRelationId(dimensionInfoEntity.getTopicId());
+                        dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+                    }
+
+                    ExamReportActivity.startExamReportActivity(getContext(), dto);
+
                 } else {
                     //点击量表项的操作
                     operateClickDimension(dimensionInfoEntity, topicInfoEntity);
@@ -150,13 +162,6 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
 
             } else if (item instanceof TopicInfoEntity) {//点击header话题
                 TopicInfoEntity topicInfoEntity = (TopicInfoEntity) item;
-//                TopicInfoChildEntity childTopic = topicInfoEntity.getChildTopic();
-//                //如果话题已完成则查看话题报告
-//                if (childTopic != null && childTopic.getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-//                    //查看话题报告
-//                    ReportActivity.startReportActivity(getContext(), topicInfoEntity);
-//                }
-
                 //跳转到话题详情页面
                 TopicDetailActivity.startTopicDetailActivity(getContext(),
                         topicInfoEntity.getTopicId(), topicInfoEntity,
@@ -1209,8 +1214,17 @@ public class HistoryExamDetailFragment extends LazyLoadFragment implements Searc
                     startDimension(dimensionInfoEntity, topicInfoEntity);
 
                 } else {
-                    //已完成状态，显示报告
-                    showDimensionReport(getContext(), dimensionInfoEntity);
+//                    //已完成状态，显示报告
+//                    showDimensionReport(getContext(), dimensionInfoEntity);
+
+                    ExamReportDto dto = new ExamReportDto();
+                    dto.setChildExamId(dimensionInfoEntity.getChild_exam_id());//孩子测评ID
+                    dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                    dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                    dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                    dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                    ExamReportActivity.startExamReportActivity(getContext(), dto);
                 }
             }
         }
