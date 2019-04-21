@@ -25,6 +25,7 @@ import com.cheersmind.cheersgenie.BuildConfig;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.manager.SynthesizerManager;
 import com.cheersmind.cheersgenie.features.utils.fresco.ImagePipelineConfigFactory;
+import com.cheersmind.cheersgenie.features_v2.utils.SSLSocketClient;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.main.constant.HttpConfig;
 import com.cheersmind.cheersgenie.main.util.CrashHandler;
@@ -35,17 +36,21 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.github.mikephil.charting.utils.Utils;
 import com.umeng.commonsdk.UMConfigure;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.https.HttpsUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.LitePalApplication;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+
+import static com.taobao.accs.client.AccsConfig.build;
 
 
 /**
@@ -189,14 +194,32 @@ public class QSApplication extends LitePalApplication {
      * 初始化OkHttpUtils
      */
     private void initOkHttpUtils() {
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(new LoggerInterceptor("TAG"))
-                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
-                .readTimeout(20000L, TimeUnit.MILLISECONDS)
-                //其他配置
-                .build();
 
+//        //设置可访问所有的https网站
+//        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+//                //其他配置
+//                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+//                .build();
+//        OkHttpUtils.initClient(okHttpClient);
+
+        //设置具体的证书
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(new InputStream[]{SSLSocketClient.getInputStream()}, null, null);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                //其他配置
+                .sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
+                .build();
         OkHttpUtils.initClient(okHttpClient);
+
+//        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+////                .addInterceptor(new LoggerInterceptor("TAG"))
+//                .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+//                .readTimeout(20000L, TimeUnit.MILLISECONDS)
+//                //其他配置
+//                .build();
+//
+//        OkHttpUtils.initClient(okHttpClient);
     }
 
     @Override

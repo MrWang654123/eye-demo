@@ -6,9 +6,9 @@ package com.cheersmind.cheersgenie.module.login;
 
 public class EnvHostManager {
     //生产环境
-    public static final String UC_HOST_PRODUCT  = "http://psytest-server.cheersmind.com";
-    public static final String API_HOST_PRODUCT = "http://psytest-server.cheersmind.com";
-    public static final String WEB_HOST_PRODUCT = "http://psytest-web.cheersmind.com";
+    public static final String UC_HOST_PRODUCT  = "https://psytest-server.cheersmind.com";
+    public static final String API_HOST_PRODUCT = "https://psytest-server.cheersmind.com";
+    public static final String WEB_HOST_PRODUCT = "https://psytest-web.cheersmind.com";
 
     //生产环境灰度发布时的B环境
     public static final String UC_HOST_PRODUCT_B  = "http://s02.psytest-server.cheersmind.com";

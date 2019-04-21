@@ -73,7 +73,8 @@ public class BaseRequest {
             nonce += randomStrs[randomInt];
         }
 
-        String rawMac = nonce+"\n"+method+"\n"+url.replace(host,"")+"\n"+host.replace("http://","")+"\n";
+        String rawMac = nonce+"\n"+method+"\n"+url.replace(host,"")+"\n"+
+                (host.startsWith("http://") ? host.replace("http://","") : host.replace("https://","")) +"\n";
         //rawMac = "ADFFJ323423JLKFDSFSDFE";
         String newMac = EncryptUtil.encryptHMac256(rawMac, UCManager.getInstance().getMacKey());
 
