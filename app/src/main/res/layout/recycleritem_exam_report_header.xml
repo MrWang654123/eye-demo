@@ -234,6 +234,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
+                android:visibility="gone"
                 android:text="基于我的学业兴趣推荐的结果如下："/>
 
             <TextView
