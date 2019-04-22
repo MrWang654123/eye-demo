@@ -471,12 +471,13 @@ public class MineFragment extends TakePhotoFragment {
             }
             //成长档案
             case R.id.ll_track_record: {
-                if (!TextUtils.isEmpty(childExamId)) {
-                    TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
-                } else {
-                    //加载生涯模块：为了获取childExamId
-                    loadCareerPlanModule();
-                }
+//                if (!TextUtils.isEmpty(childExamId)) {
+//                    TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+//                } else {
+//                    //加载生涯模块：为了获取childExamId
+//                    loadCareerPlanModule();
+//                }
+                TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
                 break;
             }
             //我的关注

@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.mine.fragment.MineAwardFragment;
+import com.cheersmind.cheersgenie.features_v2.modules.mine.fragment.MineIntegralFragment;
 
 /**
  * 我的奖励页面
@@ -26,30 +27,30 @@ public class MineAwardActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_title_fragment;
     }
 
     @Override
     protected String settingTitle() {
-        return "成就与积分";
+        return "我的积分";
     }
 
 
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(MineAwardActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(MineAwardActivity.this, getResources().getColor(R.color.white));
     }
 
     @Override
     protected void onInitData() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        String tag = MineAwardFragment.class.getSimpleName();
+        String tag = MineIntegralFragment.class.getSimpleName();
         Fragment fragmentByTag = fragmentManager.findFragmentByTag(tag);
         //空则添加
         if (fragmentByTag == null) {
-            //我的奖励
-            MineAwardFragment fragment = new MineAwardFragment();
+            //我的积分
+            MineIntegralFragment fragment = new MineIntegralFragment();
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();
         }

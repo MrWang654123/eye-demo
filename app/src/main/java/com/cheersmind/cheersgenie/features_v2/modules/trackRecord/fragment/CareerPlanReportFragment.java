@@ -22,7 +22,10 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.CareerPlanRecordRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.dto.ModuleDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CareerPlanRecordRootEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleEntity;
+import com.cheersmind.cheersgenie.features_v2.entity.ExamModuleRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.RecordItemHeader;
@@ -34,6 +37,7 @@ import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.CourseRelate
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.SelectCourseAssistantActivity;
 import com.cheersmind.cheersgenie.features_v2.modules.occupation.activity.OccupationActivity;
+import com.cheersmind.cheersgenie.features_v2.modules.trackRecord.activity.TrackRecordActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -260,8 +264,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                //加载报告
-                loadReport(childExamId);
+                loadData();
             }
         });
         //初始化为加载状态
@@ -308,8 +311,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        //加载报告
-        loadReport(childExamId);
+        loadData();
     }
 
     @Override
@@ -338,6 +340,89 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         if (recycleView != null) {
             recycleView.stopScroll();
         }
+    }
+
+    /**
+     * 加载数据
+     */
+    private void loadData() {
+        if (!TextUtils.isEmpty(childExamId)) {
+            //加载报告
+            loadReport(childExamId);
+        } else {
+            //加载生涯规划模块
+            loadCareerPlanModule();
+        }
+    }
+
+    /**
+     * 加载生涯规划模块
+     */
+    private void loadCareerPlanModule() {
+        //显示通信等待提示
+//        LoadingView.getInstance().show(getContext(), httpTag);
+
+        //通信等待提示
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+
+        ModuleDto dto = new ModuleDto(1, 1);
+        dto.setType(2);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
+        DataRequestService.getInstance().getModules(dto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+//                onFailureDefault(e);
+                //空布局：网络连接有误，或者请求失败
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待
+//                    LoadingView.getInstance().dismiss();
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ExamModuleRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, ExamModuleRootEntity.class);
+
+                    List<ExamModuleEntity> dataList = rootEntity.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
+//                        throw new QSCustomException(getString(R.string.operate_fail));
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
+
+                    ExamModuleEntity examModule = dataList.get(0);
+                    if (examModule.getChildModule() == null || TextUtils.isEmpty(examModule.getChildModule().getChild_module_id())) {
+//                        throw new QSCustomException("暂无数据");
+                        emptyLayout.setErrorType(XEmptyLayout.NO_DATA);
+                        return;
+                    }
+
+                    //保存孩子测评ID
+                    if (examModule.getChildModule() != null) {
+                        childExamId = examModule.getChildModule().getChild_exam_id();
+                        //跳转到成长档案
+//                        TrackRecordActivity.startTrackRecordActivity(getContext(), childExamId);
+                        //加载报告
+                        loadReport(childExamId);
+
+                    } else {
+                        throw new QSCustomException(getString(R.string.operate_fail));
+                    }
+
+                } catch (QSCustomException qse) {
+                    onFailure(qse);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
+                }
+
+            }
+        }, httpTag, getActivity());
     }
 
     /**
@@ -557,7 +642,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
      * @param dimension 量表对象
      */
     protected void onQuestionSubmit(DimensionInfoEntity dimension) {
-        loadReport(childExamId);
+        loadData();
     }
 
 
@@ -646,7 +731,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
     public void onSelectCourseSuccessNotice(SelectCourseSuccessEvent event) {
         //已经加载了数据
         if (hasLoaded) {
-            loadReport(childExamId);
+            loadData();
         }
     }
 

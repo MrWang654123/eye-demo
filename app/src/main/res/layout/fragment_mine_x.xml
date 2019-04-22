@@ -295,7 +295,7 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     style="@style/common_option_text"
-                    android:text="成就与积分"
+                    android:text="我的积分"
                     />
 
                 <LinearLayout
