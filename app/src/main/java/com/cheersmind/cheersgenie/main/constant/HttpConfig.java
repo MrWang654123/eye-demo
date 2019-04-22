@@ -330,6 +330,12 @@ public class HttpConfig {
     //首页banner
     public static final String URL_HOME_BANNER = API_HOST + "/v2/api/home_disseminates";
 
+    //获取报告的评价选项
+    public static final String URL_REPORT_EVALUATE_ITEMS = API_HOST + "/v2/api/evaluates/{ref_id}/items?type={type}";
+
+    //评价报告
+    public static final String URL_REPORT_EVALUATE = API_HOST + "/v2/api/evaluates/{item_id}/{ref_id}?child_id={childId}";
+
     /*----------------文章相关------------------*/
 
     //获取文章列表

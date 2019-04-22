@@ -35,6 +35,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CourseGroupDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CourseRelateMajorDto;
+import com.cheersmind.cheersgenie.features_v2.dto.EvaluateDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.dto.MajorDto;
@@ -2459,6 +2460,37 @@ public class DataRequestService {
         url = BaseService.settingGetParams(url, params);
 
         doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 获取报告的评价选项
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void getReportEvaluate(EvaluateDto dto,
+                                  final BaseService.ServiceCallback callback, String httpTag, Context context) {
+        String url = HttpConfig.URL_REPORT_EVALUATE_ITEMS
+                .replace("{ref_id}", dto.getRefId())
+                .replace("{type}", String.valueOf(dto.getType()));
+
+        doGet(url, callback, httpTag, context);
+    }
+
+    /**
+     * 评价报告
+     * @param dto 数据
+     * @param callback 回调
+     * @param httpTag 通信标记
+     */
+    public void postReportEvaluate(EvaluateDto dto,
+                                  final BaseService.ServiceCallback callback, String httpTag, Context context) {
+        String url = HttpConfig.URL_REPORT_EVALUATE
+                .replace("{ref_id}", dto.getRefId())
+                .replace("{item_id}", String.valueOf(dto.getItemId()))
+                .replace("{childId}", dto.getChildId());
+
+        doPost(url, null, false, callback, httpTag, context);
     }
 
 }

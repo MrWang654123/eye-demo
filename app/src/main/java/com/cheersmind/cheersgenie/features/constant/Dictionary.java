@@ -149,6 +149,8 @@ public class Dictionary {
     public final static int CHART_RECOMMEND_CONTENT_ITEM = 800;
     //推荐内容分割线
     public final static int CHART_RECOMMEND_CONTENT_DIVIDER = 900;
+    //报告评价
+    public final static int CHART_REPORT_EVALUATE = 1000;
     //子项
     public final static int CHART_SUB_ITEM = 300;
     //图表描述
@@ -290,4 +292,6 @@ public class Dictionary {
     //奖励类型：勋章
     public static final int AWARD_TYPE_MEDAL = 2;
 
+    //报告评价类型：量表报告评价
+    public static final int REPORT_EVALUATE_TYPE_DIMENSION = 0;
 }

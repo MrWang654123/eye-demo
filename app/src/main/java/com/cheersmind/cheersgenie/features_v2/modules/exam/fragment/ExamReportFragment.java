@@ -32,10 +32,13 @@ import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.ChartUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.adapter.ExamReportRecyclerAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.EvaluateDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportEvaluate;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportEvaluateItem;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
@@ -223,6 +226,24 @@ public class ExamReportFragment extends LazyLoadFragment {
         }
     };
 
+    //评价选项点击监听
+    ExamReportRecyclerAdapter.OnEvaluateItemClickListener evaluateItemClickListener = new ExamReportRecyclerAdapter.OnEvaluateItemClickListener() {
+        @Override
+        public void onClick(BaseQuickAdapter adapter, int layoutPosition, ReportEvaluate evaluate, ReportEvaluateItem evaluateItem) {
+            if (evaluate.isEvaluate()) {
+                if (getActivity() != null) {
+                    ToastUtil.showShort(getActivity().getApplication(), "已评价");
+                }
+            } else {
+                EvaluateDto evaluateDto = new EvaluateDto();
+                evaluateDto.setRefId(reportDto.getRelationId());//评价实体ID
+                evaluateDto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());//孩子ID
+                evaluateDto.setItemId(evaluateItem.getId());//评价项ID
+                doPostReportEvaluate(evaluateDto, layoutPosition, evaluate, evaluateItem);
+            }
+        }
+    };
+
     @Override
     protected int setContentView() {
         return R.layout.fragment_exam_report;
@@ -253,8 +274,6 @@ public class ExamReportFragment extends LazyLoadFragment {
             public void onMultiClick(View view) {
                 //加载报告
                 loadReport(reportDto);
-                //加载报告推荐内容
-                loadReportRecommendContent(reportDto);
             }
         });
         //初始化为加载状态
@@ -271,6 +290,8 @@ public class ExamReportFragment extends LazyLoadFragment {
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
         //act职业分类点击监听
         recyclerAdapter.setActCategoryClickListener(actCategoryClickListener);
+        //评价选项点击监听
+        recyclerAdapter.setOnEvaluateItemClickListener(evaluateItemClickListener);
         //添加自定义分割线
 //        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
 //        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
@@ -300,8 +321,6 @@ public class ExamReportFragment extends LazyLoadFragment {
     protected void lazyLoad() {
         //加载报告
         loadReport(reportDto);
-        //加载报告推荐文章
-        loadReportRecommendContent(reportDto);
     }
 
     @Override
@@ -353,6 +372,12 @@ public class ExamReportFragment extends LazyLoadFragment {
                             recyclerAdapter.setTopic(Dictionary.REPORT_TYPE_TOPIC.equals(dto.getRelationType()));
                             //目前每次都是重置列表数据
                             recyclerAdapter.setNewData(multiItemEntities);
+
+                            //目前量表报告才有用户评价
+                            if (Dictionary.REPORT_TYPE_DIMENSION.equals(dto.getRelationType())) {
+                                //获取报告的评价选项
+                                doGetReportEvaluate();
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -591,6 +616,83 @@ public class ExamReportFragment extends LazyLoadFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getContext());
+    }
+
+
+    /**
+     * 获取报告的评价选项
+     */
+    private void doGetReportEvaluate() {
+
+        EvaluateDto evaluateDto = new EvaluateDto();
+        evaluateDto.setRefId(reportDto.getRelationId());
+        evaluateDto.setType(Dictionary.REPORT_EVALUATE_TYPE_DIMENSION);
+
+        DataRequestService.getInstance().getReportEvaluate(evaluateDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                e.printStackTrace();
+                //加载报告推荐内容
+                loadReportRecommendContent(reportDto);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ReportEvaluate reportEvaluate = InjectionWrapperUtil.injectMap(dataMap, ReportEvaluate.class);
+
+                    if (reportEvaluate == null || ArrayListUtil.isEmpty(reportEvaluate.getItems())) {
+                        throw new QSCustomException(getString(R.string.operate_fail));
+                    }
+
+                    //评价过了就不显示
+                    if (!reportEvaluate.isEvaluate()) {
+                        reportEvaluate.setItemType(Dictionary.CHART_REPORT_EVALUATE);
+                        recyclerAdapter.addData(reportEvaluate);
+                    }
+
+                    //加载报告推荐内容
+                    loadReportRecommendContent(reportDto);
+
+                } catch (QSCustomException e) {
+                    onFailure(e);
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, getContext());
+    }
+
+
+    /**
+     * 提交报告评价
+     */
+    private void doPostReportEvaluate(EvaluateDto evaluateDto, final int positionLayout,
+                                      final ReportEvaluate evaluate, final ReportEvaluateItem evaluateItem) {
+
+        DataRequestService.getInstance().postReportEvaluate(evaluateDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                onFailureDefault(e);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //设置选中标记
+                    evaluate.setEvaluate(true);
+                    evaluateItem.setEvaluate(true);
+                    //刷新视图
+                    recyclerAdapter.notifyItemChanged(positionLayout);
+
+                } catch (Exception e) {
+                    onFailure(new QSCustomException(getString(R.string.operate_fail)));
                 }
             }
         }, httpTag, getContext());

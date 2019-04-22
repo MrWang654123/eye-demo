@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
@@ -23,6 +24,8 @@ import com.cheersmind.cheersgenie.features.view.WarpLinearLayout;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ExamReportRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.OccupationCategory;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportEvaluate;
+import com.cheersmind.cheersgenie.features_v2.entity.ReportEvaluateItem;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportMbtiData;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportRecommendActType;
 import com.cheersmind.cheersgenie.features_v2.entity.ReportSubItemEntity;
@@ -47,6 +50,7 @@ import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECO
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_DIVIDER;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_ITEM;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_RECOMMEND_CONTENT_TITLE;
+import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_REPORT_EVALUATE;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_ITEM;
 import static com.cheersmind.cheersgenie.features.constant.Dictionary.CHART_SUB_TITLE;
 
@@ -76,6 +80,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         addItemType(CHART_RECOMMEND_CONTENT_TITLE, R.layout.recycleritem_exam_report_recommend_content_title);
         addItemType(CHART_RECOMMEND_CONTENT_ITEM, R.layout.recycleritem_exam_report_recommend_content_item);
         addItemType(CHART_RECOMMEND_CONTENT_DIVIDER, R.layout.recycleritem_exam_report_recommend_content_divider);
+        addItemType(CHART_REPORT_EVALUATE, R.layout.recycleritem_exam_report_evaluate);
         addItemType(CHART_DESC, R.layout.chart_item_desc);
         addItemType(CHART_RADAR, R.layout.chart_item_radar);
         addItemType(CHART_LINE, R.layout.chart_item_line);
@@ -443,6 +448,41 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
 
                 break;
             }
+            //报告的用户评价
+            case CHART_REPORT_EVALUATE: {
+                final ReportEvaluate evaluate = (ReportEvaluate) item;
+                //标题
+                helper.setText(R.id.tv_title, ((ReportEvaluate) item).getTitle());
+                //选项
+                WarpLinearLayout warpLinearLayout = helper.getView(R.id.warpLinearLayout);
+                if (warpLinearLayout.getChildCount() == 0) {
+                    List<ReportEvaluateItem> items = evaluate.getItems();
+                    //评价选项
+                    for (int i=0; i<items.size(); i++) {
+                        final ReportEvaluateItem evaluateItem = items.get(i);
+                        final TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.report_evaluate_item, null);
+                        //选中状态
+                        if (evaluateItem.isEvaluate()) {
+                            tv.setBackgroundResource(R.drawable.shape_corner_aaaaaa_3dp);
+                        } else {
+                            tv.setBackgroundResource(R.drawable.shape_corner_accent_3dp);
+                        }
+                        tv.setText(evaluateItem.getContent());
+                        tv.setOnClickListener(new OnMultiClickListener() {
+                            @Override
+                            public void onMultiClick(View view) {
+                                if (onEvaluateItemClickListener != null) {
+                                    int layoutPosition = helper.getLayoutPosition();
+                                    onEvaluateItemClickListener.onClick(ExamReportRecyclerAdapter.this, layoutPosition, evaluate, evaluateItem);
+                                }
+                            }
+                        });
+                        warpLinearLayout.addView(tv);
+                    }
+                }
+
+                break;
+            }
         }
     }
 
@@ -469,7 +509,7 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
         helper.setText(R.id.tv_score_desc, Html.fromHtml(scoreDesc));
     }
 
-    private boolean isTopic() {
+    public boolean isTopic() {
         return topic;
     }
 
@@ -489,5 +529,29 @@ public class ExamReportRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiIt
     public void setActCategoryClickListener(OnActCategoryClickListener actCategoryClickListener) {
         this.actCategoryClickListener = actCategoryClickListener;
     }
+
+    private OnEvaluateItemClickListener onEvaluateItemClickListener;
+
+    /**
+     * 设置评价选项点击监听
+     * @param onEvaluateItemClickListener 监听
+     */
+    public void setOnEvaluateItemClickListener(OnEvaluateItemClickListener onEvaluateItemClickListener) {
+        this.onEvaluateItemClickListener = onEvaluateItemClickListener;
+    }
+
+    /**
+     * 评价项点击监听
+     */
+    public interface OnEvaluateItemClickListener {
+        /**
+         * 点击
+         * @param adapter 适配器
+         * @param layoutPosition 布局位置
+         * @param evaluate 评价对象
+         */
+        void onClick(BaseQuickAdapter adapter, int layoutPosition, ReportEvaluate evaluate, ReportEvaluateItem evaluateItem);
+    }
+
 }
 

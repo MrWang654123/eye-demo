@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_corner_white_3dp_444444_1dp"
+    android:paddingLeft="15dp"
+    android:paddingStart="15dp"
+    android:paddingRight="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginStart="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_marginBottom="15dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/color_444444"
+        android:textStyle="bold"
+        android:text="请问该测评结果与您对自己的认识相符吗？"/>
+
+    <com.cheersmind.cheersgenie.features.view.WarpLinearLayout
+        android:id="@+id/warpLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:grivate="left"
+        app:horizontal_Space="10dp"
+        app:isFull="false"
+        app:vertical_Space="15dp"/>
+
+</LinearLayout>
