@@ -294,4 +294,9 @@ public class Dictionary {
 
     //报告评价类型：量表报告评价
     public static final int REPORT_EVALUATE_TYPE_DIMENSION = 0;
+
+    //院校排名类型：国际
+    public static final String COLLEGE_RANK_TYPE_WORLD = "world";
+    //院校排名类型：国内
+    public static final String COLLEGE_RANK_TYPE_INTERNAL = "internal";
 }

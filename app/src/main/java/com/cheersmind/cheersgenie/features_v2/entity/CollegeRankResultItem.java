@@ -25,7 +25,7 @@ public class CollegeRankResultItem extends DataSupport implements Serializable {
 
     //类型
     @InjectMap(name = "type")
-    private int type;
+    private String type;
 
     public String getCode() {
         return code;
@@ -51,11 +51,11 @@ public class CollegeRankResultItem extends DataSupport implements Serializable {
         this.value = value;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

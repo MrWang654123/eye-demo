@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeRankResultItem;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class CollegeRankResultRecyclerAdapter extends BaseQuickAdapter<CollegeRa
         //排名值
         helper.setText(R.id.tv_rank_value, String.valueOf(item.getValue()));
         //排名值背景
-        if (item.getType() == 0) {
+        if (Dictionary.COLLEGE_RANK_TYPE_INTERNAL.equals(item.getType())) {
             helper.getView(R.id.tv_rank_value).setBackgroundResource(R.drawable.college_rank_result_bg_1);
         } else {
             helper.getView(R.id.tv_rank_value).setBackgroundResource(R.drawable.college_rank_result_bg_2);

@@ -45,12 +45,28 @@
             android:layout_marginEnd="20dp"
             android:text="A++"/>
 
+        <!--高要求学科-->
+        <TextView
+            android:id="@+id/tv_high_require_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_898989"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginTop="3dp"
+            android:text="语数英"/>
+
         <ImageView
             android:id="@+id/iv_right_arrow"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="fitXY"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:srcCompat="@drawable/ic_chevron_right_black_24dp"
             tools:ignore="ContentDescription" />
 

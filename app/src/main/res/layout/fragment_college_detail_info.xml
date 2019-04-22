@@ -143,8 +143,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/recyclerViewFacultyStrength"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"/>
+                            android:layout_height="wrap_content" />
 
                         <com.ms.square.android.expandabletextview.ExpandableTextView
                             android:id="@+id/etv_faculty_strength"
