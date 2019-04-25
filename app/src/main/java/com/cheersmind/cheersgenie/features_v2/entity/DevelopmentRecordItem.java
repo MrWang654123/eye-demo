@@ -31,6 +31,9 @@ public class DevelopmentRecordItem implements Serializable, MultiItemEntity {
     @InjectMap(name = "child_exam_id")
     private String child_exam_id;
 
+    @InjectMap(name = "topic_id")
+    private String topic_id;
+
     @InjectMap(name = "finish")
     private boolean finish;
 
@@ -107,6 +110,14 @@ public class DevelopmentRecordItem implements Serializable, MultiItemEntity {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public String getTopic_id() {
+        return topic_id;
+    }
+
+    public void setTopic_id(String topic_id) {
+        this.topic_id = topic_id;
     }
 
     private int itemType;

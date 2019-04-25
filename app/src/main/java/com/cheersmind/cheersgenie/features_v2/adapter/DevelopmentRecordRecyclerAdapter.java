@@ -14,18 +14,30 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
+import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecord;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordItem;
 import com.cheersmind.cheersgenie.features_v2.entity.DevelopmentRecordRecycler;
 import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.features_v2.view.CircleScaleView;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
+import com.cheersmind.cheersgenie.main.entity.TopicInfo;
+import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
+import com.cheersmind.cheersgenie.main.service.BaseService;
+import com.cheersmind.cheersgenie.main.service.DataRequestService;
+import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
+import com.cheersmind.cheersgenie.main.util.JsonUtil;
+import com.cheersmind.cheersgenie.main.view.LoadingView;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * 发展档案recycler适配器
@@ -33,6 +45,9 @@ import java.util.Locale;
 public class DevelopmentRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder> {
 
     private Context context;
+
+    //通信tag
+    protected String httpTag = System.currentTimeMillis() + "";
 
     //概要
     public static final int LAYOUT_TYPE_SUMMARY = 1;
@@ -64,7 +79,25 @@ public class DevelopmentRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<
                 ExamReportActivity.startExamReportActivity(context, dto);
 
             } else {
-                Toast.makeText(context,"继续完成", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,"继续完成", Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isEmpty(entity.getTopic_id())
+                        && !TextUtils.isEmpty(entity.getDimension_id())) {
+                    TopicInfo topicInfo = new TopicInfo();
+                    topicInfo.setTopicId(entity.getTopic_id());
+                    topicInfo.setDimensionId(entity.getDimension_id());
+
+                    //完成
+                    if (entity.isFinish()) {
+                        //查看报告
+                        getReferenceExam(topicInfo, POST_OPT_TYPE_REPORT);
+
+                    } else {
+                        //跳转量表详情
+                        getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
+                    }
+                } else {
+                    Toast.makeText(context,context.getString(R.string.operate_fail), Toast.LENGTH_SHORT).show();
+                }
             }
         }
     };
@@ -231,5 +264,84 @@ public class DevelopmentRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<
         }
 
     }
+
+
+    //后续操作类型：查看报告
+    private final static int POST_OPT_TYPE_REPORT = 1;
+    //后续操作类型：继续作答
+    private final static int POST_OPT_TYPE_GO_ON = 2;
+
+    /**
+     * 请求测评
+     * @param topicInfo 简单话题
+     * @param postOptType 后续的操作类型
+     */
+    private void getReferenceExam(final TopicInfo topicInfo, final int postOptType) {
+        //通信等待加载提示
+        LoadingView.getInstance().show(context, httpTag);
+
+        String childId = UCManager.getInstance().getDefaultChild().getChildId();
+        DataRequestService.getInstance().getChildDimension(childId, topicInfo.getTopicId(), topicInfo.getDimensionId(), new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //关闭通信等待加载提示
+                LoadingView.getInstance().dismiss();
+
+                Toast.makeText(context,context.getString(R.string.operate_fail), Toast.LENGTH_SHORT).show();
+//                if (getActivity() != null) {
+//                    ToastUtil.showShort(context.getActivity().getApplication(), R.string.operate_fail);
+//                }
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //关闭通信等待加载提示
+                    LoadingView.getInstance().dismiss();
+
+                    //解析数据
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    DimensionInfoEntity dimension = InjectionWrapperUtil.injectMap(dataMap, DimensionInfoEntity.class);
+
+                    if (dimension == null || TextUtils.isEmpty(dimension.getDimensionId())) {
+                        throw new QSCustomException("量表数据为空");
+                    }
+
+                    //查看报告
+                    if (postOptType == POST_OPT_TYPE_REPORT) {
+                        ExamReportDto dto = new ExamReportDto();
+                        dto.setChildExamId(dimension.getChildDimension().getChildExamId());//孩子测评ID
+                        dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);//量表报告类型
+                        dto.setRelationId(dimension.getTopicDimensionId());//话题量表ID
+                        dto.setDimensionId(dimension.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                        ExamReportActivity.startExamReportActivity(context, dto);
+
+                    } else if (postOptType == POST_OPT_TYPE_GO_ON) {//继续作答
+                        //进入量表详情页面
+                        TopicInfoEntity topicInfoEntity = new TopicInfoEntity();
+                        //话题ID
+                        topicInfoEntity.setTopicId(topicInfo.getTopicId());
+                        //测评ID
+                        topicInfoEntity.setExamId(dimension.getExamId());
+                        DimensionDetailActivity.startDimensionDetailActivity(
+                                context, dimension,
+                                topicInfoEntity,
+                                Dictionary.EXAM_STATUS_DOING,
+                                Dictionary.FROM_ACTIVITY_TO_TRACK_RECORD);
+                    }
+
+                } catch (QSCustomException e) {
+                    onFailure(e);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(new QSCustomException(e.getMessage()));
+                }
+            }
+        }, httpTag, context);
+    }
+
 
 }
