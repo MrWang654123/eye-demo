@@ -2472,7 +2472,8 @@ public class DataRequestService {
                                   final BaseService.ServiceCallback callback, String httpTag, Context context) {
         String url = HttpConfig.URL_REPORT_EVALUATE_ITEMS
                 .replace("{ref_id}", dto.getRefId())
-                .replace("{type}", String.valueOf(dto.getType()));
+                .replace("{type}", String.valueOf(dto.getType()))
+                .replace("{childId}", dto.getChildId());
 
         doGet(url, callback, httpTag, context);
     }
