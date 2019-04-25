@@ -219,14 +219,14 @@ public class MasterTabActivity extends BaseActivity implements MainTabListener {
 //                .setFirstSelectedPosition(0)//设置默认选择的按钮
 //                .initialise();//所有的设置需在调用该方法前完成
         navigationBar
-                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"探索")
+                .addItem(new BottomNavigationItem(R.drawable.tab_home_checked,"发现")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_home_normal)))
 //                        .setBadgeItem(mShapeBadgeItem))
-                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"生涯")
-                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
-//                        .setBadgeItem(mTextBadgeItem))
-                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"智评")
+                .addItem(new BottomNavigationItem(R.drawable.tab_exam_checked,"生涯")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_exam_normal)))
+//                        .setBadgeItem(mTextBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.tab_report_checked,"智评")
+                        .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_report_normal)))
                 .addItem(new BottomNavigationItem(R.drawable.tab_mine_checked,"我的")
                         .setInactiveIcon(ContextCompat.getDrawable(MasterTabActivity.this,R.drawable.tab_mine_normal)))
                 .setFirstSelectedPosition(0)//设置默认选择的按钮

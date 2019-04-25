@@ -5,7 +5,7 @@ package com.cheersmind.cheersgenie.features_v2.dto;
  */
 public class EvaluateDto {
 
-    //评价实体ID ：量表报告（话题量表ID）
+    //评价实体ID ：量表报告（话题量表ID）（场景报告详细数据进入量表报告无法获得dimensionid,此处传topicdimensionid）
     private String refId;
 
     //评价类型， 0 量表报告评价

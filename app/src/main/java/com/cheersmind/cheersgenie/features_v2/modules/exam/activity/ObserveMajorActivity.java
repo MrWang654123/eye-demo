@@ -20,11 +20,13 @@ public class ObserveMajorActivity extends BaseActivity {
     /**
      * 启动观察专业页面
      * @param childExamId 孩子测评Id
+     * @param isCompleteSelect 是否完成了最终选科，完成最终选科后重新进入专业观察表，隐藏添加和删除按钮
      * @param context 上下文
      */
-    public static void startObserveMajorActivity(Context context, String childExamId) {
+    public static void startObserveMajorActivity(Context context, String childExamId,boolean isCompleteSelect) {
         Intent intent = new Intent(context, ObserveMajorActivity.class);
         intent.putExtra(DtoKey.CHILD_EXAM_ID, childExamId);
+        intent.putExtra("is_complete_select",isCompleteSelect);
         context.startActivity(intent);
     }
 
@@ -58,6 +60,7 @@ public class ObserveMajorActivity extends BaseActivity {
             ObserveMajorFragment fragment = new ObserveMajorFragment();
             Bundle bundle = new Bundle();
             bundle.putString(DtoKey.CHILD_EXAM_ID, childExamId);
+            bundle.putBoolean("is_complete_select",getIntent().getBooleanExtra("is_complete_select",false));
             fragment.setArguments(bundle);
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

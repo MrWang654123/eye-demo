@@ -122,7 +122,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_user_info"/>
+                    android:src="@drawable/career_mine_info"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -175,7 +175,7 @@
                     android:layout_height="40dp"
                     android:padding="7.5dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_track_record"/>
+                    android:src="@drawable/career_mine_achivers"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -285,7 +285,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_integral"/>
+                    android:src="@drawable/career_mine_score"/>
 
                 <TextView
                     android:id="@+id/tv_test"
@@ -347,7 +347,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_message"/>
+                    android:src="@drawable/career_mine_message"/>
 
                 <FrameLayout
                     android:layout_width="80dp"
@@ -418,7 +418,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_favorite"/>
+                    android:src="@drawable/career_mine_collect"/>
 
                 <TextView
                     android:id="@+id/tv_appraise"
@@ -466,7 +466,7 @@
                     android:layout_height="40dp"
                     android:padding="6dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_attention"/>
+                    android:src="@drawable/career_mine_follow"/>
 
                 <TextView
                     android:id="@+id/tv_focus"
@@ -515,7 +515,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_exam"/>
+                    android:src="@drawable/career_mine_evaluate"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -567,7 +567,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_feedback"/>
+                    android:src="@drawable/career_mine_speak"/>
 
                 <TextView
                     android:id="@+id/tv_feedback"
@@ -615,7 +615,7 @@
                     android:layout_height="40dp"
                     android:padding="8dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/mine_setting"/>
+                    android:src="@drawable/career_mine_setting"/>
 
                 <TextView
                     android:id="@+id/tv_setting"

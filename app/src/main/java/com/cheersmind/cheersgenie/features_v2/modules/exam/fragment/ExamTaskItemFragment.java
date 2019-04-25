@@ -650,7 +650,7 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
         }
 
         //被锁定
-        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE){
+        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE && checkPreDimensions(dimensionInfoEntity, topicInfoEntity)){
             //锁定提示
             lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
 
@@ -689,6 +689,36 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                 }
             }
         }
+
+    }
+
+    /**
+     * 判断前置量表是否完成
+     * 由于任务项中的量表完成后只刷新对应量表状态，有前置量表的量表锁定状态没有刷新
+     */
+    private boolean checkPreDimensions(DimensionInfoEntity dimensionInfoEntity, TopicInfoEntity topicInfoEntity){
+
+        if(!TextUtils.isEmpty(dimensionInfoEntity.getPreDimensions())){
+            String [] dimensionIds = dimensionInfoEntity.getPreDimensions().split(",");
+            List<DimensionInfoEntity> dimensions = topicInfoEntity.getDimensions();
+            if(dimensionIds.length>0 && dimensions.size()>0){
+
+                for(DimensionInfoEntity dimension : dimensions){
+                    for (String dimensionId : dimensionIds) {
+                        if (dimensionId.equals(dimension.getDimensionId())) {
+                            if(dimension.getChildDimension()==null || dimension.getChildDimension().getStatus() !=1){
+                                //前置量表有一个没完成，说明没解锁
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        dimensionInfoEntity.setIsLocked(0);
+
+        return false;
 
     }
 

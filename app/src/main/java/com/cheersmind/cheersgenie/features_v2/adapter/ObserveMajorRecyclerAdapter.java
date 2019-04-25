@@ -21,10 +21,12 @@ import java.util.Map;
 public class ObserveMajorRecyclerAdapter extends BaseQuickAdapter<RecommendMajor, BaseViewHolder> {
 
     private HashMap<String, String> courseNameMap;
+    private boolean isCompleteSelect;//是否完成最终选科
 
-    public ObserveMajorRecyclerAdapter(Context context, int layoutResId, @Nullable List<RecommendMajor> data) {
+    public ObserveMajorRecyclerAdapter(Context context, int layoutResId, @Nullable List<RecommendMajor> data,boolean isCompleteSelect) {
         super(layoutResId, data);
 
+        this.isCompleteSelect = isCompleteSelect;
         initCourseMap();
     }
 
@@ -47,6 +49,14 @@ public class ObserveMajorRecyclerAdapter extends BaseQuickAdapter<RecommendMajor
 
     @Override
     protected void convert(BaseViewHolder helper, RecommendMajor item) {
+
+        if(isCompleteSelect){
+            helper.getView(R.id.iv_del).setVisibility(View.GONE);
+            helper.getView(R.id.tv_title).setPadding(dip2px(mContext,15),0,0,0);
+        }else{
+            helper.getView(R.id.iv_del).setVisibility(View.VISIBLE);
+        }
+
         //标题
         helper.setText(R.id.tv_title, item.getMajor_name());
 
@@ -166,6 +176,11 @@ public class ObserveMajorRecyclerAdapter extends BaseQuickAdapter<RecommendMajor
         }
 
         return res.toString();
+    }
+
+    public int dip2px(Context context, float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
     }
 
 }

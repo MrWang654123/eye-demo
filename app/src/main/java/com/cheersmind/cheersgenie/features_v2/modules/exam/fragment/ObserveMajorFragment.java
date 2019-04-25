@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -70,6 +71,7 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
     //孩子测评id
     private String childExamId;
+    private boolean isCompleteSelect;//是否完成了最终选科
 
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -78,6 +80,9 @@ public class ObserveMajorFragment extends LazyLoadFragment {
     //空布局
     @BindView(R.id.emptyLayout)
     XEmptyLayout emptyLayout;
+
+    @BindView(R.id.iv_add)
+    ImageView ivAdd;
 
     //总体就业率
     @BindView(R.id.ll_bar_chart)
@@ -185,10 +190,11 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
+            isCompleteSelect = bundle.getBoolean("is_complete_select",false);
         }
 
         //适配器
-        recyclerAdapter = new ObserveMajorRecyclerAdapter(getContext(), R.layout.recycleritem_observe_major, null);
+        recyclerAdapter = new ObserveMajorRecyclerAdapter(getContext(), R.layout.recycleritem_observe_major, null,isCompleteSelect);
 //        recyclerAdapter.openLoadAnimation(BaseQuickAdapter.SLIDEIN_BOTTOM);
         recyclerAdapter.openLoadAnimation(new SlideInBottomAnimation());
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -237,6 +243,10 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         courseNameMap.put("1008", "地理");
         courseNameMap.put("1009", "政治");
         courseNameMap.put("1010", "信息");
+
+        if(isCompleteSelect){
+            ivAdd.setVisibility(View.GONE);
+        }
     }
 
     //课程编码-累计值

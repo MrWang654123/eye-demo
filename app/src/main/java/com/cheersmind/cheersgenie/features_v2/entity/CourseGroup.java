@@ -25,7 +25,7 @@ public class CourseGroup implements Serializable, MultiItemEntity {
     @InjectMap(name = "follow_rate")
     private Double followRate; //意向专业覆盖率
 
-    @InjectMap(name = "capability_name")
+    @InjectMap(name = "ability_rate")
     private Double ability_rate; //匹配度
 
     private int index;

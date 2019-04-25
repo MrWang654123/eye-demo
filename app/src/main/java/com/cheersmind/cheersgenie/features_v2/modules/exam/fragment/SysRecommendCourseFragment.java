@@ -452,7 +452,7 @@ public class SysRecommendCourseFragment extends LazyLoadFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId);
+                        ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId,false);
                         getActivity().finish();
                     }
                 })

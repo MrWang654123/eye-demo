@@ -630,6 +630,7 @@ public class ExamReportFragment extends LazyLoadFragment {
         EvaluateDto evaluateDto = new EvaluateDto();
         evaluateDto.setRefId(reportDto.getRelationId());
         evaluateDto.setType(Dictionary.REPORT_EVALUATE_TYPE_DIMENSION);
+        evaluateDto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
 
         DataRequestService.getInstance().getReportEvaluate(evaluateDto, new BaseService.ServiceCallback() {
             @Override
