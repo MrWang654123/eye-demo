@@ -723,6 +723,9 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                     //判断是否已经选科
                     isCompleteSelect = !ArrayListUtil.isEmpty(lastSelectCourses);
                     recyclerAdapter.setCompleteSelect(isCompleteSelect);
+                    if (isCompleteSelect) {
+                        ivAdd.setVisibility(View.GONE);
+                    }
                     //加载专业观察表
                     loadMoreData();
 
