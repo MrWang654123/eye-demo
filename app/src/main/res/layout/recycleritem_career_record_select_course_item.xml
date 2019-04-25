@@ -65,10 +65,10 @@
             app:isFull="false"
             app:vertical_Space="15dp">
 
-            <include layout="@layout/record_result_item_unclickable"/>
-            <include layout="@layout/record_result_item_unclickable"/>
-            <include layout="@layout/record_result_item_unclickable"/>
-            <include layout="@layout/record_result_item_unclickable"/>
+            <include layout="@layout/record_result_item_clickable"/>
+            <include layout="@layout/record_result_item_clickable"/>
+            <include layout="@layout/record_result_item_clickable"/>
+            <include layout="@layout/record_result_item_clickable"/>
 
         </com.cheersmind.cheersgenie.features.view.WarpLinearLayout>
 

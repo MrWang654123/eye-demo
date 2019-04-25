@@ -3,10 +3,14 @@ package com.cheersmind.cheersgenie.features_v2.modules.trackRecord.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
@@ -294,9 +298,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
         recyclerAdapter.setActCategoryClickListener(actCategoryClickListener);
 
         //添加自定义分割线
-//        DividerItemDecoration divider = new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL);
-//        divider.setDrawable(ContextCompat.getDrawable(getContext(),R.drawable.recycler_divider_custom));
-//        recycleView.addItemDecoration(divider);
+        recyclerAdapter.addHeaderView(LayoutInflater.from(getContext()).inflate(R.layout.recycler_divider_f5f5f5_10dp, (ViewGroup) null));
 
         //滑动监听
         try {
@@ -599,7 +601,7 @@ public class CareerPlanReportFragment extends LazyLoadFragment {
             resList.add(occupationHeader);
 
             //子项header
-            RecordItemHeader itemHeader1 = new RecordItemHeader("职业探索测试:").setCanExpand(true);
+            RecordItemHeader itemHeader1 = new RecordItemHeader("职业探索测试:").setCanExpand(false);
             itemHeader1.setItemType(CareerPlanRecordRecyclerAdapter.LAYOUT_ITEM_HEADER);
             resList.add(itemHeader1);
 

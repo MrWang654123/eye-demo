@@ -177,7 +177,7 @@ public class CareerPlanRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<M
 
                                 int addCount = result.size() - childCount;
                                 for (int i=0; i<addCount; i++) {
-                                    TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item_unclickable, null);
+                                    TextView tv = (TextView) LayoutInflater.from(context).inflate(R.layout.record_result_item_clickable, null);
                                     tv.setText(result.get(childCount + i));
                                     layout.addView(tv);
                                 }

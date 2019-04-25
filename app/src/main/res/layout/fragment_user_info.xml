@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="13dp"
                 android:background="#f2f2f2" />
 
             <RelativeLayout
@@ -97,12 +97,13 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/ll_childInfo_tip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="7dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="7dp"
                 android:orientation="vertical"
                 android:visibility="visible">
 
@@ -110,6 +111,7 @@
                     android:id="@+id/tv_childInfo_tip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="visible"
                     android:text="@string/child_info" />
 
             </LinearLayout>

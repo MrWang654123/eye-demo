@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:layout_margin="15dp"
-                android:padding="15dp"
+                android:padding="12dp"
                 android:gravity="center_horizontal"
                 android:baselineAligned="true"
                 android:orientation="horizontal">
@@ -49,7 +49,8 @@
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/iv_main"
@@ -65,7 +66,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
+                android:paddingLeft="15dp"
+                android:paddingStart="15dp"
+                android:paddingRight="15dp"
+                android:paddingEnd="15dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -75,37 +79,77 @@
                     android:textColor="@color/color_333333"
                     android:text="积分获取说明"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:textColor="@color/color_555555"
-                    android:textSize="16sp"
-                    android:text="1、而了解自己的兴趣、价值观"/>
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/color_555555"
-                    android:textSize="16sp"
-                    android:text="2、需要及各种帮助成功事业发"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:text="1、"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/color_555555"
-                    android:textSize="16sp"
-                    android:text="3、展之能力。自我探索是指个"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:lineSpacingMultiplier="1.1"
+                        android:text="所有会员在完成相应的任务后可以获得积分（例如签到积分，完成测评积分等）。"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/color_555555"
-                    android:textSize="16sp"
-                    android:text="4、人经由生活经验， 而了解自"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:text="2、"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/color_555555"
+                        android:textSize="16sp"
+                        android:lineSpacingMultiplier="1.1"
+                        android:text="奇思火眼将上线积分兑换活动，可通过积分兑换相应的课程或实体物品。"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="#ff3333"
+                        android:textSize="16sp"
+                        android:visibility="invisible"
+                        android:text="3、"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16sp"
+                        android:text="*关于积分兑换的活动解释权归本公司所有。"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
