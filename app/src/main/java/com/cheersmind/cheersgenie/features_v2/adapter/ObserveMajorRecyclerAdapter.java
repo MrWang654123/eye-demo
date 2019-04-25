@@ -183,4 +183,11 @@ public class ObserveMajorRecyclerAdapter extends BaseQuickAdapter<RecommendMajor
         return (int) (dipValue * scale + 0.5f);
     }
 
+    /**
+     * 设置是否已经选科
+     * @param completeSelect true:已经选科
+     */
+    public void setCompleteSelect(boolean completeSelect) {
+        isCompleteSelect = completeSelect;
+    }
 }

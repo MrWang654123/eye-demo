@@ -374,6 +374,11 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
         //关闭上拉加载功能
         recyclerAdapter.setEnableLoadMore(false);//这里的作用是防止下拉刷新的时候还可以上拉加载
 
+        //确保显示下拉刷新
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+
         dto.setPage(pageNum);
         DataRequestService.getInstance().getExamTaskDetailItems(dto, new BaseService.ServiceCallback() {
             @Override
@@ -584,9 +589,13 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                         throw new QSCustomException("该测评无数据");
                     }
 
+                    //是否是已经存在数据，解锁刷新
+                    boolean isRefresh = false;
+
                     //如果已经存在子集合则清空
                     if (ArrayListUtil.isNotEmpty(entity.getSubItems())) {
                         entity.getSubItems().clear();
+                        isRefresh = true;
                     }
 
                     for (int i=0; i<dataList.size(); i++) {
@@ -610,8 +619,40 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
                     } else {
                         //实际刷新的布局索引得加载header的数量
                         int realLayoutPosition = position + recyclerAdapter.getHeaderLayoutCount();
-                        //展开
-                        recyclerAdapter.expand(realLayoutPosition);
+
+                        if (isRefresh) {
+                            try {
+                                //刷新数据
+                                int beginPos = position + 1;
+                                int size = position + 1 + dataList.size();
+
+                                for (int i = beginPos; i < size; i++) {
+                                    MultiItemEntity item = recyclerAdapter.getData().get(i);
+
+                                    if (item instanceof DimensionInfoEntity) {
+                                        DimensionInfoEntity dimensionOld = (DimensionInfoEntity) item;
+                                        for (DimensionInfoEntity dimensionNew : dataList) {
+                                            if (!TextUtils.isEmpty(dimensionOld.getDimensionId())
+                                                    && dimensionOld.getDimensionId().equals(dimensionNew.getDimensionId())) {
+                                                recyclerAdapter.getData().set(i, dimensionNew);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                recyclerAdapter.notifyItemRangeChanged(realLayoutPosition + 1, dataList.size());
+
+                            } catch (Exception e) {
+                                //异常则刷新整个任务项列表
+                                refreshData();
+                            }
+
+                        } else {
+                            //展开
+                            recyclerAdapter.expand(realLayoutPosition);
+                        }
+//                        //展开
+//                        recyclerAdapter.expand(realLayoutPosition);
                     }
 
                 } catch (QSCustomException e) {
@@ -650,7 +691,8 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
         }
 
         //被锁定
-        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE && checkPreDimensions(dimensionInfoEntity, topicInfoEntity)){
+        if(dimensionInfoEntity.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE
+                /*&& checkPreDimensions(dimensionInfoEntity, topicInfoEntity)*/){
             //锁定提示
             lockedDimensionTip(dimensionInfoEntity, topicInfoEntity);
 
@@ -915,6 +957,50 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
      * @return true 满足
      */
     protected boolean isMeetUnlockDimensionCondition(ExamTaskItemEntity taskItem) {
+//        //是否满足解锁条件
+//        boolean isMeetUnlockCondition = false;
+//
+//        if (taskItem != null) {
+//            List<DimensionInfoEntity> dimensions = taskItem.getSubItems();
+//            if (ArrayListUtil.isNotEmpty(dimensions)) {
+//                //是否有被锁的量表
+//                boolean hasLockedDimension = false;
+//                //被锁的量表
+//                DimensionInfoEntity lockedDimension = null;
+//
+//                for (DimensionInfoEntity dimension : dimensions) {
+//                    //被锁状态
+//                    if (dimension.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
+//                        lockedDimension = dimension;
+//                        hasLockedDimension = true;
+//                        break;
+//                    }
+//                }
+//
+//                //存在被锁的量表则判断是否满足解锁条件
+//                if (hasLockedDimension) {
+//
+//                    //解锁必须先做完的量表id集合
+//                    String [] dimensionIds = lockedDimension.getPreDimensions().split(",");
+//                    Set<String> dimensionSet = new HashSet<>(Arrays.asList(dimensionIds));
+//
+//                    isMeetUnlockCondition = true;
+//                    //存在一个未做完的量表，则视为不满足解锁条件
+//                    for (DimensionInfoEntity dimension : dimensions) {
+//                        if (dimensionSet.contains(dimension.getDimensionId())) {
+//                            if (dimension.getChildDimension() == null
+//                                    || dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+//                                isMeetUnlockCondition = false;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        return isMeetUnlockCondition;
+
         //是否满足解锁条件
         boolean isMeetUnlockCondition = false;
 
@@ -922,35 +1008,44 @@ public class ExamTaskItemFragment extends LazyLoadFragment {
             List<DimensionInfoEntity> dimensions = taskItem.getSubItems();
             if (ArrayListUtil.isNotEmpty(dimensions)) {
                 //是否有被锁的量表
-                boolean hasLockedDimension = false;
+//                boolean hasLockedDimension = false;
                 //被锁的量表
-                DimensionInfoEntity lockedDimension = null;
+//                DimensionInfoEntity lockedDimension = null;
+                List<DimensionInfoEntity> lockList = new ArrayList<>();
 
                 for (DimensionInfoEntity dimension : dimensions) {
                     //被锁状态
                     if (dimension.getIsLocked() == Dictionary.DIMENSION_LOCKED_STATUS_YSE) {
-                        lockedDimension = dimension;
-                        hasLockedDimension = true;
-                        break;
+//                        lockedDimension = dimension;
+//                        hasLockedDimension = true;
+//                        break;
+                        lockList.add(dimension);
                     }
                 }
 
                 //存在被锁的量表则判断是否满足解锁条件
-                if (hasLockedDimension) {
+                if (ArrayListUtil.isNotEmpty(lockList)) {
 
-                    //解锁必须先做完的量表id集合
-                    String [] dimensionIds = lockedDimension.getPreDimensions().split(",");
-                    Set<String> dimensionSet = new HashSet<>(Arrays.asList(dimensionIds));
+                    for (DimensionInfoEntity lockedDimension : lockList) {
+                        //解锁必须先做完的量表id集合
+                        String[] dimensionIds = lockedDimension.getPreDimensions().split(",");
+                        Set<String> dimensionSet = new HashSet<>(Arrays.asList(dimensionIds));
 
-                    isMeetUnlockCondition = true;
-                    //存在一个未做完的量表，则视为不满足解锁条件
-                    for (DimensionInfoEntity dimension : dimensions) {
-                        if (dimensionSet.contains(dimension.getDimensionId())) {
-                            if (dimension.getChildDimension() == null
-                                    || dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
-                                isMeetUnlockCondition = false;
-                                break;
+                        isMeetUnlockCondition = true;
+                        //存在一个未做完的量表，则视为不满足解锁条件
+                        for (DimensionInfoEntity dimension : dimensions) {
+                            if (dimensionSet.contains(dimension.getDimensionId())) {
+                                if (dimension.getChildDimension() == null
+                                        || dimension.getChildDimension().getStatus() == Dictionary.DIMENSION_STATUS_INCOMPLETE) {
+                                    isMeetUnlockCondition = false;
+                                    break;
+                                }
                             }
+                        }
+
+                        //存在满足解锁条件跳出
+                        if (isMeetUnlockCondition) {
+                            break;
                         }
                     }
                 }

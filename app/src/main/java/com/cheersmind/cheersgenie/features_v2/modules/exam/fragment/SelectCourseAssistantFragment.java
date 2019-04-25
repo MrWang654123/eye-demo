@@ -164,8 +164,8 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
             }
             //观察专业
             case R.id.cl_observe_major: {
-                boolean isCompleteSelect = (lastSelectCourses!=null && lastSelectCourses.size()>0);
-                ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId,isCompleteSelect);
+                boolean isCompleteSelect = ArrayListUtil.isNotEmpty(lastSelectCourses);
+                ObserveMajorActivity.startObserveMajorActivity(getContext(), childExamId, isCompleteSelect);
                 break;
             }
             //确认选科

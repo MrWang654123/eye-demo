@@ -22,6 +22,9 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.animation.SlideInBottomAnimation;
 import com.cheersmind.cheersgenie.features_v2.adapter.ObserveMajorRecyclerAdapter;
 import com.cheersmind.cheersgenie.features_v2.chart.formatter.IntAxisFormatter;
+import com.cheersmind.cheersgenie.features_v2.dto.CourseGroupDto;
+import com.cheersmind.cheersgenie.features_v2.entity.CourseGroup;
+import com.cheersmind.cheersgenie.features_v2.entity.CourseGroupRootEntity;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajor;
 import com.cheersmind.cheersgenie.features_v2.entity.RecommendMajorRootEntity;
 import com.cheersmind.cheersgenie.features_v2.event.AddObserveMajorEvent;
@@ -169,6 +172,8 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
     ChildDto dto;
 
+    CourseGroupDto courseGroupDto;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -190,7 +195,7 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             childExamId = bundle.getString(DtoKey.CHILD_EXAM_ID);
-            isCompleteSelect = bundle.getBoolean("is_complete_select",false);
+            isCompleteSelect = bundle.getBoolean(DtoKey.IS_COMPLETE_SELECT_COURSE,false);
         }
 
         //适配器
@@ -212,7 +217,12 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadMoreData();
+                //如果已经选科直接加载观察专业表；如果标志为false可能是真实的没选，也可能是上一个页面延迟造成的
+                if (isCompleteSelect) {
+                    loadMoreData();
+                } else {
+                    loadUserSelectCourseGroup();
+                }
             }
         });
         //无数据可点击
@@ -244,7 +254,11 @@ public class ObserveMajorFragment extends LazyLoadFragment {
         courseNameMap.put("1009", "政治");
         courseNameMap.put("1010", "信息");
 
-        if(isCompleteSelect){
+        courseGroupDto = new CourseGroupDto(1, 50);
+        courseGroupDto.setChild_id(UCManager.getInstance().getDefaultChild().getChildId());
+        courseGroupDto.setChild_exam_id(childExamId);
+
+        if (isCompleteSelect) {
             ivAdd.setVisibility(View.GONE);
         }
     }
@@ -310,7 +324,12 @@ public class ObserveMajorFragment extends LazyLoadFragment {
 
     @Override
     protected void lazyLoad() {
-        loadMoreData();
+        //如果已经选科直接加载观察专业表；如果标志为false可能是真实的没选，也可能是上一个页面延迟造成的
+        if (isCompleteSelect) {
+            loadMoreData();
+        } else {
+            loadUserSelectCourseGroup();
+        }
     }
 
     @Override
@@ -669,6 +688,46 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                         //加载失败处理
                         recyclerAdapter.loadMoreFail();
                     }
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
+    /**
+     * 加载用户选科组合
+     */
+    private void loadUserSelectCourseGroup() {
+
+        //关闭下拉刷新功能
+        swipeRefreshLayout.setEnabled(false);//防止加载更多和下拉刷新冲突
+        emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+
+        DataRequestService.getInstance().getUserSelectCourseGroup(courseGroupDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //开启下拉刷新功能
+                swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    //开启下拉刷新功能
+                    swipeRefreshLayout.setEnabled(true);//防止加载更多和下拉刷新冲突
+
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CourseGroupRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CourseGroupRootEntity.class);
+                    List<CourseGroup> lastSelectCourses = rootEntity.getItems();
+                    //判断是否已经选科
+                    isCompleteSelect = !ArrayListUtil.isEmpty(lastSelectCourses);
+                    recyclerAdapter.setCompleteSelect(isCompleteSelect);
+                    //加载专业观察表
+                    loadMoreData();
+
+                } catch (Exception e) {
+                    emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
                 }
 
             }

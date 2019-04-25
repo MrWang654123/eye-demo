@@ -26,7 +26,7 @@ public class MineAttentionActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_title_fragment;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MineAttentionActivity extends BaseActivity {
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(MineAttentionActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(MineAttentionActivity.this, getResources().getColor(R.color.white));
     }
 
     @Override

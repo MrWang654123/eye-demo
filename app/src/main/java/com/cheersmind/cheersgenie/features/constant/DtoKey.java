@@ -59,16 +59,18 @@ public class DtoKey {
      * 孩子测评id
      */
     public static final String CHILD_EXAM_ID = "CHILD_EXAM_ID";
-
     /**
      * 科目code组
      */
     public static final String COURSE_CODE_GROUP = "COURSE_CODE_GROUP";
-
     /**
      * 科目名称组
      */
     public static final String COURSE_NAME_GROUP = "COURSE_NAME_GROUP";
+    /**
+     * 是否完成选科
+     */
+    public static final String IS_COMPLETE_SELECT_COURSE = "IS_COMPLETE_SELECT_COURSE";
 
 
     /*----------  资源库begin  ----------*/

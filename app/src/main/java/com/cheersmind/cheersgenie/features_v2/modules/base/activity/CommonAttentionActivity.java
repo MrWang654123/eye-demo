@@ -49,7 +49,7 @@ public class CommonAttentionActivity extends BaseActivity implements AttentionBt
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(CommonAttentionActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(CommonAttentionActivity.this, getResources().getColor(R.color.white));
 
         //初始隐藏关注按钮
         mBtnAttention.setVisibility(View.GONE);
@@ -124,7 +124,7 @@ public class CommonAttentionActivity extends BaseActivity implements AttentionBt
 
         } else {
             mBtnAttention.setText("关注");
-            mBtnAttention.setBackgroundResource(R.drawable.shape_blue_attention);
+            mBtnAttention.setBackgroundResource(R.drawable.shape_accent_attention);
             mBtnAttention.setTextColor(getResources().getColor(R.color.white));
             isAttention = false;
         }

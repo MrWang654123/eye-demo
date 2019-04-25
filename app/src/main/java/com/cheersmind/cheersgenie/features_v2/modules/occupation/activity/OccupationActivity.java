@@ -68,7 +68,7 @@ public class OccupationActivity extends BaseActivity implements BackPressedHandl
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(OccupationActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(OccupationActivity.this, getResources().getColor(R.color.white));
 
         //清空按钮的显隐
         mEtSearch.addTextChangedListener(new TextWatcher() {
@@ -198,8 +198,11 @@ public class OccupationActivity extends BaseActivity implements BackPressedHandl
             }
         }
         else {
-            commonSearchContentErrorTip(R.string.search_error_tip_length);
-            return;
+//            commonSearchContentErrorTip(R.string.search_error_tip_length);
+//            return;
+            fragment.Search(context);
+            //关闭软键盘
+            SoftInputUtil.closeSoftInput(OccupationActivity.this);
         }
     }
 

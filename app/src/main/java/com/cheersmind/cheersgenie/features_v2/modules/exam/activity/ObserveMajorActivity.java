@@ -26,7 +26,7 @@ public class ObserveMajorActivity extends BaseActivity {
     public static void startObserveMajorActivity(Context context, String childExamId,boolean isCompleteSelect) {
         Intent intent = new Intent(context, ObserveMajorActivity.class);
         intent.putExtra(DtoKey.CHILD_EXAM_ID, childExamId);
-        intent.putExtra("is_complete_select",isCompleteSelect);
+        intent.putExtra(DtoKey.IS_COMPLETE_SELECT_COURSE, isCompleteSelect);
         context.startActivity(intent);
     }
 
@@ -51,6 +51,7 @@ public class ObserveMajorActivity extends BaseActivity {
     protected void onInitData() {
         //获取数据
         String childExamId = getIntent().getStringExtra(DtoKey.CHILD_EXAM_ID);
+        boolean isCompleteSelectCourse = getIntent().getBooleanExtra("is_complete_select",false);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = ObserveMajorFragment.class.getSimpleName();
@@ -60,7 +61,7 @@ public class ObserveMajorActivity extends BaseActivity {
             ObserveMajorFragment fragment = new ObserveMajorFragment();
             Bundle bundle = new Bundle();
             bundle.putString(DtoKey.CHILD_EXAM_ID, childExamId);
-            bundle.putBoolean("is_complete_select",getIntent().getBooleanExtra("is_complete_select",false));
+            bundle.putBoolean(DtoKey.IS_COMPLETE_SELECT_COURSE, isCompleteSelectCourse);
             fragment.setArguments(bundle);
             //添加fragment到容器中
             fragmentManager.beginTransaction().add(R.id.fl_fragment, fragment, tag).commit();

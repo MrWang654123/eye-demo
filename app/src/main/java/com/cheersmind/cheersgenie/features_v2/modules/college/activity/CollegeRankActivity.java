@@ -27,7 +27,7 @@ public class CollegeRankActivity extends BaseActivity implements BackPressedHand
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_title_fragment;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class CollegeRankActivity extends BaseActivity implements BackPressedHand
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(CollegeRankActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(CollegeRankActivity.this, getResources().getColor(R.color.white));
     }
 
     @Override
