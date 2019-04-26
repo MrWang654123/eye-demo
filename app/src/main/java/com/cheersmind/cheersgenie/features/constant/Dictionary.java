@@ -84,6 +84,8 @@ public class Dictionary {
     public static final int ARTICLE_TYPE_SIMPLE = 1;
     //文章类型：视频
     public static final int ARTICLE_TYPE_VIDEO = 2;
+    //文章类型：音频
+    public static final int ARTICLE_TYPE_AUDIO = 3;
 
     //消息状态：未读
     public static final int MESSAGE_STATUS_UNREAD = 0;

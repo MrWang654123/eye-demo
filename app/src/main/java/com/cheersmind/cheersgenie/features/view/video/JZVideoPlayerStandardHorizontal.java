@@ -1,9 +1,11 @@
 package com.cheersmind.cheersgenie.features.view.video;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,7 +33,7 @@ import cn.jzvd.JZVideoPlayerManager;
 import cn.jzvd.JZVideoPlayerStandard;
 
 /**
- * 只能全屏且横屏播放（饺子视频播放器）
+ * 能够全屏且横屏播放（饺子视频播放器）
  */
 public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
 
@@ -57,6 +59,9 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     //最后一次点击时间
     private long lastClickTimestamp;
 
+    //是否是音频
+    private boolean isAudio;
+
 
     public JZVideoPlayerStandardHorizontal(Context context) {
         super(context);
@@ -71,6 +76,7 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
         return R.layout.jz_layout_standard;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void init(Context context) {
         super.init(context);
@@ -83,9 +89,6 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
         //新主图
         ivMain = findViewById(R.id.thumb_x);
         ivMain.setOnClickListener(this);
-
-
-
     }
 
 
@@ -114,7 +117,12 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
 
         //新封面图和旧封面图同步控制显隐
         thumbImageView.setVisibility(thumbImg);
-        ivMain.setVisibility(thumbImg);
+        //音频始终显示封面图
+        if (isAudio) {
+            ivMain.setVisibility(VISIBLE);
+        } else {
+            ivMain.setVisibility(thumbImg);
+        }
 
         bottomProgressBar.setVisibility(bottomPro);
         mRetryLayout.setVisibility(retryLayout);
@@ -446,14 +454,53 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
         void onExitFullScreen();
     }
 
-    /**
-     * 设置退出全屏监听器
-     * @param exitFullScreenListener
-     */
+//    /**
+//     * 设置退出全屏监听器
+//     * @param exitFullScreenListener
+//     */
 //    public void setExitFullScreenListener(ExitFullScreenListener exitFullScreenListener) {
 //        this.exitFullScreenListener = exitFullScreenListener;
 //    }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int id = v.getId();
+        //实现R.id.surface_container的功能
+        if (id == R.id.thumb_x) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    break;
+                case MotionEvent.ACTION_UP:
+                    startDismissControlViewTimer();
+                    if (mChangePosition) {
+                        long duration = getDuration();
+                        int progress = (int) (mSeekTimePosition * 100 / (duration == 0 ? 1 : duration));
+                        bottomProgressBar.setProgress(progress);
+                    }
+                    if (!mChangePosition && !mChangeVolume) {
+                        onEvent(JZUserActionStandard.ON_CLICK_BLANK);
+                        onClickUiToggle();
+                    }
+                    break;
+            }
+        }
+
+        return super.onTouch(v, event);
+    }
+
+    /**
+     * 设置是否是音频
+     * @param audio true：是
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    public void setAudio(boolean audio) {
+        isAudio = audio;
+        //如果是音频，则为新的封面图添加触摸事件
+        if (isAudio) {
+            ivMain.setOnTouchListener(this);
+        }
+    }
+
 }
-
-

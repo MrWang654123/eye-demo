@@ -46,6 +46,9 @@ import com.cheersmind.cheersgenie.features.adapter.CommentAdapter;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.constant.ErrorCode;
 import com.cheersmind.cheersgenie.features.dto.CommentDto;
+import com.cheersmind.cheersgenie.features.entity.ArticleEntity;
+import com.cheersmind.cheersgenie.features.entity.CommentEntity;
+import com.cheersmind.cheersgenie.features.entity.CommentRootEntity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.modules.exam.activity.DimensionDetailActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
@@ -57,9 +60,6 @@ import com.cheersmind.cheersgenie.features_v2.entity.TaskReward;
 import com.cheersmind.cheersgenie.features_v2.entity.TaskRewardRoot;
 import com.cheersmind.cheersgenie.features_v2.event.ActionCompleteEvent;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.features.entity.ArticleEntity;
-import com.cheersmind.cheersgenie.features.entity.CommentEntity;
-import com.cheersmind.cheersgenie.features.entity.CommentRootEntity;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.ErrorCodeEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicInfo;
@@ -95,9 +95,6 @@ import cn.jzvd.JZVideoPlayerStandard;
  * 文章详情
  */
 public class ArticleDetailActivity extends BaseActivity {
-
-    public static final String VIEW_NAME_HEADER_IMAGE = "VIEW_NAME_HEADER_IMAGE";
-    public static final String VIEW_NAME_HEADER_TITLE = "VIEW_NAME_HEADER_TITLE";
 
     //主图url
     private static final String IV_MAIN_URL = "ivMainUrl";
@@ -644,7 +641,7 @@ public class ArticleDetailActivity extends BaseActivity {
 
     /**
      * 初始化视频
-     * @param article
+     * @param article 文章对象
      */
     private void initVideo(final ArticleEntity article) {
         if (article == null || TextUtils.isEmpty(article.getArticleVideo())) {
@@ -688,6 +685,8 @@ public class ArticleDetailActivity extends BaseActivity {
 //        }, 200);
 //        JZVideoPlayer.setMediaInterface(new JZExoPlayer());
 
+        //设置是否是音频
+        jzVideo.setAudio(Dictionary.ARTICLE_TYPE_AUDIO == article.getContentType());
         jzVideo.setUp(videoUrl
                 , JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, title);
 //        jzVideo.setUp(VideoConstant.videoUrlList[0]
@@ -894,7 +893,7 @@ public class ArticleDetailActivity extends BaseActivity {
     /**
      * 加载文章详情
      *
-     * @param articleId
+     * @param articleId ID
      */
     private void loadArticleDetail(final String articleId) {
 
@@ -1008,6 +1007,11 @@ public class ArticleDetailActivity extends BaseActivity {
                 //视频
                 case Dictionary.ARTICLE_TYPE_VIDEO: {
                     taskItemType = Dictionary.TASK_ITEM_TYPE_VIDEO;
+                    break;
+                }
+                //音频
+                case Dictionary.ARTICLE_TYPE_AUDIO: {
+                    taskItemType = Dictionary.TASK_ITEM_TYPE_AUDIO;
                     break;
                 }
             }
@@ -1274,9 +1278,15 @@ public class ArticleDetailActivity extends BaseActivity {
                 webArticleContent.loadData(tempContent, "text/html; charset=UTF-8", "utf-8");
             } else {
                 tvArticleContent.setVisibility(View.GONE);
+                llInitContentTip.setVisibility(View.GONE);
+                ldvInitCountTip.hide();
+                webArticleContent.setVisibility(View.GONE);
             }
         } else {
             tvArticleContent.setVisibility(View.GONE);
+            llInitContentTip.setVisibility(View.GONE);
+            ldvInitCountTip.hide();
+            webArticleContent.setVisibility(View.GONE);
         }
 
 //        tempContent = HtmlUtil.getNewContentByHandleImage(tempContent);
