@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -171,7 +172,11 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         emptyLayout.setOnReloadListener(new OnMultiClickListener() {
             @Override
             public void onMultiClick(View view) {
-                loadCanSelectCourseGroup();
+//                loadCanSelectCourseGroup();
+                //加载系统推荐
+                loadSysRecommend(childExamId);
+                //加载用户选科组合
+                loadUserSelectCourseGroup();
             }
         });
 
@@ -207,10 +212,10 @@ public class ChooseCourseFragment extends LazyLoadFragment {
         loadSysRecommend(childExamId);
 //        //加载专业观察表
 //        loadObserveMajor();
-//        //加载用户选科组合
-//        loadUserSelectCourseGroup();
-        //加载可选学科组合
-        loadCanSelectCourseGroup();
+        //加载用户选科组合
+        loadUserSelectCourseGroup();
+//        //加载可选学科组合
+//        loadCanSelectCourseGroup();
     }
 
     @Override
@@ -314,6 +319,10 @@ public class ChooseCourseFragment extends LazyLoadFragment {
 
                     if (entity == null || ArrayListUtil.isEmpty(entity.getItems())) {
                         return;
+                    }
+
+                    if (wllSysRecommend.getChildCount() > 0) {
+                        wllSysRecommend.removeAllViews();
                     }
 
                     for (String str : entity.getRecommend_subjects()) {
@@ -424,10 +433,70 @@ public class ChooseCourseFragment extends LazyLoadFragment {
                 item.setItemType(CourseGroupRecyclerAdapter.LAYOUT_SELECT_CAN_SELECT);
                 resList.add(item);
             }
+
+            //设置上次已选组合
+            if (ArrayListUtil.isNotEmpty(lastSelectCourses)) {
+                for (CourseGroup selectItem : lastSelectCourses) {
+                    for (CourseGroup item : dataList) {
+                        if (!TextUtils.isEmpty(selectItem.getSubjectGroup())
+                                && selectItem.getSubjectGroup().equals(item.getSubjectGroup())) {
+//                            item.setSelected(true);
+                            item.setLastSelect(true);//上次选中
+//                            chooseCourseList.add(item);
+                        }
+                    }
+                }
+            }
         }
 
         return resList;
     }
+
+    //上次选科组合
+    List<CourseGroup> lastSelectCourses;
+
+    /**
+     * 加载用户已选的学科组合
+     */
+    private void loadUserSelectCourseGroup() {
+
+        CourseGroupDto courseGroupDto = new CourseGroupDto(1, 50);
+        courseGroupDto.setChild_id(UCManager.getInstance().getDefaultChild().getChildId());
+        courseGroupDto.setChild_exam_id(childExamId);
+
+        //设置空布局，当前列表还没有数据的情况，显示通信等待提示
+        if (recyclerAdapter.getData().size() == 0) {
+            emptyLayout.setErrorType(XEmptyLayout.NETWORK_LOADING);
+        }
+
+        DataRequestService.getInstance().getUserSelectCourseGroup(courseGroupDto, new BaseService.ServiceCallback() {
+            @Override
+            public void onFailure(QSCustomException e) {
+                //设置空布局：网络错误
+                emptyLayout.setErrorType(XEmptyLayout.NETWORK_ERROR);
+            }
+
+            @Override
+            public void onResponse(Object obj) {
+                try {
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    CourseGroupRootEntity rootEntity = InjectionWrapperUtil.injectMap(dataMap, CourseGroupRootEntity.class);
+
+                    lastSelectCourses = rootEntity.getItems();
+
+                    //加载可选学科组合
+                    loadCanSelectCourseGroup();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //设置空布局：没有数据，可重载
+                    emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+                }
+
+            }
+        }, httpTag, getActivity());
+    }
+
 
 }
 

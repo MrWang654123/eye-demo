@@ -89,6 +89,13 @@ public class CourseGroupRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiI
                     ivSelect.setImageResource(R.drawable.check_box_outline_bl);
                 }
 
+                //上次选中
+                if (entity.isLastSelect()) {
+                    helper.getView(R.id.vLastSelect).setVisibility(View.VISIBLE);
+                } else {
+                    helper.getView(R.id.vLastSelect).setVisibility(View.GONE);
+                }
+
                 break;
             }
             //用户已选选科

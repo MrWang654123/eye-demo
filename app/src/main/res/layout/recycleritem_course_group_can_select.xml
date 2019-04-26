@@ -42,9 +42,24 @@
         app:layout_constraintLeft_toRightOf="@+id/tv_tag"
         app:layout_constraintTop_toTopOf="@+id/tv_tag"
         app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:paddingLeft="4dp"
+        android:paddingStart="4dp"
+        android:paddingRight="4dp"
+        android:paddingEnd="4dp"
         android:text="物化生"/>
+
+    <View
+        android:id="@+id/vLastSelect"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginStart="-20dp"
+        android:layout_marginTop="-4dp"
+        app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="@+id/tv_title"
+        android:background="@drawable/circle_red"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/iv_select"

@@ -35,6 +35,9 @@ public class CourseGroup implements Serializable, MultiItemEntity {
     //是否选中
     private boolean selected;
 
+    //是否是上次选中
+    private boolean lastSelect;
+
     public String getSubjectGroup() {
         return subjectGroup;
     }
@@ -105,6 +108,14 @@ public class CourseGroup implements Serializable, MultiItemEntity {
 
     public void setLast(boolean last) {
         this.last = last;
+    }
+
+    public boolean isLastSelect() {
+        return lastSelect;
+    }
+
+    public void setLastSelect(boolean lastSelect) {
+        this.lastSelect = lastSelect;
     }
 
     private int itemType;
