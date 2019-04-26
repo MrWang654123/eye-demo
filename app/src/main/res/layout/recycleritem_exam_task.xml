@@ -237,14 +237,29 @@
 
         </LinearLayout>
 
-        <ImageView
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/iv_school_course"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:placeholderImage="@drawable/school_course"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:roundBottomLeft="false"
+            fresco:roundBottomRight="false"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="false"
+            fresco:roundedCornerRadius="3dp" />
+
+        <ImageView
             android:layout_width="45dp"
             android:layout_height="45dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:scaleType="fitXY"
             android:src="@drawable/school_course"
+            android:visibility="gone"
             tools:ignore="ContentDescription" />
 
         <TextView

@@ -58,11 +58,11 @@ public class SelectCourseAssistantFragment extends LazyLoadFragment {
     Unbinder unbinder;
 
     @BindView(R.id.iv_step_one_status)
-    ImageView ivStepOneStatus;
+    View ivStepOneStatus;
     @BindView(R.id.iv_step_two_status)
-    ImageView ivStepTwoStatus;
+    View ivStepTwoStatus;
     @BindView(R.id.iv_step_three_status)
-    ImageView ivStepThreeStatus;
+    View ivStepThreeStatus;
 
     //孩子测评ID
     private String childExamId;
