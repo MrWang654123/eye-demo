@@ -230,11 +230,17 @@ public class BaseService {
         StringBuilder result = new StringBuilder(url);
 
         if (params != null && params.size() > 0) {
+//            if (!result.toString().contains("?")) {
+//                result.append("?");
+//            } else {
+//
+//            if (result.toString().contains("&")) {
+//                result.append("&");
+//            }
+
             if (!result.toString().contains("?")) {
                 result.append("?");
-            }
-
-            if (result.toString().contains("&")) {
+            } else {
                 result.append("&");
             }
 

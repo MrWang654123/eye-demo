@@ -39,8 +39,10 @@ public class HistoryReportRecyclerAdapter extends BaseMultiItemQuickAdapter<Hist
                 }
                 helper.setText(R.id.tv_result_simple, result);
                 helper.setText(R.id.tv_goto_detail, "查看");
-                //查看点击监听
-                helper.addOnClickListener(R.id.tv_goto_detail);
+
+                //查看点击监听（目前使用点击整个项来进行响应）
+//                helper.addOnClickListener(R.id.tv_goto_detail);
+
                 break;
             }
         }

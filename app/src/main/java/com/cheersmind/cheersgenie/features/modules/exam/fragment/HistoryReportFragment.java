@@ -9,13 +9,14 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.adapter.HistoryReportRecyclerAdapter;
-import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
-import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
-import com.cheersmind.cheersgenie.features.view.dialog.TopicReportDialog;
-import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
+import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.entity.HistoryReportItemEntity;
 import com.cheersmind.cheersgenie.features.entity.HistoryReportRootEntity;
-import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
+import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.view.dialog.ExamReportDialog;
+import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
@@ -37,9 +38,8 @@ import butterknife.Unbinder;
  */
 public class HistoryReportFragment extends LazyLoadFragment {
 
-    private static final String TOPIC_INFO = "topic_info";
-    //话题
-    private TopicInfoEntity topicInfo;
+    //报告dto
+    private ExamReportDto reportDto;
 
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
@@ -54,6 +54,15 @@ public class HistoryReportFragment extends LazyLoadFragment {
     //适配器
     private HistoryReportRecyclerAdapter recyclerAdapter;
 
+    //recycler子项的点击监听
+    BaseQuickAdapter.OnItemClickListener recyclerItemClickListener = new BaseQuickAdapter.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            showExamReportDialog(position);
+        }
+    };
+
     //recycler子项的孩子的点击监听
     BaseQuickAdapter.OnItemChildClickListener recyclerItemChildClickListener = new BaseQuickAdapter.OnItemChildClickListener() {
 
@@ -62,24 +71,41 @@ public class HistoryReportFragment extends LazyLoadFragment {
             switch (view.getId()) {
                 //查看
                 case R.id.tv_goto_detail: {
-                    HistoryReportItemEntity historyReportItemEntity = recyclerItem.get(position);
-                    String childExamId = historyReportItemEntity.getChildExamId();
-                    topicInfo.getChildTopic().setChildExamId(childExamId);
-//                    ToastUtil.showShort(getContext(), "点击查看 " + (position + 1));
-                    try {
-                        new TopicReportDialog().setTopicInfo(topicInfo).show(getChildFragmentManager(), "报告");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        if (getActivity() != null) {
-                            ToastUtil.showShort(getActivity().getApplication(), e.getMessage());
-                        }
-                    }
+//                    HistoryReportItemEntity historyReportItemEntity = recyclerItem.get(position);
+//                    String childExamId = historyReportItemEntity.getChildExamId();
+//                    topicInfo.getChildTopic().setChildExamId(childExamId);
+////                    ToastUtil.showShort(getContext(), "点击查看 " + (position + 1));
+//                    try {
+//                        new TopicReportDialog().setTopicInfo(topicInfo).show(getChildFragmentManager(), "报告");
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        if (getActivity() != null) {
+//                            ToastUtil.showShort(getActivity().getApplication(), e.getMessage());
+//                        }
+//                    }
+
+                    showExamReportDialog(position);
                     break;
                 }
             }
         }
     };
 
+    ExamReportDialog examReportDialog;
+
+//    /**
+//     * 显示测评报告弹窗
+//     * @param dto 报告dto
+//     */
+//    private void showExamReportDialog(ExamReportDto dto) throws QSCustomException {
+//        if (examReportDialog == null) {
+//            examReportDialog = new ExamReportDialog().setReportDto(dto);
+//        }
+//        if (examReportDialog != null) {
+//            examReportDialog.setReportDto(dto);
+//            examReportDialog.show(getChildFragmentManager(), "报告");
+//        }
+//    }
 
     @Override
     protected int setContentView() {
@@ -93,17 +119,16 @@ public class HistoryReportFragment extends LazyLoadFragment {
         try {
             Bundle bundle = getArguments();
             if (bundle != null) {
-                topicInfo = (TopicInfoEntity) bundle.getSerializable(TOPIC_INFO);
-                if (topicInfo == null) {
+                reportDto = (ExamReportDto) bundle.getSerializable(DtoKey.EXAM_REPORT_DTO);
+                if (reportDto == null) {
                     throw new Exception();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            if (getActivity() != null) {
-                ToastUtil.showShort(getActivity().getApplication(), "数据传递有误");
-            }
-            getActivity().finish();
+            //空布局：无数据可重载
+            emptyLayout.setErrorType(XEmptyLayout.NO_DATA_ENABLE_CLICK);
+            return;
         }
 
         //重载监听
@@ -119,6 +144,8 @@ public class HistoryReportFragment extends LazyLoadFragment {
         recyclerAdapter = new HistoryReportRecyclerAdapter(recyclerItem);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
         recycleView.setAdapter(recyclerAdapter);
+        //设置子项点击监听
+        recyclerAdapter.setOnItemClickListener(recyclerItemClickListener);
         //子项孩子的点击监听
         recyclerAdapter.setOnItemChildClickListener(recyclerItemChildClickListener);
         //添加自定义分割线
@@ -148,7 +175,7 @@ public class HistoryReportFragment extends LazyLoadFragment {
 
         String defaultChildId = UCManager.getInstance().getDefaultChild().getChildId();
         DataRequestService.getInstance().getHistoryReport(
-                topicInfo.getTopicId(),
+                reportDto.getRelationId(),
                 defaultChildId,
                 new BaseService.ServiceCallback() {
                     @Override
@@ -189,6 +216,32 @@ public class HistoryReportFragment extends LazyLoadFragment {
                         }
                     }
                 }, httpTag, getActivity());
+    }
+
+    /**
+     * 弹出话题报告对话框
+     * @param position 在列表中的索引
+     */
+    private void showExamReportDialog(int position) {
+        try {
+            HistoryReportItemEntity historyReportItemEntity = recyclerItem.get(position);
+            String childExamId = historyReportItemEntity.getChildExamId();
+            //重置孩子测评ID
+            reportDto.setChildExamId(childExamId);
+            examReportDialog = new ExamReportDialog().setReportDto(reportDto).setListener(new ExamReportDialog.OnOperationListener() {
+                @Override
+                public void onExit() {
+                    examReportDialog.clearListener();
+                    examReportDialog = null;
+                }
+            });
+            examReportDialog.show(getChildFragmentManager(), "报告");
+//                        showExamReportDialog(reportDto);
+        } catch (Exception e) {
+            if (getActivity() != null) {
+                ToastUtil.showShort(getActivity().getApplication(), getString(R.string.operate_fail));
+            }
+        }
     }
 
 }

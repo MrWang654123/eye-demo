@@ -506,10 +506,10 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
 
         try {
             //释放通用报告对话框
-            if (examReportDto != null) {
-                examReportDto.clearListener();
-                examReportDto.dismiss();
-                examReportDto = null;
+            if (examReportDialog != null) {
+                examReportDialog.clearListener();
+                examReportDialog.dismiss();
+                examReportDialog = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1345,15 +1345,15 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
         }
     }
 
-    ExamReportDialog examReportDto;
+    ExamReportDialog examReportDialog;
 
     /**
      * 显示测评报告弹窗
      * @param dto 报告dto
      */
     private void showExamReportDialog(ExamReportDto dto) throws QSCustomException {
-        if (examReportDto == null) {
-            examReportDto = new ExamReportDialog().setReportDto(dto).setListener(new ExamReportDialog.OnOperationListener() {
+        if (examReportDialog == null) {
+            examReportDialog = new ExamReportDialog().setReportDto(dto).setListener(new ExamReportDialog.OnOperationListener() {
                 @Override
                 public void onExit() {
                     //跳转到下一个页面
@@ -1361,8 +1361,8 @@ public class ReplyQuestionActivity extends BaseActivity implements VoiceButtonUI
                 }
             });
         }
-        if (examReportDto != null) {
-            examReportDto.show(getSupportFragmentManager(), "报告");
+        if (examReportDialog != null) {
+            examReportDialog.show(getSupportFragmentManager(), "报告");
         }
     }
 
