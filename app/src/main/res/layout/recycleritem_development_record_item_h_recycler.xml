@@ -72,7 +72,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="15dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <!--分数-->
@@ -126,7 +126,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/color_777777"
                 android:layout_gravity="center_horizontal"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:text="本测评中你的个人得分为76分，高于90%的用户"/>
 
             <!--量表无T分数和结论，则显示原始分-->
@@ -155,7 +155,7 @@
                 android:id="@+id/ll_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="vertical">
 
                 <ImageView
@@ -166,12 +166,24 @@
                     tools:ignore="ContentDescription" />
 
                 <ImageView
+                    android:id="@+id/iv_go_to_exam"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/go_to_exam"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
+                    android:visibility="gone"
                     tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tv_no_publish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="未发布"
+                    android:textSize="18sp"
+                    android:textColor="#f5f5f5"
+                    android:layout_marginTop="15dp"/>
 
             </LinearLayout>
 

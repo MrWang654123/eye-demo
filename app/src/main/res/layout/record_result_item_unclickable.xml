@@ -9,8 +9,8 @@
     android:paddingBottom="5dp"
     android:background="@drawable/shape_corner_white_3dp_444444_1dp"
     android:text="@string/placeholder_for_item"
-    android:textColor="@color/color_777777"
+    android:textColor="@color/color_444444"
     android:textSize="14sp"
-    android:textStyle="bold">
+    android:textStyle="normal">
 
 </TextView>

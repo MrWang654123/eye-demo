@@ -95,9 +95,9 @@ public class DevelopmentRecordRecyclerAdapter extends BaseMultiItemQuickAdapter<
                         //跳转量表详情
                         getReferenceExam(topicInfo, POST_OPT_TYPE_GO_ON);
                     }
-                } else {
+                } /*else {
                     Toast.makeText(context,context.getString(R.string.operate_fail), Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         }
     };

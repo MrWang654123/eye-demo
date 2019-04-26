@@ -95,6 +95,14 @@ public class DevelopmentRecordItemRecyclerAdapter extends BaseQuickAdapter<Devel
 
                 } else {//无结果
                     helper.getView(R.id.ll_no_data).setVisibility(View.VISIBLE);
+                    //如果话题ID为空，表示未发布
+                    if (TextUtils.isEmpty(item.getTopic_id())) {
+                        helper.getView(R.id.iv_go_to_exam).setVisibility(View.GONE);
+                        helper.getView(R.id.tv_no_publish).setVisibility(View.VISIBLE);
+                    } else {
+                        helper.getView(R.id.iv_go_to_exam).setVisibility(View.VISIBLE);
+                        helper.getView(R.id.tv_no_publish).setVisibility(View.GONE);
+                    }
                 }
             }
         }

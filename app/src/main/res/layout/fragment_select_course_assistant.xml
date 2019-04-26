@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:background="@color/colorAccent"
+            android:background="@drawable/shape_corner_accent_3dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:paddingLeft="8dp"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_system_recommend"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="第1步"/>
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_marginRight="15dp"
             android:text="生涯测评"
             android:textColor="@color/color_333333"
-            android:textSize="23sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_step_one"
             app:layout_constraintHorizontal_bias="0"
@@ -113,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:background="@color/colorAccent"
+            android:background="@drawable/shape_corner_accent_3dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:paddingLeft="8dp"
@@ -125,7 +125,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_observe_major"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="第2步"/>
 
         <TextView
@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:textSize="23sp"
+            android:textSize="20sp"
             android:textColor="@color/color_333333"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="0"
@@ -222,7 +222,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:background="@color/colorAccent"
+            android:background="@drawable/shape_corner_accent_3dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:paddingLeft="8dp"
@@ -234,7 +234,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tv_select_course"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="第3步"/>
 
         <TextView
@@ -243,7 +243,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:textSize="23sp"
+            android:textSize="20sp"
             android:textColor="@color/color_333333"
             android:textStyle="bold"
             app:layout_constraintHorizontal_bias="0"

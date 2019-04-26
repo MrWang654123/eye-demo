@@ -32,6 +32,7 @@ import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features.view.dialog.CategoryDialog;
 import com.cheersmind.cheersgenie.features.view.transformer.ScaleTransformer;
 import com.cheersmind.cheersgenie.features_v2.adapter.HomeBannerPageAdapter;
+import com.cheersmind.cheersgenie.features_v2.dto.BannerDto;
 import com.cheersmind.cheersgenie.features_v2.interfaces.MainTabListener;
 import com.cheersmind.cheersgenie.features_v2.modules.discover.fragment.DiscoverTabItemFragment;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
@@ -43,6 +44,7 @@ import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -279,7 +281,8 @@ public class DiscoverFragment extends LazyLoadFragment {
      * 加载banner数据（目前指的是热门文章）
      */
     public void loadBannerData() {
-        BaseDto dto = new BaseDto(1, 20);
+        BannerDto dto = new BannerDto(1, 20);
+        dto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
         DataRequestService.getInstance().getHomeBanner(dto, new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {

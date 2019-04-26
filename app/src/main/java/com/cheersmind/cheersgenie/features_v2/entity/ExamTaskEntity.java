@@ -24,6 +24,10 @@ public class ExamTaskEntity implements Serializable {
     @InjectMap(name = "task_icon")
     private String task_icon;
 
+    //图片（任务项页主图首选该字段，如果为空则使用task_icon）
+    @InjectMap(name = "background_image")
+    private String background_image;
+
     //描述
     @InjectMap(name = "description")
     private String description;
@@ -197,5 +201,13 @@ public class ExamTaskEntity implements Serializable {
 
     public void setUse_count(int use_count) {
         this.use_count = use_count;
+    }
+
+    public String getBackground_image() {
+        return background_image;
+    }
+
+    public void setBackground_image(String background_image) {
+        this.background_image = background_image;
     }
 }

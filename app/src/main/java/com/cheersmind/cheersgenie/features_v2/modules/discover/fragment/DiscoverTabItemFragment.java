@@ -36,6 +36,7 @@ import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.OnMultiClickListener;
+import com.cheersmind.cheersgenie.module.login.UCManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -249,6 +250,7 @@ public class DiscoverTabItemFragment extends LazyLoadFragment {
 
             articleDto.setPage(pageNum);
             articleDto.setSize(PAGE_SIZE);
+            articleDto.setChildId(UCManager.getInstance().getDefaultChild().getChildId());
             if (category != null) {
                 articleDto.setCategoryId(category.getId());
             }

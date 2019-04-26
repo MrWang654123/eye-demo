@@ -11,6 +11,9 @@ public class ArticleDto extends BaseDto {
     //种类ID
     private String categoryId;
 
+    //孩子ID（便于后台拓展）
+    private String childId;
+
     public ArticleDto() {
     }
 
@@ -32,5 +35,13 @@ public class ArticleDto extends BaseDto {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getChildId() {
+        return childId;
+    }
+
+    public void setChildId(String childId) {
+        this.childId = childId;
     }
 }

@@ -17,8 +17,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:background="@color/colorAccent"
-        android:padding="3dp"
+        android:background="@drawable/shape_corner_accent_3dp"
+        android:paddingLeft="5dp"
+        android:paddingStart="5dp"
+        android:paddingRight="5dp"
+        android:paddingEnd="5dp"
+        android:paddingTop="1.5dp"
+        android:paddingBottom="1.5dp"
+        android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"
@@ -66,32 +72,34 @@
         android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@+id/tv_tag"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/ll_follow_major_ratio"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
         android:orientation="horizontal">
 
         <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:background="@color/colorAccent"/>
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_accent"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="可报考专业:"/>
+            android:textColor="@color/color_666666"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:text="可报考专业覆盖率:"/>
 
         <TextView
             android:id="@+id/tv_major_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:textColor="@color/color_333333"
+            android:textStyle="normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="55.4%"/>
 
     </LinearLayout>
@@ -104,31 +112,32 @@
         android:gravity="center_vertical"
         app:layout_constraintTop_toBottomOf="@+id/ll_major_ratio"
         app:layout_constraintLeft_toLeftOf="@+id/ll_major_ratio"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:background="@color/colorAccent"/>
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_accent"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="有要求专业:"/>
+            android:textColor="@color/color_555555"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:text="有要求专业覆盖率:"/>
 
         <TextView
             android:id="@+id/tv_require_major_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:textColor="@color/color_333333"
+            android:textStyle="normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="55.4%"/>
 
     </LinearLayout>
@@ -139,33 +148,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:layout_constraintLeft_toRightOf="@+id/ll_major_ratio"
-        app:layout_constraintBottom_toBottomOf="@+id/ll_major_ratio"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_require_major_ratio"
+        app:layout_constraintLeft_toLeftOf="@+id/ll_major_ratio"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:background="@color/colorAccent"/>
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_accent"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="意向专业:"/>
+            android:textColor="@color/color_555555"
+            android:layout_marginLeft="7dp"
+            android:layout_marginStart="7dp"
+            android:text="意向专业覆盖率:"/>
 
         <TextView
             android:id="@+id/tv_follow_major_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:textColor="@color/color_333333"
+            android:textStyle="normal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:text="55.4%"/>
 
     </LinearLayout>
@@ -175,33 +185,31 @@
         android:id="@+id/ll_ability_ratio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        app:layout_constraintLeft_toLeftOf="@+id/ll_follow_major_ratio"
-        app:layout_constraintTop_toTopOf="@+id/ll_require_major_ratio"
+        android:gravity="bottom"
+        app:layout_constraintLeft_toRightOf="@+id/tv_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:orientation="horizontal">
-
-        <View
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:background="@color/colorAccent"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_444444"
+            android:textSize="13sp"
+            android:textColor="@color/color_777777"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:text="匹配度:"/>
+            android:text="匹配度"/>
 
         <TextView
             android:id="@+id/tv_ability_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:textSize="20sp"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            android:layout_marginLeft="3dp"
+            android:layout_marginStart="3dp"
             android:text="55.4%"/>
 
     </LinearLayout>
@@ -211,10 +219,10 @@
         android:layout_width="match_parent"
         android:layout_height="15dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_ability_ratio"
+        app:layout_constraintTop_toBottomOf="@+id/ll_follow_major_ratio"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:background="@color/color_f5f5f5"/>
 
 </android.support.constraint.ConstraintLayout>

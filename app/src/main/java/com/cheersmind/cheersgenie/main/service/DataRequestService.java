@@ -30,6 +30,7 @@ import com.cheersmind.cheersgenie.features_v2.dto.ActionCompleteDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AddExamTaskDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionDto;
 import com.cheersmind.cheersgenie.features_v2.dto.AttentionListDto;
+import com.cheersmind.cheersgenie.features_v2.dto.BannerDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeEnrollScoreDto;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.dto.ConfirmSelectCourseDto;
@@ -694,6 +695,10 @@ public class DataRequestService {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+        }
+        //孩子ID
+        if (!TextUtils.isEmpty(dto.getChildId())) {
+            params.put("child_id", dto.getChildId());
         }
 
         //拼接参数
@@ -2401,13 +2406,17 @@ public class DataRequestService {
 
     /**
      * 获取首页Banner
-     * @param dto 通用dto
+     * @param dto dto
      * @param callback 回调
      */
-    public void getHomeBanner(BaseDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
+    public void getHomeBanner(BannerDto dto, final BaseService.ServiceCallback callback, String httpTag, Context context){
         String url = HttpConfig.URL_HOME_BANNER;
 
         Map<String, Object> params = new HashMap<>();
+        //孩子ID
+        if (!TextUtils.isEmpty(dto.getChildId())) {
+            params.put("child_id", dto.getChildId());
+        }
         //分页
         params.put("page", dto.getPage());
         params.put("size", dto.getSize());

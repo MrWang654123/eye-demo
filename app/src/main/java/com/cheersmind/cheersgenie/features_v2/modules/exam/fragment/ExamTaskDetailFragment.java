@@ -88,7 +88,11 @@ public class ExamTaskDetailFragment extends LazyLoadFragment {
 
         if (examTask != null) {
             //主图
-            ivMain.setImageURI(examTask.getTask_icon());
+            if (!TextUtils.isEmpty(examTask.getBackground_image())) {
+                ivMain.setImageURI(examTask.getBackground_image());
+            } else {
+                ivMain.setImageURI(examTask.getTask_icon());
+            }
 
             if (examTask.getChildTask() != null) {
                 List<Pair<String, Fragment>> items = new ArrayList<>();

@@ -102,7 +102,7 @@
                                 android:id="@+id/iv_job_ratio"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/mine_exam"
+                                android:src="@drawable/college_job_ratio"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:ignore="ContentDescription" />
@@ -163,7 +163,7 @@
                                 android:id="@+id/iv_salary"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/mine_exam"
+                                android:src="@drawable/college_salary"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:ignore="ContentDescription" />
@@ -235,7 +235,7 @@
                                 android:id="@+id/iv_postgraduate"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/mine_exam"
+                                android:src="@drawable/college_postgraduate"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 tools:ignore="ContentDescription" />
