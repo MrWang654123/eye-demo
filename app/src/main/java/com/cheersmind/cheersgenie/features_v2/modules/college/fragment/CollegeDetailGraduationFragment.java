@@ -268,7 +268,7 @@ public class CollegeDetailGraduationFragment extends LazyLoadFragment {
 
             if (infoRatio != null && infoRatio.getRatio() > 0.000001) {
                 clJobRatio.setVisibility(View.VISIBLE);
-                tvJobRatioVal.setText(String.valueOf(infoRatio.getRatio() * 100));
+                tvJobRatioVal.setText(String.format(Locale.CHINA, "%.2f",infoRatio.getRatio() * 100));
 
             } else {
                 clJobRatio.setVisibility(View.GONE);
