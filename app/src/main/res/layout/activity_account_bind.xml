@@ -87,10 +87,12 @@
             android:text="尚未绑定"/>
 
         <ImageView
+            android:id="@+id/iv_we_chat_right"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
@@ -126,10 +128,12 @@
             android:text="尚未绑定"/>
 
         <ImageView
+            android:id="@+id/iv_qq_right"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_chevron_right_black_24dp"/>
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 

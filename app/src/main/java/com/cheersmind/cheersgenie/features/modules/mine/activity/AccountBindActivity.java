@@ -3,13 +3,20 @@ package com.cheersmind.cheersgenie.features.modules.mine.activity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cheersmind.cheersgenie.R;
 import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.dto.ThirdPlatBindDto;
+import com.cheersmind.cheersgenie.features.entity.ArticleRootEntity;
+import com.cheersmind.cheersgenie.features.entity.SimpleArticleEntity;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.utils.NetworkUtil;
+import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features_v2.entity.ThirdPlatformAccount;
+import com.cheersmind.cheersgenie.features_v2.entity.ThirdPlatformAccountRoot;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
 import com.cheersmind.cheersgenie.main.constant.Constant;
 import com.cheersmind.cheersgenie.features.entity.QQTokenEntity;
@@ -35,6 +42,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -54,10 +62,17 @@ public class AccountBindActivity extends BaseActivity {
     @BindView(R.id.tv_qq_bind_tip)
     TextView tvQqBindTip;
 
+    @BindView(R.id.iv_qq_right)
+    ImageView iv_qq_right;
+    @BindView(R.id.iv_we_chat_right)
+    ImageView iv_we_chat_right;
+
     //QQ绑定
     private boolean isQQBinded;
+    private String nicknameQQ;
     //微信绑定
     private boolean isWeixinBinded;
+    private String nicknameWeChat;
 
     @Override
     protected int setContentView() {
@@ -112,22 +127,27 @@ public class AccountBindActivity extends BaseActivity {
             public void onResponse(Object obj) {
                 LoadingView.getInstance().dismiss();
                 try {
-//                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
-                    JSONArray items = ((JSONObject)obj).getJSONArray("items");
+                    Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
+                    ThirdPlatformAccountRoot root = InjectionWrapperUtil.injectMap(dataMap, ThirdPlatformAccountRoot.class);
 
-                    if (items == null || items.length() == 0) {
+                    List<ThirdPlatformAccount> dataList = root.getItems();
+
+                    //空数据处理
+                    if (ArrayListUtil.isEmpty(dataList)) {
                         throw new QSCustomException("无绑定项");
                     }
 
                     //遍历已绑定平台
-                    for (int i=0; i<items.length(); i++) {
-                        JSONObject jsonObject = items.getJSONObject(i);
-                        String platStr = jsonObject.getString("plat_source");
+                    for (ThirdPlatformAccount account : dataList) {
+                        String platStr = account.getPlat_source();
 
                         if ("qq".equals(platStr)) {
                             isQQBinded = true;
+                            nicknameQQ = account.getNickname();
+
                         } else if ("weixin".equals(platStr)) {
                             isWeixinBinded = true;
+                            nicknameWeChat = account.getNickname();
                         }
                     }
 
@@ -158,8 +178,9 @@ public class AccountBindActivity extends BaseActivity {
     private void refreshBindInfoView() {
         //QQ绑定信息
         if (isQQBinded) {
-            tvQqBindTip.setText("已经绑定");
+            tvQqBindTip.setText(nicknameQQ);
             tvQqBindTip.setTextColor(this.getResources().getColor(android.R.color.holo_red_dark));
+            iv_qq_right.setVisibility(View.INVISIBLE);
         } else {
             tvQqBindTip.setText("尚未绑定");
             tvQqBindTip.setTextColor(this.getResources().getColor(R.color.color_898989));
@@ -167,8 +188,9 @@ public class AccountBindActivity extends BaseActivity {
 
         //微信绑定信息
         if (isWeixinBinded) {
-            tvWeixinBindTip.setText("已经绑定");
+            tvWeixinBindTip.setText(nicknameWeChat);
             tvWeixinBindTip.setTextColor(this.getResources().getColor(android.R.color.holo_red_dark));
+            iv_we_chat_right.setVisibility(View.INVISIBLE);
         } else {
             tvWeixinBindTip.setText("尚未绑定");
             tvWeixinBindTip.setTextColor(this.getResources().getColor(R.color.color_898989));
