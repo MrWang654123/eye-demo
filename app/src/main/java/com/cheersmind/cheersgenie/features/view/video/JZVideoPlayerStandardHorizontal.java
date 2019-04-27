@@ -497,9 +497,12 @@ public class JZVideoPlayerStandardHorizontal extends JZVideoPlayerStandard {
     @SuppressLint("ClickableViewAccessibility")
     public void setAudio(boolean audio) {
         isAudio = audio;
-        //如果是音频，则为新的封面图添加触摸事件
+        //如果是音频
         if (isAudio) {
+            //新的封面图添加触摸事件
             ivMain.setOnTouchListener(this);
+            //隐藏右下角全屏图标
+            fullscreenButton.setVisibility(INVISIBLE);
         }
     }
 
