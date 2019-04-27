@@ -6,13 +6,9 @@ import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,14 +20,14 @@ import com.cheersmind.cheersgenie.features.constant.Dictionary;
 import com.cheersmind.cheersgenie.features.modules.base.activity.BaseActivity;
 import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
+import com.cheersmind.cheersgenie.features_v2.dto.ExamReportDto;
+import com.cheersmind.cheersgenie.features_v2.modules.exam.activity.ExamReportActivity;
 import com.cheersmind.cheersgenie.main.Exception.QSCustomException;
-import com.cheersmind.cheersgenie.main.QSApplication;
 import com.cheersmind.cheersgenie.main.entity.DimensionInfoEntity;
 import com.cheersmind.cheersgenie.main.entity.TopicDetail;
 import com.cheersmind.cheersgenie.main.entity.TopicInfoEntity;
 import com.cheersmind.cheersgenie.main.service.BaseService;
 import com.cheersmind.cheersgenie.main.service.DataRequestService;
-import com.cheersmind.cheersgenie.main.util.DensityUtil;
 import com.cheersmind.cheersgenie.main.util.InjectionWrapperUtil;
 import com.cheersmind.cheersgenie.main.util.JsonUtil;
 import com.cheersmind.cheersgenie.main.util.ToastUtil;
@@ -41,6 +37,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.cheersmind.cheersgenie.main.QSApplication.getContext;
 
 /**
  * 场景（话题）详情页面
@@ -382,8 +380,28 @@ public class TopicDetailActivity extends BaseActivity {
             } else {
                 //孩子话题的状态为已完成：查看报告
                 if (topicInfoEntity.getChildTopic().getStatus() == Dictionary.TOPIC_STATUS_COMPLETE) {
-                    //查看话题报告
-                    ReportActivity.startReportActivity(TopicDetailActivity.this, topicInfoEntity);
+//                    //查看话题报告
+//                    ReportActivity.startReportActivity(TopicDetailActivity.this, topicInfoEntity);
+
+                    ExamReportDto dto = new ExamReportDto();
+                    dto.setChildExamId(topicInfoEntity.getChildTopic().getChildExamId());//孩子测评ID
+                    dto.setCompareId(Dictionary.REPORT_COMPARE_AREA_COUNTRY);//对比样本全国
+
+                    //只有一个量表则查看量表报告
+                    if (ArrayListUtil.isNotEmpty(topicInfoEntity.getDimensions())
+                            && topicInfoEntity.getDimensions().size() == 1) {
+
+                        DimensionInfoEntity dimensionInfoEntity = topicInfoEntity.getDimensions().get(0);
+                        dto.setRelationId(dimensionInfoEntity.getTopicDimensionId());
+                        dto.setRelationType(Dictionary.REPORT_TYPE_DIMENSION);
+                        dto.setDimensionId(dimensionInfoEntity.getDimensionId());//量表ID（目前用于报告推荐内容）
+
+                    } else {
+                        dto.setRelationId(topicInfoEntity.getTopicId());
+                        dto.setRelationType(Dictionary.REPORT_TYPE_TOPIC);
+                    }
+
+                    ExamReportActivity.startExamReportActivity(getContext(), dto);
 
                 } else {
                     //继续测评
