@@ -100,7 +100,7 @@ public class AccountBindActivity extends BaseActivity {
     @Override
     protected void onInitData() {
         //查询绑定平台
-        queryBindPlatform();
+        queryBindPlatform(true);
 
         //手机号
         String phoneNum = UCManager.getInstance().getPhoneNum();
@@ -115,17 +115,23 @@ public class AccountBindActivity extends BaseActivity {
     /**
      * 查询绑定平台
      */
-    private void queryBindPlatform() {
-        LoadingView.getInstance().show(this, httpTag);
+    private void queryBindPlatform(final boolean showLoading) {
+        if (showLoading) {
+            LoadingView.getInstance().show(this, httpTag);
+        }
         DataRequestService.getInstance().getThirdBindPlatform(new BaseService.ServiceCallback() {
             @Override
             public void onFailure(QSCustomException e) {
-                onFailureDefault(e);
+                if (showLoading) {
+                    onFailureDefault(e);
+                }
             }
 
             @Override
             public void onResponse(Object obj) {
-                LoadingView.getInstance().dismiss();
+                if (showLoading) {
+                    LoadingView.getInstance().dismiss();
+                }
                 try {
                     Map dataMap = JsonUtil.fromJson(obj.toString(), Map.class);
                     ThirdPlatformAccountRoot root = InjectionWrapperUtil.injectMap(dataMap, ThirdPlatformAccountRoot.class);
@@ -154,16 +160,12 @@ public class AccountBindActivity extends BaseActivity {
                     //刷新绑定信息视图
                     refreshBindInfoView();
 
-                } catch (QSCustomException e) {
-                    isQQBinded = false;
-                    isWeixinBinded = false;
-                    //刷新绑定信息视图
-                    refreshBindInfoView();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     isQQBinded = false;
                     isWeixinBinded = false;
+                    nicknameQQ = "";
+                    nicknameWeChat = "";
                     //刷新绑定信息视图
                     refreshBindInfoView();
                 }
@@ -318,6 +320,8 @@ public class AccountBindActivity extends BaseActivity {
                     isWeixinBinded = true;
                 }
                 refreshBindInfoView();
+                //重新查询绑定平台，用于更新昵称
+                queryBindPlatform(false);
             }
         }, httpTag, AccountBindActivity.this);
     }
