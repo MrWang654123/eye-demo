@@ -8,6 +8,7 @@
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:background="@drawable/shape_corner_white_3dp_accent_1dp"
+    android:foreground="?android:attr/selectableItemBackground"
     android:text="@string/placeholder_for_item"
     android:textColor="@color/color_444444"
     android:textSize="14sp"

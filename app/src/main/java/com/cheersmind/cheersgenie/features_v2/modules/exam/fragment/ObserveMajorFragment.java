@@ -432,10 +432,10 @@ public class ObserveMajorFragment extends LazyLoadFragment {
                     //关闭通信等待
 //                    LoadingView.getInstance().dismiss();
 
-                    //开启上拉加载功能
-                    recyclerAdapter.setEnableLoadMore(true);
-                    //结束下拉刷新动画
-                    swipeRefreshLayout.setRefreshing(false);
+//                    //开启上拉加载功能
+//                    recyclerAdapter.setEnableLoadMore(true);
+//                    //结束下拉刷新动画
+//                    swipeRefreshLayout.setRefreshing(false);
 
 //                    if (getActivity() != null) {
 //                        getActivity().finish();

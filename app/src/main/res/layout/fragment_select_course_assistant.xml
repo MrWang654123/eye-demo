@@ -64,8 +64,8 @@
             android:layout_marginEnd="15dp"
             fresco:roundAsCircle="true"
             fresco:actualImageScaleType="centerCrop"
-            fresco:placeholderImage="@drawable/system_recommend"
-            fresco:placeholderImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/select_course_assistant_step1"
+            fresco:placeholderImageScaleType="centerCrop"
             fresco:backgroundImage="@color/white"/>
 
         <!--fresco:pressedStateOverlayImage="@color/light_transparent"
@@ -172,8 +172,8 @@
             android:layout_marginEnd="15dp"
             fresco:roundAsCircle="true"
             fresco:actualImageScaleType="centerCrop"
-            fresco:placeholderImage="@drawable/observe_major"
-            fresco:placeholderImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/select_course_assistant_step2"
+            fresco:placeholderImageScaleType="centerCrop"
             fresco:backgroundImage="@color/white"/>
 
         <TextView
@@ -297,8 +297,8 @@
             android:layout_marginEnd="15dp"
             fresco:roundAsCircle="true"
             fresco:actualImageScaleType="centerCrop"
-            fresco:placeholderImage="@drawable/select_course"
-            fresco:placeholderImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/select_course_assistant_step3"
+            fresco:placeholderImageScaleType="centerCrop"
             fresco:backgroundImage="@color/white"/>
 
         <TextView

@@ -30,19 +30,19 @@ public class RecommendMajorActivity extends BaseActivity {
 
     @Override
     protected int setContentView() {
-        return R.layout.activity_common_white_title_fragment;
+        return R.layout.activity_common_title_fragment;
     }
 
     @Override
     protected String settingTitle() {
-        return "选科助手";
+        return "推荐专业";
     }
 
 
     @Override
     protected void onInitView() {
         //修改状态栏颜色
-        setStatusBarBackgroundColor(RecommendMajorActivity.this, getResources().getColor(R.color.white));
+//        setStatusBarBackgroundColor(RecommendMajorActivity.this, getResources().getColor(R.color.white));
     }
 
     @Override

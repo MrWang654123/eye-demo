@@ -51,7 +51,7 @@ public class ObserveMajorActivity extends BaseActivity {
     protected void onInitData() {
         //获取数据
         String childExamId = getIntent().getStringExtra(DtoKey.CHILD_EXAM_ID);
-        boolean isCompleteSelectCourse = getIntent().getBooleanExtra("is_complete_select",false);
+        boolean isCompleteSelectCourse = getIntent().getBooleanExtra(DtoKey.IS_COMPLETE_SELECT_COURSE,false);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         String tag = ObserveMajorFragment.class.getSimpleName();

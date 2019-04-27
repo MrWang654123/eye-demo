@@ -35,7 +35,7 @@ public class SystemRecommendCourseActivity extends BaseActivity {
 
     @Override
     protected String settingTitle() {
-        return "生涯测评";
+        return "系统智能推荐";
     }
 
 

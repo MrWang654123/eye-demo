@@ -47,7 +47,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
         addItemType(LAYOUT_SYS_RECOMMEND_HEADER, R.layout.recycleritem_sys_rmd_course_header);
         //系统推荐选科通用item
         addItemType(LAYOUT_ITEM_COMMON, R.layout.recycleritem_sys_rmd_common_item);
-        //系统推荐选科通用item
+        //简单量表Header
         addItemType(LAYOUT_SIMPLE_DIMENSION_HEADER, R.layout.recycleritem_sys_rmd_simple_dimension_header);
         //简单量表
         addItemType(LAYOUT_SIMPLE_DIMENSION, R.layout.recycleritem_career_record_simple_dimension);
@@ -112,7 +112,7 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
                 SysRmdCourseItem entity = (SysRmdCourseItem) item;
                 helper.getView(R.id.ll_result_common).setVisibility(View.GONE);
 //                helper.getView(R.id.ll_no_complete).setVisibility(View.GONE);
-                helper.getView(R.id.btn_report).setVisibility(View.INVISIBLE);
+                helper.getView(R.id.btn_report).setVisibility(View.GONE);
                 helper.getView(R.id.btn_to_exam).setVisibility(View.GONE);
                 helper.getView(R.id.ll_lock).setVisibility(View.GONE);
 
@@ -258,8 +258,8 @@ public class SysRmdCourseRecyclerAdapter extends BaseMultiItemQuickAdapter<Multi
 //                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
 //                }
 
-                helper.addOnClickListener(R.id.btn_report);
-                helper.addOnClickListener(R.id.btn_to_exam);
+//                helper.addOnClickListener(R.id.btn_report);
+//                helper.addOnClickListener(R.id.btn_to_exam);
 
                 break;
             }

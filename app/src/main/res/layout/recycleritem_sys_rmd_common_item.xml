@@ -30,16 +30,15 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/sdv_icon"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 app:layout_constraintDimensionRatio="h,1:1"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 fresco:roundAsCircle="true"
                 fresco:actualImageScaleType="centerCrop"
-                fresco:placeholderImage="@drawable/system_recommend"
-                fresco:placeholderImageScaleType="fitXY"
+                fresco:placeholderImage="@drawable/select_course_assistant_step1"
+                fresco:placeholderImageScaleType="centerCrop"
                 fresco:backgroundImage="@color/white"/>
 
             <!--fresco:pressedStateOverlayImage="@color/light_transparent"
@@ -54,14 +53,16 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/sdv_icon"
                 app:layout_constraintTop_toTopOf="@+id/sdv_icon"
-                app:layout_constraintRight_toLeftOf="@+id/btn_report"
-                android:layout_marginTop="5dp"
+                app:layout_constraintRight_toLeftOf="@+id/barrier"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
                 app:layout_goneMarginRight="0dp"
                 app:layout_goneMarginEnd="0dp"
+                android:paddingLeft="0dp"
+                android:paddingStart="0dp"
+                android:paddingRight="10dp"
+                android:paddingEnd="10dp"
                 android:text="1、性格测试"/>
 
             <TextView
@@ -70,9 +71,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_898989"
                 android:textSize="14sp"
-                android:maxLines="2"
+                android:maxLines="4"
                 android:ellipsize="end"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
+                android:paddingLeft="0dp"
+                android:paddingStart="0dp"
+                android:paddingRight="10dp"
+                android:paddingEnd="10dp"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
                 app:layout_constraintRight_toRightOf="@+id/tv_title"
@@ -117,6 +123,13 @@
                 app:layout_constraintBottom_toBottomOf="@+id/sdv_icon"
                 android:text="继续完成"/>
 
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="left"
+                app:constraint_referenced_ids="btn_report,btn_to_exam"/>
+
         </android.support.constraint.ConstraintLayout>
 
         <!--有推荐选科的结果-->
@@ -124,8 +137,8 @@
             android:id="@+id/ll_result_common"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:layout_marginStart="80dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginStart="65dp"
             android:orientation="vertical">
 
             <!--推荐课程-->
@@ -232,8 +245,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="80dp"
-            android:layout_marginStart="80dp"
+            android:layout_marginLeft="65dp"
+            android:layout_marginStart="65dp"
             android:orientation="vertical">
 
             <TextView
