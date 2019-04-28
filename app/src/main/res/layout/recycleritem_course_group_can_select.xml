@@ -1,243 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:foreground="?attr/selectableItemBackground"
-    android:background="@drawable/shape_corner_ffffff_3dp"
-    android:paddingLeft="0dp"
-    android:paddingStart="0dp"
-    android:paddingRight="0dp"
-    android:paddingEnd="0dp"
-    android:orientation="horizontal">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:background="@drawable/shape_corner_accent_1dp"
-        android:paddingLeft="5dp"
-        android:paddingStart="5dp"
-        android:paddingRight="5dp"
-        android:paddingEnd="5dp"
-        android:paddingTop="1.5dp"
-        android:paddingBottom="1.5dp"
-        android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:text="选科组合"/>
-
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_444444"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@+id/tv_tag"
-        app:layout_constraintTop_toTopOf="@+id/tv_tag"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
-        android:layout_marginLeft="11dp"
-        android:layout_marginStart="11dp"
-        android:paddingLeft="4dp"
-        android:paddingStart="4dp"
-        android:paddingRight="4dp"
-        android:paddingEnd="4dp"
-        android:text="物化生"/>
-
-    <View
-        android:id="@+id/vLastSelect"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:layout_marginLeft="-20dp"
-        android:layout_marginStart="-20dp"
-        android:layout_marginTop="-4dp"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_title"
-        app:layout_constraintTop_toTopOf="@+id/tv_title"
-        android:background="@drawable/circle_red"/>
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/iv_select"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:padding="7dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        fresco:actualImageScaleType="fitXY"
-        fresco:placeholderImage="@drawable/check_box_outline_bl"
-        fresco:placeholderImageScaleType="centerCrop"
-        fresco:roundBottomLeft="true"
-        fresco:roundBottomRight="true"
-        fresco:roundTopLeft="true"
-        fresco:roundTopRight="true"
-        fresco:roundedCornerRadius="3dp"/>
-
-    <!--可报考专业覆盖率-->
-    <LinearLayout
-        android:id="@+id/ll_major_ratio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/tv_tag"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="13dp"
-        android:layout_marginLeft="27dp"
-        android:layout_marginStart="27dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/circle_accent"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@drawable/shape_corner_ffffff_3dp"
+        android:paddingLeft="0dp"
+        android:paddingStart="0dp"
+        android:paddingRight="0dp"
+        android:paddingEnd="0dp"
+        android:paddingBottom="15dp">
 
         <TextView
+            android:id="@+id/tv_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_666666"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:text="可报考专业覆盖率:"/>
-
-        <TextView
-            android:id="@+id/tv_major_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:textStyle="normal"
+            android:textColor="@color/white"
+            android:background="@drawable/shape_corner_accent_1dp"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:paddingEnd="5dp"
+            android:paddingTop="1.5dp"
+            android:paddingBottom="1.5dp"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="55.4%"/>
-
-    </LinearLayout>
-
-    <!--有要求专业覆盖率-->
-    <LinearLayout
-        android:id="@+id/ll_require_major_ratio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/ll_major_ratio"
-        app:layout_constraintLeft_toLeftOf="@+id/ll_major_ratio"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/circle_accent"/>
+            android:text="选科组合"/>
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_555555"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:text="有要求专业覆盖率:"/>
-
-        <TextView
-            android:id="@+id/tv_require_major_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
             android:textColor="@color/color_444444"
-            android:textStyle="normal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:text="55.4%"/>
-
-    </LinearLayout>
-
-    <!--意向专业覆盖率-->
-    <LinearLayout
-        android:id="@+id/ll_follow_major_ratio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/ll_require_major_ratio"
-        app:layout_constraintLeft_toLeftOf="@+id/ll_major_ratio"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:background="@drawable/circle_accent"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_555555"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:text="意向专业覆盖率:"/>
-
-        <TextView
-            android:id="@+id/tv_follow_major_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="@color/color_444444"
-            android:textStyle="normal"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:text="55.4%"/>
-
-    </LinearLayout>
-
-    <!--匹配度-->
-    <LinearLayout
-        android:id="@+id/ll_ability_ratio"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        app:layout_constraintLeft_toRightOf="@+id/tv_title"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/color_777777"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="匹配度"/>
-
-        <TextView
-            android:id="@+id/tv_ability_ratio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginLeft="3dp"
-            android:layout_marginStart="3dp"
-            android:text="55.4%"/>
+            app:layout_constraintLeft_toRightOf="@+id/tv_tag"
+            app:layout_constraintTop_toTopOf="@+id/tv_tag"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_tag"
+            android:layout_marginLeft="11dp"
+            android:layout_marginStart="11dp"
+            android:paddingLeft="4dp"
+            android:paddingStart="4dp"
+            android:paddingRight="4dp"
+            android:paddingEnd="4dp"
+            android:text="物化生"/>
 
-    </LinearLayout>
+        <View
+            android:id="@+id/vLastSelect"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginLeft="-20dp"
+            android:layout_marginStart="-20dp"
+            android:layout_marginTop="-4dp"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_title"
+            android:background="@drawable/circle_red"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/iv_select"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:padding="7dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/check_box_outline_bl"
+            fresco:placeholderImageScaleType="centerCrop"
+            fresco:roundBottomLeft="true"
+            fresco:roundBottomRight="true"
+            fresco:roundTopLeft="true"
+            fresco:roundTopRight="true"
+            fresco:roundedCornerRadius="3dp"/>
+
+        <!--意向专业覆盖率-->
+        <LinearLayout
+            android:id="@+id/ll_follow_major_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tag"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginStart="27dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/circle_accent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_666666"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:text="意向专业覆盖率:"/>
+
+            <TextView
+                android:id="@+id/tv_follow_major_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_555555"
+                android:textStyle="normal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="55.4%"/>
+
+        </LinearLayout>
+
+        <!--可报考专业覆盖率-->
+        <LinearLayout
+            android:id="@+id/ll_major_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/ll_follow_major_ratio"
+            app:layout_constraintLeft_toLeftOf="@+id/ll_follow_major_ratio"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/circle_accent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_666666"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:text="可报考专业覆盖率:"/>
+
+            <TextView
+                android:id="@+id/tv_major_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_555555"
+                android:textStyle="normal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="55.4%"/>
+
+        </LinearLayout>
+
+        <!--有要求专业覆盖率-->
+        <LinearLayout
+            android:id="@+id/ll_require_major_ratio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toBottomOf="@+id/ll_major_ratio"
+            app:layout_constraintLeft_toLeftOf="@+id/ll_follow_major_ratio"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:background="@drawable/circle_accent"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_666666"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:text="高要求专业覆盖率:"/>
+
+            <TextView
+                android:id="@+id/tv_require_major_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/color_555555"
+                android:textStyle="normal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="55.4%"/>
+
+        </LinearLayout>
+
+        <!--匹配度-->
+        <LinearLayout
+            android:id="@+id/ll_ability_ratio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            app:layout_constraintLeft_toRightOf="@+id/tv_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/color_b5b5b5"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:text="匹配度"/>
+
+            <TextView
+                android:id="@+id/tv_ability_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:text="55.4%"/>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="15dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_follow_major_ratio"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="16dp"
         android:background="@color/color_f5f5f5"/>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
+

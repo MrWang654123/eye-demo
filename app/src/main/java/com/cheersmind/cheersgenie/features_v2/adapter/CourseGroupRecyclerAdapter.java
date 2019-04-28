@@ -106,7 +106,7 @@ public class CourseGroupRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiI
                 helper.setText(R.id.tv_major_ratio, nf.format((entity.getRate() != null ? entity.getRate() : 0) * 100) + "%");
                 helper.setText(R.id.tv_require_major_ratio, nf.format((entity.getRequireRate() != null ? entity.getRequireRate() : 0) * 100) + "%");
                 helper.setText(R.id.tv_follow_major_ratio, nf.format((entity.getFollowRate() != null ? entity.getFollowRate() : 0) * 100) + "%");
-                helper.setText(R.id.tv_ability_ratio, nf.format((entity.getAbility_rate() != null ? entity.getAbility_rate() : 0) * 100) + "%");
+                helper.setText(R.id.tv_ability_ratio, nf.format((entity.getAbility_rate() != null ? entity.getAbility_rate() : 0) * 100) + "%    ");
 
                 //手选的科目
                 if (!TextUtils.isEmpty(entity.getSubjectGroup())) {
@@ -143,12 +143,12 @@ public class CourseGroupRecyclerAdapter extends BaseMultiItemQuickAdapter<MultiI
                     }
                 }
 
-                //分割线
-                if (entity.isLast()) {
-                    helper.getView(R.id.divider).setVisibility(View.INVISIBLE);
-                } else {
-                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
-                }
+//                //分割线
+//                if (entity.isLast()) {
+//                    helper.getView(R.id.divider).setVisibility(View.INVISIBLE);
+//                } else {
+//                    helper.getView(R.id.divider).setVisibility(View.VISIBLE);
+//                }
 
                 break;
             }

@@ -53,10 +53,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/warpLinearLayout"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/ll_follow_major_ratio"
-        android:layout_marginTop="15dp"
+        app:layout_constraintLeft_toRightOf="@+id/ll_ability_ratio"
+        app:layout_constraintBottom_toBottomOf="@+id/ll_ability_ratio"
+        app:layout_constraintRight_toRightOf="parent"
         android:orientation="horizontal">
 
         <View
@@ -78,22 +77,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
+            android:textColor="@color/color_555555"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:text="55.4%"/>
 
     </LinearLayout>
 
-    <!--有要求专业覆盖率-->
+    <!--高要求专业覆盖率-->
     <LinearLayout
         android:id="@+id/ll_require_major_ratio"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@+id/ll_major_ratio"
         app:layout_constraintLeft_toLeftOf="@+id/ll_major_ratio"
-        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toTopOf="@+id/ll_follow_major_ratio"
         android:orientation="horizontal">
 
         <View
@@ -108,14 +106,14 @@
             android:textColor="@color/color_666666"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:text="有要求专业:"/>
+            android:text="高要求专业:"/>
 
         <TextView
             android:id="@+id/tv_require_major_ratio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
+            android:textColor="@color/color_555555"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:text="55.4%"/>
@@ -128,9 +126,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:layout_constraintLeft_toRightOf="@+id/ll_major_ratio"
-        app:layout_constraintBottom_toBottomOf="@+id/ll_major_ratio"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_ability_ratio"
+        app:layout_constraintLeft_toLeftOf="@+id/ll_ability_ratio"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal">
 
         <View
@@ -152,7 +150,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:textColor="@color/color_444444"
+            android:textColor="@color/color_555555"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             android:text="55.4%"/>
@@ -162,11 +160,13 @@
     <!--匹配度-->
     <LinearLayout
         android:id="@+id/ll_ability_ratio"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        app:layout_constraintLeft_toLeftOf="@+id/ll_follow_major_ratio"
-        app:layout_constraintTop_toTopOf="@+id/ll_require_major_ratio"
+        app:layout_constraintTop_toBottomOf="@+id/warpLinearLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/ll_require_major_ratio"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal">
 
         <View
@@ -200,7 +200,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_ability_ratio"
+        app:layout_constraintTop_toBottomOf="@+id/ll_require_major_ratio"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="20dp"
