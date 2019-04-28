@@ -11,8 +11,31 @@ android {
         if ("debug".equals(BUILD_TYPE)) {
             applicationId "com.cheersmind.cheersgenie.debug"
 //            applicationId "com.cheersmind.cheersgenie"
+
+            if ("product".equals(HOST_TYPE)) {
+                resValue "string", "app_name_change", "生产Debug"
+            } else if ("develop".equals(HOST_TYPE)) {
+                resValue "string", "app_name_change", "开发Debug"
+            } else if ("local".equals(HOST_TYPE)) {
+                resValue "string", "app_name_change", "LocalDebug"
+            } else {
+                resValue "string", "app_name_change", HOST_TYPE + "Debug"
+            }
+
         } else {
             applicationId "com.cheersmind.cheersgenie"
+
+            if ("product".equals(HOST_TYPE)) {
+                resValue "string", "app_name_change", "奇思火眼"
+            } else {
+                if ("develop".equals(HOST_TYPE)) {
+                    resValue "string", "app_name_change", "开发Release"
+                } else if ("local".equals(HOST_TYPE)) {
+                    resValue "string", "app_name_change", "LocalRelease"
+                } else {
+                    resValue "string", "app_name_change", HOST_TYPE + "Release"
+                }
+            }
         }
         minSdkVersion 16
         //noinspection OldTargetApi
