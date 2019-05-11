@@ -8,6 +8,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.cheersmind.cheersgenie.R;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features_v2.dto.CollegeRankDto;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeEntity;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -39,12 +40,10 @@ public class CollegeRankRecyclerAdapter extends BaseQuickAdapter<CollegeEntity, 
         imageView.setImageURI(item.getLogo_url());
 
         //标签
-        if (item.getBasicInfo().getInstitute_quality() == null
-                || item.getBasicInfo().getInstitute_quality().size() == 0) {
-            helper.getView(R.id.tv_tag0).setVisibility(View.GONE);
-            helper.getView(R.id.tv_tag1).setVisibility(View.GONE);
-            helper.getView(R.id.tv_tag2).setVisibility(View.GONE);
-        } else {
+        helper.getView(R.id.tv_tag0).setVisibility(View.GONE);
+        helper.getView(R.id.tv_tag1).setVisibility(View.GONE);
+        helper.getView(R.id.tv_tag2).setVisibility(View.GONE);
+        if (item.getBasicInfo() != null && ArrayListUtil.isNotEmpty(item.getBasicInfo().getInstitute_quality())) {
             //设置标签
             int tagLength = item.getBasicInfo().getInstitute_quality().size();
             for (int i=0; i<tagLength; i++) {
@@ -59,20 +58,6 @@ public class CollegeRankRecyclerAdapter extends BaseQuickAdapter<CollegeEntity, 
                 } else if (i == 2) {
                     helper.getView(R.id.tv_tag2).setVisibility(View.VISIBLE);
                     helper.setText(R.id.tv_tag2, tag);
-                }
-            }
-
-            //剩余未被占用的TextView数量
-            int remainSize = MAX_QUALITY_TAG_COUNT - tagLength;
-            if (remainSize > 0) {
-                for (int i=remainSize-1; i>=0; i--) {
-                    if (i == 0) {
-                        helper.getView(R.id.tv_tag0).setVisibility(View.GONE);
-                    } else if (i == 1) {
-                        helper.getView(R.id.tv_tag1).setVisibility(View.GONE);
-                    } else if (i == 2) {
-                        helper.getView(R.id.tv_tag2).setVisibility(View.GONE);
-                    }
                 }
             }
         }

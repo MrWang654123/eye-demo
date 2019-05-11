@@ -15,6 +15,7 @@ import com.cheersmind.cheersgenie.features.adapter.TabFragmentPagerAdapter;
 import com.cheersmind.cheersgenie.features.constant.DtoKey;
 import com.cheersmind.cheersgenie.features.event.StopFlingEvent;
 import com.cheersmind.cheersgenie.features.modules.base.fragment.LazyLoadFragment;
+import com.cheersmind.cheersgenie.features.utils.ArrayListUtil;
 import com.cheersmind.cheersgenie.features.view.XEmptyLayout;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeBasicInfo;
 import com.cheersmind.cheersgenie.features_v2.entity.CollegeDetailInfo;
@@ -238,13 +239,10 @@ public class CollegeDetailFragment extends LazyLoadFragment {
         tvCollegeName.setText(college.getCn_name());
 
         //标签
-        if (college.getBasicInfo() == null
-                || college.getBasicInfo().getInstitute_quality() == null
-                || college.getBasicInfo().getInstitute_quality().size() == 0) {
-            tvTag0.setVisibility(View.GONE);
-            tvTag1.setVisibility(View.GONE);
-            tvTag2.setVisibility(View.GONE);
-        } else {
+        tvTag0.setVisibility(View.GONE);
+        tvTag1.setVisibility(View.GONE);
+        tvTag2.setVisibility(View.GONE);
+        if (college.getBasicInfo() != null && ArrayListUtil.isNotEmpty(college.getBasicInfo().getInstitute_quality())) {
             //设置标签
             int tagLength = college.getBasicInfo().getInstitute_quality().size();
             for (int i = 0; i < tagLength; i++) {
@@ -259,20 +257,6 @@ public class CollegeDetailFragment extends LazyLoadFragment {
                 } else if (i == 2) {
                     tvTag2.setVisibility(View.VISIBLE);
                     tvTag2.setText(tag);
-                }
-            }
-
-            //剩余未被占用的TextView数量
-            int remainSize = MAX_QUALITY_TAG_COUNT - tagLength;
-            if (remainSize > 0) {
-                for (int i = remainSize - 1; i >= 0; i--) {
-                    if (i == 0) {
-                        tvTag0.setVisibility(View.GONE);
-                    } else if (i == 1) {
-                        tvTag1.setVisibility(View.GONE);
-                    } else if (i == 2) {
-                        tvTag2.setVisibility(View.GONE);
-                    }
                 }
             }
         }
